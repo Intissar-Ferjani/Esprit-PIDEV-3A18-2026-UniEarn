@@ -8,7 +8,7 @@ import uniearn.model.enums.VerifStatus;
 import java.util.Arrays;
 import java.util.List;
 
-public class Freelancer extends User implements IFreelancer<Freelancer, User> {
+public class Freelancer extends User {
     private double hourly;
     private double balance;
     private double rating;
@@ -18,8 +18,8 @@ public class Freelancer extends User implements IFreelancer<Freelancer, User> {
 
     public Freelancer() {}
 
-    public Freelancer(int id, String name, String email, String password, UserRole role, double hourly, double balance, double rating, String[] skills, VerifStatus verificationStatus, Status status) {
-        super(id, name, email, password, role);
+    public Freelancer(String name, String email, String password, UserRole role, double hourly, double balance, double rating, String[] skills, VerifStatus verificationStatus, Status status) {
+        super(name, email, password, role);
         this.hourly = hourly;
         this.balance = balance;
         this.rating = rating;
@@ -88,28 +88,4 @@ public class Freelancer extends User implements IFreelancer<Freelancer, User> {
                 '}';
     }
 
-    @Override
-    public void addFreelancer(Freelancer freelancer) {
-
-    }
-
-    @Override
-    public void updateFreelancer(int id, Freelancer freelancer) {
-
-    }
-
-    @Override
-    public void deleteFreelancer(int id) {
-
-    }
-
-    @Override
-    public Freelancer getFreelancerById(int id) {
-        return null;
-    }
-
-    @Override
-    public List<Freelancer> getAllFreelancers() {
-        return List.of();
-    }
 }

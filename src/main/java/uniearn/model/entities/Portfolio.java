@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class Portfolio implements IPortfolio<Portfolio> {
+public class Portfolio {
     private int id;
     private String title;
     private String description;
@@ -85,28 +85,4 @@ public class Portfolio implements IPortfolio<Portfolio> {
                 '}';
     }
 
-    @Override
-    public void addPortfolio(Portfolio portfolio) {
-
-    }
-
-    @Override
-    public void updatePortfolio(int id, Portfolio portfolio) {
-
-    }
-
-    @Override
-    public void deletePortfolio(int id) {
-
-    }
-
-    @Override
-    public Portfolio getPortfolioById(int id) {
-        return null;
-    }
-
-    @Override
-    public List<Portfolio> getAllPortfolios() {
-        return List.of();
-    }
 }

@@ -5,8 +5,8 @@ import uniearn.model.enums.UserRole;
 
 import java.util.List;
 
-public class User implements IUser<User> {
-    private int id;
+public class User {
+    private int idUser;
     private String name;
     private String email;
     private String password;
@@ -14,20 +14,19 @@ public class User implements IUser<User> {
 
     public User() {}
 
-    public User(int id, String name, String email, String password, UserRole role) {
-        this.id = id;
+    public User(String name, String email, String password, UserRole role) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
     }
 
-    public int getId() {
-        return id;
+    public int getIdUser() {
+        return idUser;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdUser(int id) {
+        this.idUser = id;
     }
 
     public String getName() {
@@ -65,36 +64,11 @@ public class User implements IUser<User> {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "id=" + idUser +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
                 '}';
-    }
-
-    @Override
-    public void addUser(User user) {
-
-    }
-
-    @Override
-    public void updateUser(int id, User user) {
-
-    }
-
-    @Override
-    public void deleteUser(int id) {
-
-    }
-
-    @Override
-    public User getUserById(int id) {
-        return null;
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        return List.of();
     }
 }

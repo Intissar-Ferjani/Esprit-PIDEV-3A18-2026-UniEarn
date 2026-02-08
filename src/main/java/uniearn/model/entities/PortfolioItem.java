@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class PortfolioItem implements IPortfolioItems<Portfolio, PortfolioItem> {
+public class PortfolioItem {
     private int id;
     private String title;
     private String description;
@@ -118,33 +118,4 @@ public class PortfolioItem implements IPortfolioItems<Portfolio, PortfolioItem> 
                 '}';
     }
 
-    @Override
-    public void addPortfolioItem(Portfolio Portfolio, PortfolioItem portfolioItem) {
-
-    }
-
-    @Override
-    public void updatePortfolioItem(Portfolio Portfolio, int id, PortfolioItem portfolioItem) {
-
-    }
-
-    @Override
-    public void deletePortfolioItem(int id) {
-
-    }
-
-    @Override
-    public PortfolioItem getPortfolioItemById(int id) {
-        return null;
-    }
-
-    @Override
-    public List<PortfolioItem> getAllPortfolioItems() {
-        return List.of();
-    }
-
-    @Override
-    public List<PortfolioItem> getPortfolioItemsByPortfolioId(int portfolioId) {
-        return List.of();
-    }
 }
