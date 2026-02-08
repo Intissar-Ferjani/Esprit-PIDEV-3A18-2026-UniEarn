@@ -16,11 +16,14 @@ public class MyConnection {
 
     public MyConnection(){
         try{
-        DriverManager.getConnection(url, login, pwd);
+         cnx = DriverManager.getConnection(url, login, pwd);
              System.out.println("Connected to database successfully!");
         }catch(SQLException e){
             System.out.println(e.getMessage());
         }
     }
 
+    public Connection getCnx() {
+        return cnx;
+    }
 }
