@@ -1,36 +1,29 @@
 package uniearn.model.entities;
 
-import uniearn.interfaces.IPortfolio;
-
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 public class Portfolio {
-    private int id;
+    private int idPortfolio;
     private String title;
     private String description;
-    private Date createdAt;
-    private Freelancer freelancer;
-    private PortfolioItem[] items;
+    private Date created_At;
+    private int freelancerId;
 
     public Portfolio() {}
 
-    public Portfolio(int id, String title, String description, Date createdAt, Freelancer freelancer, PortfolioItem[] items) {
-        this.id = id;
+    public Portfolio(String title, String description, Date created_At, int freelancerId) {
         this.title = title;
         this.description = description;
-        this.createdAt = createdAt;
-        this.freelancer = freelancer;
-        this.items = items;
+        this.created_At = created_At;
+        this.freelancerId = freelancerId;
     }
 
-    public int getId() {
-        return id;
+    public int getIdPortfolio() {
+        return idPortfolio;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdPortfolio(int idPortfolio) {
+        this.idPortfolio = idPortfolio;
     }
 
     public String getTitle() {
@@ -49,40 +42,30 @@ public class Portfolio {
         this.description = description;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public Date getCreated_At() {
+        return created_At;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setCreated_At(Date created_At) {
+        this.created_At = created_At;
     }
 
-    public Freelancer getFreelancer() {
-        return freelancer;
+    public int getFreelancerId() {
+        return freelancerId;
     }
 
-    public void setFreelancer(Freelancer freelancer) {
-        this.freelancer = freelancer;
-    }
-
-    public PortfolioItem[] getItems() {
-        return items;
-    }
-
-    public void setItems(PortfolioItem[] items) {
-        this.items = items;
+    public void setFreelancerId(int freelancerId) {
+        this.freelancerId = freelancerId;
     }
 
     @Override
     public String toString() {
         return "Portfolio{" +
-                "id=" + id +
+                "idPortfolio=" + idPortfolio +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", createdAt=" + createdAt +
-                ", freelancer=" + freelancer +
-                ", items=" + Arrays.toString(items) +
+                ", created_At=" + created_At +
+                ", freelancerId=" + freelancerId +
                 '}';
     }
-
 }

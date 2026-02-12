@@ -1,42 +1,38 @@
 package uniearn.model.entities;
 
-import uniearn.interfaces.IPortfolioItems;
-
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 public class PortfolioItem {
-    private int id;
+    private int idItem;
     private String title;
     private String description;
     private String[] technologies;
     private String[] imagesUrl;
     private String projectUrl;
     private String githubUrl;
-    private Date createdAt;
-    private Portfolio portfolio;
+    private Date created_At;
+    private int idPortfolio;
 
     public PortfolioItem() {}
 
-    public PortfolioItem(int id, String title, String description, String[] technologies, String[] imagesUrl, String projectUrl, String githubUrl, Date createdAt, Portfolio portfolio) {
-        this.id = id;
+    public PortfolioItem(String title, String description, String[] technologies, String[] imagesUrl, String projectUrl, String githubUrl, Date created_At, int idPortfolio) {
         this.title = title;
         this.description = description;
         this.technologies = technologies;
         this.imagesUrl = imagesUrl;
         this.projectUrl = projectUrl;
         this.githubUrl = githubUrl;
-        this.createdAt = createdAt;
-        this.portfolio = portfolio;
+        this.created_At = created_At;
+        this.idPortfolio = idPortfolio;
     }
 
-    public int getId() {
-        return id;
+    public int getIdItem() {
+        return idItem;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdItem(int idItem) {
+        this.idItem = idItem;
     }
 
     public String getTitle() {
@@ -87,35 +83,34 @@ public class PortfolioItem {
         this.githubUrl = githubUrl;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public Date getCreated_At() {
+        return created_At;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void setCreated_At(Date created_At) {
+        this.created_At = created_At;
     }
 
-    public Portfolio getPortfolio() {
-        return portfolio;
+    public int getIdPortfolio() {
+        return idPortfolio;
     }
 
-    public void setPortfolio(Portfolio portfolio) {
-        this.portfolio = portfolio;
+    public void setIdPortfolio(int idPortfolio) {
+        this.idPortfolio = idPortfolio;
     }
 
     @Override
     public String toString() {
         return "PortfolioItem{" +
-                "id=" + id +
+                "idItem=" + idItem +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", technologies=" + Arrays.toString(technologies) +
                 ", imagesUrl=" + Arrays.toString(imagesUrl) +
                 ", projectUrl='" + projectUrl + '\'' +
                 ", githubUrl='" + githubUrl + '\'' +
-                ", createdAt=" + createdAt +
-                ", portfolio=" + portfolio +
+                ", created_At=" + created_At +
+                ", idPortfolio=" + idPortfolio +
                 '}';
     }
-
 }

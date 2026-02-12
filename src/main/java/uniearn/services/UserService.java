@@ -13,11 +13,11 @@ public class UserService implements IUser<User> {
     private final Connection cn = MyConnection.getInstance().getCnx();
 
     @Override
-    public void addUser(User user) throws SQLException {
+    public int addUser(User user) throws SQLException {
 
         String sql = "INSERT INTO user (name, email, password, role) VALUES (?, ?, ?, ?)";
 
-        PreparedStatement ps = cn.prepareStatement(sql);
+        PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
         ps.setString(1, user.getName());
         ps.setString(2, user.getEmail());
@@ -25,7 +25,13 @@ public class UserService implements IUser<User> {
         ps.setString(4, user.getRole().name());
 
         ps.executeUpdate();
-        System.out.println("User added to DB successfully!");
+
+        ResultSet rs = ps.getGeneratedKeys();
+        if (rs.next()) {
+            return rs.getInt(1);
+        }
+
+        return -1;
     }
 
 

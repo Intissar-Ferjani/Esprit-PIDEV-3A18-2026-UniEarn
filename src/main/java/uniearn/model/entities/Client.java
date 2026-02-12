@@ -6,23 +6,16 @@ import uniearn.model.enums.UserRole;
 import java.util.List;
 
 public class Client extends User {
-    private double balance;
+    private int idClient;
+    private double amount;
     private double rating;
 
     public Client() {}
 
-    public Client(String name, String email, String password, UserRole role, double balance, double rating) {
+    public Client(String name, String email, String password, UserRole role, double amount, double rating) {
         super(name, email, password, role);
-        this.balance = balance;
+        this.amount = amount;
         this.rating = rating;
-    }
-
-    public double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(double balance) {
-        this.balance = balance;
     }
 
     public double getRating() {
@@ -33,12 +26,28 @@ public class Client extends User {
         this.rating = rating;
     }
 
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public int getIdClient() {
+        return idClient;
+    }
+
+    public void setIdClient(int idClient) {
+        this.idClient = idClient;
+    }
+
     @Override
     public String toString() {
         return "Client{" +
-                "balance=" + balance +
+                "idClient=" + idClient +
+                ", amount=" + amount +
                 ", rating=" + rating +
                 '}';
     }
-
 }
