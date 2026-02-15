@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="uniearn.controller.ContractTemplateController">
+
+    <!-- Barre supérieure avec titre et boutons d'action -->
+    <top>
+        <VBox spacing="15" style="-fx-background-color: #1E56DB; -fx-padding: 20;">
+            <Label text="GESTION DES TEMPLATES DE CONTRATS" style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;"/>
+            <Label text="Créez et gérez les modèles de contrats réutilisables" style="-fx-text-fill: #F5F5F5; -fx-font-size: 12;"/>
+
+            <!-- Boutons d'action -->
+            <HBox spacing="10">
+                <Button text="➕ Nouveau Template" fx:id="btnNewTemplate"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 10 20; -fx-font-weight: bold; -fx-font-size: 12;"/>
+                <Button text="🔄 Rafraîchir" fx:id="btnRefresh"
+                        style="-fx-background-color: #FFC107; -fx-text-fill: black; -fx-padding: 10 20; -fx-font-weight: bold; -fx-font-size: 12;"/>
+                <Button text="🗑️ Supprimer" fx:id="btnDelete"
+                        style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-padding: 10 20; -fx-font-weight: bold; -fx-font-size: 12;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Centre: Tableau des templates -->
+    <center>
+        <VBox spacing="10" style="-fx-padding: 20;">
+            <TableView fx:id="templatesTable" prefHeight="400">
+                <columns>
+                    <TableColumn prefWidth="50" text="ID" fx:id="colId"/>
+                    <TableColumn prefWidth="150" text="Nom du Template" fx:id="colName"/>
+                    <TableColumn prefWidth="250" text="Description" fx:id="colDescription"/>
+                    <TableColumn prefWidth="120" text="Date Création" fx:id="colCreatedDate"/>
+                    <TableColumn prefWidth="80" text="Actions" fx:id="colActions"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+    <!-- Pied de page avec statistiques -->
+    <bottom>
+        <HBox spacing="20" style="-fx-background-color: #F5F5F5; -fx-padding: 15;">
+            <Label fx:id="lblStats" text="Total: 0 templates" style="-fx-font-size: 12;"/>
+            <Separator orientation="VERTICAL"/>
+            <Label fx:id="lblLastUpdate" text="Dernière mise à jour: N/A" style="-fx-font-size: 11;"/>
+        </HBox>
+    </bottom>
+</BorderPane>
+

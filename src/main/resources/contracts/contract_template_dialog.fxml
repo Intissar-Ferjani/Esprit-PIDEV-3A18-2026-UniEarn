@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="uniearn.controller.ContractTemplateDialogController">
+
+    <top>
+        <VBox spacing="15" style="-fx-background-color: #1E56DB; -fx-padding: 20;">
+            <Label fx:id="lblTitle" text="Nouveau Template de Contrat" style="-fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;"/>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="15" style="-fx-padding: 20;">
+
+            <!-- Nom du template -->
+            <HBox spacing="10">
+                <Label text="Nom du Template:" prefWidth="150" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="tfTemplateName" prefWidth="300" promptText="ex: Template Standard"/>
+            </HBox>
+
+            <!-- Description -->
+            <HBox spacing="10">
+                <Label text="Description:" prefWidth="150" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="tfDescription" prefWidth="300" promptText="Description courte du template"/>
+            </HBox>
+
+            <!-- Contenu du template -->
+            <Label text="Contenu du Template:" style="-fx-font-weight: bold;"/>
+            <TextArea fx:id="taTemplateContent" wrapText="true" prefHeight="250"
+                     style="-fx-control-inner-background: #F5F5F5; -fx-padding: 10;"
+                     promptText="Entrez le contenu du template...&#10;Utilisez [ClientName], [FreelancerName], [StartDate], [EndDate], [Amount] comme variables"/>
+
+            <!-- Aperçu -->
+            <Separator/>
+            <Label text="Aperçu:" style="-fx-font-weight: bold;"/>
+            <TextArea fx:id="taPreview" editable="false" prefHeight="150"
+                     style="-fx-control-inner-background: #F5F5F5; -fx-padding: 10;"/>
+
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 20; -fx-alignment: CENTER_RIGHT;">
+            <Button text="Annuler" fx:id="btnCancel"
+                    style="-fx-padding: 10 30; -fx-font-size: 12;"/>
+            <Button text="Enregistrer" fx:id="btnSave"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 10 30; -fx-font-weight: bold;"/>
+        </HBox>
+    </bottom>
+</BorderPane>
+

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="uniearn.controller.ContractSignatureController">
+
+    <top>
+        <VBox spacing="15" style="-fx-background-color: #1E56DB; -fx-padding: 20;">
+            <Label fx:id="lblTitle" text="SIGNATURE DU CONTRAT" style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;"/>
+            <Label fx:id="lblContractInfo" text="Contrat ID: 0" style="-fx-text-fill: #F5F5F5; -fx-font-size: 12;"/>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane style="-fx-background-color: white;" fitToWidth="true">
+            <VBox spacing="20" style="-fx-padding: 20;">
+
+                <!-- Information du contrat -->
+                <VBox spacing="10" style="-fx-border-color: #E0E0E0; -fx-border-width: 1; -fx-padding: 15; -fx-background-color: #F5F5F5;">
+                    <Label text="INFORMATIONS DU CONTRAT" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+
+                    <GridPane hgap="10" vgap="10">
+                        <Label text="Type:" GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="lblType" text="--" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                        <Label text="Montant:" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="lblAmount" text="--" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                        <Label text="Date Début:" GridPane.columnIndex="0" GridPane.rowIndex="2" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="lblStartDate" text="--" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                        <Label text="Date Fin:" GridPane.columnIndex="0" GridPane.rowIndex="3" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="lblEndDate" text="--" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                        <Label text="Statut:" GridPane.columnIndex="0" GridPane.rowIndex="4" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="lblStatus" text="--" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                    </GridPane>
+                </VBox>
+
+                <!-- Contenu du contrat -->
+                <VBox spacing="10">
+                    <Label text="CONTENU DU CONTRAT" style="-fx-font-weight: bold; -fx-font-size: 14;"/>
+                    <TextArea fx:id="taContractContent" editable="false" wrapText="true" prefHeight="200"
+                             style="-fx-control-inner-background: #F5F5F5; -fx-padding: 10;"/>
+                </VBox>
+
+                <!-- Zone de signature -->
+                <Separator/>
+                <Label text="SIGNATURE" style="-fx-font-weight: bold; -fx-font-size: 14; -fx-text-fill: #1E56DB;"/>
+
+                <!-- Signature Client -->
+                <VBox spacing="10" style="-fx-border-color: #4CAF50; -fx-border-width: 1; -fx-border-radius: 5; -fx-padding: 15; -fx-background-color: #F1F8F4;">
+                    <Label text="SIGNATURE CLIENT" style="-fx-font-weight: bold; -fx-font-size: 12; -fx-text-fill: #4CAF50;"/>
+                    <Canvas fx:id="canvasClientSignature" width="400" height="100"
+                           style="-fx-border-color: #999999; -fx-background-color: white;"/>
+                    <HBox spacing="10">
+                        <Button text="Effacer" fx:id="btnClearClientSignature" style="-fx-padding: 8 15;"/>
+                        <Button text="✓ Signer" fx:id="btnSignClient"
+                               style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 8 20; -fx-font-weight: bold;"/>
+                    </HBox>
+                    <Label fx:id="lblClientSignatureDate" text="Non signé" style="-fx-font-size: 11; -fx-text-fill: #666;"/>
+                </VBox>
+
+                <!-- Signature Freelancer -->
+                <VBox spacing="10" style="-fx-border-color: #1E56DB; -fx-border-width: 1; -fx-border-radius: 5; -fx-padding: 15; -fx-background-color: #F0F4FF;">
+                    <Label text="SIGNATURE FREELANCER" style="-fx-font-weight: bold; -fx-font-size: 12; -fx-text-fill: #1E56DB;"/>
+                    <Canvas fx:id="canvasFreelancerSignature" width="400" height="100"
+                           style="-fx-border-color: #999999; -fx-background-color: white;"/>
+                    <HBox spacing="10">
+                        <Button text="Effacer" fx:id="btnClearFreelancerSignature" style="-fx-padding: 8 15;"/>
+                        <Button text="✓ Signer" fx:id="btnSignFreelancer"
+                               style="-fx-background-color: #1E56DB; -fx-text-fill: white; -fx-padding: 8 20; -fx-font-weight: bold;"/>
+                    </HBox>
+                    <Label fx:id="lblFreelancerSignatureDate" text="Non signé" style="-fx-font-size: 11; -fx-text-fill: #666;"/>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 20; -fx-alignment: CENTER_RIGHT; -fx-background-color: #F5F5F5;">
+            <Button text="Fermer" fx:id="btnClose" style="-fx-padding: 10 30;"/>
+            <Button text="📄 Exporter en PDF" fx:id="btnExportPDF"
+                   style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-padding: 10 30; -fx-font-weight: bold;"/>
+        </HBox>
+    </bottom>
+</BorderPane>
+
