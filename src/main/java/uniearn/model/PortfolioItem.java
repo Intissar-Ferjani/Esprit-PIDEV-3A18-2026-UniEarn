@@ -1,4 +1,4 @@
-package uniearn.model.entities;
+package uniearn.model;
 
 public class PortfolioItem {
 }

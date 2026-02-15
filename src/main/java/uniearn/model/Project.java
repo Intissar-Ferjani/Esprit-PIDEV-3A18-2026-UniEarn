@@ -1,4 +1,4 @@
-package uniearn.model.entities;
+package uniearn.model;
 
 import uniearn.database.MyConnection;
 import uniearn.interfaces.IProject;
@@ -13,16 +13,16 @@ public class Project {
     private String description;
     private double budget;
     private int status;
-    private int client_id;
+    private int clientid;
 
     public Project() {};
 
-    public Project( String title, String description, double budget, int status, int client_id) {
+    public Project( String title, String description, double budget, int status, int clientid) {
         this.title = title;
         this.description = description;
         this.budget = budget;
         this.status = status;
-        this.client_id = client_id;
+        this.clientid = clientid;
     }
 
 
@@ -68,11 +68,11 @@ public class Project {
     }
 
     public int getClient_id() {
-        return client_id;
+        return clientid;
     }
 
-    public void setClient_id(int client_id) {
-        this.client_id = client_id;
+    public void setClient_id(int clientid) {
+        this.clientid = clientid;
     }
 }
 
