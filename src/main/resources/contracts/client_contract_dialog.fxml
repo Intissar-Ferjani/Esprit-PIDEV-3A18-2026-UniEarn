@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="uniearn.controller.ClientContractDialogController">
+
+    <top>
+        <VBox spacing="15" style="-fx-background-color: #1E56DB; -fx-padding: 20;">
+            <Label fx:id="lblTitle" text="Nouveau Contrat" style="-fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold;"/>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane style="-fx-background-color: white;" fitToWidth="true">
+            <VBox spacing="15" style="-fx-padding: 20;">
+
+                <!-- Sélection du template -->
+                <HBox spacing="10">
+                    <Label text="Template:" prefWidth="120" style="-fx-font-weight: bold;"/>
+                    <ComboBox fx:id="cbTemplate" prefWidth="300" promptText="Sélectionnez un template..."/>
+                </HBox>
+
+                <!-- Type de contrat -->
+                <HBox spacing="10">
+                    <Label text="Type Contrat:" prefWidth="120" style="-fx-font-weight: bold;"/>
+                    <ComboBox fx:id="cbContractType" prefWidth="300" promptText="Sélectionnez un type..."/>
+                </HBox>
+
+                <!-- Freelancer -->
+                <HBox spacing="10">
+                    <Label text="Freelancer:" prefWidth="120" style="-fx-font-weight: bold;"/>
+                    <ComboBox fx:id="cbFreelancer" prefWidth="300" promptText="Sélectionnez un freelancer..."/>
+                </HBox>
+
+                <!-- Projet -->
+                <HBox spacing="10">
+                    <Label text="Projet:" prefWidth="120" style="-fx-font-weight: bold;"/>
+                    <ComboBox fx:id="cbProject" prefWidth="300" promptText="Sélectionnez un projet..."/>
+                </HBox>
+
+                <!-- Montant -->
+                <HBox spacing="10">
+                    <Label text="Montant (DA):" prefWidth="120" style="-fx-font-weight: bold;"/>
+                    <TextField fx:id="tfAmount" prefWidth="300" promptText="0.00" style="-fx-text-alignment: right;"/>
+                </HBox>
+
+                <!-- Dates -->
+                <HBox spacing="10">
+                    <Label text="Date Début:" prefWidth="120" style="-fx-font-weight: bold;"/>
+                    <DatePicker fx:id="dpStartDate" prefWidth="300"/>
+                </HBox>
+
+                <HBox spacing="10">
+                    <Label text="Date Fin:" prefWidth="120" style="-fx-font-weight: bold;"/>
+                    <DatePicker fx:id="dpEndDate" prefWidth="300"/>
+                </HBox>
+
+                <!-- Paiement (optionnel) -->
+                <HBox spacing="10">
+                    <Label text="Paiement (optionnel):" prefWidth="120" style="-fx-font-weight: bold;"/>
+                    <ComboBox fx:id="cbPayment" prefWidth="300" promptText="Sélectionnez un paiement..."/>
+                </HBox>
+
+                <!-- Aperçu du template -->
+                <Separator/>
+                <Label text="Aperçu du Template:" style="-fx-font-weight: bold;"/>
+                <TextArea fx:id="taTemplatePreview" editable="false" wrapText="true" prefHeight="150"
+                         style="-fx-control-inner-background: #F5F5F5; -fx-padding: 10;"/>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 20; -fx-alignment: CENTER_RIGHT;">
+            <Button text="Annuler" fx:id="btnCancel"
+                    style="-fx-padding: 10 30; -fx-font-size: 12;"/>
+            <Button text="Créer Contrat" fx:id="btnCreate"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 10 30; -fx-font-weight: bold;"/>
+        </HBox>
+    </bottom>
+</BorderPane>
+
