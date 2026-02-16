@@ -46,7 +46,7 @@ public class AdminContractController {
     @FXML private Label lblSummary;
 
     private ContratService contratService;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     private List<Contrat> allContracts;
 
     @FXML
@@ -86,7 +86,7 @@ public class AdminContractController {
         );
 
         // Colonne Actions
-        colActions.setCellFactory(param -> new TableCell<Contrat, Void>() {
+        colActions.setCellFactory(param -> new TableCell<>() {
             private final Button btnEdit = new Button("✏️ Modifier");
             private final Button btnView = new Button("👁️ Voir");
             private final Button btnDelete = new Button("🗑️ Supprimer");
@@ -237,7 +237,7 @@ public class AdminContractController {
         alert.setHeaderText("Supprimer le contrat?");
         alert.setContentText("Êtes-vous sûr de vouloir supprimer le contrat #" + contract.getIdContract() + "?");
 
-        if (alert.showAndWait().get() == ButtonType.OK) {
+        if (alert.showAndWait().isPresent() && alert.showAndWait().get() == ButtonType.OK) {
             try {
                 contratService.deleteContrat(contract.getIdContract());
                 showSuccess("Succès", "Le contrat a été supprimé");
@@ -278,20 +278,14 @@ public class AdminContractController {
     }
 
     private String getStatusText(int status) {
-        switch (status) {
-            case 0:
-                return "Brouillon";
-            case 1:
-                return "Signé Client";
-            case 2:
-                return "Signé Freelancer";
-            case 3:
-                return "Actif";
-            case 4:
-                return "Annulé";
-            default:
-                return "Inconnu";
-        }
+        return switch (status) {
+            case 0 -> "Brouillon";
+            case 1 -> "Signé Client";
+            case 2 -> "Signé Freelancer";
+            case 3 -> "Actif";
+            case 4 -> "Annulé";
+            default -> "Inconnu";
+        };
     }
 }
 
