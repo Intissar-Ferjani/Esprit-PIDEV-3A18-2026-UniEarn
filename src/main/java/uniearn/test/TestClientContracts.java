@@ -43,7 +43,7 @@ public class TestClientContracts extends Application {
             buttons.getChildren().addAll(btnNewContract, btnRefresh);
             header.getChildren().addAll(title, subtitle, buttons);
 
-            Label status = new Label("✅ Interface Client chargée avec succès!");
+            Label status = new Label(" Interface Client chargée avec succès!");
             status.setStyle("-fx-text-fill: #4CAF50; -fx-font-size: 12; -fx-font-weight: bold;");
 
             Label info = new Label("En attente de contrats...");
@@ -56,10 +56,10 @@ public class TestClientContracts extends Application {
             stage.setScene(scene);
             stage.show();
 
-            System.out.println("✅ TestClientContracts démarré avec succès!");
+            System.out.println(" TestClientContracts démarré avec succès!");
 
         } catch (Exception e) {
-            System.err.println("❌ Erreur chargement interface:");
+            System.err.println(" Erreur chargement interface:");
             e.printStackTrace();
         }
     }

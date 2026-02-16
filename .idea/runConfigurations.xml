@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RunConfigurationProducerService">
+    <option name="ignoredProducers">
+      <set>
+        <option value="com.android.tools.idea.compose.preview.runconfiguration.ComposePreviewRunConfigurationProducer" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="Application.FreelancerContractApp">
+    <configuration name="AdminContractApp" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="uniearn.example.AdminContractApp" />
+      <module name="uniearn_java" />
+      <option name="VM_PARAMETERS" value="--enable-preview -Dfile.encoding=UTF-8 -p $USER_HOME$/.m2/repository/org/openjfx/javafx-controls/17.0.12/javafx-controls-17.0.12.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-controls/17.0.12/javafx-controls-17.0.12-win.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-fxml/17.0.12/javafx-fxml-17.0.12.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-fxml/17.0.12/javafx-fxml-17.0.12-win.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-graphics/17.0.12/javafx-graphics-17.0.12.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-graphics/17.0.12/javafx-graphics-17.0.12-win.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-base/17.0.12/javafx-base-17.0.12.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-base/17.0.12/javafx-base-17.0.12-win.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-swing/17.0.12/javafx-swing-17.0.12.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-swing/17.0.12/javafx-swing-17.0.12-win.jar --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.swing,javafx.base --add-opens javafx.graphics/com.sun.javafx.tk=ALL-UNNAMED --add-opens javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED --add-opens javafx.base/com.sun.javafx.reflect=ALL-UNNAMED" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ClientContractApp" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="uniearn.example.ClientContractApp" />
+      <module name="uniearn_java" />
+      <option name="VM_PARAMETERS" value="--enable-preview -Dfile.encoding=UTF-8 -p $USER_HOME$/.m2/repository/org/openjfx/javafx-controls/17.0.12/javafx-controls-17.0.12.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-controls/17.0.12/javafx-controls-17.0.12-win.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-fxml/17.0.12/javafx-fxml-17.0.12.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-fxml/17.0.12/javafx-fxml-17.0.12-win.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-graphics/17.0.12/javafx-graphics-17.0.12.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-graphics/17.0.12/javafx-graphics-17.0.12-win.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-base/17.0.12/javafx-base-17.0.12.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-base/17.0.12/javafx-base-17.0.12-win.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-swing/17.0.12/javafx-swing-17.0.12.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-swing/17.0.12/javafx-swing-17.0.12-win.jar --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.swing,javafx.base --add-opens javafx.graphics/com.sun.javafx.tk=ALL-UNNAMED --add-opens javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED --add-opens javafx.base/com.sun.javafx.reflect=ALL-UNNAMED" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="FreelancerContractApp" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="uniearn.example.FreelancerContractApp" />
+      <module name="uniearn_java" />
+      <option name="VM_PARAMETERS" value="--enable-preview -Dfile.encoding=UTF-8 -p $USER_HOME$/.m2/repository/org/openjfx/javafx-controls/17.0.12/javafx-controls-17.0.12.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-controls/17.0.12/javafx-controls-17.0.12-win.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-fxml/17.0.12/javafx-fxml-17.0.12.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-fxml/17.0.12/javafx-fxml-17.0.12-win.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-graphics/17.0.12/javafx-graphics-17.0.12.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-graphics/17.0.12/javafx-graphics-17.0.12-win.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-base/17.0.12/javafx-base-17.0.12.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-base/17.0.12/javafx-base-17.0.12-win.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-swing/17.0.12/javafx-swing-17.0.12.jar:$USER_HOME$/.m2/repository/org/openjfx/javafx-swing/17.0.12/javafx-swing-17.0.12-win.jar --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.swing,javafx.base --add-opens javafx.graphics/com.sun.javafx.tk=ALL-UNNAMED --add-opens javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED --add-opens javafx.base/com.sun.javafx.reflect=ALL-UNNAMED" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.AdminContractApp" />
+      <item itemvalue="Application.ClientContractApp" />
+      <item itemvalue="Application.FreelancerContractApp" />
+    </list>
+  </component>
+</project>
+

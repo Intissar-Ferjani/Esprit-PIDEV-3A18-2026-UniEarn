@@ -61,7 +61,7 @@ public class TestContractSignature extends Application {
             HBox signatureBoxes = new HBox(20);
             signatureBoxes.getChildren().addAll(signClientBox, signFreelancerBox);
 
-            Label status = new Label("✅ Interface Signature chargée avec succès!");
+            Label status = new Label(" Interface Signature chargée avec succès!");
             status.setStyle("-fx-text-fill: #4CAF50; -fx-font-size: 12; -fx-font-weight: bold;");
 
             Button btnExportPDF = new Button("📄 Exporter en PDF");
