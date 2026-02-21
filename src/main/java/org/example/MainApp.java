@@ -10,7 +10,6 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // ✅ Load the homepage as entry point
         Parent root = FXMLLoader.load(getClass().getResource("/home/HomePage.fxml"));
 
         Scene scene = new Scene(root, 1100, 700);
