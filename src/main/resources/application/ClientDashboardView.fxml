@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="uniearn.controller.profile.client.ClientDashboardController"
+            prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #f4f7f6;">
+    
+    <left>
+        <VBox prefWidth="240" spacing="10" style="-fx-background-color: white; -fx-border-color: #e4ebe4; -fx-border-width: 0 1 0 0;">
+            <padding>
+                <Insets top="30" bottom="20"/>
+            </padding>
+            <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-padding: 0 20 20 20;">
+                <Circle radius="20" fill="#00457c"/>
+                <VBox>
+                    <Label text="Client" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #001e00;"/>
+                    <Label text="Hirer Panel" style="-fx-font-size: 12px; -fx-text-fill: #5e6d55;"/>
+                </VBox>
+            </HBox>
+            
+            <VBox spacing="5" style="-fx-padding: 0 20 20 20;">
+                <Label text="View as User ID:" style="-fx-font-size: 11px; -fx-text-fill: #5e6d55; -fx-font-weight: bold;"/>
+                <HBox spacing="5">
+                    <TextField fx:id="txtActiveProfileId" promptText="ID" style="-fx-background-color: #f4f7f6; -fx-border-color: #e4ebe4; -fx-background-radius: 4; -fx-border-radius: 4; -fx-font-size: 12px; -fx-pref-width: 60;"/>
+                    <Button onAction="#handleRefresh" text="Set" style="-fx-background-color: #00457c; -fx-text-fill: white; -fx-font-size: 11px; -fx-background-radius: 4; -fx-cursor: hand;"/>
+                </HBox>
+            </VBox>
+            
+            <Separator style="-fx-padding: 0 20 10 20;"/>
+            <VBox fx:id="navProposals" alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 12 25; -fx-cursor: hand;">
+                <Label fx:id="lblNavProposals" text="Received Proposals" style="-fx-font-size: 14px; -fx-text-fill: #5e6d55;"/>
+            </VBox>
+            <VBox fx:id="navReviews" alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 12 25; -fx-cursor: hand;">
+                <Label fx:id="lblNavReviews" text="Feedback Received" style="-fx-font-size: 14px; -fx-text-fill: #5e6d55;"/>
+            </VBox>
+        </VBox>
+    </left>
+    
+    <center>
+        <HBox spacing="1">
+            <VBox prefWidth="350" style="-fx-background-color: white; -fx-border-color: #e4ebe4; -fx-border-width: 0 1 0 0;">
+                <VBox spacing="15" style="-fx-padding: 20;">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Label text="Incoming" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #001e00;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button onAction="#handleAddReview" text="+" style="-fx-background-color: #00457c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 15; -fx-min-width: 30; -fx-min-height: 30; -fx-cursor: hand;"/>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="txtSearch" promptText="Search ID..." style="-fx-background-color: #f9f9f9; -fx-border-color: #e4ebe4; -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 8;" HBox.hgrow="ALWAYS"/>
+                        <Button onAction="#handleRefresh" text="↻" style="-fx-background-color: white; -fx-text-fill: #00457c; -fx-border-color: #e4ebe4; -fx-background-radius: 8; -fx-border-radius: 8; -fx-cursor: hand; -fx-min-width: 35; -fx-min-height: 35; -fx-font-size: 16px;"/>
+                    </HBox>
+                    <ComboBox fx:id="cmbFilter" maxWidth="Infinity" style="-fx-background-color: #f9f9f9; -fx-border-color: #e4ebe4; -fx-background-radius: 8;"/>
+                </VBox>
+                <ScrollPane fitToWidth="true" style="-fx-background: white; -fx-background-color: white;" VBox.vgrow="ALWAYS">
+                    <VBox fx:id="sidebarListContainer" spacing="0"/>
+                </ScrollPane>
+            </VBox>
+            
+            <StackPane fx:id="mainContent" HBox.hgrow="ALWAYS" style="-fx-padding: 30; -fx-background-color: #f9f9f9;">
+                <VBox fx:id="viewEmpty" alignment="CENTER" spacing="20">
+                    <Label text="Manage proposals and reviews" style="-fx-font-size: 16px; -fx-text-fill: #5e6d55;"/>
+                </VBox>
+                
+                <!-- PROPOSAL DETAILS -->
+                <VBox fx:id="viewPropDetails" spacing="25" visible="false">
+                    <HBox alignment="BOTTOM_LEFT" spacing="15">
+                        <Label fx:id="lblPropFreelancer" text="Freelancer #" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #001e00;"/>
+                        <Label fx:id="lblPropStatus" text="PENDING" style="-fx-padding: 4 10; -fx-background-color: #fff3e0; -fx-text-fill: #ffa000; -fx-background-radius: 4; -fx-font-weight: bold; -fx-font-size: 11px;"/>
+                    </HBox>
+                    <HBox spacing="40">
+                        <VBox spacing="5">
+                            <Label text="Proposed Budget (DT)" style="-fx-text-fill: #5e6d55; -fx-font-size: 12px;"/>
+                            <Label fx:id="lblPropBudget" text="0.00 DT" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+                        </VBox>
+                        <VBox spacing="5">
+                            <Label text="Timeline" style="-fx-text-fill: #5e6d55; -fx-font-size: 12px;"/>
+                            <Label fx:id="lblPropDuration" text="0 Days" style="-fx-font-weight: bold; -fx-font-size: 18px;"/>
+                        </VBox>
+                    </HBox>
+                    <Separator/>
+                    <VBox spacing="10">
+                        <Label text="Proposal Message" style="-fx-font-weight: bold;"/>
+                        <TextFlow style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-border-color: #e4ebe4; -fx-border-radius: 8;">
+                             <Text fx:id="txtDetailPropCoverLetter" style="-fx-fill: #001e00; -fx-font-size: 14px;"/>
+                        </TextFlow>
+                    </VBox>
+                    <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 20 0;">
+                        <Button onAction="#handleAccept" text="Accept Proposal" style="-fx-background-color: #00457c; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 25; -fx-cursor: hand;"/>
+                        <Button fx:id="btnGiveFeedback" onAction="#handleGiveFeedback" text="Give Feedback" style="-fx-background-color: #14a800; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 25; -fx-cursor: hand;" visible="false"/>
+                        <Button onAction="#handleReject" text="Reject" style="-fx-background-color: transparent; -fx-text-fill: #d93025; -fx-border-color: #d93025; -fx-border-radius: 8; -fx-padding: 10 25; -fx-cursor: hand;"/>
+                        <Button onAction="#handleDelete" text="Delete" style="-fx-background-color: transparent; -fx-text-fill: #5e6d55; -fx-border-color: #5e6d55; -fx-border-radius: 8; -fx-padding: 10 25; -fx-cursor: hand;"/>
+                    </HBox>
+                </VBox>
+                
+                <!-- EVALUATION DETAILS -->
+                <VBox fx:id="viewEvalDetails" spacing="25" visible="false">
+                    <VBox spacing="10">
+                        <Label fx:id="lblEvalRating" text="★★★★★" style="-fx-font-size: 32px; -fx-text-fill: #ffa000;"/>
+                        <Label fx:id="lblEvalTarget" text="To Freelancer" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+                    </VBox>
+                    <Separator/>
+                    <VBox spacing="10">
+                        <Label text="Your Feedback" style="-fx-font-weight: bold;"/>
+                        <TextFlow style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 8; -fx-border-color: #e4ebe4; -fx-border-radius: 8;">
+                             <Text fx:id="txtDetailEvalComment" style="-fx-fill: #001e00; -fx-font-size: 14px;"/>
+                        </TextFlow>
+                    </VBox>
+                    <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 20 0;">
+                        <Button onAction="#handleEdit" text="Edit Review" style="-fx-background-color: #14a800; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 25; -fx-cursor: hand;"/>
+                        <Button onAction="#handleDelete" text="Delete" style="-fx-background-color: transparent; -fx-text-fill: #d93025; -fx-border-color: #d93025; -fx-border-radius: 8; -fx-padding: 10 25; -fx-cursor: hand;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- EVALUATION FORM -->
+                <VBox fx:id="viewEvalForm" spacing="20" visible="false" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 12;">
+                   <Label text="Rate Freelancer" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+                   <GridPane hgap="20" vgap="15">
+                        <VBox spacing="5" GridPane.columnIndex="0">
+                            <Label text="Freelancer ID"/>
+                            <TextField fx:id="txtEvalTarget"/>
+                        </VBox>
+                        <VBox spacing="5" GridPane.columnIndex="1">
+                             <CheckBox fx:id="chkEvalIsProject" text="Link to project?"/>
+                             <TextField fx:id="txtEvalProjId" promptText="Project ID (if related)"/>
+                        </VBox>
+                   </GridPane>
+                   <VBox spacing="10">
+                        <Label text="Rating"/>
+                        <HBox spacing="15" alignment="CENTER_LEFT">
+                             <Slider fx:id="sliderEvalRating" min="1" max="5" value="5" majorTickUnit="1" minorTickCount="0" snapToTicks="true" prefWidth="300"/>
+                             <Label fx:id="lblEvalRatingValue" text="5 Stars" style="-fx-font-weight: bold; -fx-text-fill: #ffa000;"/>
+                        </HBox>
+                   </VBox>
+                   <VBox spacing="5">
+                        <Label text="Feedback Comment (Min 15 chars)"/>
+                        <TextArea fx:id="txtEvalComment" prefHeight="100" wrapText="true"/>
+                   </VBox>
+                   <HBox spacing="15" alignment="CENTER_RIGHT">
+                        <Button text="Cancel" onAction="#handleCancelForm" style="-fx-background-color: transparent; -fx-text-fill: #5e6d55; -fx-cursor: hand;"/>
+                        <Button onAction="#handleSubmitEval" text="Post Review" style="-fx-background-color: #14a800; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 25; -fx-cursor: hand;"/>
+                    </HBox>
+                </VBox>
+
+                <VBox fx:id="messageContainer" alignment="CENTER" fillWidth="false" managed="true" mouseTransparent="true" pickOnBounds="false" visible="false">
+                    <StackPane.alignment>BOTTOM_CENTER</StackPane.alignment>
+                    <Label fx:id="lblMessage" style="-fx-text-fill: white; -fx-padding: 10 20; -fx-font-weight: bold;"/>
+                </VBox>
+            </StackPane>
+        </HBox>
+    </center>
+</BorderPane>
