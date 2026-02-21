@@ -1,6 +1,6 @@
-package uniearn.interfaces;
+package uniearn.interfaces.application;
 
-import uniearn.model.entities.Application;
+import uniearn.model.entities.candidature.application.Application;
 import uniearn.model.enums.ApplicationStatus;
 
 import java.sql.SQLException;

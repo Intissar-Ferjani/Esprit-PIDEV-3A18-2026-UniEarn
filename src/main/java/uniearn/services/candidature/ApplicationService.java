@@ -1,8 +1,8 @@
-package uniearn.services;
+package uniearn.services.candidature;
 
 import uniearn.database.MyConnection;
-import uniearn.interfaces.IApplication;
-import uniearn.model.entities.Application;
+import uniearn.interfaces.application.IApplication;
+import uniearn.model.entities.candidature.application.Application;
 import uniearn.model.enums.ApplicationStatus;
 
 import java.sql.*;

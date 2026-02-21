@@ -1,4 +1,4 @@
-package uniearn.utils;
+package uniearn.utils.candidature;
 
 import uniearn.database.MyConnection;
 import java.sql.Connection;

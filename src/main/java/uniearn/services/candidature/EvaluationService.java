@@ -1,8 +1,8 @@
 
-package uniearn.services;
+package uniearn.services.candidature;
 
-import uniearn.interfaces.IEvaluation;
-import uniearn.model.entities.Evaluation;
+import uniearn.interfaces.evaluation.IEvaluation;
+import uniearn.model.entities.candidature.evaluation.Evaluation;
 import uniearn.model.enums.EvaluationType;
 import uniearn.database.MyConnection;
 

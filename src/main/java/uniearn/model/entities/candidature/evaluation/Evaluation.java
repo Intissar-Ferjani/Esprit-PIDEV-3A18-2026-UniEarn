@@ -1,4 +1,4 @@
-package uniearn.model.entities;
+package uniearn.model.entities.candidature.evaluation;
 
 import uniearn.model.enums.EvaluationType;
 import java.time.LocalDateTime;

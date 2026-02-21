@@ -1,4 +1,4 @@
-package uniearn.utils;
+package uniearn.utils.candidature;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

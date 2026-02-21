@@ -1,9 +1,8 @@
-package uniearn.utils;
+package uniearn.utils.candidature;
 
 import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import uniearn.model.entities.Application;
-import java.util.Collections;
+import uniearn.model.entities.candidature.application.Application;
+
 import java.util.HashMap;
 import java.util.Map;
 

@@ -1,8 +1,8 @@
-package uniearn.controller;
+package uniearn.controller.profile.freelancer;
 
-import uniearn.model.entities.Evaluation;
+import uniearn.model.entities.candidature.evaluation.Evaluation;
 import uniearn.model.enums.EvaluationType;
-import uniearn.services.EvaluationService;
+import uniearn.services.candidature.EvaluationService;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

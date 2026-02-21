@@ -1,4 +1,4 @@
-package uniearn.model.entities;
+package uniearn.model.entities.candidature.application;
 
 import uniearn.model.enums.ApplicationStatus;
 import java.time.LocalDateTime;

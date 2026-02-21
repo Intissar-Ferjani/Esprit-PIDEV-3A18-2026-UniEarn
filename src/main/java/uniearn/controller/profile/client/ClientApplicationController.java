@@ -1,8 +1,8 @@
-package uniearn.controller;
+package uniearn.controller.profile.client;
 
-import uniearn.model.entities.Application;
+import uniearn.model.entities.candidature.application.Application;
 import uniearn.model.enums.ApplicationStatus;
-import uniearn.services.ApplicationService;
+import uniearn.services.candidature.ApplicationService;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

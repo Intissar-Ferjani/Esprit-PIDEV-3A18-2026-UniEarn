@@ -1,4 +1,4 @@
-package uniearn.controller;
+package uniearn.controller.profile.freelancer;
 
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
@@ -12,12 +12,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import uniearn.model.entities.Application;
-import uniearn.model.entities.Evaluation;
+import uniearn.model.entities.candidature.application.Application;
+import uniearn.model.entities.candidature.evaluation.Evaluation;
 import uniearn.model.enums.ApplicationStatus;
 import uniearn.model.enums.EvaluationType;
-import uniearn.services.ApplicationService;
-import uniearn.services.EvaluationService;
+import uniearn.services.candidature.ApplicationService;
+import uniearn.services.candidature.EvaluationService;
+import uniearn.utils.candidature.ApiManager;
+import uniearn.utils.candidature.PdfExporter;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -91,7 +93,7 @@ public class FreelancerDashboardController {
     // Services
     private final ApplicationService applicationService = new ApplicationService();
     private final EvaluationService evaluationService = new EvaluationService();
-    private final uniearn.utils.ApiManager apiManager = new uniearn.utils.ApiManager();
+    private final ApiManager apiManager = new ApiManager();
 
     @FXML
     private Label lblAppBudgetUSD;
@@ -331,7 +333,7 @@ public class FreelancerDashboardController {
         try {
             String fileName = "Application_" + currentApplication.getIdApplication() + ".pdf";
             String path = System.getProperty("user.home") + "/Downloads/" + fileName;
-            uniearn.utils.PdfExporter.exportApplication(currentApplication, path);
+            PdfExporter.exportApplication(currentApplication, path);
             showToast("PDF saved to Downloads folder", false);
         } catch (Exception e) {
             showToast("PDF Export failed: " + e.getMessage(), true);

@@ -7,7 +7,7 @@
 <?import javafx.scene.text.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" 
-            fx:controller="uniearn.controller.ClientDashboardController"
+            fx:controller="uniearn.controller.profile.client.ClientDashboardController"
             prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color: #f4f7f6;">
     
     <left>

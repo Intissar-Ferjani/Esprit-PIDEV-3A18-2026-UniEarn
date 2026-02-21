@@ -1,6 +1,6 @@
-package uniearn.interfaces;
+package uniearn.interfaces.evaluation;
 
-import uniearn.model.entities.Evaluation;
+import uniearn.model.entities.candidature.evaluation.Evaluation;
 
 import java.sql.SQLException;
 import java.util.List;

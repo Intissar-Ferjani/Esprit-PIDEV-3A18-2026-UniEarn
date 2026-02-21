@@ -1,4 +1,4 @@
-package uniearn.controller;
+package uniearn.controller.profile.client;
 
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
@@ -12,12 +12,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
-import uniearn.model.entities.Application;
-import uniearn.model.entities.Evaluation;
+import uniearn.model.entities.candidature.application.Application;
+import uniearn.model.entities.candidature.evaluation.Evaluation;
 import uniearn.model.enums.ApplicationStatus;
 import uniearn.model.enums.EvaluationType;
-import uniearn.services.ApplicationService;
-import uniearn.services.EvaluationService;
+import uniearn.services.candidature.ApplicationService;
+import uniearn.services.candidature.EvaluationService;
 
 import java.util.List;
 import java.util.stream.Collectors;
