@@ -6,23 +6,13 @@ import java.sql.SQLException;
 
 public class MyConnection {
 
-    private String url="jdbc:mysql://localhost:3306/uniearn_db";
-
-    private String login="root";
-
-    private String pwd="";
-
+    private String url = "jdbc:mysql://localhost:3306/uniearn_db";
+    private String login = "root";
+    private String pwd = "";
     private Connection cnx;
     private static MyConnection instance;
 
-    public Connection getCnx() {
-        if (cnx == null) {
-            new MyConnection();
-        }
-        return cnx;
-    }
-
-    public MyConnection() {
+    private MyConnection() {
         try {
             cnx = DriverManager.getConnection(url, login, pwd);
             System.out.println("Connected to database successfully!");
@@ -31,8 +21,12 @@ public class MyConnection {
         }
     }
 
-    public static MyConnection getInstance(){
-        if(instance == null){
+    public Connection getCnx() {
+        return cnx;
+    }
+
+    public static MyConnection getInstance() {
+        if (instance == null) {
             instance = new MyConnection();
         }
         return instance;
