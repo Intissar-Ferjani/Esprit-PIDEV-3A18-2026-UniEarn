@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="650.0" prefWidth="800.0" styleClass="root" stylesheets="@../auth.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.auth.user.LoginController">
+
+    <!-- Left Panel - Branding -->
+    <VBox alignment="CENTER" prefHeight="650.0" prefWidth="350.0" styleClass="left-panel" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <children>
+            <Label styleClass="brand-title" text="UniEarn">
+                <font>
+                    <Font name="System Bold" size="48.0" />
+                </font>
+            </Label>
+            <Label styleClass="brand-subtitle" text="Welcome back!">
+                <font>
+                    <Font size="18.0" />
+                </font>
+                <VBox.margin>
+                    <Insets top="10.0" />
+                </VBox.margin>
+            </Label>
+        </children>
+    </VBox>
+
+    <!-- Right Panel - Login Form -->
+    <VBox alignment="CENTER" layoutX="350.0" prefHeight="650.0" prefWidth="450.0" styleClass="form-panel" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <padding>
+            <Insets bottom="50.0" left="60.0" right="60.0" top="50.0" />
+        </padding>
+        <children>
+            <ImageView fitHeight="110.0" fitWidth="91.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                    <Image url="@../../images/logoUniEarn.png" />
+                </image>
+                <VBox.margin>
+                    <Insets bottom="10.0" />
+                </VBox.margin>
+            </ImageView>
+
+            <!-- Form Title -->
+            <Label styleClass="form-title" text="Welcome Back">
+                <font>
+                    <Font name="System Bold" size="32.0" />
+                </font>
+                <VBox.margin>
+                    <Insets bottom="10.0" />
+                </VBox.margin>
+            </Label>
+
+            <Label styleClass="form-subtitle" text="Log in to your account">
+                <font>
+                    <Font size="14.0" />
+                </font>
+                <VBox.margin>
+                    <Insets bottom="40.0" />
+                </VBox.margin>
+            </Label>
+
+            <!-- Email Field -->
+            <VBox spacing="8.0">
+                <children>
+                    <Label styleClass="field-label" text="Email Address">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="emailField" promptText="Enter your email" styleClass="custom-field">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </TextField>
+                    <Label fx:id="emailError" styleClass="error-label" visible="false" />
+                </children>
+                <VBox.margin>
+                    <Insets bottom="20.0" />
+                </VBox.margin>
+            </VBox>
+
+            <!-- Password Field -->
+            <VBox spacing="8.0">
+                <children>
+                    <HBox alignment="CENTER_LEFT">
+                        <children>
+                            <Label prefHeight="19.0" prefWidth="59.0" styleClass="field-label" text="Password" HBox.hgrow="ALWAYS">
+                                <font>
+                                    <Font name="System Bold" size="13.0" />
+                                </font>
+                            </Label>
+                            <Hyperlink fx:id="forgotPasswordLink" onAction="#handleForgotPassword" styleClass="login-link" text="Forgot?">
+                                <font>
+                                    <Font size="12.0" />
+                                </font>
+                            </Hyperlink>
+                        </children>
+                    </HBox>
+                    <PasswordField fx:id="passwordField" promptText="Enter your password" styleClass="custom-field">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </PasswordField>
+                    <Label fx:id="passwordError" styleClass="error-label" visible="false" />
+                </children>
+                <VBox.margin>
+                    <Insets bottom="30.0" />
+                </VBox.margin>
+            </VBox>
+
+            <!-- Login Button -->
+            <Button fx:id="loginButton" maxWidth="Infinity" onAction="#handleLogin" prefHeight="45.0" styleClass="signup-button" text="Log In">
+                <font>
+                    <Font name="System Bold" size="15.0" />
+                </font>
+                <VBox.margin>
+                    <Insets bottom="20.0" />
+                </VBox.margin>
+            </Button>
+
+            <!-- Signup Link -->
+            <HBox alignment="CENTER" spacing="5.0">
+                <children>
+                    <Label styleClass="login-label" text="Don't have an account?">
+                        <font>
+                            <Font size="13.0" />
+                        </font>
+                    </Label>
+                    <Hyperlink fx:id="signupLink" onAction="#handleSignupRedirect" styleClass="login-link" text="Sign Up">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Hyperlink>
+                </children>
+            </HBox>
+
+        </children>
+    </VBox>
+
+</AnchorPane>

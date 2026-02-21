@@ -1,9 +1,8 @@
 package org.example;
 
-import uniearn.database.MyConnection;
-import uniearn.model.entities.User;
+import uniearn.model.entities.users.User;
 import uniearn.model.enums.UserRole;
-import uniearn.services.UserService;
+import uniearn.services.users.UserService;
 
 import java.sql.SQLException;
 
@@ -12,8 +11,8 @@ import java.sql.SQLException;
 public class Main {
     public static void main(String[] args) throws SQLException {
         //MyConnection mc = new MyConnection();
-        User u1 = new User("John Doe","joe@email.com","123", UserRole.FREELANCER);
-        User u2 = new User("John Doe2","joe2@email.com","123", UserRole.CLIENT);
+        User u1 = new User("John Doe","joe@email.com","123", UserRole.FREELANCER, null);
+        User u2 = new User("John Doe2","joe2@email.com","123", UserRole.CLIENT, null);
 
         UserService us = new UserService();
 //        us.addUser(u2);
@@ -25,7 +24,7 @@ public class Main {
 
         //us.deleteUser(4);
 
-        User updatedUser = new User("John Updated", "updated@email.com", "456", UserRole.CLIENT);
+        User updatedUser = new User("John Updated", "updated@email.com", "456", UserRole.CLIENT, null);
 //        us.updateUser(3, updatedUser);
 
     }

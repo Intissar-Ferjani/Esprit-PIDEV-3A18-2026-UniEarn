@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="850.0" styleClass="root" stylesheets="@../../auth.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.auth.freelancer.FreelancerPortfolioController">
+
+    <!-- Left Panel - Branding -->
+    <VBox alignment="CENTER" prefHeight="600.0" prefWidth="300.0" styleClass="left-panel" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <children>
+            <Label styleClass="brand-title" text="UniEarn">
+                <font>
+                    <Font name="System Bold" size="48.0" />
+                </font>
+            </Label>
+            <Label styleClass="brand-subtitle" text="Almost done!">
+                <font>
+                    <Font size="18.0" />
+                </font>
+                <VBox.margin>
+                    <Insets top="10.0" />
+                </VBox.margin>
+            </Label>
+            <Label styleClass="brand-subtitle" text="Add your best work">
+                <font>
+                    <Font size="14.0" />
+                </font>
+                <VBox.margin>
+                    <Insets top="5.0" />
+                </VBox.margin>
+            </Label>
+        </children>
+    </VBox>
+
+    <!-- Right Panel - Portfolio Form -->
+    <VBox alignment="TOP_CENTER" layoutX="300.0" prefHeight="600.0" prefWidth="550.0" styleClass="form-panel" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <padding>
+            <Insets bottom="30.0" left="50.0" right="50.0" top="30.0" />
+        </padding>
+        <children>
+
+            <!-- Progress Indicator -->
+            <HBox alignment="CENTER" spacing="6.0">
+                <children>
+                    <VBox alignment="CENTER" spacing="5.0">
+                        <children>
+                            <Label styleClass="progress-step-completed" text="1">
+                                <font>
+                                    <Font name="System Bold" size="12.0" />
+                                </font>
+                            </Label>
+                            <Label text="Account" styleClass="progress-label-completed">
+                                <font>
+                                    <Font size="9.0" />
+                                </font>
+                            </Label>
+                        </children>
+                    </VBox>
+                    <Label text="━" styleClass="progress-line-completed">
+                        <font>
+                            <Font name="System Bold" size="12.0" />
+                        </font>
+                    </Label>
+                    <VBox alignment="CENTER" spacing="5.0">
+                        <children>
+                            <Label styleClass="progress-step-completed" text="2">
+                                <font>
+                                    <Font name="System Bold" size="12.0" />
+                                </font>
+                            </Label>
+                            <Label text="Profile" styleClass="progress-label-completed">
+                                <font>
+                                    <Font size="9.0" />
+                                </font>
+                            </Label>
+                        </children>
+                    </VBox>
+                    <Label text="━" styleClass="progress-line-completed">
+                        <font>
+                            <Font name="System Bold" size="12.0" />
+                        </font>
+                    </Label>
+                    <VBox alignment="CENTER" spacing="5.0">
+                        <children>
+                            <Label styleClass="progress-step-completed" text="3">
+                                <font>
+                                    <Font name="System Bold" size="12.0" />
+                                </font>
+                            </Label>
+                            <Label text="Verify" styleClass="progress-label-completed">
+                                <font>
+                                    <Font size="9.0" />
+                                </font>
+                            </Label>
+                        </children>
+                    </VBox>
+                    <Label text="━" styleClass="progress-line-completed">
+                        <font>
+                            <Font name="System Bold" size="12.0" />
+                        </font>
+                    </Label>
+                    <VBox alignment="CENTER" spacing="5.0">
+                        <children>
+                            <Label styleClass="progress-step-active" text="4">
+                                <font>
+                                    <Font name="System Bold" size="12.0" />
+                                </font>
+                            </Label>
+                            <Label text="Portfolio" styleClass="progress-label-active">
+                                <font>
+                                    <Font size="9.0" />
+                                </font>
+                            </Label>
+                        </children>
+                    </VBox>
+                </children>
+                <VBox.margin>
+                    <Insets bottom="15.0" />
+                </VBox.margin>
+            </HBox>
+
+            <!-- ScrollPane for form content -->
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="form-scroll" VBox.vgrow="ALWAYS">
+                <content>
+                    <VBox spacing="12.0">
+                        <children>
+
+                            <!-- Form Title -->
+                            <Label text="Create Portfolio" styleClass="form-title">
+                                <font>
+                                    <Font name="System Bold" size="26.0" />
+                                </font>
+                            </Label>
+
+                            <Label text="Showcase your work (Optional)" styleClass="form-subtitle">
+                                <font>
+                                    <Font size="12.0" />
+                                </font>
+                                <VBox.margin>
+                                    <Insets bottom="10.0" />
+                                </VBox.margin>
+                            </Label>
+
+                            <!-- Portfolio Title -->
+                            <VBox spacing="6.0">
+                                <children>
+                                    <Label text="Portfolio Title" styleClass="field-label">
+                                        <font>
+                                            <Font name="System Bold" size="12.0" />
+                                        </font>
+                                    </Label>
+                                    <TextField fx:id="portfolioTitleField" promptText="e.g., My Web Development Projects" styleClass="custom-field">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </TextField>
+                                    <Label fx:id="portfolioTitleError" styleClass="error-label" visible="false" />
+                                </children>
+                            </VBox>
+
+                            <!-- Portfolio Description -->
+                            <VBox spacing="6.0">
+                                <children>
+                                    <Label text="Portfolio Description" styleClass="field-label">
+                                        <font>
+                                            <Font name="System Bold" size="12.0" />
+                                        </font>
+                                    </Label>
+                                    <TextArea fx:id="portfolioDescField" promptText="Describe your portfolio..." styleClass="custom-field" prefHeight="70.0" prefRowCount="3" wrapText="true">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </TextArea>
+                                    <Label fx:id="portfolioDescError" styleClass="error-label" visible="false" />
+                                </children>
+                            </VBox>
+
+                            <!-- Divider -->
+                            <Separator />
+
+                            <!-- Portfolio Item Section -->
+                            <Label text="Add a Project (Optional)" styleClass="field-label">
+                                <font>
+                                    <Font name="System Bold" size="13.0" />
+                                </font>
+                                <VBox.margin>
+                                    <Insets top="5.0" />
+                                </VBox.margin>
+                            </Label>
+
+                            <!-- Project Title -->
+                            <VBox spacing="6.0">
+                                <children>
+                                    <Label text="Project Title" styleClass="field-label">
+                                        <font>
+                                            <Font name="System Bold" size="12.0" />
+                                        </font>
+                                    </Label>
+                                    <TextField fx:id="projectTitleField" promptText="e.g., E-commerce Website" styleClass="custom-field">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </TextField>
+                                </children>
+                            </VBox>
+
+                            <!-- Project Description -->
+                            <VBox spacing="6.0">
+                                <children>
+                                    <Label text="Project Description" styleClass="field-label">
+                                        <font>
+                                            <Font name="System Bold" size="12.0" />
+                                        </font>
+                                    </Label>
+                                    <TextArea fx:id="projectDescField" promptText="What did you build?" styleClass="custom-field" prefHeight="70.0" prefRowCount="3" wrapText="true">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </TextArea>
+                                </children>
+                            </VBox>
+
+                            <!-- Technologies Used -->
+                            <VBox spacing="6.0">
+                                <children>
+                                    <Label text="Technologies Used" styleClass="field-label">
+                                        <font>
+                                            <Font name="System Bold" size="12.0" />
+                                        </font>
+                                    </Label>
+                                    <TextField fx:id="technologiesField" promptText="e.g., React, Node.js, MongoDB (comma-separated)" styleClass="custom-field">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </TextField>
+                                    <Label styleClass="helper-text" text="Separate technologies with commas">
+                                        <font>
+                                            <Font size="11.0" />
+                                        </font>
+                                    </Label>
+                                </children>
+                            </VBox>
+
+                            <!-- Project URL -->
+                            <VBox spacing="6.0">
+                                <children>
+                                    <Label text="Project URL (Optional)" styleClass="field-label">
+                                        <font>
+                                            <Font name="System Bold" size="12.0" />
+                                        </font>
+                                    </Label>
+                                    <TextField fx:id="projectUrlField" promptText="https://..." styleClass="custom-field">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </TextField>
+                                </children>
+                            </VBox>
+
+                            <!-- GitHub URL -->
+                            <VBox spacing="6.0">
+                                <children>
+                                    <Label text="GitHub URL (Optional)" styleClass="field-label">
+                                        <font>
+                                            <Font name="System Bold" size="12.0" />
+                                        </font>
+                                    </Label>
+                                    <TextField fx:id="githubUrlField" promptText="https://github.com/..." styleClass="custom-field">
+                                        <font>
+                                            <Font size="13.0" />
+                                        </font>
+                                    </TextField>
+                                </children>
+                            </VBox>
+
+                        </children>
+                    </VBox>
+                </content>
+            </ScrollPane>
+
+            <!-- Action Buttons -->
+            <HBox spacing="10.0">
+                <children>
+                    <Button fx:id="backButton" onAction="#handleBack" prefHeight="38.0" prefWidth="110.0" styleClass="back-button" text="Back">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Button>
+                    <Button fx:id="skipButton" onAction="#handleSkip" prefHeight="38.0" prefWidth="110.0" styleClass="skip-button" text="Skip">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Button>
+                    <Button fx:id="completeButton" onAction="#handleComplete" prefHeight="38.0" prefWidth="160.0" styleClass="signup-button" text="Complete">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Button>
+                </children>
+                <VBox.margin>
+                    <Insets top="12.0" />
+                </VBox.margin>
+            </HBox>
+
+        </children>
+    </VBox>
+
+</AnchorPane>

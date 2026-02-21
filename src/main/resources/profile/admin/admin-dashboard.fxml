@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root" stylesheets="@../../profile/profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.admin.AdminDashboardController">
+
+    <!-- Top Navigation Bar -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="70.0" spacing="20.0" styleClass="top-bar">
+            <padding>
+                <Insets left="30.0" right="30.0" />
+            </padding>
+            <children>
+
+                <ImageView fitHeight="280.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../images/UniEarn_full_logo.png" />
+                    </image>
+                </ImageView>
+                <Region HBox.hgrow="ALWAYS" />
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <Label fx:id="adminNameLabel" styleClass="profile-email-large" text="Admin Name">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+            </children>
+        </HBox>
+    </top>
+
+    <!-- Left Sidebar Navigation -->
+    <left>
+        <VBox prefWidth="250.0" styleClass="sidebar">
+            <children>
+                <!-- Navigation Menu -->
+                <VBox spacing="5.0" VBox.vgrow="ALWAYS">
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="20.0" />
+                    </padding>
+                    <children>
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button, active" text="🏠 Dashboard">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button onAction="#handleManageUsers" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="👥 Manage Users">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📋 Manage Projects">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📝 Manage Contracts">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📊 Reports">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Region VBox.vgrow="ALWAYS" />
+
+                        <Separator />
+
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="⚙ Settings">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button onAction="#handleLogout" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button, logout" text="🚪 Logout">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </left>
+
+    <!-- Main Content -->
+    <center>
+        <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="content-scroll">
+            <content>
+                <VBox spacing="25.0" styleClass="main-content">
+                    <padding>
+                        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+                    </padding>
+                    <children>
+
+                        <!-- Welcome Header -->
+                        <VBox spacing="10.0">
+                            <children>
+                                <Label styleClass="section-title" text="🎯 Admin Dashboard">
+                                    <font>
+                                        <Font name="System Bold" size="32.0" />
+                                    </font>
+                                </Label>
+                                <Label styleClass="profile-email-large" text="Welcome back! Here's what's happening on your platform.">
+                                    <font>
+                                        <Font size="15.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+
+                        <!-- Statistics Cards -->
+                        <GridPane hgap="20.0" vgap="20.0">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50.0" />
+                                <ColumnConstraints percentWidth="50.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints />
+                                <RowConstraints />
+                            </rowConstraints>
+
+                            <!-- Total Users Card -->
+                            <VBox spacing="12.0" styleClass="stat-card, stat-blue" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                <padding>
+                                    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                                </padding>
+                                <children>
+                                    <Label styleClass="stat-label" text="👥 Total Users">
+                                        <font>
+                                            <Font size="14.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="totalUsersLabel" styleClass="stat-value" text="0">
+                                        <font>
+                                            <Font name="System Bold" size="36.0" />
+                                        </font>
+                                    </Label>
+                                    <HBox spacing="15.0">
+                                        <children>
+                                            <VBox>
+                                                <children>
+                                                    <Label fx:id="clientsLabel" styleClass="stat-label" text="0 Clients">
+                                                        <font>
+                                                            <Font size="12.0" />
+                                                        </font>
+                                                    </Label>
+                                                </children>
+                                            </VBox>
+                                            <VBox>
+                                                <children>
+                                                    <Label fx:id="freelancersLabel" styleClass="stat-label" text="0 Freelancers">
+                                                        <font>
+                                                            <Font size="12.0" />
+                                                        </font>
+                                                    </Label>
+                                                </children>
+                                            </VBox>
+                                        </children>
+                                    </HBox>
+                                </children>
+                            </VBox>
+
+                            <!-- Active Users Card -->
+                            <VBox spacing="12.0" styleClass="stat-card, stat-green" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                                <padding>
+                                    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                                </padding>
+                                <children>
+                                    <Label styleClass="stat-label" text="✅ Active Users">
+                                        <font>
+                                            <Font size="14.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="activeUsersLabel" styleClass="stat-value" text="0">
+                                        <font>
+                                            <Font name="System Bold" size="36.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="activePercentLabel" styleClass="stat-label" text="0% of total">
+                                        <font>
+                                            <Font size="12.0" />
+                                        </font>
+                                    </Label>
+                                </children>
+                            </VBox>
+
+                            <!-- Total Projects Card -->
+                            <VBox spacing="12.0" styleClass="stat-card, stat-yellow" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                <padding>
+                                    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                                </padding>
+                                <children>
+                                    <Label styleClass="stat-label" text="📋 Total Projects">
+                                        <font>
+                                            <Font size="14.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="totalProjectsLabel" styleClass="stat-value" text="Coming Soon">
+                                        <font>
+                                            <Font name="System Bold" size="28.0" />
+                                        </font>
+                                    </Label>
+                                </children>
+                            </VBox>
+
+                            <!-- Total Revenue Card -->
+                            <VBox spacing="12.0" styleClass="stat-card, stat-green" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <padding>
+                                    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                                </padding>
+                                <children>
+                                    <Label styleClass="stat-label" text="💰 Platform Revenue">
+                                        <font>
+                                            <Font size="14.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="totalRevenueLabel" styleClass="stat-value" text="Coming Soon">
+                                        <font>
+                                            <Font name="System Bold" size="28.0" />
+                                        </font>
+                                    </Label>
+                                </children>
+                            </VBox>
+                        </GridPane>
+
+                        <!-- Quick Actions -->
+                        <VBox spacing="15.0" styleClass="content-section">
+                            <padding>
+                                <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
+                            </padding>
+                            <children>
+                                <Label styleClass="section-title" text="⚡ Quick Actions">
+                                    <font>
+                                        <Font name="System Bold" size="20.0" />
+                                    </font>
+                                </Label>
+
+                                <GridPane hgap="15.0" vgap="15.0">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="33.33" />
+                                        <ColumnConstraints percentWidth="33.33" />
+                                        <ColumnConstraints percentWidth="33.33" />
+                                    </columnConstraints>
+
+                                    <!-- Manage Users Button -->
+                                    <Button onAction="#handleManageUsers" prefHeight="80.0" prefWidth="250.0" styleClass="btn-primary" text="👥 Manage Users" GridPane.columnIndex="0">
+                                        <font>
+                                            <Font size="15.0" />
+                                        </font>
+                                    </Button>
+
+                                    <!-- View Reports Button -->
+                                    <Button prefHeight="80.0" prefWidth="250.0" styleClass="btn-primary" text="📊 View Reports" GridPane.columnIndex="1">
+                                        <font>
+                                            <Font size="15.0" />
+                                        </font>
+                                    </Button>
+
+                                    <!-- Settings Button -->
+                                    <Button prefHeight="80.0" prefWidth="250.0" styleClass="btn-primary" text="⚙ Settings" GridPane.columnIndex="2">
+                                        <font>
+                                            <Font size="15.0" />
+                                        </font>
+                                    </Button>
+                           <rowConstraints>
+                              <RowConstraints />
+                           </rowConstraints>
+                                </GridPane>
+                            </children>
+                        </VBox>
+
+                        <!-- Recent Activity Placeholder -->
+                        <VBox spacing="15.0" styleClass="content-section">
+                            <padding>
+                                <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
+                            </padding>
+                            <children>
+                                <Label styleClass="section-title" text="📌 Recent Activity">
+                                    <font>
+                                        <Font name="System Bold" size="20.0" />
+                                    </font>
+                                </Label>
+                                <Label styleClass="profile-tag" text="Activity tracking coming soon...">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
