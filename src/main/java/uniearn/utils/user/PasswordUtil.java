@@ -1,4 +1,4 @@
-package uniearn.utils;
+package uniearn.utils.user;
 
 import org.mindrot.jbcrypt.BCrypt;
 

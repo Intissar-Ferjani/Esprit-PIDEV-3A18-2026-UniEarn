@@ -12,7 +12,7 @@ import uniearn.controller.auth.freelancer.FreelancerSignupController;
 import uniearn.model.entities.users.User;
 import uniearn.model.enums.UserRole;
 import uniearn.services.users.UserService;
-import uniearn.utils.PasswordUtil;  // ✅ Import for password generation
+import uniearn.utils.user.PasswordUtil;  // ✅ Import for password generation
 
 import java.io.IOException;
 import java.sql.SQLException;

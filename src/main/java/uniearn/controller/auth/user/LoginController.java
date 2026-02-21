@@ -15,7 +15,7 @@ import uniearn.services.users.UserService;
 import uniearn.services.users.client.ClientService;
 import uniearn.services.users.freelancer.FreelancerService;
 import uniearn.database.SessionManager;
-import uniearn.utils.PasswordUtil;
+import uniearn.utils.user.PasswordUtil;
 
 import java.io.IOException;
 import java.util.regex.Pattern;

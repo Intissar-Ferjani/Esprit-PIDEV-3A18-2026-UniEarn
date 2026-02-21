@@ -4,7 +4,7 @@ import uniearn.database.MyConnection;
 import uniearn.interfaces.users.IUser;
 import uniearn.model.entities.users.User;
 import uniearn.model.enums.UserRole;
-import uniearn.utils.PasswordUtil;
+import uniearn.utils.user.PasswordUtil;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

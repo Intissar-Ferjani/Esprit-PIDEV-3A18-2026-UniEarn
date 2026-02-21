@@ -18,7 +18,7 @@ import uniearn.model.entities.users.client.Client;
 import uniearn.services.users.client.ClientService;
 import uniearn.services.users.UserService;
 import uniearn.database.SessionManager;
-import uniearn.utils.PasswordUtil;
+import uniearn.utils.user.PasswordUtil;
 
 import java.io.File;
 import java.io.IOException;
