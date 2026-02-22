@@ -19,11 +19,14 @@ public class Freelancer extends User {
     private Integer idTask;
     private String bio;
     private String studentCardPath;
+    private String cvPath;
 
     public Freelancer() {}
 
     // without idTask
-    public Freelancer(String name, String email, String password, UserRole role, String profilePicturePath, double pricePerHour, double amount, double rating, String[] skills, VerifStatus verificationStatus, Status status, String bio, String studentCardPath) {
+
+
+    public Freelancer(String name, String email, String password, UserRole role, String profilePicturePath, double pricePerHour, double amount, double rating, String[] skills, VerifStatus verificationStatus, Status status, String bio, String studentCardPath, String cvPath) {
         super(name, email, password, role, profilePicturePath);
         this.pricePerHour = pricePerHour;
         this.amount = amount;
@@ -33,9 +36,10 @@ public class Freelancer extends User {
         this.status = status;
         this.bio = bio;
         this.studentCardPath = studentCardPath;
+        this.cvPath = cvPath;
     }
 
-    public Freelancer(String name, String email, String password, UserRole role, String profilePicturePath, double pricePerHour, double amount, double rating, String[] skills, VerifStatus verificationStatus, Status status, Integer idTask, String bio, String studentCardPath) {
+    public Freelancer(String name, String email, String password, UserRole role, String profilePicturePath, double pricePerHour, double amount, double rating, String[] skills, VerifStatus verificationStatus, Status status, Integer idTask, String bio, String studentCardPath, String cvPath) {
         super(name, email, password, role, profilePicturePath);
         this.pricePerHour = pricePerHour;
         this.amount = amount;
@@ -46,6 +50,7 @@ public class Freelancer extends User {
         this.idTask = idTask;
         this.bio = bio;
         this.studentCardPath = studentCardPath;
+        this.cvPath = cvPath;
     }
 
     public int getIdFreelancer() {
@@ -128,6 +133,14 @@ public class Freelancer extends User {
         this.studentCardPath = studentCardPath;
     }
 
+    public String getCvPath() {
+        return cvPath;
+    }
+
+    public void setCvPath(String cvPath) {
+        this.cvPath = cvPath;
+    }
+
     @Override
     public String toString() {
         return "Freelancer{" +
@@ -141,7 +154,7 @@ public class Freelancer extends User {
                 ", idTask=" + idTask +
                 ", bio='" + bio + '\'' +
                 ", studentCardPath='" + studentCardPath + '\'' +
+                ", cvPath='" + cvPath + '\'' +
                 '}';
     }
-
 }

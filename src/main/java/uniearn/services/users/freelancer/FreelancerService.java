@@ -24,44 +24,51 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
 //  Step 2
     @Override
     public void addFreelancer(Freelancer freelancer) throws SQLException {
-        int generatedUserId = super.addUser(freelancer);
-        freelancer.setIdUser(generatedUserId);
+    int generatedUserId = super.addUser(freelancer);
+    freelancer.setIdUser(generatedUserId);
 
-        String sql = "INSERT INTO freelancer " +
-                "(idUser, pricePerHour, amount, rating, skills, bio, studentCardPath, verificationStatus, status, idTask) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO freelancer " +
+            "(idUser, pricePerHour, amount, rating, skills, bio, studentCardPath, cvPath, verificationStatus, status, idTask) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+    PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-        ps.setInt(1, generatedUserId);
-        ps.setDouble(2, freelancer.getPricePerHour());
-        ps.setDouble(3, freelancer.getAmount());
-        ps.setDouble(4, freelancer.getRating());
-        ps.setString(5, String.join(",", freelancer.getSkills()));
-        ps.setString(6, freelancer.getBio());
+    ps.setInt(1, generatedUserId);
+    ps.setDouble(2, freelancer.getPricePerHour());
+    ps.setDouble(3, freelancer.getAmount());
+    ps.setDouble(4, freelancer.getRating());
+    ps.setString(5, String.join(",", freelancer.getSkills()));
+    ps.setString(6, freelancer.getBio());
 
-        ps.setNull(7, java.sql.Types.VARCHAR);
+    // studentCardPath — always null at this step, set in Step 3
+    ps.setNull(7, java.sql.Types.VARCHAR);
 
-        ps.setString(8, freelancer.getVerificationStatus().name());
-        ps.setString(9, freelancer.getStatus().name().toLowerCase());
-
-        if (freelancer.getIdTask() != null) {
-            ps.setInt(10, freelancer.getIdTask());
-        } else {
-            ps.setNull(10, java.sql.Types.INTEGER);
-        }
-
-        ps.executeUpdate();
-
-        ResultSet rs = ps.getGeneratedKeys();
-        if (rs.next()) {
-            int generatedFreelancerId = rs.getInt(1);
-            freelancer.setIdFreelancer(generatedFreelancerId);
-            System.out.println("✓ Freelancer profile created with idFreelancer: " + generatedFreelancerId);
-        }
-
-        System.out.println("✓ Freelancer profile created successfully (Step 2)");
+    if (freelancer.getCvPath() != null) {
+        ps.setString(8, freelancer.getCvPath());
+    } else {
+        ps.setNull(8, java.sql.Types.VARCHAR);
     }
+
+    ps.setString(9, freelancer.getVerificationStatus().name());
+    ps.setString(10, freelancer.getStatus().name().toLowerCase());
+
+    if (freelancer.getIdTask() != null) {
+        ps.setInt(11, freelancer.getIdTask());
+    } else {
+        ps.setNull(11, java.sql.Types.INTEGER);
+    }
+
+    ps.executeUpdate();
+
+    ResultSet rs = ps.getGeneratedKeys();
+    if (rs.next()) {
+        int generatedFreelancerId = rs.getInt(1);
+        freelancer.setIdFreelancer(generatedFreelancerId);
+        System.out.println("✓ Freelancer profile created with idFreelancer: " + generatedFreelancerId);
+    }
+
+    System.out.println("✓ Freelancer profile created successfully (Step 2)");
+}
 
 //    Step 3: Update freelancer with student card verification
     public void updateVerificationData(int freelancerId, String studentCardPath, VerifStatus status) throws SQLException {
@@ -165,6 +172,7 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
 
                 f.setBio(rs.getString("bio"));
                 f.setStudentCardPath(rs.getString("studentCardPath"));
+                f.setCvPath(rs.getString("cvPath"));
                 f.setVerificationStatus(VerifStatus.valueOf(rs.getString("verificationStatus")));
                 f.setStatus(Status.valueOf(rs.getString("status").toUpperCase()));
 

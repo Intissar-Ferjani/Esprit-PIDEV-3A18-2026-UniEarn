@@ -175,28 +175,21 @@
                                     <Label styleClass="field-label" text="Skills">
                                         <font><Font name="System Bold" size="13.0" /></font>
                                     </Label>
-
-                                    <!-- Selected skill chips -->
                                     <FlowPane fx:id="skillsChipsPane" hgap="8.0" vgap="8.0"
                                               minHeight="45.0"
                                               style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-border-width: 1.5px; -fx-padding: 8px;">
                                     </FlowPane>
-
-                                    <!-- Search field -->
                                     <TextField fx:id="skillSearchField"
                                                promptText="🔍 Search and add skills..."
                                                styleClass="custom-field">
                                         <font><Font size="14.0" /></font>
                                     </TextField>
-
-                                    <!-- Suggestions dropdown -->
                                     <ListView fx:id="skillSuggestionsView"
                                               prefHeight="150.0"
                                               visible="false"
                                               managed="false"
                                               style="-fx-background-color: white; -fx-border-color: #1976d2; -fx-border-radius: 8px; -fx-border-width: 1.5px;">
                                     </ListView>
-
                                     <Label styleClass="helper-text" text="Search and select up to 20 skills">
                                         <font><Font size="12.0" /></font>
                                     </Label>
@@ -236,6 +229,44 @@
                                     </Label>
                                     <ComboBox fx:id="experienceComboBox" prefWidth="450.0" promptText="Select your experience level" styleClass="custom-combo" />
                                     <Label fx:id="experienceError" styleClass="error-label" visible="false" />
+                                </children>
+                            </VBox>
+
+                            <!-- CV Upload -->
+                            <VBox spacing="8.0">
+                                <children>
+                                    <Label styleClass="field-label" text="Upload Your CV">
+                                        <font>
+                                            <Font name="System Bold" size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label styleClass="helper-text" text="We'll use your CV to auto-generate your bio (coming soon)">
+                                        <font>
+                                            <Font size="11.0" />
+                                        </font>
+                                    </Label>
+                                    <HBox alignment="CENTER_LEFT" spacing="12.0">
+                                        <children>
+                                            <Button fx:id="uploadCvButton" onAction="#handleUploadCv"
+                                                    prefHeight="38.0" prefWidth="160.0"
+                                                    styleClass="upload-button" text="📄 Choose CV">
+                                                <font>
+                                                    <Font name="System Bold" size="12.0" />
+                                                </font>
+                                            </Button>
+                                            <Label fx:id="cvFileLabel" styleClass="helper-text" text="No file selected">
+                                                <font>
+                                                    <Font size="12.0" />
+                                                </font>
+                                            </Label>
+                                        </children>
+                                    </HBox>
+                                    <Label styleClass="helper-text" text="✓ Accepted formats: PDF, DOC, DOCX (max 5MB)">
+                                        <font>
+                                            <Font size="11.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="cvError" styleClass="error-label" visible="false" />
                                 </children>
                             </VBox>
 

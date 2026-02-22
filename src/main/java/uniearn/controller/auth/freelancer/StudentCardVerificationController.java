@@ -43,18 +43,21 @@ public class StudentCardVerificationController {
     private String skills;
     private String bio;
     private String experience;
+    private String cvPath;
+
 
     @FXML
     public void initialize() {
         nextButton.setDisable(true);
     }
 
-    public void setFreelancerData(Freelancer freelancer, String hourlyRate, String skills, String bio, String experience) {
+    public void setFreelancerData(Freelancer freelancer, String hourlyRate, String skills, String bio, String experience, String cvPath) {
         this.freelancerData = freelancer;
         this.hourlyRate = hourlyRate;
         this.skills = skills;
         this.bio = bio;
         this.experience = experience;
+        this.cvPath = cvPath;
         System.out.println("✓ Verification step initialized for: " + freelancer.getName());
     }
 
@@ -62,7 +65,7 @@ public class StudentCardVerificationController {
     public void restoreCardPath(String cardPath) {
         if (cardPath != null && !cardPath.isEmpty()) {
             this.savedFilePath = cardPath;
-            this.cardVerifiedByOCR = true; // Was already verified before going to portfolio
+            this.cardVerifiedByOCR = true;
 
             // Extract just the filename for display
             String fileName = Paths.get(cardPath).getFileName().toString();
@@ -71,7 +74,7 @@ public class StudentCardVerificationController {
 
             showVerificationStatus("✅ Previously verified card restored", true);
 
-            // ✅ Re-enable Next since the card was already accepted
+            // Re-enable Next since the card was already accepted
             nextButton.setDisable(false);
         }
     }
@@ -194,7 +197,15 @@ public class StudentCardVerificationController {
             Parent root = loader.load();
 
             FreelancerPortfolioController controller = loader.getController();
-            controller.setFreelancerData(freelancerData, hourlyRate, skills, bio, experience, savedFilePath);
+            controller.setFreelancerData(
+                    freelancerData,
+                    hourlyRate,
+                    skills,
+                    bio,
+                    experience,
+                    savedFilePath,
+                    cvPath
+            );
 
             Stage stage = (Stage) nextButton.getScene().getWindow();
             stage.setScene(new Scene(root, 850, 700));

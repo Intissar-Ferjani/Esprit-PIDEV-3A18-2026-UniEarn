@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import uniearn.controller.auth.user.SignupController;
 import uniearn.model.entities.users.User;
@@ -20,7 +21,12 @@ import uniearn.model.enums.VerifStatus;
 import uniearn.services.users.freelancer.FreelancerService;
 import uniearn.services.users.freelancer.SkillsApiService;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +47,17 @@ public class FreelancerSignupController {
     @FXML private Label skillsError;
     @FXML private Label bioError;
     @FXML private Label experienceError;
+    @FXML private Button uploadCvButton;
+    @FXML private Label cvFileLabel;
+    @FXML private Label cvError;
 
     private final FreelancerService freelancerService = new FreelancerService();
     private final SkillsApiService skillsApiService = new SkillsApiService();
     private final List<String> selectedSkills = new ArrayList<>();
 
-    // Data received from previous step
     private User basicUserData;
+    private File selectedCvFile;
+    private String savedCvPath;
 
     @FXML
     public void initialize() {
@@ -103,9 +113,7 @@ public class FreelancerSignupController {
         skillSearchField.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal) {
                 Platform.runLater(() -> {
-                    if (!skillSuggestionsView.isFocused()) {
-                        hideSuggestions();
-                    }
+                    if (!skillSuggestionsView.isFocused()) hideSuggestions();
                 });
             }
         });
@@ -113,9 +121,7 @@ public class FreelancerSignupController {
         skillSuggestionsView.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal) {
                 Platform.runLater(() -> {
-                    if (!skillSearchField.isFocused()) {
-                        hideSuggestions();
-                    }
+                    if (!skillSearchField.isFocused()) hideSuggestions();
                 });
             }
         });
@@ -166,7 +172,6 @@ public class FreelancerSignupController {
             List<String> results = fetchTask.getValue().stream()
                     .limit(10)
                     .collect(Collectors.toList());
-
             if (!results.isEmpty()) {
                 skillSuggestionsView.setItems(FXCollections.observableArrayList(results));
                 showSuggestions();
@@ -248,95 +253,116 @@ public class FreelancerSignupController {
         skillSuggestionsView.setManaged(false);
     }
 
-    // Receive user data from Step 1
+    // ─── CV Upload ───────────────────────────────────────────────────────────
+
+    @FXML
+    private void handleUploadCv() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Upload Your CV");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Document Files", "*.pdf", "*.doc", "*.docx"),
+                new FileChooser.ExtensionFilter("All Files", "*.*")
+        );
+
+        selectedCvFile = fileChooser.showOpenDialog(uploadCvButton.getScene().getWindow());
+
+        if (selectedCvFile != null) {
+            long fileSizeInMB = selectedCvFile.length() / (1024 * 1024);
+            if (fileSizeInMB > 5) {
+                showError(cvError, "CV file must be smaller than 5MB");
+                selectedCvFile = null;
+                return;
+            }
+
+            String fileName = selectedCvFile.getName().toLowerCase();
+            if (!fileName.endsWith(".pdf") && !fileName.endsWith(".doc") && !fileName.endsWith(".docx")) {
+                showError(cvError, "Please select a PDF, DOC, or DOCX file");
+                selectedCvFile = null;
+                return;
+            }
+
+            try {
+                savedCvPath = saveCvFile(selectedCvFile);
+                cvFileLabel.setText("✓ " + selectedCvFile.getName());
+                cvFileLabel.setStyle("-fx-text-fill: #28a745; -fx-font-size: 12px;");
+                hideError(cvError);
+                System.out.println("✓ CV saved to: " + savedCvPath);
+            } catch (IOException e) {
+                showError(cvError, "Failed to save CV: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private String saveCvFile(File file) throws IOException {
+        Path uploadsDir = Paths.get("uploads/cv");
+        Files.createDirectories(uploadsDir);
+        String timestamp = String.valueOf(System.currentTimeMillis());
+        // Prefix with user id placeholder — actual user id not yet assigned at this step
+        String fileName = timestamp + "_" + file.getName();
+        Path targetPath = uploadsDir.resolve(fileName);
+        Files.copy(file.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+        return targetPath.toString();
+    }
+
+    // ─── Data In/Out ─────────────────────────────────────────────────────────
+
     public void setUserData(User user) {
         this.basicUserData = user;
         System.out.println("✓ Freelancer signup step 2 initialized for: " + user.getName());
     }
 
-    // Restore step 2 fields when coming back
     public void restoreFreelancerData(String hourlyRate, String skills, String bio, String experience) {
-        if (hourlyRate != null && !hourlyRate.isEmpty()) {
-            hourlyRateField.setText(hourlyRate);
-        }
+        if (hourlyRate != null && !hourlyRate.isEmpty()) hourlyRateField.setText(hourlyRate);
         if (skills != null && !skills.isEmpty()) {
             for (String skill : skills.split(",")) {
                 String trimmed = skill.trim();
                 if (!trimmed.isEmpty()) addSkillChip(trimmed);
             }
         }
-        if (bio != null && !bio.isEmpty()) {
-            bioField.setText(bio);
-        }
-        if (experience != null && !experience.isEmpty()) {
-            experienceComboBox.setValue(experience);
-        }
+        if (bio != null && !bio.isEmpty()) bioField.setText(bio);
+        if (experience != null && !experience.isEmpty()) experienceComboBox.setValue(experience);
     }
+
+    // ─── Validation ──────────────────────────────────────────────────────────
 
     private boolean validateHourlyRate() {
         String rateText = hourlyRateField.getText().trim();
-
-        if (rateText.isEmpty()) {
-            showError(hourlyRateError, "Hourly rate is required");
-            return false;
-        }
-
+        if (rateText.isEmpty()) { showError(hourlyRateError, "Hourly rate is required"); return false; }
         try {
             double rate = Double.parseDouble(rateText);
-            if (rate <= 0) {
-                showError(hourlyRateError, "Rate must be greater than 0");
-                return false;
-            }
-            if (rate > 10000) {
-                showError(hourlyRateError, "Rate seems unusually high");
-                return false;
-            }
+            if (rate <= 0) { showError(hourlyRateError, "Rate must be greater than 0"); return false; }
+            if (rate > 10000) { showError(hourlyRateError, "Rate seems unusually high"); return false; }
         } catch (NumberFormatException e) {
             showError(hourlyRateError, "Please enter a valid number");
             return false;
         }
-
         hideError(hourlyRateError);
         return true;
     }
 
     private boolean validateSkills() {
-        if (selectedSkills.isEmpty()) {
-            showError(skillsError, "Please add at least one skill");
-            return false;
-        }
+        if (selectedSkills.isEmpty()) { showError(skillsError, "Please add at least one skill"); return false; }
         hideError(skillsError);
         return true;
     }
 
     private boolean validateBio() {
         String bio = bioField.getText().trim();
-
-        if (bio.isEmpty()) {
-            showError(bioError, "Please write a brief bio");
-            return false;
-        }
-        if (bio.length() < 50) {
-            showError(bioError, "Bio should be at least 50 characters");
-            return false;
-        }
-        if (bio.length() > 500) {
-            showError(bioError, "Bio should not exceed 500 characters");
-            return false;
-        }
-
+        if (bio.isEmpty()) { showError(bioError, "Please write a brief bio"); return false; }
+        if (bio.length() < 50) { showError(bioError, "Bio should be at least 50 characters"); return false; }
+        if (bio.length() > 500) { showError(bioError, "Bio should not exceed 500 characters"); return false; }
         hideError(bioError);
         return true;
     }
 
     private boolean validateExperience() {
-        if (experienceComboBox.getValue() == null) {
-            showError(experienceError, "Please select your experience level");
-            return false;
-        }
+        if (experienceComboBox.getValue() == null) { showError(experienceError, "Please select your experience level"); return false; }
         hideError(experienceError);
         return true;
     }
+
+    // ─── Navigation ──────────────────────────────────────────────────────────
 
     @FXML
     private void handleNext() {
@@ -353,21 +379,19 @@ public class FreelancerSignupController {
             nextButton.setDisable(true);
 
             Freelancer freelancer = new Freelancer();
-
             freelancer.setName(basicUserData.getName());
             freelancer.setEmail(basicUserData.getEmail());
             freelancer.setPassword(basicUserData.getPassword());
             freelancer.setRole(basicUserData.getRole());
-
             freelancer.setPricePerHour(Double.parseDouble(hourlyRateField.getText().trim()));
             freelancer.setSkills(selectedSkills.toArray(new String[0]));
             freelancer.setBio(bioField.getText().trim());
-
             freelancer.setAmount(0.0);
             freelancer.setRating(0.0);
             freelancer.setVerificationStatus(VerifStatus.unverified);
             freelancer.setStatus(Status.AVAILABLE);
             freelancer.setIdTask(null);
+            freelancer.setCvPath(savedCvPath); // null if not uploaded — that's fine
 
             freelancerService.addFreelancer(freelancer);
 
@@ -401,7 +425,8 @@ public class FreelancerSignupController {
                     hourlyRateField.getText().trim(),
                     String.join(", ", selectedSkills),
                     bioField.getText().trim(),
-                    experienceComboBox.getValue()
+                    experienceComboBox.getValue(),
+                    savedCvPath
             );
 
             Stage stage = (Stage) nextButton.getScene().getWindow();
@@ -419,13 +444,10 @@ public class FreelancerSignupController {
     @FXML
     private void handleBack() {
         try {
-            // ✅ Navigate back to Step 1 (signup.fxml) — NOT freelancer-information.fxml
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/signup/signup.fxml"));
             Parent root = loader.load();
 
             SignupController signupController = loader.getController();
-
-            // ✅ Restore all Step 1 fields so the user doesn't lose their data
             signupController.restoreUserData(basicUserData);
 
             Stage stage = (Stage) backButton.getScene().getWindow();
@@ -438,6 +460,8 @@ public class FreelancerSignupController {
             showErrorAlert("Navigation Error", "Unable to go back to signup page.");
         }
     }
+
+    // ─── Helpers ─────────────────────────────────────────────────────────────
 
     private void showError(Label errorLabel, String message) {
         errorLabel.setText(message);
@@ -454,6 +478,7 @@ public class FreelancerSignupController {
         hideError(skillsError);
         hideError(bioError);
         hideError(experienceError);
+        hideError(cvError);
     }
 
     private void showErrorAlert(String title, String message) {

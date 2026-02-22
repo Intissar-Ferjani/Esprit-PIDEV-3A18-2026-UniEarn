@@ -41,12 +41,13 @@ public class FreelancerPortfolioController {
     private String skills;
     private String bio;
     private String experience;
+    private String cvPath;
 
     // Step 3 field
     private String studentCardPath;
 
     public void setFreelancerData(Freelancer freelancer, String hourlyRate, String skills,
-                                  String bio, String experience, String studentCardPath) {
+                                  String bio, String experience, String studentCardPath, String cvPath) {
         this.freelancerData = freelancer;
         this.hourlyRate = hourlyRate;
         this.skills = skills;
@@ -133,17 +134,16 @@ public class FreelancerPortfolioController {
     @FXML
     private void handleBack() {
         try {
-            // ✅ Correct FXML path matching what FreelancerSignupController uses
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/auth/signup/freelancer/student-id-verification.fxml"));
             Parent root = loader.load();
 
             StudentCardVerificationController controller = loader.getController();
 
-            // ✅ Pass all data back so Step 3 can restore itself and pass data forward again
-            controller.setFreelancerData(freelancerData, hourlyRate, skills, bio, experience);
+            // Pass all data back so Step 3 can restore itself and pass data forward again
+            controller.setFreelancerData(freelancerData, hourlyRate, skills, bio, experience, cvPath);
 
-            // ✅ Restore the previously uploaded card path so the user doesn't re-upload
+            // Restore the previously uploaded card path so the user doesn't re-upload
             controller.restoreCardPath(studentCardPath);
 
             Stage stage = (Stage) backButton.getScene().getWindow();
