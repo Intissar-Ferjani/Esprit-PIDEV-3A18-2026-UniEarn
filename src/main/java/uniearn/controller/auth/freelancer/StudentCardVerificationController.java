@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import uniearn.model.entities.users.User;
 import uniearn.model.entities.users.freelancer.Freelancer;
 import uniearn.model.enums.VerifStatus;
+import uniearn.services.ocr.StudentCardOCRService;
 import uniearn.services.users.freelancer.FreelancerService;
 
 import java.io.File;
@@ -22,7 +23,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.sql.SQLException;
 
-//Step 3
 public class StudentCardVerificationController {
 
     @FXML private Button uploadCardButton;
@@ -32,12 +32,13 @@ public class StudentCardVerificationController {
     @FXML private Label verificationStatusLabel;
 
     private final FreelancerService freelancerService = new FreelancerService();
+    private final StudentCardOCRService ocrService = new StudentCardOCRService();
 
     private Freelancer freelancerData;
     private File selectedFile;
     private String savedFilePath;
+    private boolean cardVerifiedByOCR = false;
 
-    // Step 2 field values for restoration on back navigation
     private String hourlyRate;
     private String skills;
     private String bio;
@@ -45,11 +46,9 @@ public class StudentCardVerificationController {
 
     @FXML
     public void initialize() {
-        // Disable next button until file is uploaded
         nextButton.setDisable(true);
     }
 
-//    Receive freelancer data and step 2 values from previous step
     public void setFreelancerData(Freelancer freelancer, String hourlyRate, String skills, String bio, String experience) {
         this.freelancerData = freelancer;
         this.hourlyRate = hourlyRate;
@@ -57,6 +56,24 @@ public class StudentCardVerificationController {
         this.bio = bio;
         this.experience = experience;
         System.out.println("✓ Verification step initialized for: " + freelancer.getName());
+    }
+
+//    restores the previously uploaded card
+    public void restoreCardPath(String cardPath) {
+        if (cardPath != null && !cardPath.isEmpty()) {
+            this.savedFilePath = cardPath;
+            this.cardVerifiedByOCR = true; // Was already verified before going to portfolio
+
+            // Extract just the filename for display
+            String fileName = Paths.get(cardPath).getFileName().toString();
+            cardFileLabel.setText("✓ " + fileName);
+            cardFileLabel.setStyle("-fx-text-fill: #28a745;");
+
+            showVerificationStatus("✅ Previously verified card restored", true);
+
+            // ✅ Re-enable Next since the card was already accepted
+            nextButton.setDisable(false);
+        }
     }
 
     @FXML
@@ -72,64 +89,72 @@ public class StudentCardVerificationController {
         selectedFile = fileChooser.showOpenDialog(uploadCardButton.getScene().getWindow());
 
         if (selectedFile != null) {
-            // Validate file
-            if (!validateFile(selectedFile)) {
-                return;
-            }
+            if (!validateFile(selectedFile)) return;
 
-            // Save file to uploads directory
             try {
                 savedFilePath = saveStudentCard(selectedFile);
 
-                // Update UI
-                cardFileLabel.setText("✓ " + selectedFile.getName());
-                cardFileLabel.setStyle("-fx-text-fill: #28a745;");
+                cardFileLabel.setText("📎 " + selectedFile.getName());
+                cardFileLabel.setStyle("-fx-text-fill: #555555;");
 
-                showVerificationStatus("File uploaded successfully! Ready to proceed.", true);
+                nextButton.setDisable(true);
+                uploadCardButton.setDisable(true);
+                showVerificationStatus("🔍 Analyzing your student card, please wait...", true);
 
-                // Enable next button
-                nextButton.setDisable(false);
+                Thread ocrThread = new Thread(() -> {
+                    StudentCardOCRService.OCRResult result = ocrService.verifyStudentCard(
+                            selectedFile,
+                            freelancerData.getName()
+                    );
+                    cardVerifiedByOCR = result.isVerified();
+
+                    javafx.application.Platform.runLater(() -> {
+                        uploadCardButton.setDisable(false);
+
+                        if (result.isVerified()) {
+                            cardFileLabel.setText("✓ " + selectedFile.getName());
+                            cardFileLabel.setStyle("-fx-text-fill: #28a745;");
+                            showVerificationStatus("✅ " + result.getMessage(), true);
+                            nextButton.setDisable(false);
+                        } else {
+                            showVerificationStatus("❌ " + result.getMessage(), false);
+                            nextButton.setDisable(true);
+                        }
+                    });
+                });
+                ocrThread.setDaemon(true);
+                ocrThread.start();
 
             } catch (IOException e) {
                 showErrorAlert("Upload Failed", "Could not save the file: " + e.getMessage());
-                e.printStackTrace();
+                uploadCardButton.setDisable(false);
             }
         }
     }
 
     private boolean validateFile(File file) {
-        // Check file size (max 5MB)
         long fileSizeInMB = file.length() / (1024 * 1024);
         if (fileSizeInMB > 5) {
             showErrorAlert("File Too Large", "Please select a file smaller than 5MB");
             return false;
         }
-
-        // Check file extension
         String fileName = file.getName().toLowerCase();
-        if (!fileName.endsWith(".jpg") && !fileName.endsWith(".jpeg") &&
-                !fileName.endsWith(".png") && !fileName.endsWith(".pdf")) {
+        if (!fileName.endsWith(".jpg") && !fileName.endsWith(".jpeg")
+                && !fileName.endsWith(".png") && !fileName.endsWith(".pdf")) {
             showErrorAlert("Invalid File Type", "Please select a JPG, PNG, or PDF file");
             return false;
         }
-
         return true;
     }
 
     private String saveStudentCard(File file) throws IOException {
-        // Create uploads directory if it doesn't exist
         Path uploadsDir = Paths.get("uploads/student_cards");
         Files.createDirectories(uploadsDir);
-
-        // Generate unique filename
         String timestamp = String.valueOf(System.currentTimeMillis());
         String fileName = freelancerData.getIdUser() + "_" + timestamp + "_" + file.getName();
         Path targetPath = uploadsDir.resolve(fileName);
-
-        // Copy file to uploads directory
         Files.copy(file.toPath(), targetPath, StandardCopyOption.REPLACE_EXISTING);
-
-        System.out.println("✓ Student card saved to: " + targetPath.toString());
+        System.out.println("✓ Student card saved to: " + targetPath);
         return targetPath.toString();
     }
 
@@ -143,16 +168,16 @@ public class StudentCardVerificationController {
         try {
             nextButton.setDisable(true);
 
-            // Update database with student card path + status
+            VerifStatus status = cardVerifiedByOCR ? VerifStatus.verified : VerifStatus.unverified;
+
+            // update verification data — freelancer was already inserted in Step 2
             freelancerService.updateVerificationData(
                     freelancerData.getIdUser(),
                     savedFilePath,
-                    VerifStatus.unverified
+                    status
             );
 
-            System.out.println("✓ Student card uploaded, verification status: PENDING");
-
-            // Navigate to Step 4
+            System.out.println("✓ Verification status set to: " + status.name());
             redirectToPortfolioStep();
 
         } catch (SQLException e) {
@@ -162,23 +187,14 @@ public class StudentCardVerificationController {
         }
     }
 
-//    Redirect to step 4
     private void redirectToPortfolioStep() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/signup/freelancer/portfolio-information.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/auth/signup/freelancer/portfolio-information.fxml"));
             Parent root = loader.load();
 
             FreelancerPortfolioController controller = loader.getController();
-
-            // Pass all data to Step 4
-            controller.setFreelancerData(
-                    freelancerData,
-                    hourlyRate,
-                    skills,
-                    bio,
-                    experience,
-                    savedFilePath
-            );
+            controller.setFreelancerData(freelancerData, hourlyRate, skills, bio, experience, savedFilePath);
 
             Stage stage = (Stage) nextButton.getScene().getWindow();
             stage.setScene(new Scene(root, 850, 700));
@@ -198,15 +214,12 @@ public class StudentCardVerificationController {
     @FXML
     private void handleBack() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/signup/freelancer/freelancer-information.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/auth/signup/freelancer/freelancer-information.fxml"));
             Parent root = loader.load();
 
             FreelancerSignupController controller = loader.getController();
-
-            // Restore Step 1 data
             controller.setUserData(convertFreelancerToUser(freelancerData));
-
-            // Restore Step 2 data
             controller.restoreFreelancerData(hourlyRate, skills, bio, experience);
 
             Stage stage = (Stage) backButton.getScene().getWindow();
@@ -224,22 +237,16 @@ public class StudentCardVerificationController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/login/login.fxml"));
             Parent root = loader.load();
-
             Stage stage = (Stage) nextButton.getScene().getWindow();
             stage.setScene(new Scene(root, 750, 600));
             stage.setTitle("Login - UniEarn");
             stage.centerOnScreen();
-
         } catch (IOException e) {
             e.printStackTrace();
-            showInfoAlert("Registration Complete",
-                    "Your account has been created successfully!\n" +
-                            "Please restart the application and log in with your credentials.");
             ((Stage) nextButton.getScene().getWindow()).close();
         }
     }
 
-//    convert Freelancer back to User for Step 1 restoration
     private User convertFreelancerToUser(Freelancer freelancer) {
         User user = new User();
         user.setIdUser(freelancer.getIdUser());
@@ -252,9 +259,9 @@ public class StudentCardVerificationController {
 
     private void showVerificationStatus(String message, boolean success) {
         verificationStatusLabel.setText(message);
-        verificationStatusLabel.setStyle(success ?
-                "-fx-text-fill: #28a745; -fx-font-weight: bold;" :
-                "-fx-text-fill: #dc3545; -fx-font-weight: bold;");
+        verificationStatusLabel.setStyle(success
+                ? "-fx-text-fill: #28a745; -fx-font-weight: bold;"
+                : "-fx-text-fill: #e67e22; -fx-font-weight: bold;");
         verificationStatusLabel.setVisible(true);
     }
 
@@ -268,14 +275,6 @@ public class StudentCardVerificationController {
 
     private void showErrorAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private void showInfoAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setContentText(message);

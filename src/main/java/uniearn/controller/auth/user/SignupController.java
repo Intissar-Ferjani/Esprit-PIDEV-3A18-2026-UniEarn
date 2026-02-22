@@ -10,9 +10,11 @@ import javafx.util.StringConverter;
 import uniearn.controller.auth.client.ClientSignupController;
 import uniearn.controller.auth.freelancer.FreelancerSignupController;
 import uniearn.model.entities.users.User;
+import uniearn.model.entities.users.admin.Admin;
 import uniearn.model.enums.UserRole;
+import uniearn.services.users.AdminService;
 import uniearn.services.users.UserService;
-import uniearn.utils.user.PasswordUtil;  // ✅ Import for password generation
+import uniearn.utils.user.PasswordUtil;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -26,14 +28,14 @@ public class SignupController {
     @FXML private TextField nameField;
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
-    @FXML private TextField passwordFieldVisible;  // ✅ NEW: For showing password
+    @FXML private TextField passwordFieldVisible;
     @FXML private PasswordField confirmPasswordField;
-    @FXML private TextField confirmPasswordFieldVisible;  // ✅ NEW: For showing confirm password
+    @FXML private TextField confirmPasswordFieldVisible;
     @FXML private ComboBox<UserRole> roleComboBox;
     @FXML private Button signupButton;
-    @FXML private Button generatePasswordButton;  // ✅ NEW: Generate password button
-    @FXML private Button togglePasswordButton;  // ✅ NEW: Show/Hide password button
-    @FXML private Button toggleConfirmPasswordButton;  // ✅ NEW: Show/Hide confirm password button
+    @FXML private Button generatePasswordButton;
+    @FXML private Button togglePasswordButton;
+    @FXML private Button toggleConfirmPasswordButton;
     @FXML private Label nameError;
     @FXML private Label emailError;
     @FXML private Label passwordError;
@@ -43,16 +45,16 @@ public class SignupController {
     @FXML private Label termsError;
 
     private final UserService userService = new UserService();
+    private final AdminService adminService = new AdminService();
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
-    // ✅ NEW: Track password visibility state
     private boolean isPasswordVisible = false;
     private boolean isConfirmPasswordVisible = false;
 
     @FXML
     public void initialize() {
         setupRoleComboBox();
-        setupPasswordFieldSync();  // ✅ NEW: Sync visible and hidden password fields
+        setupPasswordFieldSync();
 
         nameField.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal) validateName();
@@ -73,16 +75,13 @@ public class SignupController {
             if (newVal) hideError(termsError);
         });
 
-        // ✅ NEW: Initialize password visibility state
         passwordFieldVisible.setVisible(false);
         passwordFieldVisible.setManaged(false);
         confirmPasswordFieldVisible.setVisible(false);
         confirmPasswordFieldVisible.setManaged(false);
     }
 
-    // ✅ NEW: Sync visible and hidden password fields
     private void setupPasswordFieldSync() {
-        // Sync password field
         passwordField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (!isPasswordVisible) {
                 passwordFieldVisible.setText(newVal);
@@ -94,7 +93,6 @@ public class SignupController {
             }
         });
 
-        // Sync confirm password field
         confirmPasswordField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (!isConfirmPasswordVisible) {
                 confirmPasswordFieldVisible.setText(newVal);
@@ -107,20 +105,16 @@ public class SignupController {
         });
     }
 
-    // ✅ NEW: Generate random password
     @FXML
     private void handleGeneratePassword() {
         try {
-            // Generate a secure random password (12 characters)
             String randomPassword = PasswordUtil.generateRandomPassword(12);
 
-            // Set both password fields
             passwordField.setText(randomPassword);
             passwordFieldVisible.setText(randomPassword);
             confirmPasswordField.setText(randomPassword);
             confirmPasswordFieldVisible.setText(randomPassword);
 
-            // Show success message
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Password Generated");
             alert.setHeaderText("Secure Password Created");
@@ -129,7 +123,6 @@ public class SignupController {
                     "⚠ Make sure to save this password somewhere safe!");
             alert.showAndWait();
 
-            // Validate the generated password
             validatePassword();
             validateConfirmPassword();
 
@@ -141,47 +134,39 @@ public class SignupController {
         }
     }
 
-    // ✅ NEW: Toggle password visibility
     @FXML
     private void handleTogglePassword() {
         isPasswordVisible = !isPasswordVisible;
 
         if (isPasswordVisible) {
-            // Show password as plain text
             passwordFieldVisible.setText(passwordField.getText());
             passwordField.setVisible(false);
             passwordField.setManaged(false);
             passwordFieldVisible.setVisible(true);
             passwordFieldVisible.setManaged(true);
-            togglePasswordButton.setText("🙈");  // Changed to "hide" icon
-
+            togglePasswordButton.setText("🙈");
         } else {
-            // Hide password
             passwordField.setText(passwordFieldVisible.getText());
             passwordFieldVisible.setVisible(false);
             passwordFieldVisible.setManaged(false);
             passwordField.setVisible(true);
             passwordField.setManaged(true);
-            togglePasswordButton.setText("👁");  // Changed to "show" icon
+            togglePasswordButton.setText("👁");
         }
     }
 
-    // ✅ NEW: Toggle confirm password visibility
     @FXML
     private void handleToggleConfirmPassword() {
         isConfirmPasswordVisible = !isConfirmPasswordVisible;
 
         if (isConfirmPasswordVisible) {
-            // Show confirm password as plain text
             confirmPasswordFieldVisible.setText(confirmPasswordField.getText());
             confirmPasswordField.setVisible(false);
             confirmPasswordField.setManaged(false);
             confirmPasswordFieldVisible.setVisible(true);
             confirmPasswordFieldVisible.setManaged(true);
             toggleConfirmPasswordButton.setText("🙈");
-
         } else {
-            // Hide confirm password
             confirmPasswordField.setText(confirmPasswordFieldVisible.getText());
             confirmPasswordFieldVisible.setVisible(false);
             confirmPasswordFieldVisible.setManaged(false);
@@ -196,12 +181,10 @@ public class SignupController {
             showError(termsError, "You must accept the terms to continue");
             return false;
         }
-
         hideError(termsError);
         return true;
     }
 
-    // Restore only basic user fields
     public void restoreUserData(User userData) {
         nameField.setText(userData.getName());
         emailField.setText(userData.getEmail());
@@ -278,7 +261,6 @@ public class SignupController {
     }
 
     private boolean validatePassword() {
-        // ✅ Get password from whichever field is currently visible
         String password = isPasswordVisible ?
                 passwordFieldVisible.getText() : passwordField.getText();
 
@@ -292,7 +274,6 @@ public class SignupController {
     }
 
     private boolean validateConfirmPassword() {
-        // ✅ Get passwords from whichever fields are currently visible
         String password = isPasswordVisible ?
                 passwordFieldVisible.getText() : passwordField.getText();
         String confirmPassword = isConfirmPasswordVisible ?
@@ -314,34 +295,40 @@ public class SignupController {
         try {
             signupButton.setDisable(true);
 
-            User newUser = new User();
-            newUser.setName(nameField.getText().trim());
-            newUser.setEmail(emailField.getText().trim());
-
-            // ✅ Get password from whichever field is currently visible
             String password = isPasswordVisible ?
                     passwordFieldVisible.getText() : passwordField.getText();
-            newUser.setPassword(password);  // Will be hashed in UserService
 
-            newUser.setRole(roleComboBox.getValue());
+            UserRole selectedRole = roleComboBox.getValue();
 
             // Redirect based on role
-            if (roleComboBox.getValue() == UserRole.CLIENT) {
+            if (selectedRole == UserRole.CLIENT) {
+                User newUser = buildBaseUser(password);
                 redirectToClientSignup(newUser);
                 return;
-            } else if (roleComboBox.getValue() == UserRole.FREELANCER) {
+
+            } else if (selectedRole == UserRole.FREELANCER) {
+                User newUser = buildBaseUser(password);
                 redirectToFreelancerSignup(newUser);
                 return;
-            }
 
-            // For admin -> no redirect
-            int userId = userService.addUser(newUser);
-            if (userId > 0) {
-                showSuccessAlert("Account Created!", "Welcome " + newUser.getName() + "!");
-                redirectToLogin();
-            } else {
-                showErrorAlert("Registration Failed", "Unable to create account.");
-                signupButton.setDisable(false);
+            } else if (selectedRole == UserRole.ADMIN) {
+                // Insert into both user table and admin table
+                Admin newAdmin = new Admin();
+                newAdmin.setName(nameField.getText().trim());
+                newAdmin.setEmail(emailField.getText().trim());
+                newAdmin.setPassword(password);  // Will be hashed in UserService
+                newAdmin.setRole(UserRole.ADMIN);
+                newAdmin.setProfilePicturePath(null);
+                newAdmin.setActivated(true);
+
+                int adminId = adminService.addAdmin(newAdmin);
+                if (adminId > 0) {
+                    showSuccessAlert("Account Created!", "Welcome " + newAdmin.getName() + "!");
+                    redirectToLogin();
+                } else {
+                    showErrorAlert("Registration Failed", "Unable to create admin account.");
+                    signupButton.setDisable(false);
+                }
             }
 
         } catch (SQLException e) {
@@ -357,6 +344,16 @@ public class SignupController {
             signupButton.setDisable(false);
             e.printStackTrace();
         }
+    }
+
+    // Helper to build a basic User object from form fields
+    private User buildBaseUser(String password) {
+        User user = new User();
+        user.setName(nameField.getText().trim());
+        user.setEmail(emailField.getText().trim());
+        user.setPassword(password);
+        user.setRole(roleComboBox.getValue());
+        return user;
     }
 
     private void redirectToClientSignup(User userData) {

@@ -54,7 +54,6 @@ public class FreelancerSignupController {
         setupExperienceComboBox();
         setupSkillsSelector();
 
-        // Validation listeners
         hourlyRateField.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal) validateHourlyRate();
         });
@@ -65,7 +64,6 @@ public class FreelancerSignupController {
             if (newVal != null) hideError(experienceError);
         });
 
-        // Format hourly rate to accept only numbers and decimals
         hourlyRateField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal.matches("\\d*(\\.\\d{0,2})?")) {
                 hourlyRateField.setText(oldVal);
@@ -83,34 +81,27 @@ public class FreelancerSignupController {
     }
 
     private void setupSkillsSelector() {
-        // Show dropdown on focus/click
         skillSearchField.setOnMouseClicked(e -> {
             if (!skillSuggestionsView.isVisible()) {
                 loadSuggestions(skillSearchField.getText().trim());
             }
         });
 
-        // Filter as user types
         skillSearchField.textProperty().addListener((obs, oldVal, newVal) -> {
             loadSuggestions(newVal.trim());
         });
 
-        // ✅ Use mouse PRESSED instead of clicked — fires before focus lost
         skillSuggestionsView.setOnMousePressed(e -> {
             String selected = skillSuggestionsView.getSelectionModel().getSelectedItem();
             if (selected != null) {
                 toggleSkill(selected);
-                // ✅ Keep dropdown open for multi-select
                 skillSearchField.requestFocus();
-                // Refresh list to show updated checkmarks
                 Platform.runLater(() -> loadSuggestions(skillSearchField.getText().trim()));
             }
         });
 
-        // ✅ Only hide when clicking completely outside
         skillSearchField.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal) {
-                // Delay to allow skillSuggestionsView.onMousePressed to fire first
                 Platform.runLater(() -> {
                     if (!skillSuggestionsView.isFocused()) {
                         hideSuggestions();
@@ -129,7 +120,6 @@ public class FreelancerSignupController {
             }
         });
 
-        // ✅ Checkbox-style cells showing selected state
         skillSuggestionsView.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -142,7 +132,6 @@ public class FreelancerSignupController {
                     HBox row = new HBox(10);
                     row.setAlignment(Pos.CENTER_LEFT);
 
-                    // Checkbox indicator
                     Label checkbox = new Label(isSelected ? "☑" : "☐");
                     checkbox.setStyle("-fx-font-size: 16px; -fx-text-fill: "
                             + (isSelected ? "#1976d2" : "#666") + ";");
@@ -167,7 +156,6 @@ public class FreelancerSignupController {
             @Override
             protected List<String> call() {
                 if (query.length() < 1) {
-                    // Show popular skills when empty
                     return skillsApiService.fetchSkills("programming");
                 }
                 return skillsApiService.fetchSkills(query);
@@ -194,10 +182,8 @@ public class FreelancerSignupController {
         thread.start();
     }
 
-    // ✅ Toggle: add if not selected, remove if already selected
     private void toggleSkill(String skill) {
         if (selectedSkills.contains(skill)) {
-            // Remove chip
             selectedSkills.remove(skill);
             skillsChipsPane.getChildren().removeIf(node -> {
                 if (node instanceof HBox) {
@@ -207,7 +193,6 @@ public class FreelancerSignupController {
                 return false;
             });
         } else {
-            // Add chip
             addSkillChip(skill);
         }
         hideError(skillsError);
@@ -223,7 +208,7 @@ public class FreelancerSignupController {
         selectedSkills.add(skill);
 
         HBox chip = new HBox(6);
-        chip.setUserData(skill); // ✅ Tag chip with skill name for easy removal
+        chip.setUserData(skill);
         chip.setAlignment(Pos.CENTER_LEFT);
         chip.setStyle(
                 "-fx-background-color: #1976d2;" +
@@ -244,7 +229,6 @@ public class FreelancerSignupController {
         removeBtn.setOnMouseClicked(e -> {
             selectedSkills.remove(skill);
             skillsChipsPane.getChildren().remove(chip);
-            // Refresh dropdown checkmarks if open
             if (skillSuggestionsView.isVisible()) {
                 skillSuggestionsView.refresh();
             }
@@ -276,7 +260,6 @@ public class FreelancerSignupController {
             hourlyRateField.setText(hourlyRate);
         }
         if (skills != null && !skills.isEmpty()) {
-            // Re-add each skill as a chip
             for (String skill : skills.split(",")) {
                 String trimmed = skill.trim();
                 if (!trimmed.isEmpty()) addSkillChip(trimmed);
@@ -359,7 +342,6 @@ public class FreelancerSignupController {
     private void handleNext() {
         clearAllErrors();
 
-        // Validate all fields before proceeding
         boolean valid = validateHourlyRate();
         valid = validateSkills() && valid;
         valid = validateBio() && valid;
@@ -372,18 +354,15 @@ public class FreelancerSignupController {
 
             Freelancer freelancer = new Freelancer();
 
-            // Step 1 data
             freelancer.setName(basicUserData.getName());
             freelancer.setEmail(basicUserData.getEmail());
             freelancer.setPassword(basicUserData.getPassword());
             freelancer.setRole(basicUserData.getRole());
 
-            // Step 2 data
             freelancer.setPricePerHour(Double.parseDouble(hourlyRateField.getText().trim()));
             freelancer.setSkills(selectedSkills.toArray(new String[0]));
             freelancer.setBio(bioField.getText().trim());
 
-            // Default values
             freelancer.setAmount(0.0);
             freelancer.setRating(0.0);
             freelancer.setVerificationStatus(VerifStatus.unverified);
@@ -420,7 +399,7 @@ public class FreelancerSignupController {
             controller.setFreelancerData(
                     freelancer,
                     hourlyRateField.getText().trim(),
-                    String.join(", ", selectedSkills),  // ✅ join chip list
+                    String.join(", ", selectedSkills),
                     bioField.getText().trim(),
                     experienceComboBox.getValue()
             );
@@ -440,15 +419,17 @@ public class FreelancerSignupController {
     @FXML
     private void handleBack() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/auth/signup/freelancer/freelancer-information.fxml"));
-            Parent signupRoot = loader.load();
+            // ✅ Navigate back to Step 1 (signup.fxml) — NOT freelancer-information.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/signup/signup.fxml"));
+            Parent root = loader.load();
 
             SignupController signupController = loader.getController();
+
+            // ✅ Restore all Step 1 fields so the user doesn't lose their data
             signupController.restoreUserData(basicUserData);
 
             Stage stage = (Stage) backButton.getScene().getWindow();
-            stage.setScene(new Scene(signupRoot, 750, 600));
+            stage.setScene(new Scene(root, 850, 700));
             stage.setTitle("Sign Up - UniEarn");
             stage.centerOnScreen();
 
