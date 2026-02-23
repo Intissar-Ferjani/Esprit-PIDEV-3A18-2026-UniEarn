@@ -32,8 +32,8 @@ public class NotificationsController {
             WebSocketService.getInstance().connect(username);
         }
 
-        // Subscribe to notifications
-        WebSocketService.getInstance().subscribe("/user/queue/notifications", NotificationMsg.class, notification -> {
+        // Subscribe to real-time notifications
+        WebSocketService.getInstance().subscribe("/topic/notifications", NotificationMsg.class, notification -> {
             Platform.runLater(() -> {
                 addNotificationToUI(notification);
             });

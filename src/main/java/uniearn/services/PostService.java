@@ -16,6 +16,7 @@ public class PostService {
      * Schema: freelancer_forum_post (post_id, freelancer_id, title, content, created_at, updated_at)
      */
     public int addPost(Post post) throws SQLException {
+        if (cn == null) throw new SQLException("Database not connected.");
         String sql = "INSERT INTO freelancer_forum_post (title, content, updated_at) VALUES (?, ?, NOW())";
         PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         ps.setString(1, post.getTitle());
@@ -34,6 +35,7 @@ public class PostService {
      */
     public List<Post> getAllPosts() {
         List<Post> posts = new ArrayList<>();
+        if (cn == null) return posts;
         String sql = "SELECT p.post_id, p.title, p.content, p.created_at, p.updated_at FROM freelancer_forum_post p ORDER BY p.post_id DESC";
         try {
             Statement st = cn.createStatement();
@@ -66,6 +68,7 @@ public class PostService {
      * Update a post's title and content. Also updates updated_at.
      */
     public void updatePost(int postId, String title, String content) {
+        if (cn == null) return;
         String sql = "UPDATE freelancer_forum_post SET title = ?, content = ?, updated_at = NOW() WHERE post_id = ?";
         try {
             PreparedStatement ps = cn.prepareStatement(sql);
@@ -82,6 +85,7 @@ public class PostService {
      * Delete a post by post_id. Comments and reactions are cascade-deleted by the DB.
      */
     public void deletePost(int postId) {
+        if (cn == null) return;
         String sql = "DELETE FROM freelancer_forum_post WHERE post_id = ?";
         try {
             PreparedStatement ps = cn.prepareStatement(sql);

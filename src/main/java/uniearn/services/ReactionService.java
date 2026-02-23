@@ -18,6 +18,7 @@ public class ReactionService {
      * Uses DEFAULT_FREELANCER_ID when userId <= 0 (run forum_default_freelancer.sql once to create it).
      */
     public boolean toggleReaction(int userId, int postId) {
+        if (cn == null) return false;
         int freelancerId = userId <= 0 ? DEFAULT_FREELANCER_ID : userId;
         try {
             String checkSql = "SELECT reaction_id FROM freelancer_forum_reaction WHERE freelancer_id = ? AND post_id = ?";
@@ -51,6 +52,7 @@ public class ReactionService {
      * Count total reactions for a post.
      */
     public int getReactionCount(int postId) {
+        if (cn == null) return 0;
         String sql = "SELECT COUNT(*) AS cnt FROM freelancer_forum_reaction WHERE post_id = ?";
         try {
             PreparedStatement ps = cn.prepareStatement(sql);
@@ -70,6 +72,7 @@ public class ReactionService {
      */
     public Set<Integer> getReactedUserIds(int postId) {
         Set<Integer> ids = new HashSet<>();
+        if (cn == null) return ids;
         String sql = "SELECT freelancer_id FROM freelancer_forum_reaction WHERE post_id = ?";
         try {
             PreparedStatement ps = cn.prepareStatement(sql);
@@ -88,6 +91,7 @@ public class ReactionService {
      * Check if the current user has reacted to a post. Uses DEFAULT_FREELANCER_ID when userId <= 0.
      */
     public boolean hasUserReacted(int userId, int postId) {
+        if (cn == null) return false;
         int freelancerId = userId <= 0 ? DEFAULT_FREELANCER_ID : userId;
         String sql = "SELECT reaction_id FROM freelancer_forum_reaction WHERE freelancer_id = ? AND post_id = ?";
         try {

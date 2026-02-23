@@ -1,20 +1,16 @@
 package uniearn.model.dto;
 
 public class NotificationMsg {
+    private String fromUser;
     private String title;
     private String message;
-    private String recipientId; // Can be username or userId
-    private String type; // e.g., "LIKE", "COMMENT", "MESSAGE"
+    private String recipientId;
+    private String type;
 
-    public NotificationMsg() {
-    }
+    public NotificationMsg() {}
 
-    public NotificationMsg(String title, String message, String recipientId, String type) {
-        this.title = title;
-        this.message = message;
-        this.recipientId = recipientId;
-        this.type = type;
-    }
+    public String getFromUser() { return fromUser; }
+    public void setFromUser(String fromUser) { this.fromUser = fromUser; }
 
     public String getTitle() {
         return title;
@@ -44,7 +40,5 @@ public class NotificationMsg {
         return type;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+    public void setType(String type) { this.type = type; }
 }
