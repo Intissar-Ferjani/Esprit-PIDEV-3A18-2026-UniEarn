@@ -27,7 +27,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uniearn.services.WebSocketService;
+import uniearn.services.GiphyService;
+import uniearn.services.ModerationService;
 import uniearn.model.dto.NotificationMsg;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class FreelancerForumController {
 
@@ -54,24 +59,24 @@ public class FreelancerForumController {
     private String currentUserName = "Forum User";
     private int currentUserId = 0;
 
+    private int unreadNotificationCount = 0;
+
     @FXML
     public void initialize() {
         DefaultFreelancerEnsurer.ensureDefaultFreelancerExists();
         reloadPostsFromDb();
         displayPosts();
 
-        // Initialize WebSocket connection
+        // Initialize WebSocket connection for real-time notifications
         new Thread(() -> {
             WebSocketService.getInstance().connect(currentUserName);
-            // Subscribe to notifications
-            WebSocketService.getInstance().subscribe("/user/queue/notifications", NotificationMsg.class,
-                    notification -> {
-                        Platform.runLater(() -> {
-                            showAlert("Notification", notification.getMessage());
-                            // Update badge logic here if needed
-                            // notificationBadge.setText("!"); // Example
-                        });
-                    });
+            WebSocketService.getInstance().subscribe("/topic/notifications", NotificationMsg.class,
+                    notification -> Platform.runLater(() -> {
+                        updateNotificationBadge();
+                        showAlert(notification.getTitle() != null ? notification.getTitle() : "Notification",
+                                (notification.getFromUser() != null ? notification.getFromUser() + ": " : "")
+                                        + (notification.getMessage() != null ? notification.getMessage() : ""));
+                    }));
         }).start();
     }
 
@@ -109,6 +114,18 @@ public class FreelancerForumController {
         // Validation: Content must be at least 10 characters
         if (content.length() < 10) {
             showAlert("Error", "Post content must be at least 10 characters long!");
+            return;
+        }
+
+        // Détection de contenus toxiques
+        ModerationService moderation = new ModerationService();
+        if (!moderation.isContentClean(title) || !moderation.isContentClean(content)) {
+            String badInTitle = moderation.getFirstBadWord(title);
+            String badInContent = moderation.getFirstBadWord(content);
+            String bad = badInTitle != null ? badInTitle : badInContent;
+            showAlert("Contenu non autorisé",
+                    "Votre publication contient un mot inapproprié (\"" + bad + "\"). " +
+                            "Veuillez modifier le titre ou le contenu avant de publier.");
             return;
         }
 
@@ -210,11 +227,12 @@ public class FreelancerForumController {
             reactionService.toggleReaction(currentUserId, post.getId());
             displayPosts();
 
-            // Send notification if liking (not unliking)
-            if (!userReacted) {
+            // Send real-time notification if liking (not unliking)
+            if (!userReacted && WebSocketService.getInstance().isConnected()) {
                 NotificationMsg msg = new NotificationMsg();
+                msg.setFromUser(currentUserName);
                 msg.setTitle("New Reaction");
-                msg.setMessage(currentUserName + " reacted to your post: " + post.getTitle());
+                msg.setMessage("reacted to your post: " + post.getTitle());
                 msg.setRecipientId(post.getAuthorName());
                 msg.setType("REACTION");
                 WebSocketService.getInstance().send("/app/notification", msg);
@@ -255,6 +273,14 @@ public class FreelancerForumController {
             String newTitle = titleField.getText().trim();
             String newContent = contentArea.getText().trim();
             if (!newTitle.isEmpty() && !newContent.isEmpty()) {
+                ModerationService modEdit = new ModerationService();
+                if (!modEdit.isContentClean(newTitle) || !modEdit.isContentClean(newContent)) {
+                    String bad = modEdit.getFirstBadWord(newTitle);
+                    if (bad == null) bad = modEdit.getFirstBadWord(newContent);
+                    showAlert("Contenu non autorisé",
+                            "Votre publication contient un mot inapproprié (\"" + bad + "\"). Veuillez modifier.");
+                    return;
+                }
                 postService.updatePost(post.getId(), newTitle, newContent);
                 reloadPostsFromDb();
                 displayPosts();
@@ -303,15 +329,20 @@ public class FreelancerForumController {
             section.getChildren().add(new Separator());
         }
 
-        // New comment input
+        // New comment input with GIF support
         HBox newCommentBox = new HBox(10);
         newCommentBox.setAlignment(Pos.CENTER_LEFT);
 
         TextField commentField = new TextField();
-        commentField.setPromptText("Write a comment...");
-        commentField.setPrefWidth(400);
+        commentField.setPromptText("Write a comment or add a GIF...");
+        commentField.setPrefWidth(350);
         commentField.setStyle("-fx-border-color: #a5d6a7; -fx-border-radius: 5; -fx-background-radius: 5;");
         HBox.setHgrow(commentField, Priority.ALWAYS);
+
+        Button gifBtn = new Button("GIF");
+        gifBtn.setStyle("-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 5;");
+        gifBtn.setTooltip(new Tooltip("Search and add a GIF"));
+        gifBtn.setOnAction(e -> openGiphyPicker(commentField));
 
         Button sendBtn = new Button("Send");
         sendBtn.setStyle("-fx-background-color: #1a7a4c; -fx-text-fill: white; " +
@@ -320,9 +351,18 @@ public class FreelancerForumController {
         sendBtn.setOnAction(e -> {
             String text = commentField.getText().trim();
             if (!text.isEmpty()) {
-                // Validation: Comment must be at least 5 characters
-                if (text.length() < 5) {
-                    showAlert("Error", "Comment must be at least 5 characters long!");
+                // Validation: min 2 chars for text, or allow GIF URLs (which are long)
+                if (text.length() < 2 && !GiphyService.isGiphyUrl(text)) {
+                    showAlert("Error", "Comment must be at least 2 characters!");
+                    return;
+                }
+                // Détection de contenus toxiques dans le commentaire
+                ModerationService moderation = new ModerationService();
+                if (!moderation.isContentClean(text)) {
+                    String bad = moderation.getFirstBadWord(text);
+                    showAlert("Contenu non autorisé",
+                            "Votre commentaire contient un mot inapproprié (\"" + bad + "\"). " +
+                                    "Veuillez modifier votre message.");
                     return;
                 }
                 Comment comment = new Comment();
@@ -336,18 +376,16 @@ public class FreelancerForumController {
                     displayPosts();
                     commentField.clear();
 
-                    // Send notification to post author
-                    NotificationMsg msg = new NotificationMsg();
-                    msg.setTitle("New Comment");
-                    msg.setMessage(currentUserName + " commented on your post: " + post.getTitle());
-                    // Assuming we have a way to map authorId to username/userId expected by STOMP
-                    // user destination
-                    // For now, we use authorName as the recipient identifier for simplicity in this
-                    // MVP
-                    msg.setRecipientId(post.getAuthorName());
-                    msg.setType("COMMENT");
-
-                    WebSocketService.getInstance().send("/app/notification", msg);
+                    // Send real-time notification to post author
+                    if (WebSocketService.getInstance().isConnected()) {
+                        NotificationMsg msg = new NotificationMsg();
+                        msg.setFromUser(currentUserName);
+                        msg.setTitle("New Comment");
+                        msg.setMessage("commented on your post: " + post.getTitle());
+                        msg.setRecipientId(post.getAuthorName());
+                        msg.setType("COMMENT");
+                        WebSocketService.getInstance().send("/app/notification", msg);
+                    }
 
                 } catch (SQLException ex) {
                     showAlert("Error", "Could not save comment: " + ex.getMessage());
@@ -355,7 +393,7 @@ public class FreelancerForumController {
             }
         });
 
-        newCommentBox.getChildren().addAll(commentField, sendBtn);
+        newCommentBox.getChildren().addAll(commentField, gifBtn, sendBtn);
         section.getChildren().add(newCommentBox);
 
         return section;
@@ -377,12 +415,36 @@ public class FreelancerForumController {
 
         topRow.getChildren().addAll(authorLabel, timeLabel);
 
-        // Comment content
-        Label contentLabel = new Label(comment.getContent());
-        contentLabel.setWrapText(true);
-        contentLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: black;");
-
-        box.getChildren().addAll(topRow, contentLabel);
+        // Comment content (text + GIF if present)
+        VBox contentBox = new VBox(4);
+        String content = comment.getContent();
+        if (GiphyService.isGiphyUrl(content)) {
+            ImageView gifView = new ImageView(new Image(content, true));
+            gifView.setFitWidth(200);
+            gifView.setPreserveRatio(true);
+            contentBox.getChildren().add(gifView);
+        } else {
+            String giphyUrl = extractGiphyUrl(content);
+            if (giphyUrl != null) {
+                String textPart = content.replace(giphyUrl, "").trim();
+                if (!textPart.isEmpty()) {
+                    Label textLabel = new Label(textPart);
+                    textLabel.setWrapText(true);
+                    textLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: black;");
+                    contentBox.getChildren().add(textLabel);
+                }
+                ImageView gifView = new ImageView(new Image(giphyUrl, true));
+                gifView.setFitWidth(200);
+                gifView.setPreserveRatio(true);
+                contentBox.getChildren().add(gifView);
+            } else {
+                Label contentLabel = new Label(content);
+                contentLabel.setWrapText(true);
+                contentLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: black;");
+                contentBox.getChildren().add(contentLabel);
+            }
+        }
+        box.getChildren().addAll(topRow, contentBox);
 
         // Edit / Delete buttons — only for the comment author
         if (comment.getAuthorId() == currentUserId) {
@@ -426,6 +488,13 @@ public class FreelancerForumController {
         saveBtn.setOnAction(e -> {
             String newText = editField.getText().trim();
             if (!newText.isEmpty()) {
+                ModerationService modEdit = new ModerationService();
+                if (!modEdit.isContentClean(newText)) {
+                    String bad = modEdit.getFirstBadWord(newText);
+                    showAlert("Contenu non autorisé",
+                            "Votre commentaire contient un mot inapproprié (\"" + bad + "\"). Veuillez modifier.");
+                    return;
+                }
                 commentService.updateComment(comment.getId(), newText);
                 reloadPostsFromDb();
                 displayPosts();
@@ -468,6 +537,70 @@ public class FreelancerForumController {
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Could not load Notifications page!");
+        }
+    }
+
+    private void openGiphyPicker(TextField commentField) {
+        Stage pickerStage = new Stage();
+        pickerStage.setTitle("Search GIFs");
+        VBox root = new VBox(10);
+        root.setPadding(new Insets(15));
+        root.setStyle("-fx-background-color: white;");
+
+        HBox searchBox = new HBox(8);
+        TextField searchField = new TextField();
+        searchField.setPromptText("Search GIFs...");
+        searchField.setPrefWidth(250);
+        Button searchBtn = new Button("Search");
+        searchBtn.setStyle("-fx-background-color: #9b59b6; -fx-text-fill: white;");
+        searchBox.getChildren().addAll(searchField, searchBtn);
+
+        FlowPane resultsPane = new FlowPane(8, 8);
+        resultsPane.setPrefWidth(450);
+        resultsPane.setPrefHeight(300);
+
+        Runnable doSearch = () -> {
+            resultsPane.getChildren().clear();
+            String q = searchField.getText().trim();
+            if (q.isEmpty()) q = "fun";
+            List<String> urls = new GiphyService().searchGifs(q);
+            for (String url : urls) {
+                ImageView iv = new ImageView(new Image(url, true));
+                iv.setFitWidth(100);
+                iv.setPreserveRatio(true);
+                iv.setStyle("-fx-cursor: hand;");
+                iv.setOnMouseClicked(event -> {
+                    String current = commentField.getText();
+                    commentField.setText(current + (current.isEmpty() ? "" : " ") + url);
+                    pickerStage.close();
+                });
+                resultsPane.getChildren().add(iv);
+            }
+        };
+        searchBtn.setOnAction(e -> doSearch.run());
+        searchField.setOnAction(e -> doSearch.run());
+
+        root.getChildren().addAll(searchBox, new ScrollPane(resultsPane));
+        pickerStage.setScene(new Scene(root, 470, 380));
+        pickerStage.show();
+        doSearch.run();
+    }
+
+    private String extractGiphyUrl(String content) {
+        if (content == null) return null;
+        int idx = content.indexOf("https://");
+        if (idx < 0) idx = content.indexOf("http://");
+        if (idx < 0) return null;
+        int end = idx;
+        while (end < content.length() && !Character.isWhitespace(content.charAt(end))) end++;
+        String url = content.substring(idx, end);
+        return GiphyService.isGiphyUrl(url) ? url : null;
+    }
+
+    private void updateNotificationBadge() {
+        unreadNotificationCount++;
+        if (notificationBadge != null) {
+            notificationBadge.setText(String.valueOf(unreadNotificationCount));
         }
     }
 

@@ -19,6 +19,7 @@ public class CommentService {
      * Uses DEFAULT_FREELANCER_ID (run forum_default_freelancer.sql once to create it).
      */
     public int addComment(Comment comment) throws SQLException {
+        if (cn == null) throw new SQLException("Database not connected.");
         String sql = "INSERT INTO freelancer_forum_comment (post_id, freelancer_id, comment_text) VALUES (?, ?, ?)";
         PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         ps.setInt(1, comment.getPostId());
@@ -38,6 +39,7 @@ public class CommentService {
      */
     public List<Comment> getCommentsByPostId(int postId) {
         List<Comment> comments = new ArrayList<>();
+        if (cn == null) return comments;
         String sql = "SELECT c.comment_id, c.post_id, c.comment_text, c.created_at FROM freelancer_forum_comment c WHERE c.post_id = ? ORDER BY c.comment_id ASC";
         try {
             PreparedStatement ps = cn.prepareStatement(sql);
@@ -66,6 +68,7 @@ public class CommentService {
      * Update a comment's text. Schema column is comment_text.
      */
     public void updateComment(int commentId, String newContent) {
+        if (cn == null) return;
         String sql = "UPDATE freelancer_forum_comment SET comment_text = ? WHERE comment_id = ?";
         try {
             PreparedStatement ps = cn.prepareStatement(sql);
@@ -81,6 +84,7 @@ public class CommentService {
      * Delete a comment by comment_id.
      */
     public void deleteComment(int commentId) {
+        if (cn == null) return;
         String sql = "DELETE FROM freelancer_forum_comment WHERE comment_id = ?";
         try {
             PreparedStatement ps = cn.prepareStatement(sql);

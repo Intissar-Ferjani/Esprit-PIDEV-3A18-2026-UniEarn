@@ -11,6 +11,7 @@ import javafx.application.Platform;
 
 import uniearn.services.WebSocketService;
 import uniearn.model.dto.ChatMessage;
+import uniearn.model.dto.NotificationMsg;
 
 import java.io.IOException;
 
@@ -71,13 +72,21 @@ public class MessagesController {
             if (!text.isEmpty()) {
                 String username = "Forum User";
 
-                // Send via WebSocket
                 ChatMessage chatMessage = new ChatMessage();
                 chatMessage.setSender(username);
                 chatMessage.setContent(text);
                 chatMessage.setType(ChatMessage.MessageType.CHAT);
-
                 WebSocketService.getInstance().send("/app/chat.sendMessage", chatMessage);
+
+                // Send real-time notification so others see "X sent a message"
+                if (WebSocketService.getInstance().isConnected()) {
+                    NotificationMsg notif = new NotificationMsg();
+                    notif.setFromUser(username);
+                    notif.setTitle("New Message");
+                    notif.setMessage("sent a message in chat");
+                    notif.setType("MESSAGE");
+                    WebSocketService.getInstance().send("/app/notification", notif);
+                }
 
                 messageInput.clear();
             }
