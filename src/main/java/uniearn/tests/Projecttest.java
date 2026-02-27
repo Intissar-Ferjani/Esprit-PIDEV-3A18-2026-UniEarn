@@ -1,26 +1,23 @@
 package uniearn.tests;
 
-import uniearn.model.Project;
-import uniearn.services.PorjectService;
-
-import java.security.Provider;
-import java.sql.SQLException;
+import uniearn.model.entities.Project;
+import uniearn.services.ProjectService;
 
 public class Projecttest {
 
     public static void main(String[] args) {
 
-        try {
 
-            PorjectService service = new PorjectService();
 
-            //test add project
-            Project p = new Project("Project1", "Description of project 1", 1000.0, 1, 1);
-            service.addProject(p);
-            System.out.println("Project added successfully!");
+            ProjectService service = new ProjectService();
+
+            //test add project/*
+            //Project p = new Project("esprit", "Validation", 1000.0, 1, 1);
+            //service.addProject(p);
+            //System.out.println("Project added successfully!");
 
             //test delete project
-            service.deleteProject(2);
+            service.deleteProject(25);
             System.out.println("Project with ID 2 deleted successfully!");
 
             //test to show all projects
@@ -46,9 +43,7 @@ public class Projecttest {
             System.out.println("ID: " + project.getIdproject() + ", Title: " + project.getTitle() + ", Description: " + project.getDescription() + ", Budget: " + project.getBudget() + ", Status: " + project.getStatus() + ", Client ID: " + project.getClient_id());
 
 
-        }catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
+
 
 
 

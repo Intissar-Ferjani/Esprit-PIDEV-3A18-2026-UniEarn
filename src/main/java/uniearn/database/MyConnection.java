@@ -4,38 +4,78 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Singleton class for managing database connection
+ * Ensures only ONE database connection exists throughout the application
+ */
 public class MyConnection {
 
-    private String url = System.getProperty("uniearn.db.url", "jdbc:mysql://localhost:3306/uniearn2");
+    // Database credentials
+    private final String url = "jdbc:mysql://localhost:3306/uniearn_db";
+    private final String login = "root";
+    private final String pwd = "";
 
-    private String login = System.getProperty("uniearn.db.user", "root");
-
-    private String pwd = System.getProperty("uniearn.db.password", "");
-
+    // Single connection instance
     private Connection cnx;
 
-    public static MyConnection instance;
+    // Single MyConnection instance (Singleton)
+    private static MyConnection instance;
 
-
-
-    public MyConnection(){
-
-        try{
-         cnx = DriverManager.getConnection(url, login, pwd);
-             System.out.println("Connected to database successfully!");
-        }catch(SQLException e){
-            System.out.println(e.getMessage());
+    /**
+     * Private constructor - prevents external instantiation
+     * This is KEY to Singleton pattern
+     */
+    private MyConnection() {
+        try {
+            cnx = DriverManager.getConnection(url, login, pwd);
+            System.out.println("Connected to database successfully!");
+        } catch (SQLException e) {
+            System.err.println("Database connection failed: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
+    /**
+     * Get the single instance of MyConnection
+     * Thread-safe implementation
+     */
+    public static synchronized MyConnection getInstance() {
+        if (instance == null) {
+            instance = new MyConnection();
+        }
+        return instance;
+    }
+
+    /**
+     * Get the database connection
+     * Always returns the same connection
+     */
     public Connection getCnx() {
         return cnx;
     }
 
-    public static MyConnection getInstance(){
-        if(instance == null){
-            instance = new MyConnection();
+    /**
+     * Check if connection is still alive
+     */
+    public boolean isConnected() {
+        try {
+            return cnx != null && !cnx.isClosed();
+        } catch (SQLException e) {
+            return false;
         }
-        return instance;
+    }
+
+    /**
+     * Reconnect if connection is lost
+     */
+    public void reconnect() {
+        try {
+            if (!isConnected()) {
+                cnx = DriverManager.getConnection(url, login, pwd);
+                System.out.println("Reconnected to database successfully!");
+            }
+        } catch (SQLException e) {
+            System.err.println("Reconnection failed: " + e.getMessage());
+        }
     }
 }

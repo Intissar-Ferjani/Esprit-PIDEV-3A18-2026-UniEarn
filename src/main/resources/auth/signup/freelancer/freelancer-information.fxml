@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="600.0" prefWidth="850.0" styleClass="root" stylesheets="@../../auth.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.auth.freelancer.FreelancerSignupController">
+
+    <!-- Left Panel - Branding -->
+    <VBox alignment="CENTER" prefHeight="600.0" prefWidth="300.0" styleClass="left-panel" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <children>
+            <Label styleClass="brand-title" text="UniEarn">
+                <font>
+                    <Font name="System Bold" size="48.0" />
+                </font>
+            </Label>
+            <Label styleClass="brand-subtitle" text="Build your profile!">
+                <font>
+                    <Font size="18.0" />
+                </font>
+                <VBox.margin>
+                    <Insets top="10.0" />
+                </VBox.margin>
+            </Label>
+            <Label styleClass="brand-subtitle" text="Showcase your skills">
+                <font>
+                    <Font size="14.0" />
+                </font>
+                <VBox.margin>
+                    <Insets top="5.0" />
+                </VBox.margin>
+            </Label>
+        </children>
+    </VBox>
+
+    <!-- Right Panel - Freelancer Profile Form -->
+    <VBox alignment="TOP_CENTER" layoutX="300.0" prefHeight="600.0" prefWidth="550.0" styleClass="form-panel" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <padding>
+            <Insets bottom="30.0" left="50.0" right="50.0" top="30.0" />
+        </padding>
+        <children>
+
+            <!-- Progress Indicator -->
+            <HBox alignment="CENTER" spacing="8.0">
+                <children>
+                    <VBox alignment="CENTER" spacing="5.0">
+                        <children>
+                            <Label styleClass="progress-step-completed" text="1">
+                                <font>
+                                    <Font name="System Bold" size="14.0" />
+                                </font>
+                            </Label>
+                            <Label styleClass="progress-label-completed" text="Account">
+                                <font>
+                                    <Font size="10.0" />
+                                </font>
+                            </Label>
+                        </children>
+                    </VBox>
+                    <Label styleClass="progress-line-completed" text="━">
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Label>
+                    <VBox alignment="CENTER" spacing="5.0">
+                        <children>
+                            <Label styleClass="progress-step-active" text="2">
+                                <font>
+                                    <Font name="System Bold" size="14.0" />
+                                </font>
+                            </Label>
+                            <Label styleClass="progress-label-active" text="Profile">
+                                <font>
+                                    <Font size="10.0" />
+                                </font>
+                            </Label>
+                        </children>
+                    </VBox>
+                    <Label styleClass="progress-line" text="━">
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Label>
+                    <VBox alignment="CENTER" spacing="5.0">
+                        <children>
+                            <Label styleClass="progress-step-inactive" text="3">
+                                <font>
+                                    <Font name="System Bold" size="14.0" />
+                                </font>
+                            </Label>
+                            <Label styleClass="progress-label-inactive" text="Verification">
+                                <font>
+                                    <Font size="10.0" />
+                                </font>
+                            </Label>
+                        </children>
+                    </VBox>
+                    <Label styleClass="progress-line" text="━">
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Label>
+                    <VBox alignment="CENTER" spacing="5.0">
+                        <children>
+                            <Label styleClass="progress-step-inactive" text="4">
+                                <font>
+                                    <Font name="System Bold" size="14.0" />
+                                </font>
+                            </Label>
+                            <Label styleClass="progress-label-inactive" text="Portfolio">
+                                <font>
+                                    <Font size="10.0" />
+                                </font>
+                            </Label>
+                        </children>
+                    </VBox>
+                </children>
+                <VBox.margin>
+                    <Insets bottom="20.0" />
+                </VBox.margin>
+            </HBox>
+
+            <!-- ScrollPane for form content -->
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="form-scroll" VBox.vgrow="ALWAYS">
+                <content>
+                    <VBox spacing="15.0">
+                        <children>
+
+                            <!-- Form Title -->
+                            <Label styleClass="form-title" text="Freelancer Profile">
+                                <font>
+                                    <Font name="System Bold" size="28.0" />
+                                </font>
+                            </Label>
+
+                            <Label styleClass="form-subtitle" text="Tell clients about your expertise">
+                                <font>
+                                    <Font size="13.0" />
+                                </font>
+                                <VBox.margin>
+                                    <Insets bottom="10.0" />
+                                </VBox.margin>
+                            </Label>
+
+                            <!-- Hourly Rate -->
+                            <VBox spacing="8.0">
+                                <children>
+                                    <Label styleClass="field-label" text="Hourly Rate">
+                                        <font>
+                                            <Font name="System Bold" size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                        <children>
+                                            <TextField fx:id="hourlyRateField" prefWidth="250.0" promptText="0.00" styleClass="custom-field">
+                                                <font>
+                                                    <Font size="14.0" />
+                                                </font>
+                                            </TextField>
+                                            <Label styleClass="helper-text" text="TND/hour">
+                                                <font>
+                                                    <Font size="13.0" />
+                                                </font>
+                                            </Label>
+                                        </children>
+                                    </HBox>
+                                    <Label fx:id="hourlyRateError" styleClass="error-label" visible="false" />
+                                </children>
+                            </VBox>
+
+                            <!-- Skills -->
+                            <VBox spacing="8.0">
+                                <children>
+                                    <Label styleClass="field-label" text="Skills">
+                                        <font><Font name="System Bold" size="13.0" /></font>
+                                    </Label>
+                                    <FlowPane fx:id="skillsChipsPane" hgap="8.0" vgap="8.0"
+                                              minHeight="45.0"
+                                              style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-border-width: 1.5px; -fx-padding: 8px;">
+                                    </FlowPane>
+                                    <TextField fx:id="skillSearchField"
+                                               promptText="🔍 Search and add skills..."
+                                               styleClass="custom-field">
+                                        <font><Font size="14.0" /></font>
+                                    </TextField>
+                                    <ListView fx:id="skillSuggestionsView"
+                                              prefHeight="150.0"
+                                              visible="false"
+                                              managed="false"
+                                              style="-fx-background-color: white; -fx-border-color: #1976d2; -fx-border-radius: 8px; -fx-border-width: 1.5px;">
+                                    </ListView>
+                                    <Label styleClass="helper-text" text="Search and select up to 20 skills">
+                                        <font><Font size="12.0" /></font>
+                                    </Label>
+                                    <Label fx:id="skillsError" styleClass="error-label" visible="false" />
+                                </children>
+                            </VBox>
+
+                            <!-- Bio -->
+                            <VBox spacing="8.0">
+                                <children>
+                                    <Label styleClass="field-label" text="Professional Bio">
+                                        <font>
+                                            <Font name="System Bold" size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <TextArea fx:id="bioField" prefHeight="100.0" prefRowCount="4" promptText="Tell clients about yourself, your experience, and what makes you unique..." styleClass="custom-field" wrapText="true">
+                                        <font>
+                                            <Font size="14.0" />
+                                        </font>
+                                    </TextArea>
+                                    <Label styleClass="helper-text" text="50-500 characters">
+                                        <font>
+                                            <Font size="12.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="bioError" styleClass="error-label" visible="false" />
+                                </children>
+                            </VBox>
+
+                            <!-- Experience Level -->
+                            <VBox spacing="8.0">
+                                <children>
+                                    <Label styleClass="field-label" text="Experience Level">
+                                        <font>
+                                            <Font name="System Bold" size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <ComboBox fx:id="experienceComboBox" prefWidth="450.0" promptText="Select your experience level" styleClass="custom-combo" />
+                                    <Label fx:id="experienceError" styleClass="error-label" visible="false" />
+                                </children>
+                            </VBox>
+
+                            <!-- CV Upload -->
+                            <VBox spacing="8.0">
+                                <children>
+                                    <Label styleClass="field-label" text="Upload Your CV">
+                                        <font>
+                                            <Font name="System Bold" size="13.0" />
+                                        </font>
+                                    </Label>
+                                    <Label styleClass="helper-text" text="We'll use your CV to auto-generate your bio (coming soon)">
+                                        <font>
+                                            <Font size="11.0" />
+                                        </font>
+                                    </Label>
+                                    <HBox alignment="CENTER_LEFT" spacing="12.0">
+                                        <children>
+                                            <Button fx:id="uploadCvButton" onAction="#handleUploadCv"
+                                                    prefHeight="38.0" prefWidth="160.0"
+                                                    styleClass="upload-button" text="📄 Choose CV">
+                                                <font>
+                                                    <Font name="System Bold" size="12.0" />
+                                                </font>
+                                            </Button>
+                                            <Label fx:id="cvFileLabel" styleClass="helper-text" text="No file selected">
+                                                <font>
+                                                    <Font size="12.0" />
+                                                </font>
+                                            </Label>
+                                        </children>
+                                    </HBox>
+                                    <Label styleClass="helper-text" text="✓ Accepted formats: PDF, DOC, DOCX (max 5MB)">
+                                        <font>
+                                            <Font size="11.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="cvError" styleClass="error-label" visible="false" />
+                                </children>
+                            </VBox>
+
+                        </children>
+                    </VBox>
+                </content>
+            </ScrollPane>
+
+            <!-- Action Buttons -->
+            <HBox spacing="15.0">
+                <children>
+                    <Button fx:id="backButton" onAction="#handleBack" prefHeight="40.0" prefWidth="160.0" styleClass="back-button" text="Back">
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Button>
+                    <Button fx:id="nextButton" onAction="#handleNext" prefHeight="40.0" prefWidth="230.0" styleClass="signup-button" text="Next">
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Button>
+                </children>
+                <VBox.margin>
+                    <Insets top="15.0" />
+                </VBox.margin>
+            </HBox>
+
+        </children>
+    </VBox>
+
+</AnchorPane>
