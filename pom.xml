@@ -75,11 +75,23 @@
             <version>2.0.1</version>
         </dependency>
 
-        <!-- Tesseract OCR for Student Card Verification -->
+        <!-- Tesseract OCR for Student Card Verification + cv extract -->
         <dependency>
             <groupId>net.sourceforge.tess4j</groupId>
             <artifactId>tess4j</artifactId>
             <version>5.7.0</version>
+        </dependency>
+
+        <!-- Ikonli core for JavaFX + FontAwesome 5 icon pack -->
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-javafx</artifactId>
+            <version>12.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-fontawesome5-pack</artifactId>
+            <version>12.3.1</version>
         </dependency>
 
         <!-- JSON Parsing -->
@@ -88,6 +100,7 @@
             <artifactId>gson</artifactId>
             <version>2.10.1</version>
         </dependency>
+
         <!-- PDF Generation -->
         <dependency>
             <groupId>net.sf.jasperreports</groupId>

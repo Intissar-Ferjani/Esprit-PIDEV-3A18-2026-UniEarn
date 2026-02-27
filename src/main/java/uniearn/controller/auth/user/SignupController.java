@@ -5,6 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import uniearn.controller.auth.client.ClientSignupController;
@@ -16,6 +19,7 @@ import uniearn.services.users.AdminService;
 import uniearn.services.users.UserService;
 import uniearn.utils.user.PasswordUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.regex.Pattern;
@@ -43,6 +47,8 @@ public class SignupController {
     @FXML private Label roleError;
     @FXML private CheckBox termsCheckbox;
     @FXML private Label termsError;
+    @FXML private ImageView profileImageView;
+
 
     private final UserService userService = new UserService();
     private final AdminService adminService = new AdminService();
@@ -50,6 +56,10 @@ public class SignupController {
 
     private boolean isPasswordVisible = false;
     private boolean isConfirmPasswordVisible = false;
+
+    // Stores the selected photo file temporarily until the user is created in DB
+    private File selectedProfilePhoto = null;
+
 
     @FXML
     public void initialize() {
@@ -312,11 +322,10 @@ public class SignupController {
                 return;
 
             } else if (selectedRole == UserRole.ADMIN) {
-                // Insert into both user table and admin table
                 Admin newAdmin = new Admin();
                 newAdmin.setName(nameField.getText().trim());
                 newAdmin.setEmail(emailField.getText().trim());
-                newAdmin.setPassword(password);  // Will be hashed in UserService
+                newAdmin.setPassword(password);
                 newAdmin.setRole(UserRole.ADMIN);
                 newAdmin.setProfilePicturePath(null);
                 newAdmin.setActivated(true);
@@ -346,14 +355,51 @@ public class SignupController {
         }
     }
 
-    // Helper to build a basic User object from form fields
+    /**
+     * Builds a base User object from the form fields.
+     * If a profile photo was selected, its absolute path is stored temporarily
+     * so the downstream controller (Client/Freelancer) can copy and save it
+     * after the user row has been inserted into the DB and an ID is available.
+     */
     private User buildBaseUser(String password) {
         User user = new User();
         user.setName(nameField.getText().trim());
         user.setEmail(emailField.getText().trim());
         user.setPassword(password);
         user.setRole(roleComboBox.getValue());
+        // Pass the absolute path of the chosen photo (null if none selected).
+        // The receiving controller is responsible for copying the file and
+        // calling userService.updateProfilePicture() once it has a real userId.
+        if (selectedProfilePhoto != null) {
+            user.setProfilePicturePath(selectedProfilePhoto.getAbsolutePath());
+        }
         return user;
+    }
+
+    /**
+     * Lets the user pick a profile photo during signup.
+     * We only preview the image here — we do NOT copy or save it yet because
+     * the user row doesn't exist in the DB yet (no userId available).
+     * The actual file copy + DB update happens in ClientSignupController /
+     * FreelancerSignupController after the INSERT returns a userId.
+     */
+    @FXML
+    private void handleChangePhoto() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Profile Picture");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+        );
+
+        File selected = fileChooser.showOpenDialog(profileImageView.getScene().getWindow());
+
+        if (selected != null) {
+            selectedProfilePhoto = selected;
+            // Preview only — file is NOT copied until after DB insert
+            Image preview = new Image(selected.toURI().toString());
+            profileImageView.setImage(preview);
+            System.out.println("✓ Profile photo selected (preview only): " + selected.getAbsolutePath());
+        }
     }
 
     private void redirectToClientSignup(User userData) {

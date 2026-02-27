@@ -141,33 +141,6 @@ public class ClientProfileController {
         }
     }
 
-    private void loadStatistics() {
-        totalSpentLabel.setText(String.format("%.2f TND", currentClient.getAmount()));
-        activeProjectsLabel.setText("3");
-        completedProjectsLabel.setText("10");
-        System.out.println("✓ Statistics loaded");
-    }
-
-    private void loadPostedProjects() {
-        postedProjectsContainer.getChildren().clear();
-
-        VBox placeholder = new VBox(10);
-        placeholder.setAlignment(Pos.CENTER);
-        placeholder.setStyle("-fx-padding: 40px;");
-
-        Label icon = new Label("📋");
-        icon.setStyle("-fx-font-size: 48px;");
-
-        Label text = new Label("No projects posted yet");
-        text.setStyle("-fx-text-fill: #95a5a6; -fx-font-size: 16px;");
-
-        Label subtext = new Label("Post your first project to get started!");
-        subtext.setStyle("-fx-text-fill: #bdc3c7; -fx-font-size: 13px;");
-
-        placeholder.getChildren().addAll(icon, text, subtext);
-        postedProjectsContainer.getChildren().add(placeholder);
-    }
-
     @FXML
     private void handleChangePhoto() {
         FileChooser fileChooser = new FileChooser();
@@ -215,6 +188,33 @@ public class ClientProfileController {
         }
     }
 
+    private void loadPostedProjects() {
+        postedProjectsContainer.getChildren().clear();
+
+        VBox placeholder = new VBox(10);
+        placeholder.setAlignment(Pos.CENTER);
+        placeholder.setStyle("-fx-padding: 40px;");
+
+        Label icon = new Label("📋");
+        icon.setStyle("-fx-font-size: 48px;");
+
+        Label text = new Label("No projects posted yet");
+        text.setStyle("-fx-text-fill: #95a5a6; -fx-font-size: 16px;");
+
+        Label subtext = new Label("Post your first project to get started!");
+        subtext.setStyle("-fx-text-fill: #bdc3c7; -fx-font-size: 13px;");
+
+        placeholder.getChildren().addAll(icon, text, subtext);
+        postedProjectsContainer.getChildren().add(placeholder);
+    }
+
+    private void loadStatistics() {
+        totalSpentLabel.setText(String.format("%.2f TND", currentClient.getAmount()));
+        activeProjectsLabel.setText("3");
+        completedProjectsLabel.setText("10");
+        System.out.println("✓ Statistics loaded");
+    }
+
     @FXML
     private void handleEditProfile() {
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -249,7 +249,7 @@ public class ClientProfileController {
         TextField industryField = new TextField(currentClient.getIndustry());
         industryField.setStyle("-fx-pref-width: 300px; -fx-font-size: 13px;");
 
-        // ✅ Password change fields
+        // Password change fields
         PasswordField currentPasswordField = new PasswordField();
         currentPasswordField.setPromptText("Enter current password");
         currentPasswordField.setStyle("-fx-pref-width: 300px; -fx-font-size: 13px;");
@@ -262,12 +262,12 @@ public class ClientProfileController {
         confirmPasswordField.setPromptText("Confirm new password");
         confirmPasswordField.setStyle("-fx-pref-width: 300px; -fx-font-size: 13px;");
 
-        // ✅ Password strength indicator
+        // Password strength indicator
         Label passwordStrengthLabel = new Label();
         passwordStrengthLabel.setStyle("-fx-font-size: 11px;");
         passwordStrengthLabel.setVisible(false);
 
-        // ✅ Real-time password strength validation
+        // Real-time password strength validation
         newPasswordField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.isEmpty()) {
                 passwordStrengthLabel.setVisible(false);
@@ -305,7 +305,7 @@ public class ClientProfileController {
         grid.add(createLabel("Industry:"), 0, row);
         grid.add(industryField, 1, row++);
 
-        // ✅ Password change section
+        // Password change section
         Separator passwordSeparator = new Separator();
         GridPane.setColumnSpan(passwordSeparator, 2);
         grid.add(passwordSeparator, 0, row++);
@@ -373,17 +373,17 @@ public class ClientProfileController {
                             !newPassword.isEmpty() ||
                             !confirmPassword.isEmpty();
 
-                    // ✅ Step 1: Validate and update password FIRST (before profile update)
+                    // Step 1: Validate and update password FIRST (before profile update)
                     if (passwordChangeRequested) {
                         if (!validatePasswordChange(currentPassword, newPassword, confirmPassword)) {
-                            return; // Stop here if validation fails
+                            return;
                         }
-                        // ✅ Use userService.updatePassword() directly — hashes and saves
+                        // Use userService.updatePassword() directly — hashes and saves
                         userService.updatePassword(currentClient.getIdUser(), newPassword);
                         System.out.println("✅ Password updated via userService");
                     }
 
-                    // ✅ Step 2: Update profile info using clientService.updateClient()
+                    // Step 2: Update profile info using clientService.updateClient()
                     // This is safe — updateClient() does NOT touch the password column
                     currentClient.setName(nameField.getText().trim());
                     currentClient.setEmail(emailField.getText().trim());
@@ -406,7 +406,7 @@ public class ClientProfileController {
             }
         });    }
 
-    // ✅ Validate password change with BCrypt verification
+    // Validate password change with BCrypt verification
     private boolean validatePasswordChange(String currentPassword, String newPassword, String confirmPassword) {
         // Check if all password fields are filled
         if (currentPassword.isEmpty() && (newPassword.isEmpty() || confirmPassword.isEmpty())) {
@@ -419,7 +419,7 @@ public class ClientProfileController {
             return false;
         }
 
-        // ✅ Verify current password using BCrypt
+        // Verify current password using BCrypt
         try {
             var user = userService.getUserById(currentClient.getIdUser());
             if (user == null) {
@@ -477,7 +477,7 @@ public class ClientProfileController {
         return true;
     }
 
-    // ✅ Calculate password strength
+    // Calculate password strength
     private int calculatePasswordStrength(String password) {
         int strength = 0;
 

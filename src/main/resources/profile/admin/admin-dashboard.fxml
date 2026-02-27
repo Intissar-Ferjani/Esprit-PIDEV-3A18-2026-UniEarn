@@ -56,12 +56,6 @@
                             </font>
                         </Button>
 
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📋 Manage Projects">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-
                         <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📝 Manage Contracts">
                             <font>
                                 <Font size="14.0" />
@@ -235,71 +229,6 @@
                                 </children>
                             </VBox>
                         </GridPane>
-
-                        <!-- Quick Actions -->
-                        <VBox spacing="15.0" styleClass="content-section">
-                            <padding>
-                                <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
-                            </padding>
-                            <children>
-                                <Label styleClass="section-title" text="⚡ Quick Actions">
-                                    <font>
-                                        <Font name="System Bold" size="20.0" />
-                                    </font>
-                                </Label>
-
-                                <GridPane hgap="15.0" vgap="15.0">
-                                    <columnConstraints>
-                                        <ColumnConstraints percentWidth="33.33" />
-                                        <ColumnConstraints percentWidth="33.33" />
-                                        <ColumnConstraints percentWidth="33.33" />
-                                    </columnConstraints>
-
-                                    <!-- Manage Users Button -->
-                                    <Button onAction="#handleManageUsers" prefHeight="80.0" prefWidth="250.0" styleClass="btn-primary" text="👥 Manage Users" GridPane.columnIndex="0">
-                                        <font>
-                                            <Font size="15.0" />
-                                        </font>
-                                    </Button>
-
-                                    <!-- View Reports Button -->
-                                    <Button prefHeight="80.0" prefWidth="250.0" styleClass="btn-primary" text="📊 View Reports" GridPane.columnIndex="1">
-                                        <font>
-                                            <Font size="15.0" />
-                                        </font>
-                                    </Button>
-
-                                    <!-- Settings Button -->
-                                    <Button prefHeight="80.0" prefWidth="250.0" styleClass="btn-primary" text="⚙ Settings" GridPane.columnIndex="2">
-                                        <font>
-                                            <Font size="15.0" />
-                                        </font>
-                                    </Button>
-                           <rowConstraints>
-                              <RowConstraints />
-                           </rowConstraints>
-                                </GridPane>
-                            </children>
-                        </VBox>
-
-                        <!-- Recent Activity Placeholder -->
-                        <VBox spacing="15.0" styleClass="content-section">
-                            <padding>
-                                <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
-                            </padding>
-                            <children>
-                                <Label styleClass="section-title" text="📌 Recent Activity">
-                                    <font>
-                                        <Font name="System Bold" size="20.0" />
-                                    </font>
-                                </Label>
-                                <Label styleClass="profile-tag" text="Activity tracking coming soon...">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                            </children>
-                        </VBox>
 
                     </children>
                 </VBox>

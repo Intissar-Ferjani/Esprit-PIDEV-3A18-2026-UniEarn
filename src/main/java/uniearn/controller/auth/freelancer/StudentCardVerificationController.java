@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 import uniearn.model.entities.users.User;
 import uniearn.model.entities.users.freelancer.Freelancer;
 import uniearn.model.enums.VerifStatus;
-import uniearn.services.ocr.StudentCardOCRService;
+import uniearn.services.users.freelancer.ocr.StudentCardOCRService;
 import uniearn.services.users.freelancer.FreelancerService;
 
 import java.io.File;
@@ -61,20 +61,16 @@ public class StudentCardVerificationController {
         System.out.println("✓ Verification step initialized for: " + freelancer.getName());
     }
 
-//    restores the previously uploaded card
     public void restoreCardPath(String cardPath) {
         if (cardPath != null && !cardPath.isEmpty()) {
             this.savedFilePath = cardPath;
             this.cardVerifiedByOCR = true;
 
-            // Extract just the filename for display
             String fileName = Paths.get(cardPath).getFileName().toString();
             cardFileLabel.setText("✓ " + fileName);
             cardFileLabel.setStyle("-fx-text-fill: #28a745;");
 
             showVerificationStatus("✅ Previously verified card restored", true);
-
-            // Re-enable Next since the card was already accepted
             nextButton.setDisable(false);
         }
     }
@@ -119,6 +115,13 @@ public class StudentCardVerificationController {
                             cardFileLabel.setStyle("-fx-text-fill: #28a745;");
                             showVerificationStatus("✅ " + result.getMessage(), true);
                             nextButton.setDisable(false);
+
+                            // ── Success popup ──────────────────────────────
+                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Card Verified");
+                            alert.setHeaderText("✅ Student Card Verified Successfully!");
+                            alert.showAndWait();
+
                         } else {
                             showVerificationStatus("❌ " + result.getMessage(), false);
                             nextButton.setDisable(true);
@@ -173,7 +176,6 @@ public class StudentCardVerificationController {
 
             VerifStatus status = cardVerifiedByOCR ? VerifStatus.verified : VerifStatus.unverified;
 
-            // update verification data — freelancer was already inserted in Step 2
             freelancerService.updateVerificationData(
                     freelancerData.getIdUser(),
                     savedFilePath,

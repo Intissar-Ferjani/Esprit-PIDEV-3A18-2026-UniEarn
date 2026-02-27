@@ -2,15 +2,15 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.image.*?>
 
 <BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root" stylesheets="@../../profile/profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.freelancer.FreelancerProfileController">
 
     <!-- Top Navigation Bar -->
     <top>
-        <HBox alignment="CENTER_LEFT" prefHeight="70.0" styleClass="top-bar" spacing="20.0">
+        <HBox alignment="CENTER_LEFT" prefHeight="70.0" spacing="20.0" styleClass="top-bar">
             <padding>
                 <Insets left="30.0" right="30.0" />
             </padding>
@@ -32,45 +32,45 @@
 
     <!-- Left Sidebar Navigation -->
     <left>
-        <VBox styleClass="sidebar" prefWidth="250.0">
+        <VBox prefWidth="250.0" styleClass="sidebar">
             <children>
                 <!-- Navigation Menu -->
                 <VBox spacing="5.0" VBox.vgrow="ALWAYS">
                     <padding>
-                        <Insets top="20.0" left="15.0" right="15.0" bottom="15.0" />
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="20.0" />
                     </padding>
                     <children>
-                        <Button text="🏠 Dashboard" styleClass="nav-button, active" prefWidth="220.0" prefHeight="40.0">
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button, active" text="🏠 Dashboard">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
 
-                        <Button text="📋 Projets disponibles" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📋 Projets disponibles">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
 
-                        <Button text="📝 Mes contrats" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📝 Mes contrats">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
 
-                        <Button text="💼 Portfolio" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0" onAction="#handleViewPortfolio">
+                        <Button onAction="#handleViewPortfolio" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="💼 Portfolio">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
 
-                        <Button text="💬 Messages" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="💬 Messages">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
 
-                        <Button text="💳 Paiements" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="💳 Paiements">
                             <font>
                                 <Font size="14.0" />
                             </font>
@@ -80,13 +80,13 @@
 
                         <Separator />
 
-                        <Button text="⚙ Settings" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0" onAction="#handleSettings">
+                        <Button onAction="#handleSettings" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="⚙ Settings">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
 
-                        <Button text="🚪 Logout" styleClass="nav-button, logout" prefWidth="220.0" prefHeight="40.0" onAction="#handleLogout">
+                        <Button onAction="#handleLogout" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button, logout" text="🚪 Logout">
                             <font>
                                 <Font size="14.0" />
                             </font>
@@ -99,18 +99,18 @@
 
     <!-- Main Content -->
     <center>
-        <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="content-scroll">
+        <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="content-scroll">
             <content>
                 <VBox spacing="25.0" styleClass="main-content">
                     <padding>
-                        <Insets top="30.0" bottom="30.0" left="40.0" right="40.0" />
+                        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
                     </padding>
                     <children>
 
                         <!-- Profile Header Section -->
-                        <HBox spacing="30.0" alignment="CENTER_LEFT" styleClass="profile-header">
+                        <HBox alignment="CENTER_LEFT" spacing="30.0" styleClass="profile-header">
                             <padding>
-                                <Insets top="20.0" bottom="20.0" left="30.0" right="30.0" />
+                                <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
                             </padding>
                             <children>
                                 <!-- Profile Picture -->
@@ -125,7 +125,7 @@
                                                 </ImageView>
                                             </children>
                                         </StackPane>
-                                        <Button text="📷 Change Photo" styleClass="btn-secondary-small" onAction="#handleChangePhoto">
+                                        <Button onAction="#handleChangePhoto" styleClass="btn-secondary-small" text="📷 Change Photo">
                                             <font>
                                                 <Font size="11.0" />
                                             </font>
@@ -136,31 +136,31 @@
                                 <!-- Profile Info -->
                                 <VBox spacing="8.0" HBox.hgrow="ALWAYS">
                                     <children>
-                                        <Label fx:id="nameLabel" text="Freelancer Name" styleClass="profile-name-large">
+                                        <Label fx:id="nameLabel" styleClass="profile-name-large" text="Freelancer Name">
                                             <font>
                                                 <Font name="System Bold" size="28.0" />
                                             </font>
                                         </Label>
-                                        <Label fx:id="emailLabel" text="freelancer@email.com" styleClass="profile-email-large">
+                                        <Label fx:id="emailLabel" styleClass="profile-email-large" text="freelancer@email.com">
                                             <font>
                                                 <Font size="15.0" />
                                             </font>
                                         </Label>
-                                        <HBox spacing="15.0" alignment="CENTER_LEFT">
+                                        <HBox alignment="CENTER_LEFT" spacing="15.0">
                                             <children>
-                                                <Label fx:id="priceLabel" text="25.00 TND/hr" styleClass="profile-tag">
+                                                <Label fx:id="priceLabel" styleClass="profile-tag" text="25.00 TND/hr">
                                                     <font>
                                                         <Font size="13.0" />
                                                     </font>
                                                 </Label>
-                                                <Label text="•" styleClass="separator" />
-                                                <Label fx:id="ratingLabel" text="⭐ 4.5" styleClass="profile-tag">
+                                                <Label styleClass="separator" text="•" />
+                                                <Label fx:id="ratingLabel" styleClass="profile-tag" text="⭐ 4.5">
                                                     <font>
                                                         <Font size="13.0" />
                                                     </font>
                                                 </Label>
-                                                <Label text="•" styleClass="separator" />
-                                                <Label fx:id="verificationLabel" text="✓ Verified" styleClass="profile-tag">
+                                                <Label styleClass="separator" text="•" />
+                                                <Label fx:id="verificationLabel" styleClass="profile-tag" text="✓ Verified">
                                                     <font>
                                                         <Font size="13.0" />
                                                     </font>
@@ -168,16 +168,16 @@
                                             </children>
                                         </HBox>
                                         <!-- Skills -->
-                                        <HBox spacing="8.0" alignment="CENTER_LEFT" fx:id="skillsContainer">
+                                        <HBox fx:id="skillsContainer" alignment="CENTER_LEFT" spacing="8.0">
                                             <!-- Skills loaded dynamically -->
                                         </HBox>
                                     </children>
                                 </VBox>
 
                                 <!-- Actions -->
-                                <VBox spacing="10.0" alignment="TOP_RIGHT">
+                                <VBox alignment="TOP_RIGHT" spacing="10.0">
                                     <children>
-                                        <Button fx:id="editProfileButton" text="✏ Edit Profile" onAction="#handleEditProfile" styleClass="btn-primary">
+                                        <Button fx:id="editProfileButton" onAction="#handleEditProfile" styleClass="btn-primary" text="✏ Edit Profile">
                                             <font>
                                                 <Font size="13.0" />
                                             </font>
@@ -188,77 +188,21 @@
                         </HBox>
 
                         <!-- Statistics Cards -->
-                        <HBox spacing="20.0">
-                            <children>
-                                <VBox styleClass="stat-card, stat-green" spacing="8.0" HBox.hgrow="ALWAYS">
-                                    <padding>
-                                        <Insets top="20.0" bottom="20.0" left="20.0" right="20.0" />
-                                    </padding>
-                                    <children>
-                                        <Label text="💰 Total Earned" styleClass="stat-label">
-                                            <font>
-                                                <Font size="13.0" />
-                                            </font>
-                                        </Label>
-                                        <Label fx:id="totalEarnedLabel" text="0.00 TND" styleClass="stat-value">
-                                            <font>
-                                                <Font name="System Bold" size="24.0" />
-                                            </font>
-                                        </Label>
-                                    </children>
-                                </VBox>
-
-                                <VBox styleClass="stat-card, stat-blue" spacing="8.0" HBox.hgrow="ALWAYS">
-                                    <padding>
-                                        <Insets top="20.0" bottom="20.0" left="20.0" right="20.0" />
-                                    </padding>
-                                    <children>
-                                        <Label text="📊 Active Contracts" styleClass="stat-label">
-                                            <font>
-                                                <Font size="13.0" />
-                                            </font>
-                                        </Label>
-                                        <Label fx:id="activeContractsLabel" text="0" styleClass="stat-value">
-                                            <font>
-                                                <Font name="System Bold" size="24.0" />
-                                            </font>
-                                        </Label>
-                                    </children>
-                                </VBox>
-
-                                <VBox styleClass="stat-card, stat-yellow" spacing="8.0" HBox.hgrow="ALWAYS">
-                                    <padding>
-                                        <Insets top="20.0" bottom="20.0" left="20.0" right="20.0" />
-                                    </padding>
-                                    <children>
-                                        <Label text="✅ Completed" styleClass="stat-label">
-                                            <font>
-                                                <Font size="13.0" />
-                                            </font>
-                                        </Label>
-                                        <Label fx:id="completedProjectsLabel" text="0" styleClass="stat-value">
-                                            <font>
-                                                <Font name="System Bold" size="24.0" />
-                                            </font>
-                                        </Label>
-                                    </children>
-                                </VBox>
-                            </children>
-                        </HBox>
+                        <HBox spacing="20.0" />
 
                         <!-- Bio Section -->
                         <VBox spacing="15.0" styleClass="content-section">
                             <padding>
-                                <Insets top="20.0" bottom="20.0" left="25.0" right="25.0" />
+                                <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
                             </padding>
                             <children>
-                                <Label text="About Me" styleClass="section-title">
+                                <Label styleClass="section-title" text="About Me">
                                     <font>
                                         <Font name="System Bold" size="20.0" />
                                     </font>
                                 </Label>
                                 <Separator />
-                                <Label fx:id="bioLabel" text="No bio available" wrapText="true" styleClass="bio-text">
+                                <Label fx:id="bioLabel" styleClass="bio-text" text="No bio available" wrapText="true">
                                     <font>
                                         <Font size="14.0" />
                                     </font>
@@ -269,21 +213,21 @@
                         <!-- Quick Access to Portfolio -->
                         <VBox fx:id="portfolioSection" spacing="15.0" styleClass="content-section">
                             <padding>
-                                <Insets top="20.0" bottom="20.0" left="25.0" right="25.0" />
+                                <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
                             </padding>
                             <children>
                                 <HBox alignment="CENTER" spacing="15.0">
                                     <children>
                                         <VBox alignment="CENTER" spacing="10.0" HBox.hgrow="ALWAYS">
                                             <children>
-                                                <Label text="💼" style="-fx-font-size: 48px;" />
-                                                <Label text="Showcase Your Work" styleClass="section-title">
+                                                <Label style="-fx-font-size: 48px;" text="💼" />
+                                                <Label styleClass="section-title" text="Showcase Your Work">
                                                     <font>
                                                         <Font name="System Bold" size="18.0" />
                                                     </font>
                                                 </Label>
-                                                <Label text="Build your portfolio to attract more clients" style="-fx-text-fill: #666; -fx-font-size: 13px;" />
-                                                <Button text="View My Portfolio →" styleClass="btn-primary" onAction="#handleViewPortfolio">
+                                                <Label style="-fx-text-fill: #666; -fx-font-size: 13px;" text="Build your portfolio to attract more clients" />
+                                                <Button onAction="#handleViewPortfolio" styleClass="btn-primary" text="View My Portfolio →">
                                                     <font>
                                                         <Font size="14.0" />
                                                     </font>

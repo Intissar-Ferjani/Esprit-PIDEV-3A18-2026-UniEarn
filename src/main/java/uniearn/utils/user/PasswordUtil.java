@@ -2,28 +2,9 @@ package uniearn.utils.user;
 
 import org.mindrot.jbcrypt.BCrypt;
 
-/**
- * Utility class for password hashing and verification using BCrypt
- *
- * BCrypt is a password hashing function designed to be slow and computationally expensive,
- * making it resistant to brute-force attacks. It automatically handles salting.
- *
- * Usage:
- *   String hashed = PasswordUtil.hashPassword("myPassword123");
- *   boolean isValid = PasswordUtil.verifyPassword("myPassword123", hashed);
- */
+
 public class PasswordUtil {
 
-    /**
-     * Hash a plain text password using BCrypt
-     *
-     * @param plainPassword The plain text password to hash
-     * @return The hashed password (includes salt automatically)
-     *
-     * Example:
-     *   String hashed = PasswordUtil.hashPassword("SecurePass123");
-     *   // Returns: $2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy
-     */
     public static String hashPassword(String plainPassword) {
         if (plainPassword == null || plainPassword.isEmpty()) {
             throw new IllegalArgumentException("Password cannot be null or empty");
@@ -38,18 +19,7 @@ public class PasswordUtil {
         return hashedPassword;
     }
 
-    /**
-     * Verify a plain text password against a hashed password
-     *
-     * @param plainPassword The plain text password to verify
-     * @param hashedPassword The hashed password to compare against
-     * @return true if the password matches, false otherwise
-     *
-     * Example:
-     *   String stored = "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
-     *   boolean isValid = PasswordUtil.verifyPassword("SecurePass123", stored);
-     *   // Returns: true if password matches
-     */
+//    Verify if password is hashed
     public static boolean verifyPassword(String plainPassword, String hashedPassword) {
         if (plainPassword == null || plainPassword.isEmpty()) {
             System.out.println("⚠ Password verification failed: password is null or empty");
@@ -74,35 +44,21 @@ public class PasswordUtil {
             return matches;
 
         } catch (IllegalArgumentException e) {
-            // This can happen if the hashed password is not in valid BCrypt format
             System.out.println("⚠ Password verification failed: invalid hash format");
             return false;
         }
     }
 
-    /**
-     * Check if a string is already a BCrypt hash
-     *
-     * @param password The string to check
-     * @return true if it's a BCrypt hash, false otherwise
-     *
-     * BCrypt hashes start with $2a$, $2b$, or $2y$ and are 60 characters long
-     */
+//    Check if a string is already a BCrypt hash
     public static boolean isHashed(String password) {
         if (password == null || password.isEmpty()) {
             return false;
         }
 
-        // BCrypt hashes start with $2a$, $2b$, or $2y$ and are typically 60 chars
         return password.matches("^\\$2[ayb]\\$.{56}$");
     }
 
-    /**
-     * Generate a random secure password (useful for temporary passwords)
-     *
-     * @param length The desired password length (minimum 8)
-     * @return A randomly generated password
-     */
+
     public static String generateRandomPassword(int length) {
         if (length < 8) {
             throw new IllegalArgumentException("Password length must be at least 8 characters");
@@ -121,8 +77,12 @@ public class PasswordUtil {
         return password.toString();
     }
 
+
+
+
+
     /**
-     * Main method for testing the PasswordUtil class
+     * Main method for testing
      */
     public static void main(String[] args) {
         System.out.println("=== BCrypt Password Utility Test ===\n");
