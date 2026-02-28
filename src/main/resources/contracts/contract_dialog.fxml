@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="uniearn.controller.contracts.contrat.ContratDialogController" spacing="15" style="-fx-padding: 20;">
+
+    <Label text="Détails du Contrat" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="15" vgap="15">
+        <columnConstraints>
+            <ColumnConstraints prefWidth="120" minWidth="120"/>
+            <ColumnConstraints prefWidth="250" minWidth="200" hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <!-- Montant -->
+        <Label text="Montant (DA):" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="tfAmount" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                   promptText="Ex: 50000" style="-fx-font-size: 11;"/>
+
+        <!-- Date Début -->
+        <Label text="Date Début:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <DatePicker fx:id="dpStartDate" GridPane.rowIndex="1" GridPane.columnIndex="1" style="-fx-font-size: 11;"/>
+
+        <!-- Date Fin -->
+        <Label text="Date Fin:" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <DatePicker fx:id="dpEndDate" GridPane.rowIndex="2" GridPane.columnIndex="1" style="-fx-font-size: 11;"/>
+
+        <!-- Projet ID -->
+        <Label text="Projet ID:" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="tfProjectID" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                   promptText="Ex: 1" style="-fx-font-size: 11;"/>
+
+        <!-- Client ID -->
+        <Label text="Client ID:" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="tfClientID" GridPane.rowIndex="4" GridPane.columnIndex="1"
+                   promptText="Ex: 1" style="-fx-font-size: 11;"/>
+
+        <!-- Payment ID -->
+        <Label text="Paiement ID:" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-font-weight: bold;"/>
+        <TextField fx:id="tfPaymentID" GridPane.rowIndex="5" GridPane.columnIndex="1"
+                   promptText="Ex: 1" style="-fx-font-size: 11;"/>
+    </GridPane>
+
+    <Separator/>
+
+    <HBox spacing="10" style="-fx-alignment: center;">
+        <Button fx:id="btnSave" text="💾 Enregistrer" style="-fx-font-size: 12; -fx-padding: 10 30; -fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+        <Button fx:id="btnCancel" text="✕ Annuler" style="-fx-font-size: 12; -fx-padding: 10 30; -fx-background-color: #757575; -fx-text-fill: white;"/>
+    </HBox>
+</VBox>
+
