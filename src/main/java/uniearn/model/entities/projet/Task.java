@@ -1,9 +1,10 @@
-package uniearn.model.entities;
+package uniearn.model.entities.projet;
 
-import java.sql.Date;
-import java.time.LocalDateTime;
-import uniearn.model.enums.taskstatusenum;
 import uniearn.model.enums.taskpriorityenum;
+import uniearn.model.enums.taskstatusenum;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 public class Task {
@@ -19,7 +20,7 @@ public class Task {
 
         public Task() {};
 
-        public Task(String title, String description, LocalDateTime deadline, taskstatusenum taskstatus, LocalDateTime dateAssigned,String role, taskpriorityenum priority, int projectid) {
+        public Task(String title, String description, LocalDateTime deadline, taskstatusenum taskstatus, LocalDateTime dateAssigned, String role, taskpriorityenum priority, int projectid) {
             this.title = title;
             this.description = description;
             this.deadline = deadline;

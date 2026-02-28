@@ -1,12 +1,14 @@
-package uniearn.services;
+package uniearn.services.projet;
 
 import uniearn.database.MyConnection;
-import uniearn.interfaces.ITask;
-import uniearn.model.entities.Task;
+import uniearn.model.entities.projet.Task;
 import uniearn.model.enums.taskpriorityenum;
 import uniearn.model.enums.taskstatusenum;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,7 @@ public class TaskService {
     private final Connection cn = MyConnection.getInstance().getCnx();
 
 
-    public void addTask(Task task) throws SQLException {
+    public boolean addTask(Task task) throws SQLException {
         String request = "INSERT INTO task (title,description,deadline,TaskStatus,dateAssign,role,priority,idProject) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement pst = cn.prepareStatement(request);
@@ -31,9 +33,10 @@ public class TaskService {
         pst.setInt(8, task.getProjectid());
 
         pst.executeUpdate();
+        return false;
     }
 
-    public void updateTask(int id, Task task) {
+    public boolean updateTask(Task task) {
         String request = "UPDATE task SET title=?, description=?, deadline=?, TaskStatus=?, dateAssign=?, role=?, priority=?, idProject=? WHERE idTask=?";
         try {
 
@@ -56,10 +59,11 @@ public class TaskService {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        return false;
     }
 
 
-    public void deleteTask(int id) {
+    public boolean deleteTask(int id) {
         String request = "DELETE FROM task WHERE idTask=?";
         try {
             PreparedStatement pst = cn.prepareStatement(request);
@@ -69,6 +73,7 @@ public class TaskService {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        return false;
     }
 
     public List<Task> getAllTasks() {
