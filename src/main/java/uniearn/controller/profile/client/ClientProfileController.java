@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -35,8 +36,6 @@ public class ClientProfileController {
     @FXML private Label emailLabel;
     @FXML private Label companyLabel;
     @FXML private Label industryLabel;
-    @FXML private Label ratingLabel;
-    @FXML private Label totalSpentLabel;
     @FXML private Label activeProjectsLabel;
     @FXML private Label completedProjectsLabel;
     @FXML private VBox postedProjectsContainer;
@@ -71,7 +70,6 @@ public class ClientProfileController {
 
         if (client != null) {
             populateProfileData();
-            loadStatistics();
             loadPostedProjects();
         } else {
             showErrorAlert("Error", "Unable to load client profile data.");
@@ -97,12 +95,14 @@ public class ClientProfileController {
                     ? currentClient.getIndustry() : "Not Specified");
         }
 
-        if (ratingLabel != null) {
-            ratingLabel.setText(String.format("⭐ %.1f", currentClient.getRating()));
-        }
-
         loadProfilePicture();
         System.out.println("✓ Profile data loaded for: " + currentClient.getName());
+    }
+
+    private void applyCircleClip() {
+        double radius = profileImageView.getFitWidth() / 2;
+        Circle clip = new Circle(radius, radius, radius);
+        profileImageView.setClip(clip);
     }
 
     private void loadProfilePicture() {
@@ -113,8 +113,7 @@ public class ClientProfileController {
                 File imageFile = new File(user.getProfilePicturePath());
 
                 if (imageFile.exists()) {
-                    Image image = new Image(imageFile.toURI().toString());
-                    profileImageView.setImage(image);
+                    profileImageView.setImage(new Image(imageFile.toURI().toString()));
                     System.out.println("✓ Loaded profile picture: " + user.getProfilePicturePath());
                 } else {
                     System.out.println("⚠ Profile picture file not found: " + user.getProfilePicturePath());
@@ -127,6 +126,8 @@ public class ClientProfileController {
         } catch (Exception e) {
             System.out.println("Error loading profile picture: " + e.getMessage());
             setDefaultProfilePicture();
+        } finally {
+            applyCircleClip();
         }
     }
 
@@ -164,10 +165,9 @@ public class ClientProfileController {
                 Path destination = Paths.get(profileDir.getPath(), filename);
 
                 Files.copy(selectedFile.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
-                System.out.println("✓ Copied file to: " + destination);
 
-                Image image = new Image(destination.toUri().toString());
-                profileImageView.setImage(image);
+                profileImageView.setImage(new Image(destination.toUri().toString()));
+                applyCircleClip();
 
                 String relativePath = "uploads/profiles/" + filename;
 
@@ -208,13 +208,6 @@ public class ClientProfileController {
         postedProjectsContainer.getChildren().add(placeholder);
     }
 
-    private void loadStatistics() {
-        totalSpentLabel.setText(String.format("%.2f TND", currentClient.getAmount()));
-        activeProjectsLabel.setText("3");
-        completedProjectsLabel.setText("10");
-        System.out.println("✓ Statistics loaded");
-    }
-
     @FXML
     private void handleEditProfile() {
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -236,7 +229,6 @@ public class ClientProfileController {
         grid.setPadding(new Insets(25, 25, 25, 25));
         grid.setStyle("-fx-background-color: white;");
 
-        // Profile fields
         TextField nameField = new TextField(currentClient.getName());
         nameField.setStyle("-fx-pref-width: 300px; -fx-font-size: 13px;");
 
@@ -249,7 +241,6 @@ public class ClientProfileController {
         TextField industryField = new TextField(currentClient.getIndustry());
         industryField.setStyle("-fx-pref-width: 300px; -fx-font-size: 13px;");
 
-        // Password change fields
         PasswordField currentPasswordField = new PasswordField();
         currentPasswordField.setPromptText("Enter current password");
         currentPasswordField.setStyle("-fx-pref-width: 300px; -fx-font-size: 13px;");
@@ -262,12 +253,10 @@ public class ClientProfileController {
         confirmPasswordField.setPromptText("Confirm new password");
         confirmPasswordField.setStyle("-fx-pref-width: 300px; -fx-font-size: 13px;");
 
-        // Password strength indicator
         Label passwordStrengthLabel = new Label();
         passwordStrengthLabel.setStyle("-fx-font-size: 11px;");
         passwordStrengthLabel.setVisible(false);
 
-        // Real-time password strength validation
         newPasswordField.textProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.isEmpty()) {
                 passwordStrengthLabel.setVisible(false);
@@ -291,7 +280,6 @@ public class ClientProfileController {
             }
         });
 
-        // Add fields to grid
         int row = 0;
         grid.add(createLabel("Full Name:"), 0, row);
         grid.add(nameField, 1, row++);
@@ -305,7 +293,6 @@ public class ClientProfileController {
         grid.add(createLabel("Industry:"), 0, row);
         grid.add(industryField, 1, row++);
 
-        // Password change section
         Separator passwordSeparator = new Separator();
         GridPane.setColumnSpan(passwordSeparator, 2);
         grid.add(passwordSeparator, 0, row++);
@@ -330,7 +317,6 @@ public class ClientProfileController {
         grid.add(createLabel("Confirm Password:"), 0, row);
         grid.add(confirmPasswordField, 1, row++);
 
-        // Deactivate Account Section
         Separator separator = new Separator();
         GridPane.setColumnSpan(separator, 2);
         grid.add(separator, 0, row++);
@@ -373,18 +359,14 @@ public class ClientProfileController {
                             !newPassword.isEmpty() ||
                             !confirmPassword.isEmpty();
 
-                    // Step 1: Validate and update password FIRST (before profile update)
                     if (passwordChangeRequested) {
                         if (!validatePasswordChange(currentPassword, newPassword, confirmPassword)) {
                             return;
                         }
-                        // Use userService.updatePassword() directly — hashes and saves
                         userService.updatePassword(currentClient.getIdUser(), newPassword);
                         System.out.println("✅ Password updated via userService");
                     }
 
-                    // Step 2: Update profile info using clientService.updateClient()
-                    // This is safe — updateClient() does NOT touch the password column
                     currentClient.setName(nameField.getText().trim());
                     currentClient.setEmail(emailField.getText().trim());
                     currentClient.setCompany(companyField.getText().trim());
@@ -404,11 +386,10 @@ public class ClientProfileController {
                     ex.printStackTrace();
                 }
             }
-        });    }
+        });
+    }
 
-    // Validate password change with BCrypt verification
     private boolean validatePasswordChange(String currentPassword, String newPassword, String confirmPassword) {
-        // Check if all password fields are filled
         if (currentPassword.isEmpty() && (newPassword.isEmpty() || confirmPassword.isEmpty())) {
             showErrorAlert("Validation Error", "Please enter your current password to change it.");
             return false;
@@ -419,7 +400,6 @@ public class ClientProfileController {
             return false;
         }
 
-        // Verify current password using BCrypt
         try {
             var user = userService.getUserById(currentClient.getIdUser());
             if (user == null) {
@@ -436,7 +416,6 @@ public class ClientProfileController {
             return false;
         }
 
-        // Validate new password
         if (newPassword.isEmpty()) {
             showErrorAlert("Validation Error", "Please enter a new password.");
             return false;
@@ -462,13 +441,11 @@ public class ClientProfileController {
             return false;
         }
 
-        // Check if passwords match
         if (!newPassword.equals(confirmPassword)) {
             showErrorAlert("Validation Error", "❌ New passwords do not match.\n\nPlease make sure both passwords are identical.");
             return false;
         }
 
-        // Check if new password is same as current password
         if (currentPassword.equals(newPassword)) {
             showErrorAlert("Validation Error", "New password must be different from your current password.");
             return false;
@@ -477,7 +454,6 @@ public class ClientProfileController {
         return true;
     }
 
-    // Calculate password strength
     private int calculatePasswordStrength(String password) {
         int strength = 0;
 
@@ -486,9 +462,9 @@ public class ClientProfileController {
         if (password.matches(".*\\d.*")) strength++;
         if (password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) strength++;
 
-        if (strength <= 1) return 0; // Weak
-        if (strength <= 3) return 1; // Medium
-        return 2; // Strong
+        if (strength <= 1) return 0;
+        if (strength <= 3) return 1;
+        return 2;
     }
 
     private Label createLabel(String text) {

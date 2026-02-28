@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -21,6 +22,8 @@ import uniearn.services.users.freelancer.PortfolioService;
 import uniearn.services.users.UserService;
 import uniearn.database.SessionManager;
 import uniearn.utils.user.PasswordUtil;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.FlowPane;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,8 +43,8 @@ public class FreelancerProfileController {
     @FXML private Label priceLabel;
     @FXML private Label ratingLabel;
     @FXML private Label verificationLabel;
-    @FXML private HBox skillsContainer;
-    @FXML private Label bioLabel;
+    @FXML private FlowPane skillsContainer;
+    @FXML private TextArea bioLabel;
     @FXML private Label totalEarnedLabel;
     @FXML private Label activeContractsLabel;
     @FXML private Label completedProjectsLabel;
@@ -88,13 +91,13 @@ public class FreelancerProfileController {
         }
 
         if (ratingLabel != null) {
-            ratingLabel.setText(String.format("⭐ %.1f", currentFreelancer.getRating()));
+            ratingLabel.setText(String.format(" %.1f", currentFreelancer.getRating()));
         }
 
         if (verificationLabel != null) {
             String verificationText = switch (currentFreelancer.getVerificationStatus()) {
-                case verified -> "✓ Verified";
-                case unverified -> "✗ Not Verified";
+                case verified -> "Verified";
+                case unverified -> "Not Verified";
             };
             verificationLabel.setText(verificationText);
         }
@@ -130,15 +133,17 @@ public class FreelancerProfileController {
         }
     }
 
+    private void applyCircleClip() {
+        double radius = profileImageView.getFitWidth() / 2;
+        Circle clip = new Circle(radius, radius, radius);
+        profileImageView.setClip(clip);
+    }
+
     private void loadProfilePicture() {
         try {
-            // Always fetch fresh from DB — FreelancerService.getFreelancerById()
-            // builds the object from two queries but never copies profilePicturePath
-            // from the user row onto the Freelancer object, so it would always be null.
             User user = userService.getUserById(currentFreelancer.getIdUser());
             String picturePath = (user != null) ? user.getProfilePicturePath() : null;
 
-            // Cache it on the freelancer object for handleChangePhoto etc.
             if (picturePath != null) {
                 currentFreelancer.setProfilePicturePath(picturePath);
             }
@@ -159,6 +164,8 @@ public class FreelancerProfileController {
         } catch (Exception e) {
             System.out.println("Error loading profile picture: " + e.getMessage());
             setDefaultProfilePicture();
+        } finally {
+            applyCircleClip();
         }
     }
 
@@ -189,9 +196,6 @@ public class FreelancerProfileController {
         System.out.println("✓ Statistics loaded");
     }
 
-    /**
-     * Check if portfolio exists and update UI accordingly
-     */
     private void checkPortfolioStatus() {
         List<Portfolio> portfolios = portfolioService.getAllPortfolios();
         currentPortfolio = portfolios.stream()
@@ -202,14 +206,12 @@ public class FreelancerProfileController {
         updatePortfolioUI();
     }
 
-    //    Update portfolio UI based on portfolio existence
     private void updatePortfolioUI() {
         if (portfolioSection == null) {
             System.out.println("⚠ Portfolio section not found in FXML");
             return;
         }
 
-        // Clear existing content
         portfolioSection.getChildren().clear();
 
         HBox portfolioHeader = new HBox(15);
@@ -340,8 +342,8 @@ public class FreelancerProfileController {
 
                 Files.copy(selectedFile.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
 
-                Image image = new Image(destination.toUri().toString());
-                profileImageView.setImage(image);
+                profileImageView.setImage(new Image(destination.toUri().toString()));
+                applyCircleClip();
 
                 String relativePath = "uploads/profiles/" + filename;
 
@@ -371,7 +373,7 @@ public class FreelancerProfileController {
 
         VBox header = new VBox(5);
         header.setStyle("-fx-background-color: #1976d2; -fx-padding: 20px;");
-        Label headerLabel = new Label("✏ Edit Profile");
+        Label headerLabel = new Label("✏");
         headerLabel.setStyle("-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;");
         header.getChildren().add(headerLabel);
 
@@ -415,7 +417,6 @@ public class FreelancerProfileController {
         GridPane.setValignment(createLabel("Bio:"), VPos.TOP);
         grid.add(bioArea, 1, row++);
 
-        // ── Password Change Section ───────────────────────────────────────────
         Separator passwordSeparator = new Separator();
         GridPane.setColumnSpan(passwordSeparator, 2);
         grid.add(passwordSeparator, 0, row++);
@@ -476,7 +477,6 @@ public class FreelancerProfileController {
         confirmPasswordField.setStyle("-fx-pref-width: 300px; -fx-font-size: 13px;");
         grid.add(createLabel("Confirm Password:"), 0, row);
         grid.add(confirmPasswordField, 1, row++);
-        // ── End Password Section ─────────────────────────────────────────────
 
         Separator separator = new Separator();
         GridPane.setColumnSpan(separator, 2);
@@ -525,26 +525,19 @@ public class FreelancerProfileController {
                             !newPassword.isEmpty() ||
                             !confirmPassword.isEmpty();
 
-                    // Step 1: Validate and update password FIRST (before profile update)
                     if (passwordChangeRequested) {
                         if (!validatePasswordChange(currentPassword, newPassword, confirmPassword)) {
                             return;
                         }
-                        // Use userService.updatePassword() directly — hashes and saves
                         userService.updatePassword(currentFreelancer.getIdUser(), newPassword);
                         System.out.println("✅ Password updated via userService");
 
-                        // CRITICAL: sync the freshly-hashed password back onto the object.
-                        // updateFreelancer() calls super.updateUser() which writes
-                        // currentFreelancer.getPassword() back to the DB — if we don't
-                        // refresh it here, it overwrites the new hash with the old one.
                         User refreshed = userService.getUserById(currentFreelancer.getIdUser());
                         if (refreshed != null) {
                             currentFreelancer.setPassword(refreshed.getPassword());
                         }
                     }
 
-                    // Step 2: Update profile info
                     currentFreelancer.setName(nameField.getText().trim());
                     currentFreelancer.setEmail(emailField.getText().trim());
                     currentFreelancer.setPricePerHour(Double.parseDouble(priceField.getText().trim()));
@@ -575,7 +568,6 @@ public class FreelancerProfileController {
         });
     }
 
-    // Validate password change with BCrypt verification
     private boolean validatePasswordChange(String currentPassword, String newPassword, String confirmPassword) {
         if (currentPassword.isEmpty() && (newPassword.isEmpty() || confirmPassword.isEmpty())) {
             showErrorAlert("Validation Error", "Please enter your current password to change it.");
@@ -587,7 +579,6 @@ public class FreelancerProfileController {
             return false;
         }
 
-        // Verify current password using BCrypt
         try {
             var user = userService.getUserById(currentFreelancer.getIdUser());
             if (user == null) {
@@ -642,7 +633,6 @@ public class FreelancerProfileController {
         return true;
     }
 
-    // Calculate password strength
     private int calculatePasswordStrength(String password) {
         int strength = 0;
 
@@ -651,9 +641,9 @@ public class FreelancerProfileController {
         if (password.matches(".*\\d.*")) strength++;
         if (password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) strength++;
 
-        if (strength <= 1) return 0; // Weak
-        if (strength <= 3) return 1; // Medium
-        return 2; // Strong
+        if (strength <= 1) return 0;
+        if (strength <= 3) return 1;
+        return 2;
     }
 
     private void handleDeactivateAccount(Dialog<?> parentDialog) {
