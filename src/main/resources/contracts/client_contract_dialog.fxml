@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="uniearn.controller.contracts.ClientContractDialogController">
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="uniearn.controller.contracts.client.ClientContractDialogController">
 
     <top>
         <VBox spacing="15" style="-fx-background-color: #1E56DB; -fx-padding: 20;">

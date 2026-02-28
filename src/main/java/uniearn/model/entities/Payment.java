@@ -1,80 +1,57 @@
 package uniearn.model.entities;
 
-import java.io.Serializable;
-import java.sql.Timestamp;
-
-public class Payment implements Serializable {
+/**
+ * Classe représentant un paiement dans le système UniEarn
+ */
+public class Payment {
     private int idPayment;
     private double amount;
-    private Timestamp datePayment;
-    private int paymentStatus;
-    private int userID;
+    private int paymentStatus; // 0: En attente, 1: Complété, 2: Échoué, etc.
     private int taskID;
 
-    // Constructors
+    /**
+     * Constructeur par défaut
+     */
     public Payment() {
     }
 
-    public Payment(double amount, int userID) {
-        this.amount = amount;
-        this.userID = userID;
-        this.paymentStatus = 0; // Par défaut: En Attente
-    }
-
-    public Payment(int idPayment, double amount, Timestamp datePayment,
-                   int paymentStatus, int userID, int taskID) {
+    /**
+     * Constructeur complet
+     */
+    public Payment(int idPayment, double amount, int paymentStatus, int taskID) {
         this.idPayment = idPayment;
         this.amount = amount;
-        this.datePayment = datePayment;
         this.paymentStatus = paymentStatus;
-        this.userID = userID;
         this.taskID = taskID;
     }
 
-    // Getters
+    // Getters et Setters
     public int getIdPayment() {
         return idPayment;
+    }
+
+    public void setIdPayment(int idPayment) {
+        this.idPayment = idPayment;
     }
 
     public double getAmount() {
         return amount;
     }
 
-    public Timestamp getDatePayment() {
-        return datePayment;
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public int getPaymentStatus() {
         return paymentStatus;
     }
 
-    public int getUserID() {
-        return userID;
-    }
-
-    public int getTaskID() {
-        return taskID;
-    }
-
-    // Setters
-    public void setIdPayment(int idPayment) {
-        this.idPayment = idPayment;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public void setDatePayment(Timestamp datePayment) {
-        this.datePayment = datePayment;
-    }
-
     public void setPaymentStatus(int paymentStatus) {
         this.paymentStatus = paymentStatus;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public int getTaskID() {
+        return taskID;
     }
 
     public void setTaskID(int taskID) {
@@ -87,8 +64,8 @@ public class Payment implements Serializable {
                 "idPayment=" + idPayment +
                 ", amount=" + amount +
                 ", paymentStatus=" + paymentStatus +
-                ", userID=" + userID +
-                ", datePayment=" + datePayment +
+                ", taskID=" + taskID +
                 '}';
     }
 }
+
