@@ -6,7 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import uniearn.model.entities.users.User;
 import uniearn.model.entities.users.freelancer.Freelancer;
 import uniearn.model.entities.users.freelancer.Portfolio;
 import uniearn.model.entities.users.freelancer.PortfolioItem;
@@ -17,9 +16,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
 
-
 // Step 4 : Portfolio
-
 public class FreelancerPortfolioController {
 
     @FXML private TextField portfolioTitleField;
@@ -39,20 +36,18 @@ public class FreelancerPortfolioController {
 
     private Freelancer freelancerData;
 
-    // previous steps fields for restoration
-    // Step 2
+    // Step 2 fields
     private String hourlyRate;
     private String skills;
     private String bio;
     private String experience;
+    private String cvPath;
 
-    // Step 3
+    // Step 3 field
     private String studentCardPath;
 
-
-//  Receive freelancer data from previous step
     public void setFreelancerData(Freelancer freelancer, String hourlyRate, String skills,
-                                  String bio, String experience, String studentCardPath) {
+                                  String bio, String experience, String studentCardPath, String cvPath) {
         this.freelancerData = freelancer;
         this.hourlyRate = hourlyRate;
         this.skills = skills;
@@ -64,37 +59,28 @@ public class FreelancerPortfolioController {
 
     @FXML
     private void handleComplete() {
-        // Check if user has portfolio
         boolean hasPortfolioData = hasAnyPortfolioData();
 
         if (hasPortfolioData) {
-            if (!validatePortfolioData()) {
-                return;
-            }
+            if (!validatePortfolioData()) return;
 
             try {
                 completeButton.setDisable(true);
                 savePortfolioData();
-
-                showSuccessAndComplete("Portfolio Created!",
-                        "Your portfolio has been saved successfully!");
-
+                showSuccessAndComplete("Portfolio Created!", "Your portfolio has been saved successfully!");
             } catch (Exception e) {
                 showErrorAlert("Error", "Failed to save portfolio: " + e.getMessage());
                 e.printStackTrace();
                 completeButton.setDisable(false);
             }
         } else {
-            // No portfolio data
             showSuccessAndComplete("Registration Complete!",
                     "Your account has been created successfully!\n" +
                             "You can add portfolio items later from your profile.");
         }
     }
 
-
     private void savePortfolioData() {
-
         Portfolio portfolio = new Portfolio();
         portfolio.setTitle(portfolioTitleField.getText().trim());
         portfolio.setDescription(portfolioDescField.getText().trim());
@@ -102,44 +88,40 @@ public class FreelancerPortfolioController {
         portfolio.setCreated_At(new Timestamp(new Date().getTime()));
 
         portfolioService.addPortfolio(portfolio);
-
         System.out.println("✓ Portfolio created with ID: " + portfolio.getIdPortfolio());
 
-        // If portfolio exists -> create portfolio item
         if (hasPortfolioData()) {
             PortfolioItem item = new PortfolioItem();
             item.setTitle(projectTitleField.getText().trim());
             item.setDescription(projectDescField.getText().trim());
 
-            // technologies (comma-separated to array)
             String techString = technologiesField.getText().trim();
             String[] technologies = techString.isEmpty() ? new String[0] : techString.split(",\\s*");
             item.setTechnologies(technologies);
 
-            // Set URLs
             item.setProjectUrl(projectUrlField.getText().trim());
             item.setGithubUrl(githubUrlField.getText().trim());
-
-            // Set images array
             item.setImagesUrl(new String[0]);
-
             item.setCreated_At(new Timestamp(new Date().getTime()));
             item.setIdPortfolio(portfolio.getIdPortfolio());
 
-            // Add portfolio item
             portfolioItemService.addPortfolioItem(portfolio, item);
-
             System.out.println("✓ Portfolio item created");
         }
     }
 
-//    Check if user has portfolio
     private boolean hasPortfolioData() {
         return !projectTitleField.getText().trim().isEmpty() ||
                 !projectDescField.getText().trim().isEmpty() ||
                 !technologiesField.getText().trim().isEmpty() ||
                 !projectUrlField.getText().trim().isEmpty() ||
                 !githubUrlField.getText().trim().isEmpty();
+    }
+
+    private boolean hasAnyPortfolioData() {
+        return !portfolioTitleField.getText().trim().isEmpty() ||
+                !portfolioDescField.getText().trim().isEmpty() ||
+                hasPortfolioData();
     }
 
     @FXML
@@ -152,13 +134,17 @@ public class FreelancerPortfolioController {
     @FXML
     private void handleBack() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/signup/freelancer/student-card-verification.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/auth/signup/freelancer/student-id-verification.fxml"));
             Parent root = loader.load();
 
             StudentCardVerificationController controller = loader.getController();
 
-            // Restore all previous data
-            controller.setFreelancerData(freelancerData, hourlyRate, skills, bio, experience);
+            // Pass all data back so Step 3 can restore itself and pass data forward again
+            controller.setFreelancerData(freelancerData, hourlyRate, skills, bio, experience, cvPath);
+
+            // Restore the previously uploaded card path so the user doesn't re-upload
+            controller.restoreCardPath(studentCardPath);
 
             Stage stage = (Stage) backButton.getScene().getWindow();
             stage.setScene(new Scene(root, 850, 600));
@@ -169,12 +155,6 @@ public class FreelancerPortfolioController {
             e.printStackTrace();
             showErrorAlert("Navigation Error", "Unable to go back to verification page.");
         }
-    }
-
-    private boolean hasAnyPortfolioData() {
-        return !portfolioTitleField.getText().trim().isEmpty() ||
-                !portfolioDescField.getText().trim().isEmpty() ||
-                hasPortfolioData();
     }
 
     private boolean validatePortfolioData() {
@@ -190,7 +170,6 @@ public class FreelancerPortfolioController {
             } else {
                 hideError(portfolioDescError);
             }
-
             if (title.length() < 5) {
                 showError(portfolioTitleError, "Portfolio title should be at least 5 characters");
                 isValid = false;
@@ -204,7 +183,6 @@ public class FreelancerPortfolioController {
             }
         }
 
-        // Validate URLs if provided
         String projectUrl = projectUrlField.getText().trim();
         String githubUrl = githubUrlField.getText().trim();
 
@@ -235,7 +213,6 @@ public class FreelancerPortfolioController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-
         redirectToLogin();
     }
 
@@ -243,12 +220,10 @@ public class FreelancerPortfolioController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/login/login.fxml"));
             Parent root = loader.load();
-
             Stage stage = (Stage) completeButton.getScene().getWindow();
             stage.setScene(new Scene(root, 750, 600));
             stage.setTitle("Login - UniEarn");
             stage.centerOnScreen();
-
         } catch (IOException e) {
             e.printStackTrace();
             showInfoAlert("Registration Complete",
@@ -257,7 +232,6 @@ public class FreelancerPortfolioController {
             ((Stage) completeButton.getScene().getWindow()).close();
         }
     }
-
 
     private void showError(Label errorLabel, String message) {
         errorLabel.setText(message);

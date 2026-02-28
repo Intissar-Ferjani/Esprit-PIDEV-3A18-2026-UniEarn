@@ -404,3 +404,13 @@
     -fx-background-color: #e3f2fd;
     -fx-text-fill: #1976d2;
 }
+
+.ai-spinner {
+    -fx-rotate: 0;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { -fx-rotate: 0; }
+    to   { -fx-rotate: 360; }
+}

@@ -44,7 +44,7 @@ public class EmailService {
         return """
             <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 480px; margin: auto; padding: 32px; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0;">
                 <div style="text-align:center; margin-bottom: 24px;">
-                    <h1 style="color: #2563EB; font-size: 28px; margin: 0;">UniEarn</h1>
+                    <h1 style="color: #2563EB; font-size: 28px; margin: 0;">🎓 UniEarn</h1>
                     <p style="color: #94a3b8; font-size: 13px; margin: 4px 0 0;">Plateforme de freelancing étudiant</p>
                 </div>
                 <h2 style="color: #0f172a; font-size: 20px;">Réinitialisation du mot de passe</h2>

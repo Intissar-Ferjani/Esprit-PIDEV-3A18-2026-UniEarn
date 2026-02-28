@@ -30,9 +30,6 @@ public class HomePageController {
 
     @FXML
     private void handleBrowse() {
-        // Navigate to browse missions / freelancers
-        // Uncomment when ready:
-        // navigateTo("/browse/browse.fxml", "Missions - UniEarn", 1100, 700);
         System.out.println("Browse missions clicked");
     }
 
@@ -57,13 +54,12 @@ public class HomePageController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
 
-            // Get current stage from any node; fall back to new stage
             Stage stage = getCurrentStage();
             if (stage == null) stage = new Stage();
 
             stage.setScene(new Scene(root, width, height));
             stage.setTitle(title);
-            stage.setResizable(false);
+            stage.setResizable(true);
             stage.centerOnScreen();
             stage.show();
 
@@ -74,11 +70,7 @@ public class HomePageController {
     }
 
     private Stage getCurrentStage() {
-        // Try to grab the stage from any injected node, or return null
         try {
-            // We don't have a direct scene reference here without an @FXML node,
-            // but if the FXML has a root node accessible we can find it.
-            // Since we injected signupButton, use that when it's non-null.
             if (signupButton != null && signupButton.getScene() != null) {
                 return (Stage) signupButton.getScene().getWindow();
             }

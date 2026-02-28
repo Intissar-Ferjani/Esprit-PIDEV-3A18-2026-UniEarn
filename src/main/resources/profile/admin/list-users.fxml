@@ -12,20 +12,16 @@
 
     <!-- Top Navigation Bar -->
     <top>
-        <HBox alignment="CENTER_LEFT" prefHeight="134.0" prefWidth="1225.0" spacing="20.0" styleClass="top-bar">
+        <HBox alignment="CENTER_LEFT" prefHeight="70.0" spacing="20.0" styleClass="top-bar">
             <padding>
                 <Insets left="30.0" right="30.0" />
             </padding>
             <children>
                 <Button onAction="#handleBackToDashboard" styleClass="btn-secondary" text="← Back to Dashboard">
-                    <font>
-                        <Font size="13.0" />
-                    </font>
+                    <font><Font size="13.0" /></font>
                 </Button>
-
                 <Region HBox.hgrow="ALWAYS" />
-
-                <ImageView fitHeight="280.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                <ImageView fitHeight="50.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true">
                     <image>
                         <Image url="@../../images/UniEarn_full_logo.png" />
                     </image>
@@ -34,60 +30,34 @@
         </HBox>
     </top>
 
-    <!-- Left Sidebar Navigation -->
+    <!-- Left Sidebar -->
     <left>
-        <VBox prefWidth="250.0" styleClass="sidebar">
+        <VBox prefWidth="220.0" styleClass="sidebar">
             <children>
-                <!-- Navigation Menu -->
                 <VBox spacing="5.0" VBox.vgrow="ALWAYS">
                     <padding>
                         <Insets bottom="15.0" left="15.0" right="15.0" top="20.0" />
                     </padding>
                     <children>
-                        <Button onAction="#handleBackToDashboard" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="🏠 Dashboard">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
+                        <Button onAction="#handleBackToDashboard" prefHeight="40.0" prefWidth="190.0" styleClass="nav-button" text="🏠 Dashboard">
+                            <font><Font size="14.0" /></font>
                         </Button>
-
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button, active" text="👥 Manage Users">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
+                        <Button prefHeight="40.0" prefWidth="190.0" styleClass="nav-button, active" text="👥 Manage Users">
+                            <font><Font size="14.0" /></font>
                         </Button>
-
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📋 Manage Projects">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
+                        <Button prefHeight="40.0" prefWidth="190.0" styleClass="nav-button" text="📝 Manage Contracts">
+                            <font><Font size="14.0" /></font>
                         </Button>
-
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📝 Manage Contracts">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
+                        <Button prefHeight="40.0" prefWidth="190.0" styleClass="nav-button" text="📊 Reports">
+                            <font><Font size="14.0" /></font>
                         </Button>
-
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📊 Reports">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-
                         <Region VBox.vgrow="ALWAYS" />
-
                         <Separator />
-
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="⚙ Settings">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
+                        <Button prefHeight="40.0" prefWidth="190.0" styleClass="nav-button" text="⚙ Settings">
+                            <font><Font size="14.0" /></font>
                         </Button>
-
-                        <Button onAction="#handleLogout" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button, logout" text="🚪 Logout">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
+                        <Button onAction="#handleLogout" prefHeight="40.0" prefWidth="190.0" styleClass="nav-button, logout" text="🚪 Logout">
+                            <font><Font size="14.0" /></font>
                         </Button>
                     </children>
                 </VBox>
@@ -97,193 +67,151 @@
 
     <!-- Main Content -->
     <center>
-        <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="content-scroll">
-            <content>
-                <VBox prefHeight="565.0" prefWidth="978.0" spacing="25.0" styleClass="main-content">
+        <VBox spacing="20.0" styleClass="main-content">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="25.0" />
+            </padding>
+            <children>
+
+                <!-- Page Header -->
+                <HBox alignment="CENTER_LEFT">
+                    <children>
+                        <Label styleClass="section-title" text="👥 Manage Users">
+                            <font><Font name="System Bold" size="26.0" /></font>
+                        </Label>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Label fx:id="totalUsersLabel" styleClass="profile-tag" text="0 users">
+                            <font><Font size="14.0" /></font>
+                        </Label>
+                    </children>
+                </HBox>
+
+                <!-- Search and Filter Bar -->
+                <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="profile-header">
                     <padding>
-                        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+                        <Insets bottom="16.0" left="20.0" right="20.0" top="16.0" />
                     </padding>
                     <children>
+                        <!-- Search -->
+                        <TextField fx:id="searchField" promptText="🔍 Search by name or email..." styleClass="search-field" HBox.hgrow="ALWAYS">
+                            <font><Font size="14.0" /></font>
+                        </TextField>
 
-                        <!-- Header -->
-                        <HBox alignment="CENTER_LEFT" spacing="15.0">
+                        <!-- Role Filter -->
+                        <VBox spacing="4.0">
                             <children>
-                                <Label styleClass="section-title" text="👥 Manage Users">
-                                    <font>
-                                        <Font name="System Bold" size="28.0" />
-                                    </font>
+                                <Label styleClass="filter-label" text="Role">
+                                    <font><Font size="12.0" /></font>
                                 </Label>
-                                <Region HBox.hgrow="ALWAYS" />
-                                <Label fx:id="totalUsersLabel" styleClass="profile-tag" text="0 users">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                            </children>
-                        </HBox>
-
-                        <!-- Search and Filter Bar -->
-                        <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="profile-header">
-                            <padding>
-                                <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
-                            </padding>
-                            <children>
-                                <!-- Search Field -->
-                                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                                    <children>
-                                        <TextField fx:id="searchField" prefWidth="400.0" promptText="🔍 Search by name or email..." styleClass="search-field">
-                                            <font>
-                                                <Font size="14.0" />
-                                            </font>
-                                 <VBox.margin>
-                                    <Insets top="18.0" />
-                                 </VBox.margin>
-                                        </TextField>
-                                    </children>
-                                </VBox>
-
-                                <!-- Filters Group -->
-                                <HBox alignment="CENTER_LEFT" spacing="12.0">
-                                    <children>
-                                        <!-- Role Filter -->
-                                        <VBox spacing="5.0">
-                                            <children>
-                                                <Label styleClass="filter-label" text="Role">
-                                                    <font>
-                                                        <Font size="12.0" />
-                                                    </font>
-                                                </Label>
-                                                <ComboBox fx:id="roleFilterCombo" prefWidth="130.0" styleClass="filter-combo">
-                                                    <items>
-                                                        <FXCollections fx:factory="observableArrayList">
-                                                            <String fx:value="All" />
-                                                            <String fx:value="Client" />
-                                                            <String fx:value="Freelancer" />
-                                                            <String fx:value="Admin" />
-                                                        </FXCollections>
-                                                    </items>
-                                                </ComboBox>
-                                            </children>
-                                        </VBox>
-
-                                        <!-- Status Filter -->
-                                        <VBox spacing="5.0">
-                                            <children>
-                                                <Label styleClass="filter-label" text="Status">
-                                                    <font>
-                                                        <Font size="12.0" />
-                                                    </font>
-                                                </Label>
-                                                <ComboBox fx:id="statusFilterCombo" prefWidth="130.0" styleClass="filter-combo">
-                                                    <items>
-                                                        <FXCollections fx:factory="observableArrayList">
-                                                            <String fx:value="All" />
-                                                            <String fx:value="Active" />
-                                                            <String fx:value="Deactivated" />
-                                                        </FXCollections>
-                                                    </items>
-                                                </ComboBox>
-                                            </children>
-                                        </VBox>
-
-                                        <!-- Sort By -->
-                                        <VBox spacing="5.0">
-                                            <children>
-                                                <Label styleClass="filter-label" text="Sort By">
-                                                    <font>
-                                                        <Font size="12.0" />
-                                                    </font>
-                                                </Label>
-                                                <ComboBox fx:id="sortByCombo" prefWidth="150.0" styleClass="filter-combo">
-                                                    <items>
-                                                        <FXCollections fx:factory="observableArrayList">
-                                                            <String fx:value="Name (A-Z)" />
-                                                            <String fx:value="Name (Z-A)" />
-                                                            <String fx:value="Email (A-Z)" />
-                                                            <String fx:value="Role" />
-                                                            <String fx:value="Status" />
-                                                        </FXCollections>
-                                                    </items>
-                                                </ComboBox>
-                                            </children>
-                                        </VBox>
-
-                                        <!-- Clear Filters Button -->
-                                        <VBox alignment="BOTTOM_CENTER">
-                                            <children>
-                                                <Button onAction="#handleClearFilters" prefHeight="34.0" prefWidth="107.0" styleClass="btn-secondary" text="Clear">
-                                                    <font>
-                                                        <Font size="12.0" />
-                                                    </font>
-                                                </Button>
-                                            </children>
-                                            <VBox.margin>
-                                                <Insets top="20.0" />
-                                            </VBox.margin>
-                                        </VBox>
-                                    </children>
-                                </HBox>
-                            </children>
-                        </HBox>
-
-                        <!-- Users Table -->
-                        <VBox prefHeight="359.0" prefWidth="950.0" spacing="10.0" styleClass="content-section" VBox.vgrow="ALWAYS">
-                            <padding>
-                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                            </padding>
-                            <children>
-                                <ScrollPane fitToWidth="true" prefHeight="310.0" prefWidth="837.0" styleClass="projects-scroll">
-                                    <content>
-                                        <VBox fx:id="usersTableContainer" spacing="0.0">
-                                            <!-- Table header -->
-                                            <HBox spacing="10.0" styleClass="table-header">
-                                                <padding>
-                                                    <Insets bottom="12.0" left="15.0" right="15.0" top="12.0" />
-                                                </padding>
-                                                <children>
-                                                    <Label prefWidth="200.0" styleClass="table-header-label" text="Name">
-                                                        <font>
-                                                            <Font name="System Bold" size="13.0" />
-                                                        </font>
-                                                    </Label>
-                                                    <Label prefWidth="220.0" styleClass="table-header-label" text="Email">
-                                                        <font>
-                                                            <Font name="System Bold" size="13.0" />
-                                                        </font>
-                                                    </Label>
-                                                    <Label prefWidth="200.0" styleClass="table-header-label" text="Role">
-                                                        <font>
-                                                            <Font name="System Bold" size="13.0" />
-                                                        </font>
-                                                    </Label>
-                                                    <Label prefHeight="19.0" prefWidth="158.0" styleClass="table-header-label" text="Status">
-                                                        <font>
-                                                            <Font name="System Bold" size="13.0" />
-                                                        </font>
-                                                    </Label>
-                                                    <Region HBox.hgrow="ALWAYS" />
-                                                    <Label alignment="CENTER" prefHeight="19.0" prefWidth="156.0" styleClass="table-header-label" text="Actions">
-                                                        <font>
-                                                            <Font name="System Bold" size="13.0" />
-                                                        </font>
-                                                    </Label>
-                                                </children>
-                                            </HBox>
-
-                                            <!-- Table rows loaded dynamically -->
-                                            <VBox fx:id="usersRowsContainer" spacing="0.0">
-                                                <!-- User rows will be added here -->
-                                            </VBox>
-                                        </VBox>
-                                    </content>
-                                </ScrollPane>
+                                <ComboBox fx:id="roleFilterCombo" prefWidth="120.0" styleClass="filter-combo">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="All" />
+                                            <String fx:value="Client" />
+                                            <String fx:value="Freelancer" />
+                                            <String fx:value="Admin" />
+                                        </FXCollections>
+                                    </items>
+                                </ComboBox>
                             </children>
                         </VBox>
 
+                        <!-- Status Filter -->
+                        <VBox spacing="4.0">
+                            <children>
+                                <Label styleClass="filter-label" text="Status">
+                                    <font><Font size="12.0" /></font>
+                                </Label>
+                                <ComboBox fx:id="statusFilterCombo" prefWidth="120.0" styleClass="filter-combo">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="All" />
+                                            <String fx:value="Active" />
+                                            <String fx:value="Deactivated" />
+                                        </FXCollections>
+                                    </items>
+                                </ComboBox>
+                            </children>
+                        </VBox>
+
+                        <!-- Sort By -->
+                        <VBox spacing="4.0">
+                            <children>
+                                <Label styleClass="filter-label" text="Sort By">
+                                    <font><Font size="12.0" /></font>
+                                </Label>
+                                <ComboBox fx:id="sortByCombo" prefWidth="140.0" styleClass="filter-combo">
+                                    <items>
+                                        <FXCollections fx:factory="observableArrayList">
+                                            <String fx:value="Name (A-Z)" />
+                                            <String fx:value="Name (Z-A)" />
+                                            <String fx:value="Email (A-Z)" />
+                                            <String fx:value="Role" />
+                                            <String fx:value="Status" />
+                                        </FXCollections>
+                                    </items>
+                                </ComboBox>
+                            </children>
+                        </VBox>
+
+                        <!-- Clear Button -->
+                        <VBox alignment="BOTTOM_CENTER" spacing="4.0">
+                            <children>
+                                <Label style="-fx-font-size:12px;" text=" " />
+                                <Button onAction="#handleClearFilters" prefHeight="32.0" prefWidth="80.0" styleClass="btn-secondary" text="Clear">
+                                    <font><Font size="12.0" /></font>
+                                </Button>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+
+                <!-- Table -->
+                <VBox styleClass="content-section" VBox.vgrow="ALWAYS">
+                    <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                    </padding>
+                    <children>
+                        <ScrollPane fitToWidth="true" styleClass="projects-scroll" VBox.vgrow="ALWAYS">
+                            <content>
+                                <VBox fx:id="usersTableContainer" spacing="0.0">
+
+                                    <!-- ✅ Table Header — column widths match row cells below -->
+                                    <HBox spacing="0.0" styleClass="table-header">
+                                        <padding>
+                                            <Insets bottom="12.0" left="16.0" right="16.0" top="12.0" />
+                                        </padding>
+                                        <children>
+                                            <Label prefWidth="200.0" styleClass="table-header-label" text="Name">
+                                                <font><Font name="System Bold" size="13.0" /></font>
+                                            </Label>
+                                            <Label prefWidth="240.0" styleClass="table-header-label" text="Email">
+                                                <font><Font name="System Bold" size="13.0" /></font>
+                                            </Label>
+                                            <Label prefWidth="150.0" styleClass="table-header-label" text="Role">
+                                                <font><Font name="System Bold" size="13.0" /></font>
+                                            </Label>
+                                            <Label prefWidth="150.0" styleClass="table-header-label" text="Status">
+                                                <font><Font name="System Bold" size="13.0" /></font>
+                                            </Label>
+                                            <Region HBox.hgrow="ALWAYS" />
+                                            <Label alignment="CENTER" prefWidth="220.0" styleClass="table-header-label" text="Actions">
+                                                <font><Font name="System Bold" size="13.0" /></font>
+                                            </Label>
+                                        </children>
+                                    </HBox>
+
+                                    <!-- Dynamic rows injected here -->
+                                    <VBox fx:id="usersRowsContainer" spacing="0.0" />
+
+                                </VBox>
+                            </content>
+                        </ScrollPane>
                     </children>
                 </VBox>
-            </content>
-        </ScrollPane>
+
+            </children>
+        </VBox>
     </center>
 
 </BorderPane>

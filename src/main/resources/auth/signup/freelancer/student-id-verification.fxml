@@ -96,6 +96,26 @@
                             </Label>
                         </children>
                     </VBox>
+                    <Label styleClass="progress-line" text="━">
+                        <font>
+                            <Font name="System Bold" size="14.0" />
+                        </font>
+                    </Label>
+                    <VBox alignment="CENTER" spacing="5.0">
+                        <children>
+                            <Label styleClass="progress-step-inactive" text="4">
+                                <font>
+                                    <Font name="System Bold" size="14.0" />
+                                </font>
+                            </Label>
+                            <Label styleClass="progress-label-inactive" text="Portfolio">
+                                <font>
+                                    <Font size="10.0" />
+                                </font>
+                            </Label>
+                        </children>
+                    </VBox>
+
                 </children>
                 <VBox.margin>
                     <Insets bottom="20.0" />
