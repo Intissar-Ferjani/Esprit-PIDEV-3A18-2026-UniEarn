@@ -10,7 +10,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import uniearn.model.entities.contracts.Contrat;
 import uniearn.services.contracts.ContratService;
-import uniearn.controller.util.DialogUtil;
+import uniearn.utils.DialogUtil;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;

@@ -1,7 +1,7 @@
 package uniearn.services;
 
 import uniearn.database.MyConnection;
-import uniearn.interfaces.IUser;
+import uniearn.interfaces.users.IUser;
 import uniearn.model.entities.users.User;
 import uniearn.model.enums.UserRole;
 

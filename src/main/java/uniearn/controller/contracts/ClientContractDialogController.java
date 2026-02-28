@@ -13,7 +13,6 @@ import uniearn.services.contracts.ContractTemplateService;
 import uniearn.services.contracts.ContractTypeService;
 import uniearn.services.contracts.ContratService;
 import uniearn.services.DataLoaderService;
-import uniearn.controller.util.DialogUtil;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;

@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.ContratDialogController">
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.contracts.ContratDialogController">
     <top>
         <VBox styleClass="header" style="-fx-background-color: #1E56DB; -fx-padding: 20;">
             <Label text="Ajouter un Contrat" styleClass="title-label" style="-fx-text-fill: white; -fx-font-size: 24; -fx-font-weight: bold;" />

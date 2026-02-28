@@ -1,5 +1,7 @@
 package uniearn.interfaces;
 
+import uniearn.interfaces.users.IUser;
+
 import java.util.List;
 
 public interface IFreelancer<F,U> extends IUser<U> {
