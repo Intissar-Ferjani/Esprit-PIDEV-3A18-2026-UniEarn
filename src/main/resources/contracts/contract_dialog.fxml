@@ -5,7 +5,7 @@
 <?import javafx.geometry.Insets?>
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="uniearn.controller.contracts.ContratDialogController" spacing="15" style="-fx-padding: 20;">
+      fx:controller="uniearn.controller.contracts.contrat.ContratDialogController" spacing="15" style="-fx-padding: 20;">
 
     <Label text="Détails du Contrat" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
 
