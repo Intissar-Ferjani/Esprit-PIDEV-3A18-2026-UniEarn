@@ -1,7 +1,7 @@
 package uniearn.controller;
 
-import uniearn.model.entities.Contrat;
-import uniearn.services.ContratService;
+import uniearn.model.entities.contracts.Contrat;
+import uniearn.services.contracts.ContratService;
 
 import java.util.List;
 

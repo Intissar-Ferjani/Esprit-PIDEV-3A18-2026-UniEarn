@@ -4,9 +4,9 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import uniearn.controller.ContractSignatureController;
-import uniearn.model.entities.Contrat;
-import uniearn.services.ContratService;
+import uniearn.controller.contracts.ContractSignatureController;
+import uniearn.model.entities.contracts.Contrat;
+import uniearn.services.contracts.ContratService;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;

@@ -21,9 +21,9 @@ public class FreelancerContractApp extends Application {
             primaryStage.setScene(scene);
             primaryStage.show();
 
-            System.out.println("✅ FreelancerContractApp démarré avec succès!");
+            System.out.println(" FreelancerContractApp démarré avec succès!");
         } catch (Exception e) {
-            System.err.println("❌ Erreur lors du chargement:");
+            System.err.println(" Erreur lors du chargement:");
             e.printStackTrace();
             showErrorDialog(e);
         }

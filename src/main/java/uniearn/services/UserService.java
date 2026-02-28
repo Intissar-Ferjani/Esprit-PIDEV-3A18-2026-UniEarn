@@ -2,13 +2,16 @@ package uniearn.services;
 
 import uniearn.database.MyConnection;
 import uniearn.interfaces.IUser;
-import uniearn.model.entities.User;
+import uniearn.model.entities.users.User;
 import uniearn.model.enums.UserRole;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service pour gérer les utilisateurs
+ */
 public class UserService implements IUser<User> {
     private final Connection cn = MyConnection.getInstance().getCnx();
 
@@ -94,7 +97,7 @@ public class UserService implements IUser<User> {
     }
 
     @Override
-    public List getAllUsers() {
+    public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM user";
 

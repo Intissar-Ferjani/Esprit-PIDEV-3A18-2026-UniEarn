@@ -23,9 +23,9 @@ public class AdminContractApp extends Application {
             primaryStage.setScene(scene);
             primaryStage.show();
 
-            System.out.println("✅ AdminContractApp démarré avec succès!");
+            System.out.println(" AdminContractApp démarré avec succès!");
         } catch (Exception e) {
-            System.err.println("❌ Erreur lors du chargement:");
+            System.err.println("Erreur lors du chargement:");
             e.printStackTrace();
             showErrorDialog(e);
         }
