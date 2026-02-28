@@ -1,4 +1,4 @@
-package uniearn.interfaces;
+package uniearn.interfaces.users;
 
 import java.sql.SQLException;
 import java.util.List;

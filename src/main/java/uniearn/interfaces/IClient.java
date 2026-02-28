@@ -1,8 +1,10 @@
 package uniearn.interfaces;
 
+import uniearn.interfaces.users.IUser;
+
 import java.util.List;
 
-public interface IClient<C,U> extends IUser<U>{
+public interface IClient<C,U> extends IUser<U> {
     void addClient(C client);
     void updateClient(int id, C client);
     void deleteClient(int id);

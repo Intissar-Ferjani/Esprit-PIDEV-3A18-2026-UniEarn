@@ -3,7 +3,7 @@ setlocal enabledelayedexpansion
 
 REM Configuration des chemins
 set JAVA_HOME=C:\Program Files\Java\jdk-17
-set PROJECT_DIR=C:\Users\MSI\Desktop\uniearn
+set PROJECT_DIR=C:\Users\MSI\Desktop\uniearn2
 set M2_REPO=%USERPROFILE%\.m2\repository
 set TARGET_DIR=%PROJECT_DIR%\target\classes
 set SRC_DIR=%PROJECT_DIR%\src\main\java

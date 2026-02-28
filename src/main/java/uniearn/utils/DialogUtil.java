@@ -1,4 +1,4 @@
-package uniearn.controller.util;
+package uniearn.utils;
 
 import javafx.scene.control.Alert;
 

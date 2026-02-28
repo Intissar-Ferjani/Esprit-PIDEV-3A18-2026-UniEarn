@@ -2,8 +2,13 @@ package uniearn.app;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import uniearn.database.MyConnection;
 
@@ -15,10 +20,12 @@ import java.io.IOException;
  */
 public class MainApp extends Application {
 
-    private static final String APP_TITLE = "UniEarn - Gestion des Contrats";
-    private static final String LOGIN_FXML = "/auth/login/login.fxml";
-    private static final int WINDOW_WIDTH = 1200;
-    private static final int WINDOW_HEIGHT = 800;
+    private static final String APP_TITLE = "UniEarn - Admin Contrats";
+    // Changer ici pour tester différentes interfaces:
+    // /contracts/admin_contracts.fxml, /contracts/client_contracts.fxml, /contracts/freelancer_contracts.fxml
+    private static final String MAIN_FXML = "/contracts/admin_contracts.fxml";
+    private static final int WINDOW_WIDTH = 1400;
+    private static final int WINDOW_HEIGHT = 900;
 
     /**
      * Point d'entrée principal de l'application
@@ -28,7 +35,7 @@ public class MainApp extends Application {
     }
 
     /**
-     * Initialise et affiche la scène principale (écran de connexion)
+     * Initialise et affiche le menu de sélection d'interface
      */
     @Override
     public void start(Stage primaryStage) {
@@ -40,31 +47,17 @@ public class MainApp extends Application {
                 return;
             }
 
-            // Charger l'interface de connexion
-            Parent root = loadFXML(LOGIN_FXML);
-            if (root == null) {
-                showErrorAndExit("Erreur de Chargement",
-                    "Impossible de charger l'interface de connexion.");
-                return;
-            }
-
-            // Créer et configurer la scène
-            Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+            // Créer le menu de sélection
+            VBox menu = createSelectionMenu(primaryStage);
+            Scene scene = new Scene(menu, 600, 500);
 
             // Configurer la fenêtre principale
-            primaryStage.setTitle(APP_TITLE);
+            primaryStage.setTitle("UniEarn - Sélection Interface");
             primaryStage.setScene(scene);
-            primaryStage.setWidth(WINDOW_WIDTH);
-            primaryStage.setHeight(WINDOW_HEIGHT);
             primaryStage.centerOnScreen();
-
-            // Gérer la fermeture de l'application
-            primaryStage.setOnCloseRequest(event -> onApplicationClose());
-
-            // Afficher la fenêtre
             primaryStage.show();
 
-            System.out.println("✅ Application UniEarn démarrée avec succès!");
+            System.out.println("✅ Menu de sélection affiché!");
 
         } catch (Exception e) {
             System.err.println("❌ Erreur lors du démarrage de l'application: " + e.getMessage());
@@ -72,6 +65,115 @@ public class MainApp extends Application {
             showErrorAndExit("Erreur Critique",
                 "Une erreur critique s'est produite lors du démarrage de l'application.");
         }
+    }
+
+    /**
+     * Crée le menu de sélection des interfaces
+     */
+    private VBox createSelectionMenu(Stage stage) {
+        VBox menu = new VBox(20);
+        menu.setAlignment(Pos.CENTER);
+        menu.setPadding(new Insets(40));
+        menu.setStyle("-fx-background-color: linear-gradient(to bottom right, #667eea 0%, #764ba2 100%);");
+
+        Label title = new Label("🎯 UniEarn - Sélection Interface");
+        title.setStyle("-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;");
+
+        Label subtitle = new Label("Choisissez l'interface à tester :");
+        subtitle.setStyle("-fx-font-size: 16px; -fx-text-fill: #F5F5F5;");
+
+        // Boutons pour chaque interface
+        Button btnAdmin = createInterfaceButton("👨‍💼 Interface ADMIN",
+            "Gérer tous les contrats et templates",
+            "/contracts/admin_contracts.fxml", stage);
+
+        Button btnClient = createInterfaceButton("👤 Interface CLIENT",
+            "Créer et gérer vos contrats",
+            "/contracts/client_contracts.fxml", stage);
+
+        Button btnFreelancer = createInterfaceButton("💼 Interface FREELANCER",
+            "Consulter et signer vos contrats",
+            "/contracts/freelancer_contracts.fxml", stage);
+
+        Button btnTemplates = createInterfaceButton("📋 Gestion TEMPLATES",
+            "Créer et gérer les modèles de contrats",
+            "/contracts/contract_template_admin.fxml", stage);
+
+        menu.getChildren().addAll(title, subtitle, btnAdmin, btnClient, btnFreelancer, btnTemplates);
+
+        return menu;
+    }
+
+    /**
+     * Crée un bouton stylisé pour le menu
+     */
+    private Button createInterfaceButton(String title, String description, String fxmlPath, Stage stage) {
+        VBox buttonContent = new VBox(5);
+        buttonContent.setAlignment(Pos.CENTER);
+
+        Label btnTitle = new Label(title);
+        btnTitle.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
+        Label btnDesc = new Label(description);
+        btnDesc.setStyle("-fx-font-size: 12px; -fx-opacity: 0.8;");
+
+        buttonContent.getChildren().addAll(btnTitle, btnDesc);
+
+        Button button = new Button();
+        button.setGraphic(buttonContent);
+        button.setPrefWidth(450);
+        button.setPrefHeight(70);
+        button.setStyle("-fx-background-color: white; -fx-background-radius: 10; " +
+                       "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 2); " +
+                       "-fx-cursor: hand;");
+
+        button.setOnMouseEntered(e -> button.setStyle(
+            "-fx-background-color: #f0f0f0; -fx-background-radius: 10; " +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0, 0, 3); " +
+            "-fx-cursor: hand; -fx-scale-x: 1.02; -fx-scale-y: 1.02;"));
+
+        button.setOnMouseExited(e -> button.setStyle(
+            "-fx-background-color: white; -fx-background-radius: 10; " +
+            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 2); " +
+            "-fx-cursor: hand;"));
+
+        button.setOnAction(e -> loadInterface(fxmlPath, stage));
+
+        return button;
+    }
+
+    /**
+     * Charge une interface spécifique
+     */
+    private void loadInterface(String fxmlPath, Stage stage) {
+        try {
+            System.out.println("🔄 Chargement de l'interface: " + fxmlPath);
+            Parent root = loadFXML(fxmlPath);
+
+            if (root != null) {
+                Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+                stage.setScene(scene);
+                stage.setTitle(APP_TITLE + " - " + getInterfaceName(fxmlPath));
+                stage.centerOnScreen();
+                System.out.println("✅ Interface chargée avec succès!");
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Erreur lors du chargement de l'interface: " + e.getMessage());
+            e.printStackTrace();
+            showErrorAndExit("Erreur de Chargement",
+                "Impossible de charger l'interface: " + fxmlPath);
+        }
+    }
+
+    /**
+     * Retourne le nom de l'interface à partir du chemin FXML
+     */
+    private String getInterfaceName(String fxmlPath) {
+        if (fxmlPath.contains("admin")) return "Admin";
+        if (fxmlPath.contains("client")) return "Client";
+        if (fxmlPath.contains("freelancer")) return "Freelancer";
+        if (fxmlPath.contains("template")) return "Templates";
+        return "Interface";
     }
 
     /**
