@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations_v2.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build_and_run.bat" beforeDir="false" afterPath="$PROJECT_DIR$/build_and_run.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/interfaces/IContrat.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migration_contract_upgrade.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_admin_contracts.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_client.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_freelancer.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_freelancer_contracts.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/schema_contract.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/MainApp.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/AdminContractController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ApplicationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/ApplicationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ClientContractController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ClientContractDialogController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ClientController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/ClientController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ContractSignatureController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ContractTemplateController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ContractTemplateDialogController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ContratController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ContratDialogController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ContratDialogController2.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ContratDialogController_Fixed.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ContratRestController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/ContratRestController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ContratTableController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/FreelancerContractController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/FreelancerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/FreelancerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ProjectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/ProjectController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/crud/ContratCRUD.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/crud/ContratCRUD.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/crud/ContratCRUDTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/crud/ContratCRUDTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/example/AdminContractApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/example/AdminContractApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/example/ContractSignatureApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/example/ContractSignatureApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/example/ContratApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/example/ContratApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/example/ContratJavaFXApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/example/ContratJavaFXApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/example/ContratTestApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/example/ContratTestApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/example/FreelancerContractApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/example/FreelancerContractApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/interfaces/IContrat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/interfaces/IContrat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Admin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Chat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Chat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/ContractTemplate.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Contrat.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Evaluation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Evaluation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Freelancer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Freelancer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Payment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Payment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Project.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Project.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Task.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/users/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/ContractPDFService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/ContractSystemTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/ContractTemplateService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/ContratService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/ContratServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/ContratServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/DataLoaderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/DataLoaderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/contrat.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/auth/login.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/contracts/client_contract_dialog.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/contracts/client_contract_dialog.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_admin_contracts.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_client_contracts.bat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_freelancer_contracts.bat" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_C:/Users/MSI/Desktop/uniearn" value="3AH3tI7E0M8Za79ICgaKJYHKcPR" />
+    </persistenceIdMap>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;eya-ghzaiel&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Intissar-Ferjani/UniEarn-Java.git",
+    "accountId": "3ce0974e-fcd6-4439-844a-ead706256448"
+  }
+}]]></component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="3AH3tI7E0M8Za79ICgaKJYHKcPR" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.MainApp.executor": "Run",
+    "Batch.build_and_run.executor": "Run",
+    "Batch.build_compile.executor": "Run",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "contrats-et-transactions-v1",
+    "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.30387.90" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="" />
+      <created>1772236207938</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1772236207938</updated>
+      <workItem from="1772236210067" duration="653000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>

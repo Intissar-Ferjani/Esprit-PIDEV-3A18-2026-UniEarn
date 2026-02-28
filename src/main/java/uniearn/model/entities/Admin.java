@@ -1,4 +1,6 @@
 package uniearn.model.entities;
 
-public class Admin extends User{
+import uniearn.model.entities.users.User;
+
+public class Admin extends User {
 }

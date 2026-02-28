@@ -1,6 +1,6 @@
 package uniearn.crud;
 
-import uniearn.model.entities.Contrat;
+import uniearn.model.entities.contracts.Contrat;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;

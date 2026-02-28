@@ -1,7 +1,7 @@
 package uniearn.example;
 
 import uniearn.crud.ContratCRUD;
-import uniearn.model.entities.Contrat;
+import uniearn.model.entities.contracts.Contrat;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;

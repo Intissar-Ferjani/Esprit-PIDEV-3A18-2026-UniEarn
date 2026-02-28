@@ -22,6 +22,12 @@
                     <ComboBox fx:id="cbTemplate" prefWidth="300" promptText="Sélectionnez un template..."/>
                 </HBox>
 
+                <!-- Métier -->
+                <HBox spacing="10">
+                    <Label text="Métier:" prefWidth="120" style="-fx-font-weight: bold;"/>
+                    <ComboBox fx:id="cbMetier" prefWidth="300" promptText="Sélectionnez un métier..."/>
+                </HBox>
+
                 <!-- Type de contrat -->
                 <HBox spacing="10">
                     <Label text="Type Contrat:" prefWidth="120" style="-fx-font-weight: bold;"/>

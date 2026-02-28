@@ -13,9 +13,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import uniearn.controller.ContratDialogController;
+import uniearn.controller.contracts.ContratDialogController;
 import uniearn.crud.ContratCRUD;
-import uniearn.model.entities.Contrat;
+import uniearn.model.entities.contracts.Contrat;
 
 import java.io.IOException;
 import java.util.List;

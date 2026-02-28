@@ -28,6 +28,7 @@ set CLASSPATH=!CLASSPATH!;%M2_REPO%\org\openjfx\javafx-swing\17.0.12\javafx-swin
 set CLASSPATH=!CLASSPATH!;%M2_REPO%\org\openjfx\javafx-swing\17.0.12\javafx-swing-17.0.12-win.jar
 set CLASSPATH=!CLASSPATH!;%M2_REPO%\junit\junit\4.12\junit-4.12.jar
 set CLASSPATH=!CLASSPATH!;%M2_REPO%\org\hamcrest\hamcrest-core\1.3\hamcrest-core-1.3.jar
+set CLASSPATH=!CLASSPATH!;%M2_REPO%\com\itextpdf\itextpdf\5.5.13.3\itextpdf-5.5.13.3.jar
 
 echo ======================================
 echo 📦 Compilation UniEarn
@@ -77,7 +78,7 @@ set JAVAFX_PATH=%M2_REPO%\org\openjfx
   --add-opens javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED ^
   --add-opens javafx.base/com.sun.javafx.reflect=ALL-UNNAMED ^
   -cp "!CLASSPATH!" ^
-  uniearn.example.AppLauncher
+  uniearn.app.AppLauncher
 
 endlocal
 
