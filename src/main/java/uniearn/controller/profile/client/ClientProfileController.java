@@ -643,7 +643,7 @@ public class ClientProfileController {
             controller.setClientData(currentClient);
 
             Stage stage = (Stage) postedProjectsContainer.getScene().getWindow();
-            stage.setScene(new Scene(root, 1600, 900));
+            stage.setScene(new Scene(root, 1400, 800));
             stage.setTitle("Mes Projects - UniEarn");
             stage.centerOnScreen();
 

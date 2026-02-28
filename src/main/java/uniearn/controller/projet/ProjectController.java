@@ -3,6 +3,8 @@ package uniearn.controller.projet;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -35,6 +37,8 @@ public class ProjectController {
 
     private Client currentClient;
 
+    private ObservableList<Project> projectList = FXCollections.observableArrayList();
+
     public void setClientData(Client client) {
         this.currentClient = client;
     }
@@ -61,10 +65,16 @@ public class ProjectController {
     private TableColumn<Project, Integer> clientIdColumn;
 
     @FXML
-    private TextField clientIdField;
+    private Label countLabel;
 
     @FXML
-    private Label countLabel;
+    private Label titleErrorLabel;
+
+    @FXML
+    private Label budgetErrorLabel;
+
+    @FXML
+    private Label descriptionErrorLabel;
 
     @FXML
     private Button deleteButton;
@@ -91,6 +101,9 @@ public class ProjectController {
     private ComboBox<taskstatusenum> statusComboBox;
 
     @FXML
+    private HBox statusContainer;
+
+    @FXML
     private Label statusLabel;
 
     @FXML
@@ -112,6 +125,7 @@ public class ProjectController {
     public void initialize() {
         if (statusComboBox != null) {
             statusComboBox.getItems().setAll(taskstatusenum.values());
+            statusComboBox.getSelectionModel().select(0); // Default to TODO
         }
 
         idColumn.setCellValueFactory(new PropertyValueFactory<>("idproject"));
@@ -131,6 +145,8 @@ public class ProjectController {
         });
         clientIdColumn.setCellValueFactory(new PropertyValueFactory<>("client_id"));
 
+        projectTable.setItems(projectList); // Initialize table with the observable list
+
         // add action buttons column (Modifier / Supprimer) if present in FXML
         if (actionColumn != null) {
             Callback<TableColumn<Project, Void>, TableCell<Project, Void>> cellFactory = new Callback<>() {
@@ -143,28 +159,19 @@ public class ProjectController {
                         private final HBox pane = new HBox(8, btnEdit, btnDelete);
 
                         {
+                            btnEdit.setStyle(
+                                    "-fx-background-color: forestgreen; -fx-text-fill: white; -fx-cursor: hand; -fx-font-weight: bold;");
+                            btnDelete.setStyle(
+                                    "-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-cursor: hand; -fx-font-weight: bold;");
 
-                            btnEdit.getStyleClass().addAll("button-primary");
-                            btnDelete.getStyleClass().addAll("button-danger");
-
-                            btnEdit.setOnAction((ActionEvent event) -> {
+                            btnEdit.setOnAction(event -> {
                                 Project project = getTableView().getItems().get(getIndex());
                                 populateFormForEdit(project);
                             });
 
-                            btnDelete.setOnAction((ActionEvent event) -> {
+                            btnDelete.setOnAction(event -> {
                                 Project project = getTableView().getItems().get(getIndex());
-                                boolean ok = showConfirm("Supprimer le projet",
-                                        "Voulez-vous vraiment supprimer le projet \"" + project.getTitle() + "\" ?");
-                                if (!ok)
-                                    return;
-                                try {
-                                    services.deleteProject(project.getIdproject());
-                                    handleRefresh();
-                                    showInfo("Projet supprimé", "Le projet a été supprimé avec succès.");
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
+                                handleDelete(project);
                             });
                         }
 
@@ -184,7 +191,14 @@ public class ProjectController {
             actionColumn.setCellFactory(cellFactory);
         }
 
-        handleRefresh();
+        // handleRefresh() is now called in setClientData, so it's not needed here
+        // unless currentClient is guaranteed to be set before initialize
+        // For safety, we can keep it, but it might refresh twice if setClientData is
+        // called immediately after initialize.
+        // A better approach is to ensure setClientData is always called and triggers
+        // the first refresh.
+        // For now, I'll remove it here as setClientData will handle the initial load.
+        // handleRefresh();
     }
 
     private void populateFormForEdit(Project project) {
@@ -194,23 +208,107 @@ public class ProjectController {
         titleField.setText(project.getTitle());
         descriptionArea.setText(project.getDescription());
         budgetField.setText(String.valueOf(project.getBudget()));
-        clientIdField.setText(String.valueOf(project.getClient_id()));
+        // clientIdField.setText(String.valueOf(project.getClient_id())); // Removed
+        // clientIdField
         // select status by index if valid
         try {
             statusComboBox.getSelectionModel().select(project.getStatus());
         } catch (Exception e) {
             statusComboBox.getSelectionModel().clearSelection();
         }
+
+        if (statusContainer != null) {
+            statusContainer.setVisible(true);
+            statusContainer.setManaged(true);
+        }
+    }
+
+    private boolean validateInputs() {
+        boolean isValid = true;
+
+        // Validate Title
+        if (titleField.getText() == null || titleField.getText().trim().isEmpty()) {
+            titleErrorLabel.setText("Le titre est requis.");
+            titleErrorLabel.setVisible(true);
+            titleErrorLabel.setManaged(true);
+            isValid = false;
+        } else if (!titleField.getText().matches(".*[a-zA-Z].*")) {
+            titleErrorLabel.setText("Le titre doit contenir au moins une lettre.");
+            titleErrorLabel.setVisible(true);
+            titleErrorLabel.setManaged(true);
+            isValid = false;
+        } else {
+            titleErrorLabel.setVisible(false);
+            titleErrorLabel.setManaged(false);
+        }
+
+        // Validate Budget
+        if (budgetField.getText() == null || budgetField.getText().trim().isEmpty()) {
+            budgetErrorLabel.setText("Le budget est requis.");
+            budgetErrorLabel.setVisible(true);
+            budgetErrorLabel.setManaged(true);
+            isValid = false;
+        } else if (!budgetField.getText().trim().matches("^[0-9]+(\\.[0-9]+)?$")) {
+            budgetErrorLabel.setText("Le budget doit contenir uniquement des chiffres.");
+            budgetErrorLabel.setVisible(true);
+            budgetErrorLabel.setManaged(true);
+            isValid = false;
+        } else {
+            try {
+                double budget = Double.parseDouble(budgetField.getText());
+                if (budget <= 0) {
+                    budgetErrorLabel.setText("Le budget doit être supérieur à 0.");
+                    budgetErrorLabel.setVisible(true);
+                    budgetErrorLabel.setManaged(true);
+                    isValid = false;
+                } else {
+                    budgetErrorLabel.setVisible(false);
+                    budgetErrorLabel.setManaged(false);
+                }
+            } catch (NumberFormatException e) {
+                budgetErrorLabel.setText("Le budget doit être un nombre valide.");
+                budgetErrorLabel.setVisible(true);
+                budgetErrorLabel.setManaged(true);
+                isValid = false;
+            }
+        }
+
+        // Validate Description
+        if (descriptionArea.getText() == null || descriptionArea.getText().trim().isEmpty()) {
+            descriptionErrorLabel.setText("La description est requise.");
+            descriptionErrorLabel.setVisible(true);
+            descriptionErrorLabel.setManaged(true);
+            isValid = false;
+        } else if (!descriptionArea.getText().matches(".*[a-zA-Z].*")) {
+            descriptionErrorLabel.setText("La description doit contenir  des lettres !");
+            descriptionErrorLabel.setVisible(true);
+            descriptionErrorLabel.setManaged(true);
+            isValid = false;
+        } else {
+            descriptionErrorLabel.setVisible(false);
+            descriptionErrorLabel.setManaged(false);
+        }
+
+        return isValid;
     }
 
     @FXML
     void handleAdd(ActionEvent event) {
+        if (!validateInputs()) {
+            return;
+        }
+
         String title = titleField.getText();
         String description = descriptionArea.getText();
         double budget = Double.parseDouble(budgetField.getText());
-        int status = statusComboBox.getSelectionModel().getSelectedIndex();
-        int clientId = Integer.parseInt(clientIdField.getText());
-        int freelancerIDD = 23;
+        int status = 2; // Forced default TODO
+        int freelancerIDD = 23; // Default or placeholder freelancer ID
+
+        if (currentClient == null) {
+            showErrorAlert("Error", "Client data not available. Cannot add project.");
+            return;
+        }
+        int clientId = currentClient.getIdClient();
 
         // Create a new Project object
         Project newProject = new Project(title, description, budget, status, clientId, freelancerIDD);
@@ -220,10 +318,13 @@ public class ProjectController {
             services.addProject(newProject);
             // Refresh the project table view
             handleRefresh();
+            clearForm(); // Clear form after successful add
             showInfo("Projet ajouté", "Le projet a été ajouté avec succès.");
         } catch (SQLException e) {
             e.printStackTrace();
-            // Handle any errors that occur during database operations
+            showErrorAlert("Database Error", "Failed to add project: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            showErrorAlert("Input Error", "Please enter a valid number for budget.");
         }
     }
 
@@ -231,44 +332,84 @@ public class ProjectController {
         titleField.clear();
         descriptionArea.clear();
         budgetField.clear();
-        clientIdField.clear();
         statusComboBox.getSelectionModel().clearSelection();
         projectTable.getSelectionModel().clearSelection();
         selectedProjectId = null;
+        // Clear error labels
+        titleErrorLabel.setVisible(false);
+        titleErrorLabel.setManaged(false);
+        budgetErrorLabel.setVisible(false);
+        budgetErrorLabel.setManaged(false);
+        descriptionErrorLabel.setVisible(false);
+        descriptionErrorLabel.setManaged(false);
+
+        // Hide status container
+        if (statusContainer != null) {
+            statusContainer.setVisible(false);
+            statusContainer.setManaged(false);
+        }
     }
 
     @FXML
     void handleClear(ActionEvent event) {
         clearForm();
     }
-    /*
-     * @FXML
-     * void handleDelete(ActionEvent event) {
-     * Project selected = projectTable.getSelectionModel().getSelectedItem();
-     * if (selected != null) {
-     * boolean ok = showConfirm("Supprimer le projet",
-     * "Voulez-vous vraiment supprimer le projet \"" + selected.getTitle() +
-     * "\" ?");
-     * if (!ok) return;
-     * services.deleteProject(selected.getIdproject());
-     * handleRefresh();
-     * showInfo("Projet supprimé", "Le projet a été supprimé avec succès.");
-     * }
-     * 
-     * }
-     */
+
+    private void handleDelete(Project project) {
+        boolean ok = showConfirm("Supprimer le projet",
+                "Voulez-vous vraiment supprimer le projet \"" + project.getTitle() + "\" ?");
+        if (!ok)
+            return;
+        try {
+            services.deleteProject(project.getIdproject());
+            handleRefresh();
+            showInfo("Projet supprimé", "Le projet a été supprimé avec succès.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorAlert("Database Error", "Failed to delete project: " + e.getMessage());
+        }
+    }
 
     @FXML
     void handleRefresh() {
-        // Fetch all projects from the service and populate the TableView
-        List<Project> projects = services.getAllProjects();
-        ObservableList<Project> data = FXCollections.observableArrayList(projects);
-        projectTable.setItems(data);
-
-        // Update count label
-        if (countLabel != null) {
-            countLabel.setText("Total: " + data.size() + " projets");
+        if (currentClient != null) {
+            projectList.setAll(services.getProjectsByClientId(currentClient.getIdClient()));
+            setupFiltering();
+        } else {
+            projectList.clear();
         }
+        if (countLabel != null) {
+            countLabel.setText("Total : " + projectList.size() + " projets");
+        }
+    }
+
+    private void setupFiltering() {
+        if (searchField == null)
+            return;
+
+        FilteredList<Project> filteredData = new FilteredList<>(projectList, p -> true);
+
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(project -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                String lowerCaseFilter = newValue.toLowerCase();
+
+                if (project.getTitle().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                } else if (project.getDescription().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                return false;
+            });
+            countLabel.setText("Total : " + filteredData.size() + " projets");
+        });
+
+        SortedList<Project> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(projectTable.comparatorProperty());
+        projectTable.setItems(sortedData);
     }
 
     @FXML
@@ -293,7 +434,11 @@ public class ProjectController {
     @FXML
     void handleUpdate(ActionEvent event) {
         if (selectedProjectId == null) {
-            // nothing selected for edit
+            showErrorAlert("Error", "Veuillez sélectionner un projet à modifier.");
+            return;
+        }
+
+        if (!validateInputs()) {
             return;
         }
 
@@ -305,11 +450,7 @@ public class ProjectController {
         } catch (NumberFormatException e) {
         }
         int status = statusComboBox.getSelectionModel().getSelectedIndex();
-        int clientId = 0;
-        try {
-            clientId = Integer.parseInt(clientIdField.getText());
-        } catch (NumberFormatException e) {
-        }
+        int clientId = currentClient != null ? currentClient.getIdClient() : 0;
 
         Project updated = new Project(title, description, budget, status, clientId, 23);
         try {

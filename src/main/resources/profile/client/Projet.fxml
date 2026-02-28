@@ -152,6 +152,7 @@
                                                            promptText="Entrez le titre du projet…"
                                                            style="-fx-background-color:#f8f9fa;-fx-border-color:#e1e8ed;-fx-border-radius:6;-fx-background-radius:6;-fx-padding:10;-fx-font-size:13;">
                                                 </TextField>
+                                                <Label fx:id="titleErrorLabel" text="" style="-fx-text-fill:#e74c3c; -fx-font-size: 11px;" visible="false" managed="false"/>
                                             </children>
                                         </VBox>
                                         <VBox spacing="6.0" prefWidth="200.0">
@@ -162,13 +163,14 @@
                                                 <TextField fx:id="budgetField" promptText="0.00"
                                                            style="-fx-background-color:#f8f9fa;-fx-border-color:#e1e8ed;-fx-border-radius:6;-fx-background-radius:6;-fx-padding:10;-fx-font-size:13;">
                                                 </TextField>
+                                                <Label fx:id="budgetErrorLabel" text="" style="-fx-text-fill:#e74c3c; -fx-font-size: 11px;" visible="false" managed="false"/>
                                             </children>
                                         </VBox>
                                     </children>
                                 </HBox>
 
-                                <!-- Row 2 : Statut  |  ID Client -->
-                                <HBox spacing="20.0">
+                                <!-- Row 2 : Statut -->
+                                <HBox fx:id="statusContainer" spacing="20.0" visible="false" managed="false">
                                     <children>
                                         <VBox spacing="6.0" HBox.hgrow="ALWAYS">
                                             <children>
@@ -179,16 +181,6 @@
                                                           promptText="Sélectionnez le statut"
                                                           style="-fx-background-color:#f8f9fa;-fx-border-color:#e1e8ed;-fx-border-radius:6;-fx-background-radius:6;-fx-font-size:13;">
                                                 </ComboBox>
-                                            </children>
-                                        </VBox>
-                                        <VBox spacing="6.0" prefWidth="200.0">
-                                            <children>
-                                                <Label text="ID Client *" styleClass="field-label-small">
-                                                    <font><Font name="System Bold" size="13.0"/></font>
-                                                </Label>
-                                                <TextField fx:id="clientIdField" promptText="ID du client"
-                                                           style="-fx-background-color:#f8f9fa;-fx-border-color:#e1e8ed;-fx-border-radius:6;-fx-background-radius:6;-fx-padding:10;-fx-font-size:13;">
-                                                </TextField>
                                             </children>
                                         </VBox>
                                     </children>
@@ -206,6 +198,7 @@
                                                   styleClass="description-area"
                                                   style="-fx-font-size:13;">
                                         </TextArea>
+                                        <Label fx:id="descriptionErrorLabel" text="" style="-fx-text-fill:#e74c3c; -fx-font-size: 11px;" visible="false" managed="false"/>
                                     </children>
                                 </VBox>
 
