@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import uniearn.controller.projet.ProjectController;
 import uniearn.model.entities.users.User;
 import uniearn.model.entities.users.admin.Admin;
 import uniearn.model.entities.users.client.Client;
@@ -472,6 +473,26 @@ public class ListUsersController {
             e.printStackTrace();
             showErrorAlert("Navigation Error", "Failed to load dashboard: " + e.getMessage());
         }
+    }
+
+    @FXML
+    private void handleproject() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/Projet.fxml"));
+            Parent root = loader.load();
+
+            ProjectController controller = loader.getController();
+
+            Stage stage = (Stage) root.getScene().getWindow();
+            stage.setScene(new Scene(root, 1600, 900));
+            stage.setTitle("Manage Projects - UniEarn");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Navigation Error", "Failed to load project management page: " + e.getMessage());
+        }
+
     }
 
     @FXML

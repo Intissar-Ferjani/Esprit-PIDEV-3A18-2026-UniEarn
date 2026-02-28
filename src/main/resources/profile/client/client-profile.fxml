@@ -42,7 +42,7 @@
                         <Insets top="20.0" left="15.0" right="15.0" bottom="15.0" />
                     </padding>
                     <children>
-                        <Button text="🏠 Dashboard" styleClass="nav-button, active" prefWidth="220.0" prefHeight="40.0">
+                        <Button text="🏠 Dashboard" styleClass="nav-button, active" prefWidth="220.0" prefHeight="40.0" >
                             <font>
                                 <Font size="14.0" />
                             </font>

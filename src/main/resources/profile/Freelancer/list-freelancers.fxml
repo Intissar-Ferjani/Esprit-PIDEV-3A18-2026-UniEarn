@@ -56,7 +56,7 @@
                             </font>
                         </Button>
 
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📋 Mes projets">
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📋 Mes projets" onAction="#handleproject">
                             <font>
                                 <Font size="14.0" />
                             </font>

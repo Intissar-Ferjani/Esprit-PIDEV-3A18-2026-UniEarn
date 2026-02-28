@@ -31,49 +31,70 @@
 
     <!-- ═══════════════════════════════════════════════════════ SIDEBAR -->
     <left>
-        <VBox prefWidth="250.0" styleClass="sidebar">
+        <VBox styleClass="sidebar" prefWidth="250.0">
             <children>
+                <!-- Navigation Menu -->
                 <VBox spacing="5.0" VBox.vgrow="ALWAYS">
-                    <padding><Insets bottom="15.0" left="15.0" right="15.0" top="20.0"/></padding>
+                    <padding>
+                        <Insets top="20.0" left="15.0" right="15.0" bottom="15.0" />
+                    </padding>
                     <children>
-                        <Button  prefHeight="40.0" prefWidth="220.0"
-                                styleClass="nav-button" text="🏠 Dashboard">
-                            <font><Font size="14.0"/></font>
-                        </Button>
-                        <Button prefHeight="40.0" prefWidth="220.0"
-                                styleClass="nav-button" text="👥 Manage Users">
-                            <font><Font size="14.0"/></font>
-                        </Button>
-                        <Button prefHeight="40.0" prefWidth="220.0"
-                                styleClass="nav-button, active" text="📋 Manage Projects">
-                            <font><Font size="14.0"/></font>
-                        </Button>
-                        <Button prefHeight="40.0" prefWidth="220.0"
-                                styleClass="nav-button" text="📝 Manage Contracts">
-                            <font><Font size="14.0"/></font>
-                        </Button>
-                        <Button prefHeight="40.0" prefWidth="220.0"
-                                styleClass="nav-button" text="📊 Reports">
-                            <font><Font size="14.0"/></font>
+                        <Button text="🏠 Dashboard" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0" onAction="#handleBackToProfile">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
                         </Button>
 
-                        <Region VBox.vgrow="ALWAYS"/>
-                        <Separator/>
-
-                        <Button prefHeight="40.0" prefWidth="220.0"
-                                styleClass="nav-button" text="⚙ Settings">
-                            <font><Font size="14.0"/></font>
+                        <Button text="👥 Browse Freelancers" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0" onAction="#handleBrowseFreelancers">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
                         </Button>
-                        <Button onAction="#handleLogout" prefHeight="40.0" prefWidth="220.0"
-                                styleClass="nav-button, logout" text="🚪 Logout">
-                            <font><Font size="14.0"/></font>
+
+                        <Button  text="📋 Mes projets" styleClass="nav-button,active" prefWidth="220.0" prefHeight="40.0">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button text="📝 Mes contrats" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button text="💬 Messages" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button text="💳 Paiements" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Region VBox.vgrow="ALWAYS" />
+
+                        <Separator />
+
+                        <Button text="⚙ Settings" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0" onAction="#handleSettings">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button text="🚪 Logout" styleClass="nav-button, logout" prefWidth="220.0" prefHeight="40.0" onAction="#handleLogout">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
                         </Button>
                     </children>
                 </VBox>
             </children>
         </VBox>
     </left>
-
     <!-- ═══════════════════════════════════════════════════ MAIN CONTENT -->
     <center>
         <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="content-scroll">

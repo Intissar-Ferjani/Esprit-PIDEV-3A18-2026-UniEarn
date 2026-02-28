@@ -14,8 +14,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import uniearn.controller.profile.admin.AdminDashboardController;
+import uniearn.controller.profile.freelancer.ListFreelancersController;
 import uniearn.database.SessionManager;
 import uniearn.model.entities.projet.Project;
+import uniearn.model.entities.users.client.Client;
 import uniearn.model.enums.taskstatusenum;
 import uniearn.services.projet.ProjectService;
 
@@ -30,6 +33,12 @@ public class ProjectController {
 
     private Integer selectedProjectId = null;
 
+    private Client currentClient;
+
+    public void setClientData(Client client) {
+        this.currentClient = client;
+    }
+
     @FXML
     private Button addButton;
 
@@ -41,7 +50,6 @@ public class ProjectController {
 
     @FXML
     private Button editProfileButton;
-
 
     @FXML
     private TextField budgetField;
@@ -146,8 +154,10 @@ public class ProjectController {
 
                             btnDelete.setOnAction((ActionEvent event) -> {
                                 Project project = getTableView().getItems().get(getIndex());
-                                boolean ok = showConfirm("Supprimer le projet", "Voulez-vous vraiment supprimer le projet \"" + project.getTitle() + "\" ?");
-                                if (!ok) return;
+                                boolean ok = showConfirm("Supprimer le projet",
+                                        "Voulez-vous vraiment supprimer le projet \"" + project.getTitle() + "\" ?");
+                                if (!ok)
+                                    return;
                                 try {
                                     services.deleteProject(project.getIdproject());
                                     handleRefresh();
@@ -178,7 +188,8 @@ public class ProjectController {
     }
 
     private void populateFormForEdit(Project project) {
-        if (project == null) return;
+        if (project == null)
+            return;
         selectedProjectId = project.getIdproject();
         titleField.setText(project.getTitle());
         descriptionArea.setText(project.getDescription());
@@ -202,7 +213,7 @@ public class ProjectController {
         int freelancerIDD = 23;
 
         // Create a new Project object
-        Project newProject = new Project(title, description, budget, status, clientId,freelancerIDD );
+        Project newProject = new Project(title, description, budget, status, clientId, freelancerIDD);
 
         // Add the project to the database
         try {
@@ -230,19 +241,22 @@ public class ProjectController {
     void handleClear(ActionEvent event) {
         clearForm();
     }
-/*
-    @FXML
-    void handleDelete(ActionEvent event) {
-        Project selected = projectTable.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            boolean ok = showConfirm("Supprimer le projet", "Voulez-vous vraiment supprimer le projet \"" + selected.getTitle() + "\" ?");
-            if (!ok) return;
-            services.deleteProject(selected.getIdproject());
-            handleRefresh();
-            showInfo("Projet supprimé", "Le projet a été supprimé avec succès.");
-        }
-
-    }*/
+    /*
+     * @FXML
+     * void handleDelete(ActionEvent event) {
+     * Project selected = projectTable.getSelectionModel().getSelectedItem();
+     * if (selected != null) {
+     * boolean ok = showConfirm("Supprimer le projet",
+     * "Voulez-vous vraiment supprimer le projet \"" + selected.getTitle() +
+     * "\" ?");
+     * if (!ok) return;
+     * services.deleteProject(selected.getIdproject());
+     * handleRefresh();
+     * showInfo("Projet supprimé", "Le projet a été supprimé avec succès.");
+     * }
+     * 
+     * }
+     */
 
     @FXML
     void handleRefresh() {
@@ -254,6 +268,25 @@ public class ProjectController {
         // Update count label
         if (countLabel != null) {
             countLabel.setText("Total: " + data.size() + " projets");
+        }
+    }
+
+    @FXML
+    private void handleBrowseFreelancers() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/list-freelancers.fxml"));
+            Parent root = loader.load();
+
+            ListFreelancersController controller = loader.getController();
+            controller.setClientData(currentClient);
+
+            Stage stage = (Stage) projectTable.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 800));
+            stage.setTitle("Browse Freelancers - UniEarn");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load browse freelancers page: " + e.getMessage());
         }
     }
 
@@ -278,7 +311,7 @@ public class ProjectController {
         } catch (NumberFormatException e) {
         }
 
-        Project updated = new Project(title, description, budget, status, clientId,23);
+        Project updated = new Project(title, description, budget, status, clientId, 23);
         try {
             services.updateProject(selectedProjectId, updated);
             handleRefresh();
@@ -329,18 +362,32 @@ public class ProjectController {
         });
     }
 
+    @FXML
+    private void handleBackToProfile() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/client-profile.fxml"));
+            Parent root = loader.load();
+
+            uniearn.controller.profile.client.ClientProfileController controller = loader.getController();
+            controller.setClientData(currentClient);
+
+            Stage stage = (Stage) projectTable.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            // e.printStackTrace();
+            showErrorAlert("Error", "Failed to load profile page: " + e.getMessage());
+        }
+    }
+
     private void redirectToLogin() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/login/login.fxml"));
             Parent root = loader.load();
 
             Stage stage = null;
-            if (nameLabel != null && nameLabel.getScene() != null) {
-                stage = (Stage) nameLabel.getScene().getWindow();
-            } else if (profileImageView != null && profileImageView.getScene() != null) {
-                stage = (Stage) profileImageView.getScene().getWindow();
-            } else if (editProfileButton != null && editProfileButton.getScene() != null) {
-                stage = (Stage) editProfileButton.getScene().getWindow();
+            if (projectTable != null && projectTable.getScene() != null) {
+                stage = (Stage) projectTable.getScene().getWindow();
             }
 
             if (stage != null) {
@@ -356,7 +403,6 @@ public class ProjectController {
         }
     }
 
-
     private void showErrorAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -364,5 +410,14 @@ public class ProjectController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-}
 
+    @FXML
+    private void handleSettings() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Settings");
+        alert.setHeaderText("Account Settings");
+        alert.setContentText(
+                "Settings page coming soon!\n\nFeatures:\n• Notification preferences\n• Privacy settings\n• Language selection");
+        alert.showAndWait();
+    }
+}

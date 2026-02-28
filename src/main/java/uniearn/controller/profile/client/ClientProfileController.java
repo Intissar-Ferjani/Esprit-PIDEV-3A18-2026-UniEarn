@@ -20,6 +20,7 @@ import uniearn.services.users.client.ClientService;
 import uniearn.services.users.UserService;
 import uniearn.database.SessionManager;
 import uniearn.utils.user.PasswordUtil;
+import uniearn.services.projet.ProjectService;
 
 import java.io.File;
 import java.io.IOException;
@@ -168,21 +169,60 @@ public class ClientProfileController {
     private void loadPostedProjects() {
         postedProjectsContainer.getChildren().clear();
 
-        VBox placeholder = new VBox(10);
-        placeholder.setAlignment(Pos.CENTER);
-        placeholder.setStyle("-fx-padding: 40px;");
+        ProjectService projectService = new ProjectService();
+        java.util.List<uniearn.model.entities.projet.Project> clientProjects = projectService
+                .getProjectsByClientId(currentClient.getIdClient());
 
-        Label icon = new Label("📋");
-        icon.setStyle("-fx-font-size: 48px;");
+        if (clientProjects == null || clientProjects.isEmpty()) {
+            VBox placeholder = new VBox(10);
+            placeholder.setAlignment(Pos.CENTER);
+            placeholder.setStyle("-fx-padding: 40px;");
 
-        Label text = new Label("No projects posted yet");
-        text.setStyle("-fx-text-fill: #95a5a6; -fx-font-size: 16px;");
+            Label icon = new Label("📋");
+            icon.setStyle("-fx-font-size: 48px;");
 
-        Label subtext = new Label("Post your first project to get started!");
-        subtext.setStyle("-fx-text-fill: #bdc3c7; -fx-font-size: 13px;");
+            Label text = new Label("No projects posted yet");
+            text.setStyle("-fx-text-fill: #95a5a6; -fx-font-size: 16px;");
 
-        placeholder.getChildren().addAll(icon, text, subtext);
-        postedProjectsContainer.getChildren().add(placeholder);
+            Label subtext = new Label("Post your first project to get started!");
+            subtext.setStyle("-fx-text-fill: #bdc3c7; -fx-font-size: 13px;");
+
+            placeholder.getChildren().addAll(icon, text, subtext);
+            postedProjectsContainer.getChildren().add(placeholder);
+            return;
+        }
+
+        // Display each project
+        for (uniearn.model.entities.projet.Project project : clientProjects) {
+            VBox card = new VBox(10);
+            card.setStyle(
+                    "-fx-background-color: white; -fx-padding: 15; -fx-border-color: #e1e8ed; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 1);");
+
+            HBox header = new HBox(10);
+            header.setAlignment(Pos.CENTER_LEFT);
+            Label titleLabel = new Label(project.getTitle());
+            titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
+
+            Region spacer = new Region();
+            HBox.setHgrow(spacer, Priority.ALWAYS);
+
+            Label statusBadge = new Label("Status: " + project.getStatus());
+            statusBadge.setStyle(
+                    "-fx-background-color: #e3f2fd; -fx-text-fill: #1976d2; -fx-padding: 4 10; -fx-background-radius: 12; -fx-font-size: 12px; -fx-font-weight: bold;");
+
+            header.getChildren().addAll(titleLabel, spacer, statusBadge);
+
+            Label budgetLabel = new Label("Budget: " + project.getBudget() + " TND");
+            budgetLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #27ae60; -fx-font-weight: bold;");
+
+            Label descLabel = new Label(project.getDescription());
+            descLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #7f8c8d;");
+            descLabel.setWrapText(true);
+            descLabel.setMaxHeight(40); // limit height for long descriptions
+
+            card.getChildren().addAll(header, budgetLabel, descLabel);
+            postedProjectsContainer.getChildren().add(card);
+        }
     }
 
     @FXML
@@ -583,7 +623,7 @@ public class ClientProfileController {
             ListFreelancersController controller = loader.getController();
             controller.setClientData(currentClient);
 
-            Stage stage = (Stage) nameLabel.getScene().getWindow();
+            Stage stage = (Stage) postedProjectsContainer.getScene().getWindow();
             stage.setScene(new Scene(root, 1200, 800));
             stage.setTitle("Browse Freelancers - UniEarn");
             stage.centerOnScreen();
@@ -600,10 +640,11 @@ public class ClientProfileController {
             Parent root = loader.load();
 
             ProjectController controller = loader.getController();
+            controller.setClientData(currentClient);
 
-            Stage stage = (Stage) nameLabel.getScene().getWindow();
+            Stage stage = (Stage) postedProjectsContainer.getScene().getWindow();
             stage.setScene(new Scene(root, 1600, 900));
-            stage.setTitle("Manage Projects - UniEarn");
+            stage.setTitle("Mes Projects - UniEarn");
             stage.centerOnScreen();
 
         } catch (IOException e) {
@@ -639,8 +680,8 @@ public class ClientProfileController {
             Parent root = loader.load();
 
             Stage stage = null;
-            if (nameLabel != null && nameLabel.getScene() != null) {
-                stage = (Stage) nameLabel.getScene().getWindow();
+            if (postedProjectsContainer != null && postedProjectsContainer.getScene() != null) {
+                stage = (Stage) postedProjectsContainer.getScene().getWindow();
             } else if (profileImageView != null && profileImageView.getScene() != null) {
                 stage = (Stage) profileImageView.getScene().getWindow();
             } else if (editProfileButton != null && editProfileButton.getScene() != null) {
