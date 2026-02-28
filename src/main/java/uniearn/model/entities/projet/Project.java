@@ -71,5 +71,8 @@ public class Project {
 
     public int getFreelancerid() {return freelancerid;}
 
+    public void setFreelancerid(int freelancerid) {
+        this.freelancerid = freelancerid;
+    }
 }
 

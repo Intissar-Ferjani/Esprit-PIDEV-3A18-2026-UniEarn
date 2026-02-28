@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="uniearn.controller.contracts.client.ClientContractController">
+
+    <top>
+        <VBox spacing="15" style="-fx-background-color: #1E56DB; -fx-padding: 20;">
+            <Label text="CRÉER UN CONTRAT" style="-fx-text-fill: white; -fx-font-size: 18; -fx-font-weight: bold;"/>
+            <Label text="Sélectionnez un template et remplissez les informations" style="-fx-text-fill: #F5F5F5; -fx-font-size: 12;"/>
+
+            <HBox spacing="10">
+                <Button text="➕ Nouveau Contrat" fx:id="btnNewContract"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 10 20; -fx-font-weight: bold;"/>
+                <Button text="🔄 Rafraîchir" fx:id="btnRefresh"
+                        style="-fx-background-color: #FFC107; -fx-text-fill: black; -fx-padding: 10 20; -fx-font-weight: bold;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="10" style="-fx-padding: 20;">
+            <TableView fx:id="contractsTable" prefHeight="400">
+                <columns>
+                    <TableColumn prefWidth="50" text="ID" fx:id="colId"/>
+                    <TableColumn prefWidth="100" text="Type" fx:id="colType"/>
+                    <TableColumn prefWidth="100" text="Montant (DA)" fx:id="colAmount"/>
+                    <TableColumn prefWidth="100" text="Projet ID" fx:id="colProjectId"/>
+                    <TableColumn prefWidth="100" text="Freelancer" fx:id="colFreelancer"/>
+                    <TableColumn prefWidth="120" text="Statut" fx:id="colStatus"/>
+                    <TableColumn prefWidth="100" text="Actions" fx:id="colActions"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+    <bottom>
+        <HBox spacing="20" style="-fx-background-color: #F5F5F5; -fx-padding: 15;">
+            <Label fx:id="lblStats" text="Total: 0 contrats" style="-fx-font-size: 12;"/>
+            <Separator orientation="VERTICAL"/>
+            <Label fx:id="lblSummary" text="En cours: 0 | Signés: 0 | Complétés: 0" style="-fx-font-size: 12;"/>
+        </HBox>
+    </bottom>
+</BorderPane>
+

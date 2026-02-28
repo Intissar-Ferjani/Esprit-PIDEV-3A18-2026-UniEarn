@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="uniearn.controller.ContratController">
+    <top>
+        <VBox spacing="10" style="-fx-padding: 15; -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
+            <Label text="Gestion des Contrats" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+            <HBox spacing="10" style="-fx-alignment: center-left;">
+                <Button fx:id="btnAdd" text="✚ Ajouter" style="-fx-font-size: 12; -fx-padding: 8 20; -fx-background-color: #4CAF50; -fx-text-fill: white;"/>
+                <Button fx:id="btnEdit" text="✎ Modifier" style="-fx-font-size: 12; -fx-padding: 8 20; -fx-background-color: #2196F3; -fx-text-fill: white;"/>
+                <Button fx:id="btnDelete" text="🗑 Supprimer" style="-fx-font-size: 12; -fx-padding: 8 20; -fx-background-color: #f44336; -fx-text-fill: white;"/>
+                <Separator orientation="VERTICAL"/>
+                <Button fx:id="btnSignClient" text="✓ Signer (Client)" style="-fx-font-size: 12; -fx-padding: 8 20; -fx-background-color: #FF9800; -fx-text-fill: white;"/>
+                <Button fx:id="btnSignFreelancer" text="✓ Signer (Freelancer)" style="-fx-font-size: 12; -fx-padding: 8 20; -fx-background-color: #9C27B0; -fx-text-fill: white;"/>
+                <Button fx:id="btnRefresh" text="⟳ Actualiser" style="-fx-font-size: 12; -fx-padding: 8 20; -fx-background-color: #607D8B; -fx-text-fill: white;"/>
+            </HBox>
+        </VBox>
+    </top>
+    <center>
+        <TableView fx:id="tableContracts" style="-fx-font-size: 11;">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="50" sortType="ASCENDING"/>
+                <TableColumn fx:id="colStartDate" text="Date Début" prefWidth="120"/>
+                <TableColumn fx:id="colEndDate" text="Date Fin" prefWidth="120"/>
+                <TableColumn fx:id="colAmount" text="Montant (DA)" prefWidth="100"/>
+                <TableColumn fx:id="colStatus" text="Statut" prefWidth="130"/>
+                <TableColumn fx:id="colClientID" text="Client ID" prefWidth="80"/>
+                <TableColumn fx:id="colProjectID" text="Projet ID" prefWidth="80"/>
+                <TableColumn fx:id="colPaymentID" text="Paiement ID" prefWidth="100"/>
+            </columns>
+        </TableView>
+    </center>
+    <bottom>
+        <HBox spacing="10" style="-fx-padding: 10; -fx-border-color: #e0e0e0; -fx-border-width: 1 0 0 0;">
+            <Label fx:id="lblStatus" text="Prêt" style="-fx-font-size: 11; -fx-text-fill: #666;"/>
+            <Spacer HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblTotal" text="Total: 0 contrats" style="-fx-font-size: 11; -fx-text-fill: #666;"/>
+        </HBox>
+    </bottom>
+</BorderPane>
+
