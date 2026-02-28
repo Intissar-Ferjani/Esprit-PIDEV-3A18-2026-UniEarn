@@ -37,21 +37,42 @@ import java.util.List;
 
 public class FreelancerProfileController {
 
-    @FXML private ImageView profileImageView;
-    @FXML private Label nameLabel;
-    @FXML private Label emailLabel;
-    @FXML private Label priceLabel;
-    @FXML private Label ratingLabel;
-    @FXML private Label verificationLabel;
-    @FXML private FlowPane skillsContainer;
-    @FXML private TextArea bioLabel;
-    @FXML private Label totalEarnedLabel;
-    @FXML private Label activeContractsLabel;
-    @FXML private Label completedProjectsLabel;
-    @FXML private Button editProfileButton;
-    @FXML private VBox portfolioSection;
-    @FXML private Button viewPortfolioButton;
-    @FXML private Button viewPortfolioCardButton;
+    @FXML
+    private ImageView profileImageView;
+    @FXML
+    private Label nameLabel;
+    @FXML
+    private Label emailLabel;
+    @FXML
+    private Label priceLabel;
+    @FXML
+    private Label ratingLabel;
+    @FXML
+    private Label verificationLabel;
+    @FXML
+    private FlowPane skillsContainer;
+    @FXML
+    private TextArea bioLabel;
+    @FXML
+    private Label totalEarnedLabel;
+    @FXML
+    private Label activeContractsLabel;
+    @FXML
+    private Label completedProjectsLabel;
+    @FXML
+    private Button editProfileButton;
+    @FXML
+    private VBox portfolioSection;
+    @FXML
+    private Button viewPortfolioButton;
+    @FXML
+    private Button viewPortfolioCardButton;
+    @FXML
+    private StackPane contentArea;
+    @FXML
+    private ScrollPane dashboardView;
+
+    private Parent embeddedDashboard;
 
     private final FreelancerService freelancerService = new FreelancerService();
     private final UserService userService = new UserService();
@@ -125,8 +146,7 @@ public class FreelancerProfileController {
                                     "-fx-text-fill: #1976d2; " +
                                     "-fx-padding: 4 12; " +
                                     "-fx-background-radius: 12; " +
-                                    "-fx-font-size: 12px;"
-                    );
+                                    "-fx-font-size: 12px;");
                     skillsContainer.getChildren().add(skillLabel);
                 }
             }
@@ -324,8 +344,7 @@ public class FreelancerProfileController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Profile Picture");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
-        );
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
 
         File selectedFile = fileChooser.showOpenDialog(profileImageView.getScene().getWindow());
 
@@ -483,7 +502,8 @@ public class FreelancerProfileController {
         grid.add(separator, 0, row++);
 
         VBox dangerZone = new VBox(10);
-        dangerZone.setStyle("-fx-background-color: #fff5f5; -fx-border-color: #fc8181; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 15px;");
+        dangerZone.setStyle(
+                "-fx-background-color: #fff5f5; -fx-border-color: #fc8181; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 15px;");
         GridPane.setColumnSpan(dangerZone, 2);
 
         Label dangerLabel = new Label("⚠ Danger Zone");
@@ -493,7 +513,8 @@ public class FreelancerProfileController {
         dangerDesc.setStyle("-fx-text-fill: #742a2a; -fx-font-size: 12px;");
 
         Button deactivateBtn = new Button("Deactivate Account");
-        deactivateBtn.setStyle("-fx-background-color: #c53030; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+        deactivateBtn.setStyle(
+                "-fx-background-color: #c53030; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
         deactivateBtn.setOnAction(e -> handleDeactivateAccount(dialog));
 
         dangerZone.getChildren().addAll(dangerLabel, dangerDesc, deactivateBtn);
@@ -621,7 +642,8 @@ public class FreelancerProfileController {
         }
 
         if (!newPassword.equals(confirmPassword)) {
-            showErrorAlert("Validation Error", "❌ New passwords do not match.\n\nPlease make sure both passwords are identical.");
+            showErrorAlert("Validation Error",
+                    "❌ New passwords do not match.\n\nPlease make sure both passwords are identical.");
             return false;
         }
 
@@ -636,13 +658,19 @@ public class FreelancerProfileController {
     private int calculatePasswordStrength(String password) {
         int strength = 0;
 
-        if (password.length() >= 8) strength++;
-        if (password.matches(".*[A-Z].*") && password.matches(".*[a-z].*")) strength++;
-        if (password.matches(".*\\d.*")) strength++;
-        if (password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) strength++;
+        if (password.length() >= 8)
+            strength++;
+        if (password.matches(".*[A-Z].*") && password.matches(".*[a-z].*"))
+            strength++;
+        if (password.matches(".*\\d.*"))
+            strength++;
+        if (password.matches(".*[!@#$%^&*(),.?\":{}|<>].*"))
+            strength++;
 
-        if (strength <= 1) return 0;
-        if (strength <= 3) return 1;
+        if (strength <= 1)
+            return 0;
+        if (strength <= 3)
+            return 1;
         return 2;
     }
 
@@ -689,7 +717,8 @@ public class FreelancerProfileController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Settings");
         alert.setHeaderText("Account Settings");
-        alert.setContentText("Settings page coming soon!\n\nFeatures:\n• Change password\n• Notification preferences\n• Privacy settings\n• Language selection");
+        alert.setContentText(
+                "Settings page coming soon!\n\nFeatures:\n• Change password\n• Notification preferences\n• Privacy settings\n• Language selection");
         alert.showAndWait();
     }
 
@@ -737,6 +766,107 @@ public class FreelancerProfileController {
         } catch (IOException e) {
             e.printStackTrace();
             showErrorAlert("Error", "Failed to load login page: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleApplications() {
+        try {
+            if (embeddedDashboard == null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/FreelancerDashboardView.fxml"));
+                embeddedDashboard = loader.load();
+            }
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+
+            if (!contentArea.getChildren().contains(embeddedDashboard)) {
+                contentArea.getChildren().add(embeddedDashboard);
+            }
+            embeddedDashboard.setVisible(true);
+            embeddedDashboard.setManaged(true);
+
+            System.out.println("✓ Embedded Freelancer Dashboard loaded into contentArea");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorAlert("Erreur de navigation", "Impossible d'ouvrir la page des candidatures: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleShowDashboard() {
+        if (embeddedDashboard != null) {
+            embeddedDashboard.setVisible(false);
+            embeddedDashboard.setManaged(false);
+        }
+
+        // Hide any other embedded views
+        contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+
+        dashboardView.setVisible(true);
+        dashboardView.setManaged(true);
+        System.out.println("✓ Switched back to main freelancer dashboard");
+    }
+
+    @FXML
+    private void handleMesProjets() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/Projet.fxml"));
+            Parent embeddedView = loader.load();
+
+            // Since we are a freelancer, we might not have currentClient, but let's try to
+            // pass something if needed
+            // For now, if currentFreelancer is available, we can pass it as a User or
+            // similar if ProjectController supports it
+            // ProjectController.setClientData expects Client. Let's see if we can get a
+            // Client wrapper or if it fails gracefully.
+            // If the user wants "Mes projets" to work for freelancers too, we might need to
+            // adjust ProjectController later.
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+            contentArea.getChildren().add(embeddedView);
+            embeddedView.setVisible(true);
+            embeddedView.setManaged(true);
+
+            System.out.println("✓ Embedded Mes Projets loaded into contentArea (Freelancer)");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load projects page: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleBrowseFreelancers() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/list-freelancers.fxml"));
+            Parent embeddedView = loader.load();
+
+            // ListFreelancersController controller = loader.getController();
+            // controller.setClientData(currentClient);
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+            contentArea.getChildren().add(embeddedView);
+            embeddedView.setVisible(true);
+            embeddedView.setManaged(true);
+
+            System.out.println("✓ Embedded Browse Freelancers loaded into contentArea (Freelancer)");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load browse freelancers page: " + e.getMessage());
         }
     }
 

@@ -10,6 +10,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import uniearn.model.entities.candidature.application.Application;
@@ -20,6 +24,7 @@ import uniearn.services.candidature.ApplicationService;
 import uniearn.services.candidature.EvaluationService;
 import uniearn.utils.candidature.ApiManager;
 import uniearn.utils.candidature.PdfExporter;
+import uniearn.database.SessionManager;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,8 +58,6 @@ public class FreelancerDashboardController {
     private VBox viewApplications;
     @FXML
     private VBox viewEvaluations;
-    @FXML
-    private TextField txtActiveProfileId;
     @FXML
     private VBox sidebarListContainer;
 
@@ -105,13 +108,15 @@ public class FreelancerDashboardController {
     private Application currentApplication;
     private Evaluation currentEvaluation;
 
-    private int currentUserId = 1; // Simulation
+    private int currentUserId; // Loaded via SessionManager
     private String currentMode = "APPLICATIONS"; // APPLICATIONS or EVALUATIONS
 
     @FXML
     public void initialize() {
-        if (txtActiveProfileId != null) {
-            txtActiveProfileId.setText(String.valueOf(currentUserId));
+        if (SessionManager.getInstance().isLoggedIn()) {
+            currentUserId = SessionManager.getInstance().getCurrentUserId();
+        } else {
+            currentUserId = -1; // Fallback or handle not logged in
         }
         setupNavigation();
         setupFilters();
@@ -132,6 +137,21 @@ public class FreelancerDashboardController {
         navMyReviews.setOnMouseClicked(e -> switchMode("EVALUATIONS"));
         navStats.setOnMouseClicked(e -> switchMode("STATS"));
         updateNavStyle();
+    }
+
+    @FXML
+    private void handleShowApps() {
+        switchMode("APPLICATIONS");
+    }
+
+    @FXML
+    private void handleShowEvals() {
+        switchMode("EVALUATIONS");
+    }
+
+    @FXML
+    private void handleShowStats() {
+        switchMode("STATS");
     }
 
     private void switchMode(String mode) {
@@ -178,16 +198,6 @@ public class FreelancerDashboardController {
 
     private void loadData() {
         try {
-            // Update currentUserId from the sidebar field if present
-            if (txtActiveProfileId != null && !txtActiveProfileId.getText().isEmpty()) {
-                try {
-                    currentUserId = Integer.parseInt(txtActiveProfileId.getText());
-                } catch (NumberFormatException e) {
-                    // Revert to field if parsing fails
-                    txtActiveProfileId.setText(String.valueOf(currentUserId));
-                }
-            }
-
             if (currentMode.equals("APPLICATIONS")) {
                 List<Application> apps = applicationService.getApplicationsByFreelancer(currentUserId);
                 applicationsList.setAll(apps);
@@ -418,10 +428,8 @@ public class FreelancerDashboardController {
         if (currentMode.equals("APPLICATIONS")) {
             currentApplication = null;
             clearAppForm();
-            // Pre-fill with the active profile ID from the sidebar
-            if (txtActiveProfileId != null) {
-                txtAppFreelancerId.setText(txtActiveProfileId.getText());
-            }
+            // Pre-fill with the logged-in profile ID
+            txtAppFreelancerId.setText(String.valueOf(currentUserId));
             showView(viewAppForm);
         } else {
             currentEvaluation = null;
@@ -800,5 +808,21 @@ public class FreelancerDashboardController {
             case PENDING -> "#ffa000";
             case WITHDRAWN -> "#5e6d55";
         };
+    }
+
+    @FXML
+    private void handleBackToProfile() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-profile.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) mainContent.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 800));
+            stage.setTitle("UniEarn - Freelancer Profile");
+            stage.centerOnScreen();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showToast("Failed to return to profile: " + e.getMessage(), true);
+        }
     }
 }

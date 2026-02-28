@@ -7,278 +7,192 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root"
-            stylesheets="@../../profile/profile.css"
-            xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="uniearn.controller.projet.ProjectController">
+<VBox spacing="25.0" styleClass="main-content" stylesheets="@../../profile/profile.css" 
+      xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="uniearn.controller.projet.ProjectController">
+    <padding>
+        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+    </padding>
+    <children>
 
-    <!-- ═══════════════════════════════════════════════════════ TOP BAR -->
-    <top>
-        <HBox alignment="CENTER_LEFT" prefHeight="70.0" spacing="20.0" styleClass="top-bar">
-            <padding><Insets left="30.0" right="30.0"/></padding>
+        <!-- Page heading row -->
+        <HBox alignment="CENTER_LEFT" spacing="15.0">
             <children>
-                <Button  styleClass="btn-secondary" text="← Retour">
-                    <font><Font size="13.0"/></font>
+                <Label styleClass="section-title" text="📋 Gestion des Projets">
+                    <font>
+                        <Font name="System Bold" size="26.0" />
+                    </font>
+                </Label>
+                <Region HBox.hgrow="ALWAYS" />
+                <Label fx:id="countLabel" styleClass="tag" text="Total : 0 projets">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Label>
+                <Button onAction="#handleRefresh" styleClass="btn-secondary" text="↻ Rafraîchir">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
                 </Button>
-                <Region HBox.hgrow="ALWAYS"/>
-                <ImageView fitHeight="55.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true">
-                    <image><Image url="@../../images/UniEarn_full_logo.png"/></image>
-                </ImageView>
             </children>
         </HBox>
-    </top>
 
-    <!-- ═══════════════════════════════════════════════════════ SIDEBAR -->
-    <left>
-        <VBox styleClass="sidebar" prefWidth="250.0">
+        <!-- ─────────────────────────────────── FORM CARD -->
+        <VBox spacing="16.0" styleClass="content-section">
+            <padding>
+                <Insets bottom="25.0" left="25.0" right="25.0" top="20.0" />
+            </padding>
             <children>
-                <!-- Navigation Menu -->
-                <VBox spacing="5.0" VBox.vgrow="ALWAYS">
-                    <padding>
-                        <Insets top="20.0" left="15.0" right="15.0" bottom="15.0" />
-                    </padding>
+
+                <!-- Form header -->
+                <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <children>
-                        <Button text="🏠 Dashboard" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0" onAction="#handleBackToProfile">
+                        <Label styleClass="section-title" text="ℹ Informations du Projet">
                             <font>
-                                <Font size="14.0" />
+                                <Font name="System Bold" size="17.0" />
                             </font>
-                        </Button>
-
-                        <Button text="👥 Browse Freelancers" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0" onAction="#handleBrowseFreelancers">
+                        </Label>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button fx:id="clearButton" onAction="#handleClear" styleClass="btn-secondary" text="✖ Effacer">
                             <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-
-                        <Button  text="📋 Mes projets" styleClass="nav-button,active" prefWidth="220.0" prefHeight="40.0">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-
-                        <Button text="📝 Mes contrats" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-
-                        <Button text="💬 Messages" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-
-                        <Button text="💳 Paiements" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-
-                        <Region VBox.vgrow="ALWAYS" />
-
-                        <Separator />
-
-                        <Button text="⚙ Settings" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0" onAction="#handleSettings">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-
-                        <Button text="🚪 Logout" styleClass="nav-button, logout" prefWidth="220.0" prefHeight="40.0" onAction="#handleLogout">
-                            <font>
-                                <Font size="14.0" />
+                                <Font size="12.0" />
                             </font>
                         </Button>
                     </children>
+                </HBox>
+
+                <Separator />
+
+                <!-- Row 1 : Titre  |  Budget -->
+                <HBox spacing="20.0">
+                    <children>
+                        <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label styleClass="field-label-small" text="Titre du projet *">
+                                    <font>
+                                        <Font name="System Bold" size="13.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="titleField" promptText="Entrez le titre du projet…" style="-fx-background-color:#f8f9fa;-fx-border-color:#e1e8ed;-fx-border-radius:6;-fx-background-radius:6;-fx-padding:10;-fx-font-size:13;">
+                                </TextField>
+                                <Label fx:id="titleErrorLabel" managed="false" style="-fx-text-fill:#e74c3c; -fx-font-size: 11px;" text="" visible="false" />
+                            </children>
+                        </VBox>
+                        <VBox prefWidth="200.0" spacing="6.0">
+                            <children>
+                                <Label styleClass="field-label-small" text="Budget (TND) *">
+                                    <font>
+                                        <Font name="System Bold" size="13.0" />
+                                    </font>
+                                </Label>
+                                <TextField fx:id="budgetField" promptText="0.00" style="-fx-background-color:#f8f9fa;-fx-border-color:#e1e8ed;-fx-border-radius:6;-fx-background-radius:6;-fx-padding:10;-fx-font-size:13;">
+                                </TextField>
+                                <Label fx:id="budgetErrorLabel" managed="false" style="-fx-text-fill:#e74c3c; -fx-font-size: 11px;" text="" visible="false" />
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+
+                <!-- Row 2 : Statut -->
+                <HBox fx:id="statusContainer" managed="false" spacing="20.0" visible="false">
+                    <children>
+                        <VBox spacing="6.0" HBox.hgrow="ALWAYS">
+                            <children>
+                                <Label styleClass="field-label-small" text="Statut *">
+                                    <font>
+                                        <Font name="System Bold" size="13.0" />
+                                    </font>
+                                </Label>
+                                <ComboBox fx:id="statusComboBox" maxWidth="Infinity" promptText="Sélectionnez le statut" style="-fx-background-color:#f8f9fa;-fx-border-color:#e1e8ed;-fx-border-radius:6;-fx-background-radius:6;-fx-font-size:13;">
+                                </ComboBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+
+                <!-- Row 3 : Description (full width) -->
+                <VBox spacing="6.0">
+                    <children>
+                        <Label styleClass="field-label-small" text="Description *">
+                            <font>
+                                <Font name="System Bold" size="13.0" />
+                            </font>
+                        </Label>
+                        <TextArea fx:id="descriptionArea" prefRowCount="4" promptText="Décrivez le projet en détail…" styleClass="description-area" wrapText="true" style="-fx-font-size:13;">
+                        </TextArea>
+                        <Label fx:id="descriptionErrorLabel" managed="false" style="-fx-text-fill:#e74c3c; -fx-font-size: 11px;" text="" visible="false" />
+                    </children>
                 </VBox>
+
+                <!-- Status message -->
+                <Label fx:id="statusLabel" style="-fx-text-fill:#e74c3c;" text="">
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                </Label>
+
+                <!-- Action buttons -->
+                <HBox alignment="CENTER_RIGHT" spacing="12.0">
+                    <children>
+                        <Button fx:id="addButton" onAction="#handleAdd" prefHeight="36.0" prefWidth="140.0" styleClass="btn-primary" text="➕ Ajouter">
+                            <font>
+                                <Font name="System Bold" size="13.0" />
+                            </font>
+                        </Button>
+                        <Button fx:id="updateButton" onAction="#handleUpdate" prefHeight="36.0" prefWidth="160.0" style="-fx-background-color:#1976d2;-fx-text-fill:white;-fx-background-radius:6;-fx-cursor:hand;-fx-font-weight:bold;-fx-font-size:13;" text="💾 Enregistrer">
+                        </Button>
+                    </children>
+                </HBox>
+
             </children>
         </VBox>
-    </left>
-    <!-- ═══════════════════════════════════════════════════ MAIN CONTENT -->
-    <center>
-        <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="content-scroll">
-            <content>
-                <VBox spacing="25.0" styleClass="main-content">
-                    <padding><Insets bottom="30.0" left="40.0" right="40.0" top="30.0"/></padding>
+
+        <!-- ─────────────────────────── SEARCH + TABLE CARD -->
+        <VBox spacing="14.0" styleClass="content-section" VBox.vgrow="ALWAYS">
+            <padding>
+                <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
+            </padding>
+            <children>
+
+                <!-- Table header row -->
+                <HBox alignment="CENTER_LEFT" spacing="15.0">
                     <children>
-
-                        <!-- Page heading row -->
-                        <HBox alignment="CENTER_LEFT" spacing="15.0">
-                            <children>
-                                <Label styleClass="section-title" text="📋 Gestion des Projets">
-                                    <font><Font name="System Bold" size="26.0"/></font>
-                                </Label>
-                                <Region HBox.hgrow="ALWAYS"/>
-                                <Label fx:id="countLabel" styleClass="tag" text="Total : 0 projets">
-                                    <font><Font size="13.0"/></font>
-                                </Label>
-                                <Button onAction="#handleRefresh" styleClass="btn-secondary" text="↻ Rafraîchir">
-                                    <font><Font size="13.0"/></font>
-                                </Button>
-                            </children>
-                        </HBox>
-
-                        <!-- ─────────────────────────────────── FORM CARD -->
-                        <VBox spacing="16.0" styleClass="content-section">
-                            <padding><Insets bottom="25.0" left="25.0" right="25.0" top="20.0"/></padding>
-                            <children>
-
-                                <!-- Form header -->
-                                <HBox alignment="CENTER_LEFT" spacing="10.0">
-                                    <children>
-                                        <Label text="ℹ Informations du Projet" styleClass="section-title">
-                                            <font><Font name="System Bold" size="17.0"/></font>
-                                        </Label>
-                                        <Region HBox.hgrow="ALWAYS"/>
-                                        <Button fx:id="clearButton" onAction="#handleClear"
-                                                styleClass="btn-secondary" text="✖ Effacer">
-                                            <font><Font size="12.0"/></font>
-                                        </Button>
-                                    </children>
-                                </HBox>
-
-                                <Separator/>
-
-                                <!-- Row 1 : Titre  |  Budget -->
-                                <HBox spacing="20.0">
-                                    <children>
-                                        <VBox spacing="6.0" HBox.hgrow="ALWAYS">
-                                            <children>
-                                                <Label text="Titre du projet *" styleClass="field-label-small">
-                                                    <font><Font name="System Bold" size="13.0"/></font>
-                                                </Label>
-                                                <TextField fx:id="titleField"
-                                                           promptText="Entrez le titre du projet…"
-                                                           style="-fx-background-color:#f8f9fa;-fx-border-color:#e1e8ed;-fx-border-radius:6;-fx-background-radius:6;-fx-padding:10;-fx-font-size:13;">
-                                                </TextField>
-                                                <Label fx:id="titleErrorLabel" text="" style="-fx-text-fill:#e74c3c; -fx-font-size: 11px;" visible="false" managed="false"/>
-                                            </children>
-                                        </VBox>
-                                        <VBox spacing="6.0" prefWidth="200.0">
-                                            <children>
-                                                <Label text="Budget (TND) *" styleClass="field-label-small">
-                                                    <font><Font name="System Bold" size="13.0"/></font>
-                                                </Label>
-                                                <TextField fx:id="budgetField" promptText="0.00"
-                                                           style="-fx-background-color:#f8f9fa;-fx-border-color:#e1e8ed;-fx-border-radius:6;-fx-background-radius:6;-fx-padding:10;-fx-font-size:13;">
-                                                </TextField>
-                                                <Label fx:id="budgetErrorLabel" text="" style="-fx-text-fill:#e74c3c; -fx-font-size: 11px;" visible="false" managed="false"/>
-                                            </children>
-                                        </VBox>
-                                    </children>
-                                </HBox>
-
-                                <!-- Row 2 : Statut -->
-                                <HBox fx:id="statusContainer" spacing="20.0" visible="false" managed="false">
-                                    <children>
-                                        <VBox spacing="6.0" HBox.hgrow="ALWAYS">
-                                            <children>
-                                                <Label text="Statut *" styleClass="field-label-small">
-                                                    <font><Font name="System Bold" size="13.0"/></font>
-                                                </Label>
-                                                <ComboBox fx:id="statusComboBox" maxWidth="Infinity"
-                                                          promptText="Sélectionnez le statut"
-                                                          style="-fx-background-color:#f8f9fa;-fx-border-color:#e1e8ed;-fx-border-radius:6;-fx-background-radius:6;-fx-font-size:13;">
-                                                </ComboBox>
-                                            </children>
-                                        </VBox>
-                                    </children>
-                                </HBox>
-
-                                <!-- Row 3 : Description (full width) -->
-                                <VBox spacing="6.0">
-                                    <children>
-                                        <Label text="Description *" styleClass="field-label-small">
-                                            <font><Font name="System Bold" size="13.0"/></font>
-                                        </Label>
-                                        <TextArea fx:id="descriptionArea"
-                                                  promptText="Décrivez le projet en détail…"
-                                                  prefRowCount="4" wrapText="true"
-                                                  styleClass="description-area"
-                                                  style="-fx-font-size:13;">
-                                        </TextArea>
-                                        <Label fx:id="descriptionErrorLabel" text="" style="-fx-text-fill:#e74c3c; -fx-font-size: 11px;" visible="false" managed="false"/>
-                                    </children>
-                                </VBox>
-
-                                <!-- Status message -->
-                                <Label fx:id="statusLabel" text="" style="-fx-text-fill:#e74c3c;">
-                                    <font><Font size="12.0"/></font>
-                                </Label>
-
-                                <!-- Action buttons -->
-                                <HBox spacing="12.0" alignment="CENTER_RIGHT">
-                                    <children>
-                                        <Button fx:id="addButton" onAction="#handleAdd"
-                                                styleClass="btn-primary" text="➕ Ajouter"
-                                                prefHeight="36.0" prefWidth="140.0">
-                                            <font><Font name="System Bold" size="13.0"/></font>
-                                        </Button>
-                                        <Button fx:id="updateButton" onAction="#handleUpdate"
-                                                prefHeight="36.0" prefWidth="160.0"
-                                                style="-fx-background-color:#1976d2;-fx-text-fill:white;-fx-background-radius:6;-fx-cursor:hand;-fx-font-weight:bold;-fx-font-size:13;"
-                                                text="💾 Enregistrer">
-                                        </Button>
-                                    </children>
-                                </HBox>
-
-                            </children>
-                        </VBox>
-
-                        <!-- ─────────────────────────── SEARCH + TABLE CARD -->
-                        <VBox spacing="14.0" styleClass="content-section" VBox.vgrow="ALWAYS">
-                            <padding><Insets bottom="20.0" left="25.0" right="25.0" top="20.0"/></padding>
-                            <children>
-
-                                <!-- Table header row -->
-                                <HBox alignment="CENTER_LEFT" spacing="15.0">
-                                    <children>
-                                        <Label text="Liste des Projets" styleClass="section-title">
-                                            <font><Font name="System Bold" size="17.0"/></font>
-                                        </Label>
-                                        <Region HBox.hgrow="ALWAYS"/>
-                                        <TextField fx:id="searchField"
-                                                   promptText="🔍 Rechercher un projet…"
-                                                   prefWidth="280.0"
-                                                   style="-fx-background-color:#f8f9fa;-fx-border-color:#e1e8ed;-fx-border-radius:6;-fx-background-radius:6;-fx-padding:9;-fx-font-size:13;">
-                                        </TextField>
-                                    </children>
-                                </HBox>
-
-                                <Separator/>
-
-                                <!-- TableView -->
-                                <TableView fx:id="projectTable" VBox.vgrow="ALWAYS" prefHeight="320.0"
-                                           style="-fx-background-color:#FFFFFF;-fx-table-cell-border-color:#e1e8ed;-fx-background-radius:8;">
-                                    <columns>
-                                        <TableColumn fx:id="idColumn" text="ID" prefWidth="60.0"
-                                                     style="-fx-alignment:CENTER;"/>
-                                        <TableColumn fx:id="titleColumn" text="Titre" prefWidth="180.0"/>
-                                        <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="230.0"/>
-                                        <TableColumn fx:id="budgetColumn" text="Budget (TND)" prefWidth="115.0"
-                                                     style="-fx-alignment:CENTER_RIGHT;"/>
-                                        <TableColumn fx:id="statusColumn" text="Statut" prefWidth="130.0"
-                                                     style="-fx-alignment:CENTER;"/>
-                                        <TableColumn fx:id="clientIdColumn" text="ID Client" prefWidth="90.0"
-                                                     style="-fx-alignment:CENTER;"/>
-                                        <TableColumn fx:id="actionColumn" text="Actions" prefWidth="180.0"
-                                                     style="-fx-alignment:CENTER;" sortable="false"/>
-                                    </columns>
-                                    <placeholder>
-                                        <Label text="Aucun projet disponible." style="-fx-text-fill:#95a5a6;">
-                                            <font><Font size="14.0"/></font>
-                                        </Label>
-                                    </placeholder>
-                                </TableView>
-
-                            </children>
-                        </VBox>
-
+                        <Label styleClass="section-title" text="Liste des Projets">
+                            <font>
+                                <Font name="System Bold" size="17.0" />
+                            </font>
+                        </Label>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <TextField fx:id="searchField" prefWidth="280.0" promptText="🔍 Rechercher un projet…" style="-fx-background-color:#f8f9fa;-fx-border-color:#e1e8ed;-fx-border-radius:6;-fx-background-radius:6;-fx-padding:9;-fx-font-size:13;">
+                        </TextField>
                     </children>
-                </VBox>
-            </content>
-        </ScrollPane>
-    </center>
+                </HBox>
 
-</BorderPane>
+                <Separator />
+
+                <!-- TableView -->
+                <TableView fx:id="projectTable" prefHeight="320.0" style="-fx-background-color:#FFFFFF;-fx-table-cell-border-color:#e1e8ed;-fx-background-radius:8;" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="idColumn" prefWidth="60.0" style="-fx-alignment:CENTER;" text="ID" />
+                        <TableColumn fx:id="titleColumn" prefWidth="180.0" text="Titre" />
+                        <TableColumn fx:id="descriptionColumn" prefWidth="230.0" text="Description" />
+                        <TableColumn fx:id="budgetColumn" prefWidth="115.0" style="-fx-alignment:CENTER_RIGHT;" text="Budget (TND)" />
+                        <TableColumn fx:id="statusColumn" prefWidth="130.0" style="-fx-alignment:CENTER;" text="Statut" />
+                        <TableColumn fx:id="clientIdColumn" prefWidth="90.0" style="-fx-alignment:CENTER;" text="ID Client" />
+                        <TableColumn fx:id="actionColumn" prefWidth="180.0" sortable="false" style="-fx-alignment:CENTER;" text="Actions" />
+                    </columns>
+                    <placeholder>
+                        <Label style="-fx-text-fill:#95a5a6;" text="Aucun projet disponible.">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Label>
+                    </placeholder>
+                </TableView>
+
+            </children>
+        </VBox>
+
+    </children>
+</VBox>
+

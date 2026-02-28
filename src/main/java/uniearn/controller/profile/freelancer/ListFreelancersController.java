@@ -25,12 +25,18 @@ import java.util.stream.Collectors;
 
 public class ListFreelancersController {
 
-    @FXML private TextField searchField;
-    @FXML private ComboBox<String> verificationFilterCombo;
-    @FXML private ComboBox<String> ratingFilterCombo;
-    @FXML private ComboBox<String> sortByCombo;
-    @FXML private VBox freelancersContainer;
-    @FXML private Label resultsCountLabel;
+    @FXML
+    private TextField searchField;
+    @FXML
+    private ComboBox<String> verificationFilterCombo;
+    @FXML
+    private ComboBox<String> ratingFilterCombo;
+    @FXML
+    private ComboBox<String> sortByCombo;
+    @FXML
+    private VBox freelancersContainer;
+    @FXML
+    private Label resultsCountLabel;
 
     private final FreelancerService freelancerService = new FreelancerService();
     private Client currentClient;
@@ -92,7 +98,8 @@ public class ListFreelancersController {
     }
 
     private void applyFilters() {
-        if (allFreelancers == null) return;
+        if (allFreelancers == null)
+            return;
 
         filteredFreelancers = new ArrayList<>(allFreelancers);
 
@@ -216,8 +223,7 @@ public class ListFreelancersController {
                         "-fx-border-radius: 12; " +
                         "-fx-background-radius: 12; " +
                         "-fx-padding: 20; " +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);"
-        );
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);");
         card.setMaxWidth(Double.MAX_VALUE);
 
         // Profile Picture
@@ -236,7 +242,8 @@ public class ListFreelancersController {
         }
 
         // Make avatar circular
-        avatar.setStyle("-fx-background-radius: 50%; -fx-border-radius: 50%; -fx-border-color: #e1e8ed; -fx-border-width: 2;");
+        avatar.setStyle(
+                "-fx-background-radius: 50%; -fx-border-radius: 50%; -fx-border-color: #e1e8ed; -fx-border-width: 2;");
         avatarBox.getChildren().add(avatar);
 
         // Freelancer Info
@@ -260,8 +267,7 @@ public class ListFreelancersController {
                             "-fx-padding: 3 10; " +
                             "-fx-background-radius: 12; " +
                             "-fx-font-size: 11px; " +
-                            "-fx-font-weight: bold;"
-            );
+                            "-fx-font-weight: bold;");
             nameRow.getChildren().add(verifiedBadge);
         }
 
@@ -294,8 +300,7 @@ public class ListFreelancersController {
                                 "-fx-text-fill: #1976d2; " +
                                 "-fx-padding: 4 12; " +
                                 "-fx-background-radius: 12; " +
-                                "-fx-font-size: 12px;"
-                );
+                                "-fx-font-size: 12px;");
                 skillsRow.getChildren().add(skillLabel);
             }
 
@@ -322,8 +327,7 @@ public class ListFreelancersController {
                         "-fx-font-weight: bold; " +
                         "-fx-padding: 10 20; " +
                         "-fx-background-radius: 8; " +
-                        "-fx-cursor: hand;"
-        );
+                        "-fx-cursor: hand;");
         viewProfileBtn.setOnAction(e -> handleViewProfile(freelancer));
 
         actionBox.getChildren().add(viewProfileBtn);
@@ -418,8 +422,7 @@ public class ListFreelancersController {
                                 "-fx-text-fill: #1976d2; " +
                                 "-fx-padding: 8 16; " +
                                 "-fx-background-radius: 16; " +
-                                "-fx-font-size: 13px;"
-                );
+                                "-fx-font-size: 13px;");
                 skillsPane.getChildren().add(skillLabel);
             }
 
@@ -466,6 +469,25 @@ public class ListFreelancersController {
     }
 
     @FXML
+    private void handleproject() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/Projet.fxml"));
+            Parent root = loader.load();
+
+            uniearn.controller.projet.ProjectController controller = loader.getController();
+            controller.setClientData(currentClient);
+
+            Stage stage = (Stage) freelancersContainer.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 800));
+            stage.setTitle("Mes Projets - UniEarn");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load projects page: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleBackToProfile() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/client-profile.fxml"));
@@ -478,7 +500,7 @@ public class ListFreelancersController {
             stage.setScene(new Scene(root, 1200, 700));
             stage.centerOnScreen();
         } catch (IOException e) {
-//            e.printStackTrace();
+            // e.printStackTrace();
             showErrorAlert("Error", "Failed to load profile page: " + e.getMessage());
         }
     }
@@ -512,7 +534,7 @@ public class ListFreelancersController {
             stage.setTitle("Login - UniEarn");
             stage.centerOnScreen();
         } catch (IOException e) {
-//            e.printStackTrace();
+            // e.printStackTrace();
             showErrorAlert("Error", "Failed to load login page: " + e.getMessage());
         }
     }

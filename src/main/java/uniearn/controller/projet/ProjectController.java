@@ -41,6 +41,7 @@ public class ProjectController {
 
     public void setClientData(Client client) {
         this.currentClient = client;
+        handleRefresh();
     }
 
     @FXML
@@ -146,6 +147,13 @@ public class ProjectController {
         clientIdColumn.setCellValueFactory(new PropertyValueFactory<>("client_id"));
 
         projectTable.setItems(projectList); // Initialize table with the observable list
+
+        // Add selection listener to populate form when a row is clicked
+        projectTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                populateFormForEdit(newValue);
+            }
+        });
 
         // add action buttons column (Modifier / Supprimer) if present in FXML
         if (actionColumn != null) {

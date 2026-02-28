@@ -32,7 +32,7 @@
                     <padding><Insets bottom="15.0" left="14.0" right="14.0" top="22.0" /></padding>
                     <children>
 
-                        <Button prefHeight="42.0" prefWidth="220.0" styleClass="nav-button, active">
+                        <Button onAction="#handleShowDashboard" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button, active">
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
                                 <FontIcon iconLiteral="fas-home" iconSize="15" />
                                 <Label style="-fx-font-size: 14px;" text="Dashboard" />
@@ -46,7 +46,7 @@
                             </children></HBox></graphic>
                         </Button>
 
-                        <Button prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
+                        <Button onAction="#handleMesProjets" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
                                 <FontIcon iconLiteral="fas-clipboard-list" iconSize="15" />
                                 <Label style="-fx-font-size: 14px;" text="Mes projets" />
@@ -57,6 +57,13 @@
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
                                 <FontIcon iconLiteral="fas-file-contract" iconSize="15" />
                                 <Label style="-fx-font-size: 14px;" text="Mes contrats" />
+                            </children></HBox></graphic>
+                        </Button>
+
+                        <Button onAction="#handleApplications" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
+                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                <FontIcon iconLiteral="fas-star" iconSize="15" />
+                                <Label style="-fx-font-size: 14px;" text="Avis &amp; Propositions" />
                             </children></HBox></graphic>
                         </Button>
 
@@ -99,7 +106,9 @@
 
     <!-- ══ Main Content ════════════════════════════════════════════════ -->
     <center>
-        <ScrollPane fitToWidth="true" styleClass="content-scroll">
+        <StackPane fx:id="contentArea">
+            <children>
+                <ScrollPane fx:id="dashboardView" fitToWidth="true" styleClass="content-scroll">
             <content>
                 <VBox spacing="10.0" styleClass="main-content">
                     <padding><Insets bottom="40.0" left="36.0" right="36.0" top="20.0" /></padding>
@@ -278,6 +287,8 @@
                 </VBox>
             </content>
         </ScrollPane>
+            </children>
+        </StackPane>
     </center>
 
 </BorderPane>

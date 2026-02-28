@@ -20,6 +20,8 @@ import uniearn.services.users.client.ClientService;
 import uniearn.services.users.UserService;
 import uniearn.database.SessionManager;
 import uniearn.utils.user.PasswordUtil;
+import uniearn.model.entities.projet.Project;
+import uniearn.services.projet.ProjectService;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,22 +33,40 @@ import java.sql.SQLException;
 
 public class ClientProfileController {
 
-    @FXML private ImageView profileImageView;
-    @FXML private Label nameLabel;
-    @FXML private Label emailLabel;
-    @FXML private Label companyLabel;
-    @FXML private Label industryLabel;
-    @FXML private Label activeProjectsLabel;
-    @FXML private Label completedProjectsLabel;
-    @FXML private VBox postedProjectsContainer;
-    @FXML private ComboBox<String> statusFilterCombo;
-    @FXML private TextField searchField;
-    @FXML private Button editProfileButton;
-    @FXML private Button postProjectButton;
-    @FXML private Button profileBtn;
+    @FXML
+    private ImageView profileImageView;
+    @FXML
+    private Label nameLabel;
+    @FXML
+    private Label emailLabel;
+    @FXML
+    private Label companyLabel;
+    @FXML
+    private Label industryLabel;
+    @FXML
+    private Label activeProjectsLabel;
+    @FXML
+    private Label completedProjectsLabel;
+    @FXML
+    private VBox postedProjectsContainer;
+    @FXML
+    private ComboBox<String> statusFilterCombo;
+    @FXML
+    private Button editProfileButton;
+    @FXML
+    private Button postProjectButton;
+    @FXML
+    private Button profileBtn;
+    @FXML
+    private StackPane contentArea;
+    @FXML
+    private ScrollPane dashboardView;
+
+    private Parent embeddedDashboard;
 
     private final ClientService clientService = new ClientService();
     private final UserService userService = new UserService();
+    private final ProjectService projectService = new ProjectService();
     private Client currentClient;
 
     @FXML
@@ -59,8 +79,7 @@ public class ClientProfileController {
                     "Active",
                     "Completed",
                     "In Progress",
-                    "Cancelled"
-            );
+                    "Cancelled");
             statusFilterCombo.setValue("All Status");
         }
     }
@@ -87,12 +106,14 @@ public class ClientProfileController {
 
         if (companyLabel != null) {
             companyLabel.setText(currentClient.getCompany() != null && !currentClient.getCompany().isEmpty()
-                    ? currentClient.getCompany() : "No Company");
+                    ? currentClient.getCompany()
+                    : "No Company");
         }
 
         if (industryLabel != null) {
             industryLabel.setText(currentClient.getIndustry() != null && !currentClient.getIndustry().isEmpty()
-                    ? currentClient.getIndustry() : "Not Specified");
+                    ? currentClient.getIndustry()
+                    : "Not Specified");
         }
 
         loadProfilePicture();
@@ -147,8 +168,7 @@ public class ClientProfileController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Profile Picture");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
-        );
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
 
         File selectedFile = fileChooser.showOpenDialog(profileImageView.getScene().getWindow());
 
@@ -191,21 +211,84 @@ public class ClientProfileController {
     private void loadPostedProjects() {
         postedProjectsContainer.getChildren().clear();
 
-        VBox placeholder = new VBox(10);
-        placeholder.setAlignment(Pos.CENTER);
-        placeholder.setStyle("-fx-padding: 40px;");
+        java.util.List<Project> projects = projectService.getProjectsByClientId(currentClient.getIdClient());
 
-        Label icon = new Label("📋");
-        icon.setStyle("-fx-font-size: 48px;");
+        if (projects.isEmpty()) {
+            VBox placeholder = new VBox(10);
+            placeholder.setAlignment(Pos.CENTER);
+            placeholder.setStyle("-fx-padding: 40px;");
 
-        Label text = new Label("No projects posted yet");
-        text.setStyle("-fx-text-fill: #95a5a6; -fx-font-size: 16px;");
+            Label icon = new Label("📋");
+            icon.setStyle("-fx-font-size: 48px;");
 
-        Label subtext = new Label("Post your first project to get started!");
-        subtext.setStyle("-fx-text-fill: #bdc3c7; -fx-font-size: 13px;");
+            Label text = new Label("No projects posted yet");
+            text.setStyle("-fx-text-fill: #95a5a6; -fx-font-size: 16px;");
 
-        placeholder.getChildren().addAll(icon, text, subtext);
-        postedProjectsContainer.getChildren().add(placeholder);
+            Label subtext = new Label("Post your first project to get started!");
+            subtext.setStyle("-fx-text-fill: #bdc3c7; -fx-font-size: 13px;");
+
+            placeholder.getChildren().addAll(icon, text, subtext);
+            postedProjectsContainer.getChildren().add(placeholder);
+        } else {
+            for (Project project : projects) {
+                postedProjectsContainer.getChildren().add(createProjectCard(project));
+            }
+            if (activeProjectsLabel != null) {
+                activeProjectsLabel.setText(String.valueOf(projects.size()));
+            }
+        }
+    }
+
+    private VBox createProjectCard(Project project) {
+        VBox card = new VBox(10);
+        card.setStyle(
+                "-fx-background-color: white; -fx-padding: 15; -fx-border-color: #e2e8f0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 1);");
+
+        HBox header = new HBox();
+        header.setAlignment(Pos.CENTER_LEFT);
+
+        Label title = new Label(project.getTitle());
+        title.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #1a202c;");
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        int s = project.getStatus();
+        String statusText;
+        String statusColor;
+        try {
+            statusText = uniearn.model.enums.taskstatusenum.values()[s].name();
+            if (s == 0)
+                statusColor = "#3182ce"; // TODO
+            else if (s == 1)
+                statusColor = "#d69e2e"; // DOING
+            else
+                statusColor = "#38a169"; // DONE
+        } catch (Exception e) {
+            statusText = "UNKNOWN";
+            statusColor = "#718096";
+        }
+
+        Label statusBadge = new Label(statusText);
+        statusBadge.setStyle("-fx-background-color: " + statusColor + "20; -fx-text-fill: " + statusColor
+                + "; -fx-padding: 5 10; -fx-background-radius: 12; -fx-font-size: 12px; -fx-font-weight: bold;");
+
+        header.getChildren().addAll(title, spacer, statusBadge);
+
+        Label desc = new Label(project.getDescription());
+        desc.setWrapText(true);
+        desc.setStyle("-fx-text-fill: #4a5568; -fx-font-size: 14px;");
+
+        HBox footer = new HBox(20);
+        footer.setAlignment(Pos.CENTER_LEFT);
+
+        Label budget = new Label(String.format("💰 %.2f TND", project.getBudget()));
+        budget.setStyle("-fx-font-weight: bold; -fx-text-fill: #2d3748;");
+
+        footer.getChildren().add(budget);
+
+        card.getChildren().addAll(header, desc, footer);
+        return card;
     }
 
     @FXML
@@ -322,7 +405,8 @@ public class ClientProfileController {
         grid.add(separator, 0, row++);
 
         VBox dangerZone = new VBox(10);
-        dangerZone.setStyle("-fx-background-color: #fff5f5; -fx-border-color: #fc8181; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 15px;");
+        dangerZone.setStyle(
+                "-fx-background-color: #fff5f5; -fx-border-color: #fc8181; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 15px;");
         GridPane.setColumnSpan(dangerZone, 2);
 
         Label dangerLabel = new Label("⚠ Danger Zone");
@@ -332,7 +416,8 @@ public class ClientProfileController {
         dangerDesc.setStyle("-fx-text-fill: #742a2a; -fx-font-size: 12px;");
 
         Button deactivateBtn = new Button("Deactivate Account");
-        deactivateBtn.setStyle("-fx-background-color: #c53030; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+        deactivateBtn.setStyle(
+                "-fx-background-color: #c53030; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
         deactivateBtn.setOnAction(e -> handleDeactivateAccount(dialog));
 
         dangerZone.getChildren().addAll(dangerLabel, dangerDesc, deactivateBtn);
@@ -442,7 +527,8 @@ public class ClientProfileController {
         }
 
         if (!newPassword.equals(confirmPassword)) {
-            showErrorAlert("Validation Error", "❌ New passwords do not match.\n\nPlease make sure both passwords are identical.");
+            showErrorAlert("Validation Error",
+                    "❌ New passwords do not match.\n\nPlease make sure both passwords are identical.");
             return false;
         }
 
@@ -457,13 +543,19 @@ public class ClientProfileController {
     private int calculatePasswordStrength(String password) {
         int strength = 0;
 
-        if (password.length() >= 8) strength++;
-        if (password.matches(".*[A-Z].*") && password.matches(".*[a-z].*")) strength++;
-        if (password.matches(".*\\d.*")) strength++;
-        if (password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) strength++;
+        if (password.length() >= 8)
+            strength++;
+        if (password.matches(".*[A-Z].*") && password.matches(".*[a-z].*"))
+            strength++;
+        if (password.matches(".*\\d.*"))
+            strength++;
+        if (password.matches(".*[!@#$%^&*(),.?\":{}|<>].*"))
+            strength++;
 
-        if (strength <= 1) return 0;
-        if (strength <= 3) return 1;
+        if (strength <= 1)
+            return 0;
+        if (strength <= 3)
+            return 1;
         return 2;
     }
 
@@ -491,7 +583,8 @@ public class ClientProfileController {
                 try {
                     userService.deactivateUser(currentClient.getIdUser());
                     SessionManager.getInstance().logout();
-                    showSuccessAlert("Account Deactivated", "Your account has been deactivated. Contact support to reactivate your account.");
+                    showSuccessAlert("Account Deactivated",
+                            "Your account has been deactivated. Contact support to reactivate your account.");
                     parentDialog.close();
                     redirectToLogin();
                 } catch (Exception e) {
@@ -509,7 +602,8 @@ public class ClientProfileController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Settings");
         alert.setHeaderText("Account Settings");
-        alert.setContentText("Settings page coming soon!\n\nFeatures:\n• Notification preferences\n• Privacy settings\n• Language selection");
+        alert.setContentText(
+                "Settings page coming soon!\n\nFeatures:\n• Notification preferences\n• Privacy settings\n• Language selection");
         alert.showAndWait();
     }
 
@@ -526,18 +620,59 @@ public class ClientProfileController {
     private void handleBrowseFreelancers() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/list-freelancers.fxml"));
-            Parent root = loader.load();
+            Parent embeddedView = loader.load();
 
             ListFreelancersController controller = loader.getController();
             controller.setClientData(currentClient);
 
-            Stage stage = (Stage) nameLabel.getScene().getWindow();
-            stage.setScene(new Scene(root, 1200, 800));
-            stage.setTitle("Browse Freelancers - UniEarn");
-            stage.centerOnScreen();
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            // Remove previous embedded views if any (excluding the main dashboard which is
+            // just hidden)
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+
+            contentArea.getChildren().add(embeddedView);
+            embeddedView.setVisible(true);
+            embeddedView.setManaged(true);
+
+            System.out.println("✓ Embedded Browse Freelancers loaded into contentArea");
         } catch (IOException e) {
             e.printStackTrace();
             showErrorAlert("Error", "Failed to load browse freelancers page: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleMesProjets() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/Projet.fxml"));
+            Parent embeddedView = loader.load();
+
+            uniearn.controller.projet.ProjectController controller = loader.getController();
+            controller.setClientData(currentClient);
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+
+            contentArea.getChildren().add(embeddedView);
+            embeddedView.setVisible(true);
+            embeddedView.setManaged(true);
+
+            System.out.println("✓ Embedded Mes Projets loaded into contentArea");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load projects page: " + e.getMessage());
         }
     }
 
@@ -586,6 +721,42 @@ public class ClientProfileController {
             e.printStackTrace();
             showErrorAlert("Error", "Failed to load login page: " + e.getMessage());
         }
+    }
+
+    @FXML
+    private void handleApplications() {
+        try {
+            if (embeddedDashboard == null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/ClientDashboardView.fxml"));
+                embeddedDashboard = loader.load();
+            }
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+
+            if (!contentArea.getChildren().contains(embeddedDashboard)) {
+                contentArea.getChildren().add(embeddedDashboard);
+            }
+            embeddedDashboard.setVisible(true);
+            embeddedDashboard.setManaged(true);
+
+            System.out.println("✓ Embedded Applications Dashboard loaded into contentArea");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load applications page: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleShowDashboard() {
+        if (embeddedDashboard != null) {
+            embeddedDashboard.setVisible(false);
+            embeddedDashboard.setManaged(false);
+        }
+
+        dashboardView.setVisible(true);
+        dashboardView.setManaged(true);
+        System.out.println("✓ Switched back to main profile dashboard");
     }
 
     private void showSuccessAlert(String title, String message) {

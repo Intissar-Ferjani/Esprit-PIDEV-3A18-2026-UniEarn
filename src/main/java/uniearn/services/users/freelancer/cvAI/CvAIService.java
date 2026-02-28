@@ -20,9 +20,8 @@ import java.util.regex.Pattern;
 
 public class CvAIService {
 
-    private static final String OPENROUTER_API_KEY =
-            "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";
-    private static final String CHAT_URL   = "https://openrouter.ai/api/v1/chat/completions";
+    private static final String OPENROUTER_API_KEY = "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";
+    private static final String CHAT_URL = "https://openrouter.ai/api/v1/chat/completions";
     private static final String MODELS_URL = "https://openrouter.ai/api/v1/models";
     private static final String[] EMERGENCY_FALLBACKS = {
             "openrouter/free",
@@ -35,7 +34,9 @@ public class CvAIService {
             .connectTimeout(Duration.ofSeconds(15))
             .build();
 
-    public enum FailReason { NAME_MISMATCH, EXTRACTION_FAILED, API_FAILED }
+    public enum FailReason {
+        NAME_MISMATCH, EXTRACTION_FAILED, API_FAILED
+    }
 
     public static class CvResult {
         private final String bio;
@@ -43,16 +44,34 @@ public class CvAIService {
         private final String failMessage;
 
         private CvResult(String bio, FailReason failReason, String failMessage) {
-            this.bio = bio; this.failReason = failReason; this.failMessage = failMessage;
+            this.bio = bio;
+            this.failReason = failReason;
+            this.failMessage = failMessage;
         }
 
-        public static CvResult success(String bio)               { return new CvResult(bio, null, null); }
-        public static CvResult failure(FailReason r, String msg) { return new CvResult(null, r, msg); }
+        public static CvResult success(String bio) {
+            return new CvResult(bio, null, null);
+        }
 
-        public boolean isSuccess()        { return bio != null; }
-        public String getBio()            { return bio; }
-        public FailReason getFailReason() { return failReason; }
-        public String getFailMessage()    { return failMessage; }
+        public static CvResult failure(FailReason r, String msg) {
+            return new CvResult(null, r, msg);
+        }
+
+        public boolean isSuccess() {
+            return bio != null;
+        }
+
+        public String getBio() {
+            return bio;
+        }
+
+        public FailReason getFailReason() {
+            return failReason;
+        }
+
+        public String getFailMessage() {
+            return failMessage;
+        }
     }
 
     public CvResult generateBioFromCv(File cvFile, String registeredName) {
@@ -75,7 +94,8 @@ public class CvAIService {
             System.out.println("✓ Name verified in CV");
         }
 
-        if (cvText.length() > 3000) cvText = cvText.substring(0, 3000) + "...";
+        if (cvText.length() > 3000)
+            cvText = cvText.substring(0, 3000) + "...";
 
         System.out.println("CV text extracted (" + cvText.length() + " chars), sending to OpenRouter...");
         String bio = callWithFallback(cvText);
@@ -89,7 +109,7 @@ public class CvAIService {
     }
 
     private boolean doesNameAppearInCv(String cvText, String registeredName) {
-        String normalizedCv   = normalize(cvText);
+        String normalizedCv = normalize(cvText);
         String normalizedName = normalize(registeredName).trim();
 
         if (normalizedCv.contains(normalizedName)) {
@@ -121,15 +141,17 @@ public class CvAIService {
     }
 
     private String normalize(String text) {
-        if (text == null) return "";
+        if (text == null)
+            return "";
         String decomposed = Normalizer.normalize(text, Normalizer.Form.NFD);
-        String stripped   = decomposed.replaceAll("\\p{InCombiningDiacriticalMarks}", "");
+        String stripped = decomposed.replaceAll("\\p{InCombiningDiacriticalMarks}", "");
         return stripped.toUpperCase().replaceAll("\\s+", " ").trim();
     }
 
     private String extractText(File file) {
         String name = file.getName().toLowerCase();
-        if (name.endsWith(".pdf"))  return extractFromPdfWithTesseract(file);
+        if (name.endsWith(".pdf"))
+            return extractFromPdfWithTesseract(file);
         if (name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".jpeg"))
             return extractFromImageWithTesseract(file);
         if (name.endsWith(".docx") || name.endsWith(".doc")) {
@@ -144,24 +166,31 @@ public class CvAIService {
         try {
             String result = buildTesseract().doOCR(pdfFile);
             if (result == null || result.isBlank()) {
-                System.out.println("✗ Tesseract returned no text from PDF"); return null;
+                System.out.println("✗ Tesseract returned no text from PDF");
+                return null;
             }
             System.out.println("✓ PDF extracted via Tesseract (" + result.strip().length() + " chars)");
             return result;
         } catch (TesseractException e) {
-            System.err.println("Tesseract PDF error: " + e.getMessage()); return null;
+            System.err.println("Tesseract PDF error: " + e.getMessage());
+            return null;
         }
     }
 
     private String extractFromImageWithTesseract(File imageFile) {
         try {
             BufferedImage img = ImageIO.read(imageFile);
-            if (img == null) { System.err.println("ImageIO could not read: " + imageFile.getName()); return null; }
+            if (img == null) {
+                System.err.println("ImageIO could not read: " + imageFile.getName());
+                return null;
+            }
             String result = buildTesseract().doOCR(img);
-            System.out.println("✓ Image extracted via Tesseract (" + (result != null ? result.strip().length() : 0) + " chars)");
+            System.out.println(
+                    "✓ Image extracted via Tesseract (" + (result != null ? result.strip().length() : 0) + " chars)");
             return result;
         } catch (TesseractException | IOException e) {
-            System.err.println("Tesseract image error: " + e.getMessage()); return null;
+            System.err.println("Tesseract image error: " + e.getMessage());
+            return null;
         }
     }
 
@@ -196,16 +225,20 @@ public class CvAIService {
             for (int i = 1; i < entries.length && freeIds.size() < MAX_MODELS_TO_TRY; i++) {
                 String chunk = entries[i];
                 int endQuote = chunk.indexOf("\"");
-                if (endQuote == -1) continue;
+                if (endQuote == -1)
+                    continue;
                 String modelId = chunk.substring(0, endQuote);
-                if (!modelId.endsWith(":free")) continue;
+                if (!modelId.endsWith(":free"))
+                    continue;
                 if (modelId.contains("thinking") || modelId.contains("reasoner")
-                        || modelId.contains(":nitro") || modelId.contains(":floor")) continue;
+                        || modelId.contains(":nitro") || modelId.contains(":floor"))
+                    continue;
                 int pricingIdx = chunk.indexOf("\"pricing\"");
                 if (pricingIdx != -1) {
                     String pricingChunk = chunk.substring(pricingIdx, Math.min(pricingIdx + 200, chunk.length()));
                     Matcher pm = promptPattern.matcher(pricingChunk);
-                    if (pm.find() && !"0".equals(pm.group(1))) continue;
+                    if (pm.find() && !"0".equals(pm.group(1)))
+                        continue;
                 }
                 freeIds.add(modelId);
                 System.out.println("  Found free model: " + modelId);
@@ -235,11 +268,15 @@ public class CvAIService {
                 System.out.println("OpenRouter status: " + status + " (model: " + model + ")");
                 if (status == 200) {
                     String bio = parseResponse(response.body());
-                    if (bio != null && !bio.isBlank()) return bio;
+                    if (bio != null && !bio.isBlank())
+                        return bio;
                     System.out.println("⚠ Empty/null content from " + model + ", trying next...");
                     continue;
                 }
-                if (status == 429) { System.out.println("⚠ 429 on " + model + ", trying next..."); continue; }
+                if (status == 429) {
+                    System.out.println("⚠ 429 on " + model + ", trying next...");
+                    continue;
+                }
                 System.err.println("✗ Error " + status + " on " + model + " — trying next...");
             } catch (Exception e) {
                 System.err.println("✗ Request failed for " + model + ": " + e.getMessage());
@@ -288,27 +325,40 @@ public class CvAIService {
         try {
             String contentKey = "\"content\":";
             int idx = json.indexOf(contentKey);
-            if (idx == -1) { System.err.println("No 'content' field in response"); return null; }
-            int valueStart = idx + contentKey.length();
-            while (valueStart < json.length() && json.charAt(valueStart) == ' ') valueStart++;
-            if (json.startsWith("null", valueStart)) {
-                System.out.println("⚠ content is null (reasoning model — skipping)"); return null;
+            if (idx == -1) {
+                System.err.println("No 'content' field in response");
+                return null;
             }
-            if (json.charAt(valueStart) != '"') { System.err.println("Unexpected content format"); return null; }
+            int valueStart = idx + contentKey.length();
+            while (valueStart < json.length() && json.charAt(valueStart) == ' ')
+                valueStart++;
+            if (json.startsWith("null", valueStart)) {
+                System.out.println("⚠ content is null (reasoning model — skipping)");
+                return null;
+            }
+            if (json.charAt(valueStart) != '"') {
+                System.err.println("Unexpected content format");
+                return null;
+            }
             int start = valueStart + 1;
-            int end   = start;
+            int end = start;
             while (end < json.length()) {
-                if (json.charAt(end) == '"' && json.charAt(end - 1) != '\\') break;
+                if (json.charAt(end) == '"' && json.charAt(end - 1) != '\\')
+                    break;
                 end++;
             }
             String content = json.substring(start, end)
                     .replace("\\n", "\n").replace("\\\"", "\"")
                     .replace("\\/", "/").replace("\\\\", "\\").trim();
-            if (content.isBlank()) { System.out.println("⚠ content is empty"); return null; }
+            if (content.isBlank()) {
+                System.out.println("⚠ content is empty");
+                return null;
+            }
             System.out.println("✅ Bio generated successfully");
             return content;
         } catch (Exception e) {
-            System.err.println("Failed to parse response: " + e.getMessage()); return null;
+            System.err.println("Failed to parse response: " + e.getMessage());
+            return null;
         }
     }
 
