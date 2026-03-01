@@ -7,7 +7,7 @@
 <?import javafx.scene.text.*?>
 
 <BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root"
-            stylesheets="@../../profile/profile.css"
+            stylesheets="@../forum/profile.css"
             xmlns="http://javafx.com/javafx/17.0.12"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="uniearn.controller.profile.forum.FreelancerForumController">

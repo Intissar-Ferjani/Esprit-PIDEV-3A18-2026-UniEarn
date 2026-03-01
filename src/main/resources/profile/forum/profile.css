@@ -6,12 +6,18 @@
 .root {
     -fx-background-color: #f4f6f9;
     -fx-font-family: "Segoe UI", "System", sans-serif;
+        background-color: #f4f6f9;
+        -fx-background-color: #f4f6f9;
+        font-family: "Segoe UI", "System", sans-serif;
+        -fx-font-family: "Segoe UI", "System", sans-serif;
 }
 
 /* ── Top Bar ──────────────────────────────────────────────────── */
 .top-bar {
     -fx-background-color: linear-gradient(to right, #1a56db, #3b82f6);
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 6, 0, 0, 2);
+        background-color: #1a56db;
+        -fx-background-color: linear-gradient(to right, #1a56db, #3b82f6);
 }
 
 /* ── Sidebar ──────────────────────────────────────────────────── */
@@ -20,6 +26,12 @@
     -fx-border-color: #e1e8ed;
     -fx-border-width: 0 1 0 0;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 4, 0, 2, 0);
+        background-color: #ffffff;
+        -fx-background-color: #ffffff;
+        border-color: #e1e8ed;
+        -fx-border-color: #e1e8ed;
+        border-width: 0 1px 0 0;
+        -fx-border-width: 0 1 0 0;
 }
 
 .nav-button {
@@ -30,15 +42,29 @@
     -fx-background-radius: 8;
     -fx-cursor: hand;
     -fx-font-size: 14px;
+        background-color: transparent;
+        -fx-background-color: transparent;
+        padding: 10px 15px 10px 15px;
+        -fx-padding: 10 15 10 15;
+        cursor: pointer;
+        -fx-cursor: hand;
+        font-size: 14px;
+        -fx-font-size: 14px;
 }
 .nav-button:hover {
     -fx-background-color: #eff6ff;
     -fx-text-fill: #1a56db;
+        background-color: #eff6ff;
+        -fx-background-color: #eff6ff;
 }
 .nav-button.active,
 .nav-button:focused {
     -fx-background-color: #1a56db;
     -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-color: #1a56db;
+    background-color: #1a56db;
+    font-weight: bold;
     -fx-font-weight: bold;
 }
 .nav-button.logout {
@@ -46,6 +72,8 @@
 }
 .nav-button.logout:hover {
     -fx-background-color: #fdecea;
+     background-color: #fdecea;
+     -fx-background-color: #fdecea;
 }
 
 /* ── Content scroll pane ──────────────────────────────────────── */
@@ -55,11 +83,15 @@
 }
 .content-scroll > .viewport {
     -fx-background-color: transparent;
+     background-color: transparent;
+     -fx-background-color: transparent;
 }
 
 /* ── Main content area ────────────────────────────────────────── */
 .main-content {
     -fx-background-color: transparent;
+        background-color: transparent;
+        -fx-background-color: transparent;
 }
 
 /* ── Section cards ────────────────────────────────────────────── */
@@ -69,6 +101,14 @@
     -fx-border-color: #e1e8ed;
     -fx-border-radius: 10;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.06), 8, 0, 0, 2);
+        background-color: #ffffff;
+        -fx-background-color: #ffffff;
+        border-color: #e1e8ed;
+        -fx-border-color: #e1e8ed;
+        border-radius: 10px;
+        -fx-border-radius: 10;
+        background-radius: 10px;
+        -fx-background-radius: 10;
 }
 
 /* ── Titles ───────────────────────────────────────────────────── */
@@ -82,6 +122,10 @@
     -fx-text-fill: #1a56db;
     -fx-padding: 4 12 4 12;
     -fx-background-radius: 12;
+        background-color: #eff6ff;
+        -fx-background-color: #eff6ff;
+        padding: 4px 12px 4px 12px;
+        -fx-padding: 4 12 4 12;
 }
 
 /* ── Primary button ───────────────────────────────────────────── */
@@ -91,9 +135,17 @@
     -fx-background-radius: 6;
     -fx-cursor: hand;
     -fx-font-weight: bold;
+        background-color: #1a56db;
+        -fx-background-color: #1a56db;
+        cursor: pointer;
+        -fx-cursor: hand;
+        font-weight: bold;
+        -fx-font-weight: bold;
 }
 .btn-primary:hover {
     -fx-background-color: #1e40af;
+        background-color: #1e40af;
+        -fx-background-color: #1e40af;
 }
 
 /* ── Secondary button ─────────────────────────────────────────── */
@@ -104,9 +156,19 @@
     -fx-cursor: hand;
     -fx-border-color: #ddd;
     -fx-border-radius: 6;
+        background-color: #f0f0f0;
+        -fx-background-color: #f0f0f0;
+        cursor: pointer;
+        -fx-cursor: hand;
+        border-color: #ddd;
+        -fx-border-color: #ddd;
+        border-radius: 6px;
+        -fx-border-radius: 6;
 }
 .btn-secondary:hover {
     -fx-background-color: #e0e0e0;
+        background-color: #e0e0e0;
+        -fx-background-color: #e0e0e0;
 }
 
 /* ── Danger button ────────────────────────────────────────────── */
@@ -115,9 +177,15 @@
     -fx-text-fill: white;
     -fx-background-radius: 6;
     -fx-cursor: hand;
+        background-color: #e74c3c;
+        -fx-background-color: #e74c3c;
+        cursor: pointer;
+        -fx-cursor: hand;
 }
 .btn-danger:hover {
     -fx-background-color: #c0392b;
+        background-color: #c0392b;
+        -fx-background-color: #c0392b;
 }
 
 /* ── GIF / accent button ─────────────────────────────────────── */
@@ -126,9 +194,15 @@
     -fx-text-fill: white;
     -fx-background-radius: 6;
     -fx-cursor: hand;
+        background-color: #64748b;
+        -fx-background-color: #64748b;
+        cursor: pointer;
+        -fx-cursor: hand;
 }
 .btn-gif:hover {
     -fx-background-color: #475569;
+        background-color: #475569;
+        -fx-background-color: #475569;
 }
 
 /* ── Upload image button ──────────────────────────────────────── */
@@ -137,9 +211,15 @@
     -fx-text-fill: white;
     -fx-background-radius: 6;
     -fx-cursor: hand;
+        background-color: #64748b;
+        -fx-background-color: #64748b;
+        cursor: pointer;
+        -fx-cursor: hand;
 }
 .btn-upload:hover {
     -fx-background-color: #475569;
+        background-color: #475569;
+        -fx-background-color: #475569;
 }
 
 /* ── Field label small ────────────────────────────────────────── */
@@ -153,6 +233,12 @@
     -fx-border-color: #e1e8ed;
     -fx-border-radius: 6;
     -fx-background-radius: 6;
+        background-color: #f8f9fa;
+        -fx-background-color: #f8f9fa;
+        border-color: #e1e8ed;
+        -fx-border-color: #e1e8ed;
+        border-radius: 6px;
+        -fx-border-radius: 6;
 }
 
 /* ── Top navigation buttons ────────────────────────────────────── */
@@ -163,16 +249,32 @@
     -fx-background-radius: 6;
     -fx-cursor: hand;
     -fx-font-size: 13px;
+        background-color: transparent;
+        -fx-background-color: transparent;
+        padding: 8px 16px 8px 16px;
+        -fx-padding: 8 16 8 16;
+        cursor: pointer;
+        -fx-cursor: hand;
+        font-size: 13px;
+        -fx-font-size: 13px;
 }
 .nav-top-button:hover {
     -fx-background-color: rgba(255, 255, 255, 0.15);
+        background-color: rgba(255, 255, 255, 0.15);
+        -fx-background-color: rgba(255, 255, 255, 0.15);
 }
 .nav-top-active {
     -fx-background-color: rgba(255, 255, 255, 0.2);
     -fx-font-weight: bold;
+        background-color: rgba(255, 255, 255, 0.2);
+        -fx-background-color: rgba(255, 255, 255, 0.2);
+        font-weight: bold;
+        -fx-font-weight: bold;
 }
 
 /* ── Separator ────────────────────────────────────────────────── */
 .separator .line {
     -fx-border-color: #e8e8e8;
+        border-color: #e8e8e8;
+        -fx-border-color: #e8e8e8;
 }
