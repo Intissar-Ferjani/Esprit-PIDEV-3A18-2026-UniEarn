@@ -1,0 +1,98 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║            RÉSUMÉ - SAUVEGARDE DES SIGNATURES (Images)                      ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+PROBLÈME RÉSOLU: ✅ Les signatures sont maintenant capturées et enregistrées
+
+AVANT:                                 APRÈS:
+├─ ✗ Seule la date était enregistrée   ├─ ✅ Date enregistrée
+└─ ✗ Signature perdue                  ├─ ✅ Image PNG enregistrée
+                                        └─ ✅ Visible dans le PDF
+
+
+MIGRATION SQL REQUISE:
+======================
+
+Fichier: migration_add_signature_images.sql
+
+Actions à exécuter dans MySQL:
+
+1. ALTER TABLE contract ADD COLUMN clientSignatureImage LONGBLOB
+   AFTER clientSignatureDate;
+
+2. ALTER TABLE contract ADD COLUMN freelancerSignatureImage LONGBLOB
+   AFTER freelancerSignatureDate;
+
+
+FICHIERS MODIFIÉS/CRÉÉS:
+========================
+
+✅ CRÉÉ: SignatureImageService.java
+   - Utilitaires pour capture et conversion d'images
+
+✅ MODIFIÉ: Contrat.java
+   - Ajout: clientSignatureImage (byte[])
+   - Ajout: freelancerSignatureImage (byte[])
+
+✅ MODIFIÉ: ContratService.java
+   - Ajout: signByClientWithImage()
+   - Ajout: signByFreelancerWithImage()
+
+✅ MODIFIÉ: ContractSignatureController.java
+   - Amélioration: signByClient()
+   - Amélioration: signByFreelancer()
+
+
+WORKFLOW:
+=========
+
+1. Tracer la signature dans le Canvas
+   ↓
+2. Cliquer "Signer"
+   ↓
+3. SignatureImageService.canvasToPngBytes() → capture en PNG
+   ↓
+4. ContratService.signByClientWithImage() → sauvegarde en BDD
+   ↓
+5. ✅ Image enregistrée et prête pour le PDF
+
+
+DÉMARRAGE:
+==========
+
+1️⃣  Exécuter la migration SQL:
+    - Ouvrir MySQL Workbench
+    - Charger le fichier: migration_add_signature_images.sql
+    - Exécuter sur la base: uniearn_db
+
+2️⃣  Compiler et démarrer:
+    > build_compile.bat
+    > build_and_run.bat
+
+3️⃣  Tester:
+    - Créer/ouvrir un contrat
+    - Tracer une signature
+    - Cliquer "Signer"
+    - Vérifier que ça fonctionne ✅
+
+
+DÉTAILS TECHNIQUES:
+===================
+
+Classe SignatureImageService:
+├─ captureCanvasImage(canvas) → Image JavaFX
+├─ imageToPngBytes(image) → byte[] PNG
+├─ canvasToPngBytes(canvas) → byte[] PNG (direct)
+├─ canvasToBase64(canvas) → String Base64
+├─ bytesToImage(bytes) → Image JavaFX
+├─ base64ToImage(string) → Image JavaFX
+├─ canvasHasSignature(canvas) → boolean
+└─ formatImageSize(bytes) → String formatté
+
+Taille typique: 2-5 KB par signature
+
+
+═════════════════════════════════════════════════════════════════════════════
+PRÊT À UTILISER! Suivez les 3 étapes ci-dessus.
+═════════════════════════════════════════════════════════════════════════════
+

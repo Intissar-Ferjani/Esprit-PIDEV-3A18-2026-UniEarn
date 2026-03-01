@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="650.0" prefWidth="550.0" spacing="15.0" style="-fx-background-color: #f8f9fa; -fx-padding: 30;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.projet.TaskFormController">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label fx:id="formTitle" text="Nouvelle Tâche" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+    <Separator/>
+
+    <!-- Title -->
+    <VBox spacing="5">
+        <Label text="Titre de la tâche *" style="-fx-font-weight: bold; -fx-text-fill: #34495e; -fx-font-size: 13px;"/>
+        <TextField fx:id="titleField" promptText="Entrez un titre clair..." style="-fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 8;"/>
+        <Label fx:id="titleError" text="" style="-fx-text-fill: #e74c3c; -fx-font-size: 11px;" visible="false" managed="false"/>
+    </VBox>
+
+    <!-- Project & Role -->
+    <HBox spacing="15">
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Projet *" style="-fx-font-weight: bold; -fx-text-fill: #34495e; -fx-font-size: 13px;"/>
+            <ComboBox fx:id="projectComboBox" maxWidth="Infinity" style="-fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-radius: 5; -fx-background-radius: 5;"/>
+            <Label fx:id="projectError" text="" style="-fx-text-fill: #e74c3c; -fx-font-size: 11px;" visible="false" managed="false"/>
+        </VBox>
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Rôle" style="-fx-font-weight: bold; -fx-text-fill: #34495e; -fx-font-size: 13px;"/>
+            <TextField fx:id="roleField" promptText="Ex: Développeur" style="-fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 8;"/>
+        </VBox>
+    </HBox>
+
+    <!-- Priority & Status & Deadline -->
+    <HBox spacing="15">
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Priorité *" style="-fx-font-weight: bold; -fx-text-fill: #34495e; -fx-font-size: 13px;"/>
+            <ComboBox fx:id="priorityComboBox" maxWidth="Infinity" style="-fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-radius: 5; -fx-background-radius: 5;"/>
+        </VBox>
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Statut *" style="-fx-font-weight: bold; -fx-text-fill: #34495e; -fx-font-size: 13px;"/>
+            <ComboBox fx:id="statusComboBox" maxWidth="Infinity" style="-fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-radius: 5; -fx-background-radius: 5;"/>
+        </VBox>
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <Label text="Date limite *" style="-fx-font-weight: bold; -fx-text-fill: #34495e; -fx-font-size: 13px;"/>
+            <DatePicker fx:id="deadlinePicker" maxWidth="Infinity" style="-fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-radius: 5; -fx-background-radius: 5;"/>
+            <Label fx:id="deadlineError" text="" style="-fx-text-fill: #e74c3c; -fx-font-size: 11px;" visible="false" managed="false"/>
+        </VBox>
+    </HBox>
+
+    <!-- Description -->
+    <VBox spacing="5" VBox.vgrow="ALWAYS">
+        <Label text="Description *" style="-fx-font-weight: bold; -fx-text-fill: #34495e; -fx-font-size: 13px;"/>
+        <TextArea fx:id="descriptionArea" promptText="Détails de la tâche..." wrapText="true" VBox.vgrow="ALWAYS" style="-fx-background-color: white; -fx-border-color: #bdc3c7; -fx-border-radius: 5; -fx-background-radius: 5;"/>
+        <Label fx:id="descriptionError" text="" style="-fx-text-fill: #e74c3c; -fx-font-size: 11px;" visible="false" managed="false"/>
+    </VBox>
+
+    <!-- Action Buttons -->
+    <HBox alignment="CENTER_RIGHT" spacing="15">
+        <Button text="Annuler" fx:id="cancelBtn" onAction="#handleCancel" style="-fx-background-color: transparent; -fx-border-color: #95a5a6; -fx-border-radius: 5; -fx-text-fill: #7f8c8d; -fx-padding: 8 20; -fx-cursor: hand; -fx-font-weight: bold;"/>
+        <Button fx:id="saveBtn" text="Enregistrer" onAction="#handleSave" style="-fx-background-color: #1abc9c; -fx-text-fill: white; -fx-background-radius: 5; -fx-padding: 8 20; -fx-cursor: hand; -fx-font-weight: bold;"/>
+    </HBox>
+
+</VBox>
