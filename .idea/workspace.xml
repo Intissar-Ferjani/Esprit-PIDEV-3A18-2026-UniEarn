@@ -5,75 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.ai/mcp/mcp.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/QUICK_START_SIGNATURES.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TEMPLATE_NOUVEAU_MODULE.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/VERIFICATION_SCRIPT.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build.ps1" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build_and_run.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/compilation.log" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/compile.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/run.ps1" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/run_contrat_test.sh" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/app/contrat.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/admin/AdminContractController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/client/ClientContractController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/client/ClientContractDialogController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/contrat/ContractSignatureController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/contrat/ContractTemplateController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/contrat/ContractTemplateDialogController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/contrat/ContratController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/contrat/ContratDialogController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/contrat/ContratRestController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/contrat/ContratTableController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/freelancer/FreelancerContractController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/interfaces/contracts/IContrat.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Payment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/contracts/ContractTemplate.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/contracts/ContractType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/contracts/Contrat.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/enums/ProjectStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/ContratServiceTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/DataLoaderService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/contracts/ContractPDFService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/contracts/ContractSystemTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/contracts/ContractTemplateService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/contracts/ContractTypeService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/contracts/ContratCRUD.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/contracts/ContratService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/contracts/SignatureImageService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/contracts/contrat.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/utils/DialogUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/contracts/admin_contracts.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/contracts/client_contract_dialog.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/contracts/client_contracts.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/contracts/contract_dialog.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/contracts/contract_signature.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/contracts/contract_template_admin.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/contracts/contract_template_dialog.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/contracts/contracts.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/contracts/contrat_add_dialog.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/contracts/freelancer_contracts.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/styles/contract_styles.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/styles/styles.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/uniearn/tests/java/contracts/TestAdminContracts.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/uniearn/tests/java/contracts/TestClientContracts.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/uniearn/tests/java/contracts/TestContractSignature.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/uniearn/tests/java/contracts/TestContractTemplateAdmin.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/uniearn/tests/java/contracts/TestFreelancerContracts.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/TaskController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/interfaces/users/freelancer/IFreelancer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/interfaces/users/freelancer/IFreelancer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/projet/Project.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/projet/Project.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-profile.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/styles/contract_styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/contracts/styles/contract_styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/styles/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/contracts/styles/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,7 +88,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "Merging final-v1",
+    "git-widget-placeholder": "final-v1",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/MSI/Desktop/uniearn_java",
     "node.js.detected.package.eslint": "true",
@@ -168,6 +104,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Siam Info\IdeaProjects\uniearn_java\src\main\resources\contracts\styles" />
       <recent name="C:\Users\MSI\Desktop\uniearn_java\src\main\resources\contracts" />
       <recent name="C:\Users\MSI\Desktop\uniearn_java\src\main\java\uniearn\interfaces\contracts" />
     </key>
