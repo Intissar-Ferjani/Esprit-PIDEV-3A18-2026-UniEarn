@@ -1,12 +1,10 @@
 package uniearn.model.entities;
 
-import uniearn.interfaces.IFreelancer;
 import uniearn.model.enums.Status;
 import uniearn.model.enums.UserRole;
 import uniearn.model.enums.VerifStatus;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class Freelancer extends User {
     private double hourly;

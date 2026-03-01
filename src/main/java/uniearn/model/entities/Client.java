@@ -1,9 +1,6 @@
 package uniearn.model.entities;
 
-import uniearn.interfaces.IClient;
 import uniearn.model.enums.UserRole;
-
-import java.util.List;
 
 public class Client extends User {
     private double balance;
