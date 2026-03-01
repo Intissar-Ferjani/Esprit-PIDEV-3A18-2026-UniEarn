@@ -46,13 +46,19 @@
                             </font>
                         </Button>
 
-                        <Button text="📋 Projets disponibles" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
+                        <Button text="📋 Projets disponibles" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0" onAction="#handleFreelancerProjects">
                             <font>
                                 <Font size="14.0" />
                             </font>
                         </Button>
 
                         <Button text="📝 Mes contrats" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button text="☑ Mes tâches" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0" onAction="#handleTaskBoard">
                             <font>
                                 <Font size="14.0" />
                             </font>

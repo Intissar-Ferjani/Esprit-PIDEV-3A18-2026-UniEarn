@@ -14,6 +14,8 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import uniearn.controller.profile.freelancer.FreelancerPortfolioController;
+import uniearn.controller.projet.TaskBoardController;
 import uniearn.model.entities.users.User;
 import uniearn.model.entities.users.freelancer.Freelancer;
 import uniearn.model.entities.users.freelancer.Portfolio;
@@ -710,6 +712,40 @@ public class FreelancerProfileController {
         Label label = new Label(text);
         label.setStyle("-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #2c3e50;");
         return label;
+    }
+
+    @FXML
+    private void handleFreelancerProjects() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-projects.fxml"));
+            Parent root = loader.load();
+            uniearn.controller.projet.FreelancerProjectsController controller = loader.getController();
+            controller.setFreelancerData(currentFreelancer);
+
+            Stage stage = (Stage) nameLabel.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("Projets Disponibles - UniEarn");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load projects: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleTaskBoard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/TaskBoard.fxml"));
+            Parent root = loader.load();
+            TaskBoardController controller = loader.getController();
+            controller.setFreelancerData(currentFreelancer);
+
+            Stage stage = (Stage) nameLabel.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("Mes Tâches - TaskBoard");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load task board: " + e.getMessage());
+        }
     }
 
     @FXML
