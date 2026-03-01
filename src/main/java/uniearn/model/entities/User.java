@@ -1,9 +1,6 @@
 package uniearn.model.entities;
 
-import uniearn.interfaces.IUser;
 import uniearn.model.enums.UserRole;
-
-import java.util.List;
 
 public class User {
     private int idUser;
@@ -11,22 +8,41 @@ public class User {
     private String email;
     private String password;
     private UserRole role;
+    private String profilePicturePath;
+    private boolean activated;
 
-    public User() {}
+    public User() {
+        this.activated = true;
+    }
 
-    public User(String name, String email, String password, UserRole role) {
+    public User(String name, String email, String password, UserRole role, String profilePicturePath) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.profilePicturePath = profilePicturePath;
+        this.activated = true;
+    }
+
+    public User(int idUser, String name, String email, String password, UserRole role, String profilePicturePath, boolean activated) {
+        this.idUser = idUser;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.profilePicturePath = profilePicturePath;
+        this.activated = activated;
+    }
+
+    public User(String name, String email, String password, UserRole role) {
     }
 
     public int getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(int id) {
-        this.idUser = id;
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
 
     public String getName() {
@@ -61,14 +77,33 @@ public class User {
         this.role = role;
     }
 
+    public String getProfilePicturePath() {
+        return profilePicturePath;
+    }
+
+    public void setProfilePicturePath(String profilePicturePath) {
+        this.profilePicturePath = profilePicturePath;
+    }
+
+    public boolean isActivated() {
+        return activated;
+    }
+
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
+
+
     @Override
     public String toString() {
         return "User{" +
-                "id=" + idUser +
+                "idUser=" + idUser +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
+                ", profilePicturePath='" + profilePicturePath + '\'' +
+                ", activated=" + activated +
                 '}';
     }
 }

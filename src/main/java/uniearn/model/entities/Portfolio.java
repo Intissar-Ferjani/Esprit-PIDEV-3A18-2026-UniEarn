@@ -1,10 +1,7 @@
 package uniearn.model.entities;
 
-import uniearn.interfaces.IPortfolio;
-
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 public class Portfolio {
     private int id;

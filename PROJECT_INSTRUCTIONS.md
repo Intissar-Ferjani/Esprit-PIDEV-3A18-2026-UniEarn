@@ -178,12 +178,12 @@ The forum module uses three MySQL tables:
 ## 5. Application Entry Points
 
 ### JavaFX Client (Desktop UI)
-- **`org.example.MainApp`** — Main JavaFX `Application`. Loads `Forum.fxml` as the root scene.
-- **`org.example.forumApp`** — Alternate entry point, also loads `Forum.fxml`.
-- Configured in `pom.xml` → `javafx-maven-plugin` → `mainClass: org.example.MainApp`
+- **`uniearn.app.MainApp`** — Main JavaFX `Application`. Loads `Forum.fxml` as the root scene.
+- **`uniearn.app.forumApp`** — Alternate entry point, also loads `Forum.fxml`.
+- Configured in `pom.xml` → `javafx-maven-plugin` → `mainClass: uniearn.app.MainApp`
 
 ### Spring Boot WebSocket Server
-- **`uniearn.server.ServerApp`** — Spring Boot main. Runs on port **8080** (hardcoded), but `application.properties` sets `server.port=8081`.
+- **`uniearn.server.forum.ServerApp`** — Spring Boot main. Runs on port **8080** (hardcoded), but `application.properties` sets `server.port=8081`.
 - The WebSocket client (`WebSocketService`) connects to `ws://localhost:8081/ws`.
 
 > **Important:** The server runs on port **8081** (from `application.properties`). The hardcoded `8080` in `ServerApp.java` is overridden.
@@ -465,7 +465,7 @@ Then run `forum_default_freelancer.sql` to create the default freelancer and all
 ### Step 2: Start the WebSocket Server
 ***REMOVED***bash
 # From project root
-mvn compile exec:java -Dexec.mainClass="uniearn.server.ServerApp"
+mvn compile exec:java -Dexec.mainClass="uniearn.server.forum.ServerApp"
 ***REMOVED***
 Or run `ServerApp.main()` from your IDE. Server starts on port **8081**.
 
@@ -473,7 +473,7 @@ Or run `ServerApp.main()` from your IDE. Server starts on port **8081**.
 ***REMOVED***bash
 mvn javafx:run
 ***REMOVED***
-Or run `org.example.MainApp.main()` from your IDE.
+Or run `uniearn.app.MainApp.main()` from your IDE.
 
 ---
 
@@ -556,7 +556,7 @@ mvn package              # Build JAR
 ***REMOVED***
 
 ### Key Maven Plugins
-- `javafx-maven-plugin` (0.0.8) — configured with `mainClass: org.example.MainApp`
+- `javafx-maven-plugin` (0.0.8) — configured with `mainClass: uniearn.app.MainApp`
 
 ### Dependency Summary
 - **JavaFX Controls + FXML** (17.0.12) — UI framework
