@@ -16,7 +16,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import uniearn.controller.profile.admin.AdminDashboardController;
 import uniearn.controller.profile.freelancer.ListFreelancersController;
 import uniearn.database.SessionManager;
 import uniearn.model.entities.projet.Project;
@@ -552,6 +551,21 @@ public class ProjectController {
         alert.showAndWait();
     }
 
+    @FXML
+    private void handleTaskBoard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/TaskBoard.fxml"));
+            Parent root = loader.load();
+            TaskBoardController controller = loader.getController();
+            controller.setClientData(currentClient);
+
+            Stage stage = (Stage) projectTable.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @FXML
     private void handleSettings() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

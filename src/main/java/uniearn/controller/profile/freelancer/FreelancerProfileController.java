@@ -13,6 +13,8 @@ import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import uniearn.controller.profile.freelancer.FreelancerPortfolioController;
+import uniearn.controller.projet.TaskBoardController;
 import uniearn.model.entities.users.User;
 import uniearn.model.entities.users.freelancer.Freelancer;
 import uniearn.model.entities.users.freelancer.Portfolio;
@@ -33,21 +35,36 @@ import java.util.List;
 
 public class FreelancerProfileController {
 
-    @FXML private ImageView profileImageView;
-    @FXML private Label nameLabel;
-    @FXML private Label emailLabel;
-    @FXML private Label priceLabel;
-    @FXML private Label ratingLabel;
-    @FXML private Label verificationLabel;
-    @FXML private HBox skillsContainer;
-    @FXML private Label bioLabel;
-    @FXML private Label totalEarnedLabel;
-    @FXML private Label activeContractsLabel;
-    @FXML private Label completedProjectsLabel;
-    @FXML private Button editProfileButton;
-    @FXML private VBox portfolioSection;
-    @FXML private Button viewPortfolioButton;
-    @FXML private Button viewPortfolioCardButton;
+    @FXML
+    private ImageView profileImageView;
+    @FXML
+    private Label nameLabel;
+    @FXML
+    private Label emailLabel;
+    @FXML
+    private Label priceLabel;
+    @FXML
+    private Label ratingLabel;
+    @FXML
+    private Label verificationLabel;
+    @FXML
+    private HBox skillsContainer;
+    @FXML
+    private Label bioLabel;
+    @FXML
+    private Label totalEarnedLabel;
+    @FXML
+    private Label activeContractsLabel;
+    @FXML
+    private Label completedProjectsLabel;
+    @FXML
+    private Button editProfileButton;
+    @FXML
+    private VBox portfolioSection;
+    @FXML
+    private Button viewPortfolioButton;
+    @FXML
+    private Button viewPortfolioCardButton;
 
     private final FreelancerService freelancerService = new FreelancerService();
     private final UserService userService = new UserService();
@@ -121,8 +138,7 @@ public class FreelancerProfileController {
                                     "-fx-text-fill: #1976d2; " +
                                     "-fx-padding: 4 12; " +
                                     "-fx-background-radius: 12; " +
-                                    "-fx-font-size: 12px;"
-                    );
+                                    "-fx-font-size: 12px;");
                     skillsContainer.getChildren().add(skillLabel);
                 }
             }
@@ -180,7 +196,7 @@ public class FreelancerProfileController {
         updatePortfolioUI();
     }
 
-//    Update portfolio UI based on portfolio existence
+    // Update portfolio UI based on portfolio existence
     private void updatePortfolioUI() {
         if (portfolioSection == null) {
             System.out.println("⚠ Portfolio section not found in FXML");
@@ -305,8 +321,7 @@ public class FreelancerProfileController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Profile Picture");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
-        );
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
 
         File selectedFile = fileChooser.showOpenDialog(profileImageView.getScene().getWindow());
 
@@ -403,7 +418,8 @@ public class FreelancerProfileController {
         grid.add(separator, 0, row++);
 
         VBox dangerZone = new VBox(10);
-        dangerZone.setStyle("-fx-background-color: #fff5f5; -fx-border-color: #fc8181; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 15px;");
+        dangerZone.setStyle(
+                "-fx-background-color: #fff5f5; -fx-border-color: #fc8181; -fx-border-width: 2px; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 15px;");
         GridPane.setColumnSpan(dangerZone, 2);
 
         Label dangerLabel = new Label("⚠ Danger Zone");
@@ -413,7 +429,8 @@ public class FreelancerProfileController {
         dangerDesc.setStyle("-fx-text-fill: #742a2a; -fx-font-size: 12px;");
 
         Button deactivateBtn = new Button("Deactivate Account");
-        deactivateBtn.setStyle("-fx-background-color: #c53030; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+        deactivateBtn.setStyle(
+                "-fx-background-color: #c53030; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
         deactivateBtn.setOnAction(e -> handleDeactivateAccount(dialog));
 
         dangerZone.getChildren().addAll(dangerLabel, dangerDesc, deactivateBtn);
@@ -498,11 +515,46 @@ public class FreelancerProfileController {
     }
 
     @FXML
+    private void handleFreelancerProjects() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-projects.fxml"));
+            Parent root = loader.load();
+            uniearn.controller.projet.FreelancerProjectsController controller = loader.getController();
+            controller.setFreelancerData(currentFreelancer);
+
+            Stage stage = (Stage) nameLabel.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("Projets Disponibles - UniEarn");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load projects: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleTaskBoard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/TaskBoard.fxml"));
+            Parent root = loader.load();
+            TaskBoardController controller = loader.getController();
+            controller.setFreelancerData(currentFreelancer);
+
+            Stage stage = (Stage) nameLabel.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("Mes Tâches - TaskBoard");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load task board: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleSettings() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Settings");
         alert.setHeaderText("Account Settings");
-        alert.setContentText("Settings page coming soon!\n\nFeatures:\n• Change password\n• Notification preferences\n• Privacy settings\n• Language selection");
+        alert.setContentText(
+                "Settings page coming soon!\n\nFeatures:\n• Change password\n• Notification preferences\n• Privacy settings\n• Language selection");
         alert.showAndWait();
     }
 
