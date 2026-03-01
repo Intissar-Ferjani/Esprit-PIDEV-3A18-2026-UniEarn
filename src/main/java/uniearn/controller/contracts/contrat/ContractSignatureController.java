@@ -49,6 +49,7 @@ public class ContractSignatureController {
     private ContractPDFService pdfService;
     private Runnable onSignatureComplete;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    private String userType = "CLIENT"; // CLIENT ou FREELANCER
 
     private boolean isDrawingClient = false;
     private boolean isDrawingFreelancer = false;
@@ -112,6 +113,10 @@ public class ContractSignatureController {
 
     public void setOnSignatureComplete(Runnable callback) {
         this.onSignatureComplete = callback;
+    }
+
+    public void setUserType(String type) {
+        this.userType = type != null ? type.toUpperCase() : "CLIENT";
     }
 
     private void displayContractInfo() {
@@ -183,6 +188,19 @@ public class ContractSignatureController {
             lblFreelancerSignatureDate.setText("Signé le: " + dateFormat.format(new Date(contract.getFreelancerSignatureDate().getTime())));
             btnSignFreelancer.setDisable(true);
             btnClearFreelancerSignature.setDisable(true);
+        }
+
+        // Désactiver les zones de signature inappropriées selon le type d'utilisateur
+        if ("CLIENT".equals(userType)) {
+            // Le client ne peut signer que sa propre zone
+            canvasFreelancerSignature.setDisable(true);
+            btnSignFreelancer.setDisable(true);
+            btnClearFreelancerSignature.setDisable(true);
+        } else if ("FREELANCER".equals(userType)) {
+            // Le freelancer ne peut signer que sa propre zone
+            canvasClientSignature.setDisable(true);
+            btnSignClient.setDisable(true);
+            btnClearClientSignature.setDisable(true);
         }
     }
 
@@ -262,9 +280,21 @@ public class ContractSignatureController {
             if (result) {
                 clientSigned = true;
                 contract.setClientSignatureImage(signatureImage);
+                contract.setClientSignatureDate(new java.sql.Timestamp(System.currentTimeMillis()));
                 lblClientSignatureDate.setText("Signé le: " + dateFormat.format(new Date()));
                 btnSignClient.setDisable(true);
                 btnClearClientSignature.setDisable(true);
+
+                // Mettre à jour le statut: si freelancer a déjà signé, le contrat devient "Actif" (3)
+                // Sinon, le contrat passe à "Client Signed" (1)
+                if (contract.getFreelancerSignatureDate() != null) {
+                    contract.setStatus(3); // Active
+                    contratService.updateContractStatus(contract.getIdContract(), 3);
+                } else {
+                    contract.setStatus(1); // Client Signed
+                    contratService.updateContractStatus(contract.getIdContract(), 1);
+                }
+
                 showAlert("Succès", "Contrat signé par le client avec signature enregistrée", Alert.AlertType.INFORMATION);
 
                 if (onSignatureComplete != null) {
@@ -314,9 +344,21 @@ public class ContractSignatureController {
             if (result) {
                 freelancerSigned = true;
                 contract.setFreelancerSignatureImage(signatureImage);
+                contract.setFreelancerSignatureDate(new java.sql.Timestamp(System.currentTimeMillis()));
                 lblFreelancerSignatureDate.setText("Signé le: " + dateFormat.format(new Date()));
                 btnSignFreelancer.setDisable(true);
                 btnClearFreelancerSignature.setDisable(true);
+
+                // Mettre à jour le statut: si client a déjà signé, le contrat devient "Actif" (3)
+                // Sinon, le contrat passe à "Freelancer Signed" (2)
+                if (contract.getClientSignatureDate() != null) {
+                    contract.setStatus(3); // Active
+                    contratService.updateContractStatus(contract.getIdContract(), 3);
+                } else {
+                    contract.setStatus(2); // Freelancer Signed
+                    contratService.updateContractStatus(contract.getIdContract(), 2);
+                }
+
                 showAlert("Succès", "Contrat signé par le freelancer avec signature enregistrée", Alert.AlertType.INFORMATION);
 
                 // Vérifier si les deux ont signé

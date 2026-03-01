@@ -748,6 +748,35 @@ public class ClientProfileController {
     }
 
     @FXML
+    private void handleMesContrats() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/client-contracts.fxml"));
+            Parent embeddedView = loader.load();
+
+            ClientContractsController controller = loader.getController();
+            controller.setClientData(currentClient);
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+
+            contentArea.getChildren().add(embeddedView);
+            embeddedView.setVisible(true);
+            embeddedView.setManaged(true);
+
+            System.out.println("✓ Embedded Contracts page loaded into contentArea");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load contracts page: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleShowDashboard() {
         if (embeddedDashboard != null) {
             embeddedDashboard.setVisible(false);

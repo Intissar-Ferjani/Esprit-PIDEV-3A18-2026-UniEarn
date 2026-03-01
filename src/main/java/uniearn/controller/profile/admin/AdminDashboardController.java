@@ -99,6 +99,26 @@ public class AdminDashboardController {
     }
 
     @FXML
+    public void handleContractTemplates() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/admin/admin-contract-templates.fxml"));
+            Parent embeddedView = loader.load();
+
+            AdminContractTemplatesController controller = loader.getController();
+            controller.setAdminData(currentAdmin);
+
+            // Trouver le StackPane ou VBox principal pour remplacer la vue
+            Stage stage = (Stage) adminNameLabel.getScene().getWindow();
+            stage.setScene(new Scene(embeddedView, 1200, 700));
+            stage.setTitle("Gestion des Templates - UniEarn");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load contract templates page: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleManageUsers() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/admin/list-users.fxml"));
@@ -119,6 +139,22 @@ public class AdminDashboardController {
         } catch (IOException e) {
             e.printStackTrace();
             showErrorAlert("Navigation Error", "Failed to load user management page: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleManageContracts() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/contracts/admin_contracts.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) adminNameLabel.getScene().getWindow();
+            stage.setScene(new Scene(root, 1400, 800));
+            stage.setTitle("Manage Contracts - UniEarn");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Navigation Error", "Failed to load contracts management page: " + e.getMessage());
         }
     }
 

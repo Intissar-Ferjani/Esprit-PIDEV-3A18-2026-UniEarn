@@ -210,28 +210,49 @@ public class ClientContractDialogController {
             for (Project p : projects) {
                 System.out.println("  - " + p.getIdproject() + ": " + p.getTitle());
             }
-            cbProject.setItems(FXCollections.observableArrayList((java.util.Collection<? extends Project>) projects));
 
-            // Afficher le titre du projet
+            if (projects.isEmpty()) {
+                System.out.println("WARN: Aucun projet trouvé pour clientID=" + clientID);
+                cbProject.setItems(FXCollections.observableArrayList());
+                cbProject.setPromptText("Aucun projet disponible");
+                return;
+            }
+
+            cbProject.setItems(FXCollections.observableArrayList(projects));
+
+            // Configurer l'affichage des projets dans la dropdown
             cbProject.setCellFactory(param -> new ListCell<Project>() {
                 @Override
                 protected void updateItem(Project item, boolean empty) {
                     super.updateItem(item, empty);
-                    setText(empty || item == null ? null : item.getTitle());
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getTitle() != null ? item.getTitle() : "Projet sans titre");
+                    }
                 }
             });
 
+            // Configurer le bouton (sélection visible)
             cbProject.setButtonCell(new ListCell<Project>() {
                 @Override
                 protected void updateItem(Project item, boolean empty) {
                     super.updateItem(item, empty);
-                    setText(empty || item == null ? null : item.getTitle());
+                    if (empty || item == null) {
+                        setText("Sélectionnez un projet...");
+                    } else {
+                        setText(item.getTitle() != null ? item.getTitle() : "Projet sans titre");
+                    }
                 }
             });
+
+            System.out.println("DEBUG: ComboBox projets remplie avec " + projects.size() + " éléments");
+
         } catch (Exception e) {
             System.err.println("Erreur chargement projets: " + e.getMessage());
             e.printStackTrace();
             cbProject.setItems(FXCollections.observableArrayList());
+            cbProject.setPromptText("Erreur lors du chargement");
         }
     }
 
@@ -290,11 +311,10 @@ public class ClientContractDialogController {
             return false;
         }
 
-        // Freelancer est optionnel
-        // if (cbFreelancer.getValue() == null) {
-        //     showAlert("Erreur", "Sélectionnez un freelancer", Alert.AlertType.ERROR);
-        //     return false;
-        // }
+        if (cbFreelancer.getValue() == null || cbFreelancer.getValue() == 0) {
+            showAlert("Erreur", "Sélectionnez un freelancer", Alert.AlertType.ERROR);
+            return false;
+        }
 
         if (cbProject.getValue() == null) {
             showAlert("Erreur", "Sélectionnez un projet", Alert.AlertType.ERROR);
@@ -324,8 +344,14 @@ public class ClientContractDialogController {
             contrat.setType(typeName);
             contrat.setTemplateID(cbTemplate.getValue().getIdTemplate());
             contrat.setClientID(clientID);
-            // Ne pas définir le freelancerID - le laisser NULL pour l'instant
-            contrat.setFreelancerID(0);
+            // Utiliser le freelancerID sélectionné par le client (qui est l'idUser du freelancer)
+            if (cbFreelancer.getValue() != null && cbFreelancer.getValue() > 0) {
+                contrat.setFreelancerID(cbFreelancer.getValue());
+                System.out.println("DEBUG: Freelancer sélectionné: " + cbFreelancer.getValue());
+            } else {
+                System.out.println("WARN: Aucun freelancer sélectionné - sera NULL");
+                contrat.setFreelancerID(0);
+            }
             contrat.setProjectID(cbProject.getValue().getIdproject());
             contrat.setAmount(Double.parseDouble(tfAmount.getText()));
             contrat.setStartDate(Timestamp.valueOf(dpStartDate.getValue().atStartOfDay()));

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox spacing="15" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.admin.AdminContractTemplatesController">
+
+    <!-- En-tête avec titre et boutons -->
+    <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-border-radius: 8; -fx-background-radius: 8;">
+        <Label text="📋 Gestion des Templates de Contrats" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #1a202c;"/>
+
+        <HBox spacing="15">
+            <TextField fx:id="searchField" promptText="Rechercher un template..." prefWidth="300" style="-fx-padding: 10; -fx-font-size: 12;"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button fx:id="btnAddTemplate" text="➕ Nouveau Template"
+                    style="-fx-padding: 10 20; -fx-font-size: 12; -fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        </HBox>
+    </VBox>
+
+    <!-- Zone de templates -->
+    <ScrollPane fx:id="scrollPane" fitToWidth="true" style="-fx-padding: 0;">
+        <VBox fx:id="templatesContainer" spacing="15" style="-fx-padding: 0;">
+            <Label fx:id="noTemplatesLabel" text="Aucun template trouvé"
+                   style="-fx-text-fill: #95a5a6; -fx-font-size: 16; -fx-padding: 40;"
+                   alignment="CENTER" visible="true"/>
+        </VBox>
+    </ScrollPane>
+</VBox>
+

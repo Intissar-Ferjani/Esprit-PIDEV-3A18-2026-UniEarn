@@ -464,6 +464,22 @@ public class ContratService implements IContrat {
     }
 
     /**
+     * Mettre à jour le statut d'un contrat
+     */
+    public boolean updateContractStatus(int contractID, int status) {
+        String sql = "UPDATE contract SET status = ? WHERE idContract = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, status);
+            stmt.setInt(2, contractID);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("ERREUR lors de la mise à jour du statut du contrat: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * Vérifier si un contrat est complètement signé
      */
     public boolean isFullySigned(int contractID) {

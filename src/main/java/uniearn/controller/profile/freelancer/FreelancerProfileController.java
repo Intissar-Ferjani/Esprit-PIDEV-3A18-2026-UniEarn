@@ -340,6 +340,29 @@ public class FreelancerProfileController {
     }
 
     @FXML
+    private void handleMesContrats() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/Freelancer/freelancer-contracts.fxml"));
+            Parent embeddedView = loader.load();
+
+            FreelancerContractsController controller = loader.getController();
+            controller.setFreelancerData(currentFreelancer);
+
+            // Create a new stage for the contracts view
+            Stage stage = new Stage();
+            stage.setTitle("Mes Contrats - Freelancer");
+            stage.setScene(new Scene(embeddedView, 1000, 700));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+
+            System.out.println("✓ Mes Contrats opened in new stage");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load contracts page: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleChangePhoto() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Profile Picture");

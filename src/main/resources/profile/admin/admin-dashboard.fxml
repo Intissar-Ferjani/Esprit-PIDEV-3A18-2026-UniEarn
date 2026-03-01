@@ -56,7 +56,7 @@
                             </font>
                         </Button>
 
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📝 Manage Contracts">
+                        <Button onAction="#handleManageContracts" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📝 Manage Contracts">
                             <font>
                                 <Font size="14.0" />
                             </font>

@@ -5,6 +5,7 @@ import uniearn.model.entities.projet.Project;
 import uniearn.model.entities.users.User;
 import uniearn.model.entities.Payment;
 import uniearn.model.entities.contracts.ContractType;
+import uniearn.services.projet.ProjectService;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -51,32 +52,20 @@ public class DataLoaderService {
      * Charger les projets d'un client
      */
     public List<Project> getProjectsByClient(int clientID) {
-        List<Project> projects = new ArrayList<>();
-        String sql = "SELECT idProject, title, description, budget, status, clientID, freelancerID FROM project WHERE clientID = ? ORDER BY idProject";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, clientID);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Project project = new Project();
-                    project.setIdproject(rs.getInt("idProject"));
-                    project.setTitle(rs.getString("title"));
-                    project.setDescription(rs.getString("description"));
-                    project.setBudget(rs.getDouble("budget"));
-                    project.setStatus(rs.getInt("status"));
-                    project.setClient_id(rs.getInt("clientID"));
-                    int freelancerID = rs.getInt("freelancerID");
-                    if (!rs.wasNull()) {
-                        project.setFreelancerid(freelancerID);
-                    }
-                    projects.add(project);
-                }
-                System.out.println("DEBUG: Chargé " + projects.size() + " projets pour clientID=" + clientID);
+        try {
+            System.out.println("DEBUG: getProjectsByClient() - clientID = " + clientID);
+            ProjectService projectService = new ProjectService();
+            List<Project> projects = projectService.getProjectsByClientId(clientID);
+            System.out.println("DEBUG: Récupéré " + projects.size() + " projets pour clientID=" + clientID);
+            for (Project p : projects) {
+                System.out.println("  - ID:" + p.getIdproject() + ", Titre:" + p.getTitle());
             }
-        } catch (SQLException e) {
-            System.err.println("Erreur SQL lors du chargement des projets pour clientID=" + clientID + ": " + e.getMessage());
+            return projects;
+        } catch (Exception e) {
+            System.err.println("Erreur lors du chargement des projets pour clientID=" + clientID + ": " + e.getMessage());
             e.printStackTrace();
+            return new ArrayList<>();
         }
-        return projects;
     }
 
     /**
