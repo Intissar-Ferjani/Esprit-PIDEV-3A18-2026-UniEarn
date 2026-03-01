@@ -175,8 +175,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-<!--                    <mainClass>uniearn.app.MainApp</mainClass>-->
-                    <mainClass>uniearn.app.forumApp</mainClass>
+                    <mainClass>uniearn.app.MainApp</mainClass>
                     <options>
                         <option>--add-opens=javafx.base/com.sun.javafx.event=ALL-UNNAMED</option>
                     </options>
