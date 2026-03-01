@@ -16,21 +16,22 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import uniearn.controller.profile.client.ClientProfileController;
+import uniearn.controller.profile.freelancer.FreelancerPortfolioController;
 import uniearn.controller.profile.freelancer.FreelancerProfileController;
 import uniearn.controller.profile.freelancer.ListFreelancersController;
 import uniearn.database.SessionManager;
+import uniearn.services.users.freelancer.PortfolioService;
 import uniearn.model.entities.projet.Project;
 import uniearn.model.entities.projet.Task;
 import uniearn.model.entities.users.client.Client;
 import uniearn.model.entities.users.freelancer.Freelancer;
+import uniearn.model.entities.users.freelancer.Portfolio;
 import uniearn.model.enums.taskpriorityenum;
 import uniearn.model.enums.taskstatusenum;
 import uniearn.services.projet.ProjectService;
 import uniearn.services.projet.TaskService;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -54,9 +55,12 @@ public class TaskBoardController {
 
     private final TaskService taskService = new TaskService();
     private final ProjectService projectService = new ProjectService();
+    private final PortfolioService portfolioService = new PortfolioService();
 
     private ObservableList<Task> allTasks = FXCollections.observableArrayList();
     private List<Project> clientProjects = new ArrayList<>();
+
+    private Portfolio currentPortfolio;
 
     private boolean isViewByStatus = true; // default view
 
@@ -67,6 +71,7 @@ public class TaskBoardController {
 
     public void setFreelancerData(Freelancer freelancer) {
         this.currentFreelancer = freelancer;
+        checkPortfolioStatus();
         loadData();
     }
 
@@ -300,6 +305,23 @@ public class TaskBoardController {
     }
 
     @FXML
+    private void handleFreelancerProjects() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-projects.fxml"));
+            Parent root = loader.load();
+            uniearn.controller.projet.FreelancerProjectsController controller = loader.getController();
+            controller.setFreelancerData(currentFreelancer);
+
+            Stage stage = (Stage) boardContainer.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("Projets Disponibles - UniEarn");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load projects: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleNewTask() {
         openTaskForm(null);
     }
@@ -335,13 +357,6 @@ public class TaskBoardController {
                 FreelancerProfileController controller = loader.getController();
                 controller.setFreelancerData(currentFreelancer);
                 stage.setScene(new Scene(root, 1200, 700));
-            } else {
-                // Navigate back to client profile
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/client-profile.fxml"));
-                Parent root = loader.load();
-                ClientProfileController controller = loader.getController();
-                controller.setClientData(currentClient);
-                stage.setScene(new Scene(root));
             }
             stage.show();
         } catch (IOException e) {
@@ -380,22 +395,6 @@ public class TaskBoardController {
     }
 
     @FXML
-    private void handleBrowseFreelancers() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/list-freelancer.fxml"));
-            Parent root = loader.load();
-            ListFreelancersController controller = loader.getController();
-            controller.setClientData(currentClient);
-
-            Stage stage = (Stage) boardContainer.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
     private void handleLogout() {
         SessionManager.getInstance().logout();
         try {
@@ -407,5 +406,65 @@ public class TaskBoardController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void checkPortfolioStatus() {
+        List<Portfolio> portfolios = portfolioService.getAllPortfolios();
+        currentPortfolio = portfolios.stream()
+                .filter(p -> p.getFreelancerId() == currentFreelancer.getIdFreelancer())
+                .findFirst()
+                .orElse(null);
+
+        updatePortfolioUI();
+    }
+
+    private void updatePortfolioUI() {
+        // This is a simplified version of the profile logic
+        // We could use this to enable/disable the Portfolio button or show an indicator
+        System.out.println("Portfolio status updated: " + (currentPortfolio != null ? "Found" : "Not Found"));
+    }
+
+    @FXML
+    private void handleViewPortfolio() {
+        // Check if portfolio still exists before navigating
+        if (currentPortfolio == null) {
+            showErrorAlert("Error", "No portfolio found. Please create a portfolio first.");
+            checkPortfolioStatus(); // Refresh UI state
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-portfolio.fxml"));
+            Parent root = loader.load();
+
+            FreelancerPortfolioController controller = loader.getController();
+            controller.setFreelancerData(currentFreelancer, currentPortfolio);
+
+            Stage stage = (Stage) boardContainer.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("My Portfolio - UniEarn");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load portfolio page: " + e.getMessage());
+        }
+    }
+
+    /*
+     * private void showSuccessAlert(String title, String message) {
+     * Alert alert = new Alert(Alert.AlertType.INFORMATION);
+     * alert.setTitle(title);
+     * alert.setHeaderText(null);
+     * alert.setContentText(message);
+     * alert.showAndWait();
+     * }
+     */
+
+    private void showErrorAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
