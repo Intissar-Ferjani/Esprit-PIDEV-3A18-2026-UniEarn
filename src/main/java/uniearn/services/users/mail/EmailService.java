@@ -1,4 +1,4 @@
-package uniearn.services.users;
+package uniearn.services.users.mail;
 
 import jakarta.mail.*;
 import jakarta.mail.internet.*;

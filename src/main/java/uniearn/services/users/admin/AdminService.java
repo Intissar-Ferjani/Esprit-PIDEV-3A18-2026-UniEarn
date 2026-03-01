@@ -1,8 +1,9 @@
-package uniearn.services.users;
+package uniearn.services.users.admin;
 
 import uniearn.database.MyConnection;
 import uniearn.model.entities.users.admin.Admin;
 import uniearn.model.enums.UserRole;
+import uniearn.services.users.UserService;
 
 import java.sql.*;
 

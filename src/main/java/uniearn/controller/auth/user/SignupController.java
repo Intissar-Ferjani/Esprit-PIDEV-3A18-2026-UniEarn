@@ -12,7 +12,7 @@ import uniearn.controller.auth.freelancer.FreelancerSignupController;
 import uniearn.model.entities.users.User;
 import uniearn.model.entities.users.admin.Admin;
 import uniearn.model.enums.UserRole;
-import uniearn.services.users.AdminService;
+import uniearn.services.users.admin.AdminService;
 import uniearn.services.users.UserService;
 import uniearn.utils.user.PasswordUtil;
 
