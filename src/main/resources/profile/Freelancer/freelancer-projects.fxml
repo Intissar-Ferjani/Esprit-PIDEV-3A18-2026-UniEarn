@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+
+<BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root"
+            stylesheets="@../../profile/profile.css"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="uniearn.controller.projet.FreelancerProjectsController">
+
+    <!-- ═══════════════════════════════════════════════════════ TOP BAR -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="70.0" spacing="20.0" styleClass="top-bar">
+            <padding><Insets left="30.0" right="30.0"/></padding>
+            <children>
+                <Button onAction="#handleBack" styleClass="btn-secondary" text="← Retour">
+                    <font><Font size="13.0"/></font>
+                </Button>
+                <Region HBox.hgrow="ALWAYS"/>
+                <ImageView fitHeight="55.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true">
+                    <image><Image url="@../../images/UniEarn_full_logo.png"/></image>
+                </ImageView>
+            </children>
+        </HBox>
+    </top>
+
+    <!-- ═══════════════════════════════════════════════════════ SIDEBAR -->
+    <left>
+        <VBox styleClass="sidebar" prefWidth="250.0">
+            <children>
+                <VBox spacing="5.0" VBox.vgrow="ALWAYS">
+                    <padding>
+                        <Insets top="20.0" left="15.0" right="15.0" bottom="15.0"/>
+                    </padding>
+                    <children>
+                        <Button text="🏠 Dashboard" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0" onAction="#handleBack">
+                            <font><Font size="14.0"/></font>
+                        </Button>
+
+                        <Button text="📋 Projets disponibles" styleClass="nav-button, active" prefWidth="220.0" prefHeight="40.0">
+                            <font><Font size="14.0"/></font>
+                        </Button>
+
+                        <Button text="📝 Mes contrats" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
+                            <font><Font size="14.0"/></font>
+                        </Button>
+
+                        <Button text="☑ Mes tâches" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0" onAction="#handleTaskBoard">
+                            <font><Font size="14.0"/></font>
+                        </Button>
+
+                        <Button text="💼 Portfolio" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
+                            <font><Font size="14.0"/></font>
+                        </Button>
+
+                        <Button text="💬 Messages" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
+                            <font><Font size="14.0"/></font>
+                        </Button>
+
+                        <Button text="💳 Paiements" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
+                            <font><Font size="14.0"/></font>
+                        </Button>
+
+                        <Region VBox.vgrow="ALWAYS"/>
+                        <Separator/>
+
+                        <Button text="⚙ Settings" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0">
+                            <font><Font size="14.0"/></font>
+                        </Button>
+
+                        <Button text="🚪 Logout" styleClass="nav-button, logout" prefWidth="220.0" prefHeight="40.0" onAction="#handleLogout">
+                            <font><Font size="14.0"/></font>
+                        </Button>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </left>
+
+    <!-- ═══════════════════════════════════════════════════ MAIN CONTENT -->
+    <center>
+        <VBox style="-fx-background-color: #f5f7fa;" VBox.vgrow="ALWAYS">
+            <padding><Insets bottom="30.0" left="35.0" right="35.0" top="30.0"/></padding>
+            <children>
+
+                <!-- Page Header -->
+                <HBox alignment="CENTER_LEFT" spacing="20.0">
+                    <children>
+                        <VBox spacing="4.0">
+                            <children>
+                                <Label text="📋 Projets Disponibles" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #14171a;">
+                                    <font><Font name="System Bold" size="26.0"/></font>
+                                </Label>
+                                <Label text="Découvrez les projets ouverts et postulez dès maintenant"
+                                       style="-fx-text-fill: #657786; -fx-font-size: 14px;"/>
+                            </children>
+                        </VBox>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <!-- Search Field -->
+                        <TextField fx:id="searchField" promptText="🔍 Rechercher un projet..." prefWidth="260.0"
+                                   style="-fx-background-color: white; -fx-border-color: #e1e8ed; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10 14; -fx-font-size: 13px;">
+                        </TextField>
+
+                        <!-- Filter ComboBox -->
+                        <ComboBox fx:id="statusFilter" promptText="Filtrer par statut" prefWidth="170.0"
+                                  style="-fx-background-color: white; -fx-border-color: #e1e8ed; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                    </children>
+                </HBox>
+
+                <!-- Divider -->
+                <Separator>
+                    <VBox.margin><Insets top="18.0" bottom="18.0"/></VBox.margin>
+                </Separator>
+
+                <!-- Stats Row -->
+                <HBox spacing="16.0">
+                    <VBox.margin><Insets bottom="20.0"/></VBox.margin>
+                    <children>
+                        <HBox spacing="8.0" alignment="CENTER_LEFT"
+                              style="-fx-background-color: #e3f2fd; -fx-background-radius: 10; -fx-padding: 10 18;">
+                            <children>
+                                <Label text="📂" style="-fx-font-size: 18px;"/>
+                                <VBox spacing="1.0">
+                                    <children>
+                                        <Label fx:id="totalProjectsLabel" text="0"
+                                               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1976d2;"/>
+                                        <Label text="Projets au total"
+                                               style="-fx-font-size: 11px; -fx-text-fill: #1976d2;"/>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+
+                    </children>
+                </HBox>
+                <!-- Project Cards Container (scrollable) -->
+                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                            style="-fx-background: #f5f7fa; -fx-background-color: #f5f7fa; -fx-border-color: transparent;">
+                    <content>
+                        <FlowPane fx:id="projectsContainer" hgap="20.0" vgap="20.0"
+                                  style="-fx-background-color: #f5f7fa; -fx-padding: 5;">
+                            <!-- Project cards injected dynamically -->
+                        </FlowPane>
+                    </content>
+                </ScrollPane>
+
+            </children>
+        </VBox>
+    </center>
+
+</BorderPane>
