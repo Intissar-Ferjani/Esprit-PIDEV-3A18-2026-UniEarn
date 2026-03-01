@@ -5,47 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/PROJECT_INSTRUCTIONS.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/SPRINT_BACKLOG.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/add_dislike_reaction_type.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/add_gif_and_category.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/forum_allow_null_freelancer.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/forum_default_freelancer.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/app/forumApp.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/Freelancercomment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/forum/FreelancerForumController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/forum/MessagesController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/forum/NotificationsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/forum/ChatMessage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/forum/Comment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/forum/NotificationMsg.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/forum/Post.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/server/forum/ChatController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/server/forum/ModerationRestController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/server/forum/NotificationController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/server/forum/ServerApp.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/server/forum/WebSocketConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/CategoryService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/CommentService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/DefaultFreelancerEnsurer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/GiphyService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/ModerationService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/NotificationStore.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/PostService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/ReactionService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/WebSocketService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/forum/profile.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/Forum.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/Messages.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/Notifications.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/test.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/Freelancer.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/Freelancer.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-profile.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/projet_taches/Tache.fxml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,7 +87,7 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "Merging final-v1",
+    "git-widget-placeholder": "final-v1",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/MSI/Desktop/uniearn_java",
     "node.js.detected.package.eslint": "true",
