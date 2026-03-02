@@ -74,6 +74,7 @@ public class TaskService {
             pst.setInt(1, id);
             int rows = pst.executeUpdate();
             System.out.println(rows + " row(s) deleted.");
+            return rows > 0;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }

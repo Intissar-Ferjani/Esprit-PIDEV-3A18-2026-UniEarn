@@ -358,7 +358,24 @@ public class TaskBoardController {
         statusPill.setStyle(
                 "-fx-background-color: #f0f3f7; -fx-text-fill: #657786; -fx-padding: 3px 8px; -fx-background-radius: 10px; -fx-font-size: 10px;");
 
-        topRow.getChildren().addAll(priorityLabel, spacer, statusPill);
+        // Delete Button
+        Button deleteBtn = new Button("🗑");
+        deleteBtn.setStyle(
+                "-fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-font-size: 18px; -fx-cursor: hand; -fx-padding: 0 0 0 15; -fx-font-weight: bold;");
+        deleteBtn.setTooltip(new Tooltip("Supprimer la tâche"));
+
+        // Hover Effect
+        deleteBtn.setOnMouseEntered(e -> deleteBtn.setStyle(
+                "-fx-background-color: transparent; -fx-text-fill: #c0392b; -fx-font-size: 20px; -fx-cursor: hand; -fx-padding: 0 0 0 15; -fx-font-weight: bold;"));
+        deleteBtn.setOnMouseExited(e -> deleteBtn.setStyle(
+                "-fx-background-color: transparent; -fx-text-fill: #e74c3c; -fx-font-size: 18px; -fx-cursor: hand; -fx-padding: 0 0 0 15; -fx-font-weight: bold;"));
+
+        deleteBtn.setOnAction(e -> {
+            e.consume(); // Prevent card click
+            handleDeleteTask(task);
+        });
+
+        topRow.getChildren().addAll(priorityLabel, spacer, statusPill, deleteBtn);
 
         // Title
         Label titleLabel = new Label(task.getTitle());
@@ -406,6 +423,23 @@ public class TaskBoardController {
         });
 
         return card;
+    }
+
+    private void handleDeleteTask(Task task) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmer la suppression");
+        alert.setHeaderText("Supprimer la tâche : " + task.getTitle());
+        alert.setContentText("Êtes-vous sûr de vouloir supprimer cette tâche ? Cette action est irréversible.");
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                if (taskService.deleteTask(task.getIdtask())) {
+                    loadData(); // Refresh board
+                } else {
+                    showErrorAlert("Erreur", "Impossible de supprimer la tâche de la base de données.");
+                }
+            }
+        });
     }
 
     @FXML
