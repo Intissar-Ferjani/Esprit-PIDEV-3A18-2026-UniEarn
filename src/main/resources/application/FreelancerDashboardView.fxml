@@ -455,15 +455,17 @@
                                         <ColumnConstraints percentWidth="50.0"/>
                                     </columnConstraints>
                                     <VBox spacing="7.0" GridPane.columnIndex="0">
-                                        <Label text="ID du Client" style="-fx-text-fill: #64748b; -fx-font-weight: bold; -fx-font-size: 12px;"/>
-                                        <TextField fx:id="txtEvalTarget"
-                                                   style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 10; -fx-border-color: #e2e8f0; -fx-background-color: #f8fafc; -fx-font-size: 13px;"/>
+                                        <Label text="Client à Évaluer" style="-fx-text-fill: #64748b; -fx-font-weight: bold; -fx-font-size: 12px;"/>
+                                        <ComboBox fx:id="cmbEvalTarget" promptText="Sélectionner un client"
+                                                  style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 5; -fx-border-color: #e2e8f0; -fx-background-color: #f8fafc; -fx-font-size: 13px;"
+                                                  maxWidth="Infinity"/>
                                     </VBox>
                                     <VBox spacing="7.0" GridPane.columnIndex="1">
                                         <CheckBox fx:id="chkEvalIsProject" text="Lier à un projet ?"
                                                   style="-fx-text-fill: #64748b; -fx-font-size: 12px; -fx-font-weight: bold;"/>
-                                        <TextField fx:id="txtEvalProjId" promptText="ID du projet (si lié)"
-                                                   style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 10; -fx-border-color: #e2e8f0; -fx-background-color: #f8fafc; -fx-font-size: 13px;"/>
+                                        <ComboBox fx:id="cmbEvalProject" promptText="Projet (si lié)"
+                                                  style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 5; -fx-border-color: #e2e8f0; -fx-background-color: #f8fafc; -fx-font-size: 13px;"
+                                                  maxWidth="Infinity"/>
                                     </VBox>
                                 </GridPane>
                                 <VBox spacing="10.0">
@@ -503,7 +505,6 @@
                                   -fx-background-radius: 20; -fx-font-weight: bold;
                                   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);"/>
                 </VBox>
-
+            </children>
         </StackPane>
-    </children>
 </VBox>

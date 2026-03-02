@@ -19,6 +19,7 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import uniearn.model.entities.candidature.application.Application;
 import uniearn.model.entities.candidature.evaluation.Evaluation;
+import uniearn.model.entities.projet.Project;
 import uniearn.model.enums.ApplicationStatus;
 import uniearn.model.enums.EvaluationType;
 import uniearn.services.candidature.ApplicationService;
@@ -61,12 +62,33 @@ public class FreelancerDashboardController {
     @FXML
     private VBox viewEvalsRoot;
     @FXML
-    private FlowPane sidebarListContainer; // For Applications in new FXML
+    private FlowPane sidebarListContainer;
     @FXML
-    private FlowPane evalsContainer; // For Evaluations in new FXML
+    private FlowPane evalsContainer;
 
     @FXML
     private ScrollPane viewStats;
+
+    // --- Stats Header Labels (Applications) ---
+    @FXML
+    private Label lblTotalApps;
+    @FXML
+    private Label lblAcceptedApps;
+    @FXML
+    private Label lblPendingApps;
+    @FXML
+    private Label lblRejectedApps;
+
+    // --- Stats Header Labels (Evaluations) ---
+    @FXML
+    private Label lblTotalReviews;
+    @FXML
+    private Label lblAvgRating;
+    @FXML
+    private Label lblFiveStarCount;
+
+    @FXML
+    private ProgressBar pbStatSuccess;
 
     @FXML
     private VBox viewAppDetails;
@@ -101,6 +123,12 @@ public class FreelancerDashboardController {
     @FXML
     private Label lblAppBudgetUSD;
 
+    // --- Search & Filter (Evaluations) ---
+    @FXML
+    private TextField txtSearchEval;
+    @FXML
+    private ComboBox<String> cmbRatingFilter;
+
     // Data
     private ObservableList<Application> applicationsList = FXCollections.observableArrayList();
     private ObservableList<Evaluation> evaluationsList = FXCollections.observableArrayList();
@@ -132,13 +160,53 @@ public class FreelancerDashboardController {
         loadData();
         showView(viewAppsRoot);
 
-        // Fix FXML expression issue: Bind disable property in Java
-        txtEvalProjId.disableProperty().bind(chkEvalIsProject.selectedProperty().not());
+        // Evaluation Form Logic
+        if (cmbEvalTarget != null) {
+            cmbEvalTarget.getSelectionModel().selectedItemProperty().addListener((obs, old, val) -> {
+                if (val != null) {
+                    loadProjectsForSelectedClient(val);
+                }
+            });
+        }
 
-        // Add rating slider listener to update label
-        sliderEvalRating.valueProperty().addListener((obs, old, val) -> {
-            lblEvalRatingValue.setText(val.intValue() + " Stars");
-        });
+        if (cmbEvalProject != null && chkEvalIsProject != null) {
+            cmbEvalProject.disableProperty().bind(chkEvalIsProject.selectedProperty().not());
+        }
+
+        if (sliderEvalRating != null && lblEvalRatingValue != null) {
+            sliderEvalRating.valueProperty().addListener((obs, old, val) -> {
+                lblEvalRatingValue.setText(val.intValue() + " ★");
+            });
+        }
+    }
+
+    private void loadProjectsForSelectedClient(String clientSelection) {
+        if (clientSelection == null || clientSelection.isEmpty())
+            return;
+        try {
+            int clientId = Integer.parseInt(clientSelection.split(" - ")[0]);
+            List<Project> projects = applicationService.getApplicationsByFreelancer(currentFreelancerId).stream()
+                    .filter(a -> a.getStatus() == ApplicationStatus.ACCEPTED)
+                    .map(a -> {
+                        try {
+                            return new uniearn.services.projet.ProjectService().getProjectById(a.getProjectId());
+                        } catch (Exception e) {
+                            return null;
+                        }
+                    })
+                    .filter(p -> p != null && p.getClient_id() == clientId)
+                    .collect(Collectors.toList());
+
+            ObservableList<String> items = FXCollections.observableArrayList();
+            for (Project p : projects) {
+                items.add(p.getIdproject() + " - " + p.getTitle());
+            }
+            cmbEvalProject.setItems(items);
+            if (!items.isEmpty())
+                cmbEvalProject.getSelectionModel().selectFirst();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -250,8 +318,15 @@ public class FreelancerDashboardController {
     }
 
     private void setupFilters() {
-        txtSearch.textProperty().addListener((obs, old, newVal) -> applyFilters());
-        cmbFilter.setOnAction(e -> applyFilters());
+        if (txtSearch != null)
+            txtSearch.textProperty().addListener((obs, old, newVal) -> applyFilters());
+        if (cmbFilter != null)
+            cmbFilter.setOnAction(e -> applyFilters());
+
+        if (txtSearchEval != null)
+            txtSearchEval.textProperty().addListener((obs, old, newVal) -> applyFilters());
+        if (cmbRatingFilter != null)
+            cmbRatingFilter.setOnAction(e -> applyFilters());
     }
 
     private void loadData() {
@@ -269,9 +344,36 @@ public class FreelancerDashboardController {
                 evaluationsList.setAll(evals);
                 renderSidebarList();
             }
+            updateStatsHeaders();
         } catch (Exception e) {
             e.printStackTrace();
             showToast("Error loading data", true);
+        }
+    }
+
+    private void updateStatsHeaders() {
+        if (currentMode.equals("APPLICATIONS")) {
+            if (lblTotalApps != null)
+                lblTotalApps.setText(String.valueOf(applicationsList.size()));
+            if (lblAcceptedApps != null)
+                lblAcceptedApps.setText(String.valueOf(
+                        applicationsList.stream().filter(a -> a.getStatus() == ApplicationStatus.ACCEPTED).count()));
+            if (lblPendingApps != null)
+                lblPendingApps.setText(String.valueOf(
+                        applicationsList.stream().filter(a -> a.getStatus() == ApplicationStatus.PENDING).count()));
+            if (lblRejectedApps != null)
+                lblRejectedApps.setText(String.valueOf(
+                        applicationsList.stream().filter(a -> a.getStatus() == ApplicationStatus.REJECTED).count()));
+        } else {
+            if (lblTotalReviews != null)
+                lblTotalReviews.setText(String.valueOf(evaluationsList.size()));
+            if (lblAvgRating != null) {
+                double avg = evaluationsList.stream().mapToInt(Evaluation::getRating).average().orElse(0.0);
+                lblAvgRating.setText(String.format("%.1f", avg));
+            }
+            if (lblFiveStarCount != null)
+                lblFiveStarCount
+                        .setText(String.valueOf(evaluationsList.stream().filter(e -> e.getRating() == 5).count()));
         }
     }
 
@@ -408,9 +510,9 @@ public class FreelancerDashboardController {
 
     // --- FXML Fields: Eval Form ---
     @FXML
-    private TextField txtEvalTarget;
+    private ComboBox<String> cmbEvalTarget;
     @FXML
-    private TextField txtEvalProjId;
+    private ComboBox<String> cmbEvalProject;
     @FXML
     private Slider sliderEvalRating;
     @FXML
@@ -531,13 +633,25 @@ public class FreelancerDashboardController {
             currentEvaluation = null;
             clearEvalForm();
 
-            // Fetch the client ID linked to this project
+            // Fetch the client details linked to this project
             int clientId = applicationService.getClientIdByProject(currentApplication.getProjectId());
-            txtEvalTarget.setText(String.valueOf(clientId));
-            txtEvalProjId.setText(String.valueOf(currentApplication.getProjectId()));
+            uniearn.services.users.client.ClientService cs = new uniearn.services.users.client.ClientService();
+            uniearn.model.entities.users.client.Client c = cs.getClientById(clientId);
+            String clientName = (c != null) ? c.getName() : "Unknown";
+
+            String clientSelection = clientId + " - " + clientName;
+            cmbEvalTarget.getSelectionModel().select(clientSelection);
+
+            // Project selection will happen via the listener, but we can force it
+            Project p = new uniearn.services.projet.ProjectService().getProjectById(currentApplication.getProjectId());
+            if (p != null) {
+                cmbEvalProject.getSelectionModel().select(p.getIdproject() + " - " + p.getTitle());
+            }
+
             chkEvalIsProject.setSelected(true);
 
             showView(viewEvalForm);
+            showToast("Évaluation pour le Projet #" + currentApplication.getProjectId(), false);
         }
     }
 
@@ -550,14 +664,33 @@ public class FreelancerDashboardController {
             txtAppCoverLetter.setText(currentApplication.getCoverLetter());
             showView(viewAppForm);
         } else if (currentMode.equals("EVALUATIONS") && currentEvaluation != null) {
-            txtEvalTarget.setText(String.valueOf(currentEvaluation.getEvaluatedId()));
-            txtEvalProjId.setText(
-                    currentEvaluation.getProjectId() != null ? String.valueOf(currentEvaluation.getProjectId()) : "");
-            chkEvalIsProject.setSelected(currentEvaluation.getProjectId() != null);
+            clearEvalForm();
+
+            String clientSelection = currentEvaluation.getEvaluatedId() + " - "
+                    + getClientNameById(currentEvaluation.getEvaluatedId());
+            cmbEvalTarget.getSelectionModel().select(clientSelection);
+
+            if (currentEvaluation.getProjectId() != null) {
+                chkEvalIsProject.setSelected(true);
+                Project p = new uniearn.services.projet.ProjectService()
+                        .getProjectById(currentEvaluation.getProjectId());
+                if (p != null) {
+                    cmbEvalProject.getSelectionModel().select(p.getIdproject() + " - " + p.getTitle());
+                }
+            } else {
+                chkEvalIsProject.setSelected(false);
+            }
+
             sliderEvalRating.setValue(currentEvaluation.getRating());
             txtEvalComment.setText(currentEvaluation.getComment());
             showView(viewEvalForm);
         }
+    }
+
+    private String getClientNameById(int id) {
+        uniearn.model.entities.users.client.Client c = new uniearn.services.users.client.ClientService()
+                .getClientById(id);
+        return (c != null) ? c.getName() : "Unknown";
     }
 
     @FXML
@@ -673,11 +806,15 @@ public class FreelancerDashboardController {
             Evaluation eval = isNew ? new Evaluation() : currentEvaluation;
 
             eval.setEvaluatorId(currentUserId);
-            eval.setEvaluatedId(Integer.parseInt(txtEvalTarget.getText()));
+
+            String clientSelection = cmbEvalTarget.getValue();
+            if (clientSelection != null) {
+                eval.setEvaluatedId(Integer.parseInt(clientSelection.split(" - ")[0]));
+            }
 
             Integer projId = null;
-            if (chkEvalIsProject.isSelected() && !txtEvalProjId.getText().isEmpty()) {
-                projId = Integer.parseInt(txtEvalProjId.getText());
+            if (chkEvalIsProject.isSelected() && cmbEvalProject.getValue() != null) {
+                projId = Integer.parseInt(cmbEvalProject.getValue().split(" - ")[0]);
             }
             eval.setProjectId(projId);
             eval.setRating((int) sliderEvalRating.getValue());
@@ -734,12 +871,16 @@ public class FreelancerDashboardController {
         boolean valid = true;
 
         try {
-            int tid = Integer.parseInt(txtEvalTarget.getText());
-            setValidationStyle(txtEvalTarget, tid > 0);
-            if (tid <= 0)
+            String clientSelection = cmbEvalTarget.getValue();
+            boolean isAllowed = clientSelection != null;
+            setValidationStyle(cmbEvalTarget, isAllowed);
+
+            if (!isAllowed) {
+                showToast("Veuillez sélectionner un client.", true);
                 valid = false;
+            }
         } catch (Exception e) {
-            setValidationStyle(txtEvalTarget, false);
+            setValidationStyle(cmbEvalTarget, false);
             valid = false;
         }
 
@@ -774,20 +915,41 @@ public class FreelancerDashboardController {
     }
 
     private void clearEvalForm() {
-        txtEvalTarget.clear();
-        txtEvalProjId.clear();
+        if (cmbEvalTarget != null) {
+            loadEvaluatableClients();
+            cmbEvalTarget.getSelectionModel().clearSelection();
+        }
+        if (cmbEvalProject != null)
+            cmbEvalProject.getSelectionModel().clearSelection();
         txtEvalComment.clear();
         sliderEvalRating.setValue(5);
         chkEvalIsProject.setSelected(false);
-        setValidationStyle(txtEvalTarget, true);
+        setValidationStyle(cmbEvalTarget, true);
         setValidationStyle(txtEvalComment, true);
     }
 
-    private void applyFilters() {
-        String term = txtSearch.getText().toLowerCase();
-        String filter = cmbFilter.getValue();
+    private void loadEvaluatableClients() {
+        try {
+            List<Integer> clientIds = evaluationService.getEvaluatableClients(currentFreelancerId);
+            ObservableList<String> items = FXCollections.observableArrayList();
+            uniearn.services.users.client.ClientService cs = new uniearn.services.users.client.ClientService();
 
+            for (int id : clientIds) {
+                uniearn.model.entities.users.client.Client c = cs.getClientById(id);
+                String name = (c != null) ? c.getName() : "Unknown";
+                items.add(id + " - " + name);
+            }
+            cmbEvalTarget.setItems(items);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void applyFilters() {
         if (currentMode.equals("APPLICATIONS")) {
+            String term = txtSearch.getText().toLowerCase();
+            String filter = cmbFilter.getValue();
+
             List<Application> filtered = applicationsList.stream()
                     .filter(a -> filter == null || filter.equals("ALL") || a.getStatus().name().equals(filter))
                     .filter(a -> term.isEmpty() || String.valueOf(a.getProjectId()).contains(term)
@@ -798,9 +960,13 @@ public class FreelancerDashboardController {
             for (Application a : filtered)
                 sidebarListContainer.getChildren().add(createAppCard(a));
         } else if (currentMode.equals("EVALUATIONS")) {
+            String term = (txtSearchEval != null) ? txtSearchEval.getText().toLowerCase() : "";
+            String filter = (cmbRatingFilter != null) ? cmbRatingFilter.getValue() : "ALL";
+
             List<Evaluation> filtered = evaluationsList.stream()
-                    .filter(e -> filter == null || filter.equals("ALL") || (e.getRating() + " Stars").equals(filter))
-                    .filter(e -> term.isEmpty() || String.valueOf(e.getEvaluatedId()).contains(term)
+                    .filter(e -> filter == null || filter.equals("ALL") || (e.getRating() + " Stars").equals(filter)
+                            || (e.getRating() + " Étoiles").equals(filter))
+                    .filter(e -> term.isEmpty() || String.valueOf(e.getEvaluatorId()).contains(term)
                             || e.getComment().toLowerCase().contains(term))
                     .collect(Collectors.toList());
 
@@ -868,6 +1034,8 @@ public class FreelancerDashboardController {
 
         double rate = applicationsList.isEmpty() ? 0 : (double) accepted / applicationsList.size() * 100;
         lblAcceptanceRate.setText(String.format("%.1f%%", rate));
+        if (pbStatSuccess != null)
+            pbStatSuccess.setProgress(rate / 100.0);
 
         // Rating Distribution BarChart
         javafx.scene.chart.XYChart.Series<String, Integer> series = new javafx.scene.chart.XYChart.Series<>();

@@ -252,6 +252,15 @@ public class EvaluationService implements IEvaluation {
             evaluation.setProjectId(null);
         }
 
+        // WORK RELATIONSHIP VALIDATION
+        if (evaluation.getType() == EvaluationType.FREELANCER_TO_CLIENT) {
+            List<Integer> validClients = getEvaluatableClients(evaluation.getEvaluatorId());
+            if (!validClients.contains(evaluation.getEvaluatedId())) {
+                throw new SQLException(
+                        "Vous ne pouvez évaluer que les clients avec qui vous avez travaillé (candidature acceptée).");
+            }
+        }
+
         Integer pId = evaluation.getProjectId();
         if (evaluationExists(evaluation.getEvaluatorId(), evaluation.getEvaluatedId(), pId != null ? pId : 0)) {
             throw new SQLException("Une évaluation existe déjà pour ce projet et ce freelancer.");
@@ -324,6 +333,30 @@ public class EvaluationService implements IEvaluation {
             e.printStackTrace();
             return new UserRatingStats(0.0, 0, Map.of());
         }
+    }
+
+    /**
+     * Advanced Logic: Gets a list of unique Client IDs that this freelancer is
+     * eligible to evaluate.
+     * An eligible client is one who owns a project where the freelancer has an
+     * ACCEPTED application.
+     */
+    public List<Integer> getEvaluatableClients(int freelancerId) throws SQLException {
+        List<Integer> clientIds = new ArrayList<>();
+        String query = """
+                SELECT DISTINCT p.ClientID
+                FROM project p
+                JOIN application a ON p.idproject = a.project_id
+                WHERE a.freelancer_id = ? AND a.status = 'ACCEPTED'
+                """;
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, freelancerId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                clientIds.add(rs.getInt("ClientID"));
+            }
+        }
+        return clientIds;
     }
 
     // ------------------ Helper ------------------
