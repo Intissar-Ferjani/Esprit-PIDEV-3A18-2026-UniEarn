@@ -8,10 +8,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -20,12 +23,44 @@ import com.sun.net.httpserver.HttpServer;
 
 public class GoogleOAuthService {
 
-    private static final String CLIENT_ID = null;
-    private static final String CLIENT_SECRET = null;
-    // ─────────────────────────────────────────────────────────────────────
-    private static final int    CALLBACK_PORT  = 8585;
-    private static final String REDIRECT_URI   = "http://localhost:" + CALLBACK_PORT + "/oauth/callback";
-    private static final String SCOPE          = "openid email profile";
+    private static final String CLIENT_ID;
+    private static final String CLIENT_SECRET;
+
+    static {
+        Map<String, String> env = loadEnvFile();
+        CLIENT_ID     = env.getOrDefault("GOOGLE_CLIENT_ID",     System.getenv("GOOGLE_CLIENT_ID"));
+        CLIENT_SECRET = env.getOrDefault("GOOGLE_CLIENT_SECRET", System.getenv("GOOGLE_CLIENT_SECRET"));
+    }
+
+    private static Map<String, String> loadEnvFile() {
+        Map<String, String> map = new HashMap<>();
+        java.io.File envFile = new java.io.File(".env");
+        if (!envFile.exists()) envFile = new java.io.File("../.env");
+        if (envFile.exists()) {
+            try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(envFile))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    line = line.trim();
+                    if (line.isEmpty() || line.startsWith("#")) continue;
+                    int eq = line.indexOf('=');
+                    if (eq > 0) {
+                        String key   = line.substring(0, eq).trim();
+                        String value = line.substring(eq + 1).trim().replaceAll("^\"|\"$", "");
+                        map.put(key, value);
+                    }
+                }
+                System.out.println("✓ .env file loaded successfully.");
+            } catch (Exception e) {
+                System.err.println("⚠ Could not read .env file: " + e.getMessage());
+            }
+        } else {
+            System.err.println("⚠ .env file not found.");
+        }
+        return map;
+    }
+
+    private static final String SCOPE = "openid email profile";
+    private static volatile HttpServer runningServer = null;
 
     // ── Public data class ─────────────────────────────────────────────────
 
@@ -47,19 +82,64 @@ public class GoogleOAuthService {
         }
     }
 
+    // ── Find a free port ──────────────────────────────────────────────────
+
+    private static int findFreePort() {
+        int[] preferred = {8585, 8586, 8587, 8588, 8080, 9000};
+        for (int port : preferred) {
+            try (ServerSocket s = new ServerSocket(port)) {
+                s.setReuseAddress(true);
+                return port;
+            } catch (IOException ignored) {}
+        }
+        // Let OS assign any free port
+        try (ServerSocket s = new ServerSocket(0)) {
+            return s.getLocalPort();
+        } catch (IOException e) {
+            return -1;
+        }
+    }
+
     // ── Main entry point ──────────────────────────────────────────────────
 
-    //Opens the browser for Google login + return result
     public static void startOAuthFlow(Consumer<GoogleUser> onSuccess, Consumer<String> onError) {
+
+        if (CLIENT_ID == null || CLIENT_SECRET == null) {
+            onError.accept("Google OAuth credentials not configured. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in your .env file.");
+            return;
+        }
+
         new Thread(() -> {
             try {
-                // Step 1 — start local callback server before opening browser
-                CountDownLatch latch    = new CountDownLatch(1);
-                String[]       codeHolder = new String[1];
+                // ── Stop any previous server ───────────────────────────────
+                synchronized (GoogleOAuthService.class) {
+                    if (runningServer != null) {
+                        try { runningServer.stop(0); } catch (Exception ignored) {}
+                        runningServer = null;
+                        Thread.sleep(400);
+                    }
+                }
+
+                // ── Find a free port dynamically ───────────────────────────
+                int port = findFreePort();
+                if (port == -1) {
+                    onError.accept("No free port available for OAuth callback. Please restart the application.");
+                    return;
+                }
+
+                String redirectUri = "http://localhost:" + port + "/oauth/callback";
+                System.out.println("✓ Using port " + port + " for OAuth callback.");
+
+                CountDownLatch latch       = new CountDownLatch(1);
+                String[]       codeHolder  = new String[1];
                 String[]       errorHolder = new String[1];
 
                 HttpServer callbackServer = HttpServer.create(
-                        new InetSocketAddress("localhost", CALLBACK_PORT), 0);
+                        new InetSocketAddress("localhost", port), 0);
+
+                synchronized (GoogleOAuthService.class) {
+                    runningServer = callbackServer;
+                }
 
                 callbackServer.createContext("/oauth/callback", exchange -> {
                     try {
@@ -80,7 +160,6 @@ public class GoogleOAuthService {
                         codeHolder[0]  = code;
                         errorHolder[0] = err;
 
-                        //closing page
                         String html = code != null
                                 ? closingPage("✅ Connexion réussie",
                                 "Vous pouvez retourner dans l'application UniEarn.", "#16a34a")
@@ -101,40 +180,38 @@ public class GoogleOAuthService {
 
                 callbackServer.setExecutor(null);
                 callbackServer.start();
-                System.out.println("✓ OAuth callback server started on port " + CALLBACK_PORT);
+                System.out.println("✓ OAuth callback server started on port " + port);
 
-                // Step 2 — open browser to Google consent screen
-                String authUrl = buildAuthUrl();
+                String authUrl = buildAuthUrl(redirectUri);
                 System.out.println("Opening browser: " + authUrl);
                 Desktop.getDesktop().browse(new URI(authUrl));
 
-                // Step 3 — wait up to 3 minutes for the user to log in
                 boolean received = latch.await(3, TimeUnit.MINUTES);
-                callbackServer.stop(0);
+
+                synchronized (GoogleOAuthService.class) {
+                    callbackServer.stop(0);
+                    runningServer = null;
+                }
 
                 if (!received) {
                     onError.accept("Timeout: Google login took too long. Please try again.");
                     return;
                 }
-
                 if (errorHolder[0] != null) {
                     onError.accept("Google login cancelled: " + errorHolder[0]);
                     return;
                 }
-
                 if (codeHolder[0] == null) {
                     onError.accept("No authorization code received from Google.");
                     return;
                 }
 
-                // Step 4 — exchange code for access token
-                String accessToken = exchangeCodeForToken(codeHolder[0]);
+                String accessToken = exchangeCodeForToken(codeHolder[0], redirectUri);
                 if (accessToken == null) {
                     onError.accept("Failed to obtain access token from Google.");
                     return;
                 }
 
-                // Step 5 — fetch user profile
                 GoogleUser googleUser = fetchUserInfo(accessToken);
                 if (googleUser == null) {
                     onError.accept("Failed to fetch user profile from Google.");
@@ -147,33 +224,39 @@ public class GoogleOAuthService {
             } catch (Exception e) {
                 System.err.println("OAuth error: " + e.getMessage());
                 onError.accept("OAuth error: " + e.getMessage());
+                synchronized (GoogleOAuthService.class) {
+                    if (runningServer != null) {
+                        try { runningServer.stop(0); } catch (Exception ignored) {}
+                        runningServer = null;
+                    }
+                }
             }
         }, "google-oauth-thread").start();
     }
 
     // ── OAuth steps ───────────────────────────────────────────────────────
 
-    private static String buildAuthUrl() throws Exception {
+    private static String buildAuthUrl(String redirectUri) throws Exception {
         return "https://accounts.google.com/o/oauth2/v2/auth"
-                + "?client_id="     + URLEncoder.encode(CLIENT_ID,    StandardCharsets.UTF_8)
-                + "&redirect_uri="  + URLEncoder.encode(REDIRECT_URI, StandardCharsets.UTF_8)
+                + "?client_id="    + URLEncoder.encode(CLIENT_ID,   StandardCharsets.UTF_8)
+                + "&redirect_uri=" + URLEncoder.encode(redirectUri, StandardCharsets.UTF_8)
                 + "&response_type=code"
-                + "&scope="         + URLEncoder.encode(SCOPE,        StandardCharsets.UTF_8)
+                + "&scope="        + URLEncoder.encode(SCOPE,       StandardCharsets.UTF_8)
                 + "&access_type=offline"
                 + "&prompt=select_account";
     }
 
-    private static String exchangeCodeForToken(String code) throws IOException {
+    private static String exchangeCodeForToken(String code, String redirectUri) throws IOException {
         URL url = new URL("https://oauth2.googleapis.com/token");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("POST");
         conn.setDoOutput(true);
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
-        String body = "code="          + URLEncoder.encode(code,          StandardCharsets.UTF_8)
-                + "&client_id="    + URLEncoder.encode(CLIENT_ID,     StandardCharsets.UTF_8)
-                + "&client_secret="+ URLEncoder.encode(CLIENT_SECRET, StandardCharsets.UTF_8)
-                + "&redirect_uri=" + URLEncoder.encode(REDIRECT_URI,  StandardCharsets.UTF_8)
+        String body = "code="           + URLEncoder.encode(code,          StandardCharsets.UTF_8)
+                + "&client_id="     + URLEncoder.encode(CLIENT_ID,     StandardCharsets.UTF_8)
+                + "&client_secret=" + URLEncoder.encode(CLIENT_SECRET, StandardCharsets.UTF_8)
+                + "&redirect_uri="  + URLEncoder.encode(redirectUri,   StandardCharsets.UTF_8)
                 + "&grant_type=authorization_code";
 
         try (OutputStream os = conn.getOutputStream()) {
