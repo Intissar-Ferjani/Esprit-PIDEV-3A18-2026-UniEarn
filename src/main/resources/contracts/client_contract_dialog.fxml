@@ -63,12 +63,6 @@
                     <DatePicker fx:id="dpEndDate" prefWidth="300"/>
                 </HBox>
 
-                <!-- Paiement (optionnel) -->
-                <HBox spacing="10">
-                    <Label text="Paiement (optionnel):" prefWidth="120" style="-fx-font-weight: bold;"/>
-                    <ComboBox fx:id="cbPayment" prefWidth="300" promptText="Sélectionnez un paiement..."/>
-                </HBox>
-
                 <!-- Aperçu du template -->
                 <Separator/>
                 <Label text="Aperçu du Template:" style="-fx-font-weight: bold;"/>

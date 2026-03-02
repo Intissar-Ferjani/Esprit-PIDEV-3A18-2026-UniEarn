@@ -893,6 +893,62 @@ public class FreelancerProfileController {
         }
     }
 
+
+    @FXML
+    private void handlePayments() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-payments.fxml"));
+            Parent embeddedView = loader.load();
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+            contentArea.getChildren().add(embeddedView);
+            embeddedView.setVisible(true);
+            embeddedView.setManaged(true);
+
+            System.out.println("✅ Payments/Revenues section loaded for freelancer");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load payments page: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handlePaymentMethods() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-payment-methods.fxml"));
+            Parent embeddedView = loader.load();
+
+            FreelancerPaymentMethodsController controller = loader.getController();
+            if (currentFreelancer != null && currentFreelancer.getIdUser() > 0) {
+                controller.setUserID(currentFreelancer.getIdUser());
+            }
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+            contentArea.getChildren().add(embeddedView);
+            embeddedView.setVisible(true);
+            embeddedView.setManaged(true);
+
+            System.out.println("✅ Payment methods section loaded for freelancer");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load payment methods page: " + e.getMessage());
+        }
+    }
+
     private void showSuccessAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);

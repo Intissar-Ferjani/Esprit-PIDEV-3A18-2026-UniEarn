@@ -8,12 +8,15 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import uniearn.controller.profile.client.ClientProfileController;
 import uniearn.controller.profile.freelancer.FreelancerProfileController;
+import uniearn.controller.profile.admin.AdminDashboardController;
 import uniearn.model.entities.users.User;
 import uniearn.model.entities.users.client.Client;
 import uniearn.model.entities.users.freelancer.Freelancer;
+import uniearn.model.entities.users.admin.Admin;
 import uniearn.services.users.UserService;
 import uniearn.services.users.client.ClientService;
 import uniearn.services.users.freelancer.FreelancerService;
+import uniearn.services.users.admin.AdminService;
 import uniearn.database.SessionManager;
 import uniearn.utils.user.PasswordUtil;
 
@@ -32,6 +35,7 @@ public class LoginController {
     private final UserService userService = new UserService();
     private final ClientService clientService = new ClientService();
     private final FreelancerService freelancerService = new FreelancerService();
+    private final AdminService adminService = new AdminService();
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
@@ -222,14 +226,30 @@ public class LoginController {
     }
 
     private void redirectToAdminDashboard(User user, Stage stage) throws IOException {
+        System.out.println("Attempting to load admin dashboard for user ID: " + user.getIdUser());
+
+        Admin admin = adminService.getAdminById(user.getIdUser());
+
+        if (admin == null) {
+            System.err.println("Admin data is null for user ID: " + user.getIdUser());
+            showErrorAlert("Error", "Unable to load admin data from database.");
+            loginButton.setDisable(false);
+            return;
+        }
+
+        System.out.println("✓ Admin data loaded: " + admin.getName());
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/admin/admin-dashboard.fxml"));
         Parent root = loader.load();
+
+        AdminDashboardController controller = loader.getController();
+        controller.setAdminData(admin);
 
         stage.setScene(new Scene(root, 1200, 700));
         stage.setTitle("Admin Dashboard - UniEarn");
         stage.centerOnScreen();
 
-        System.out.println("✓ Redirected to Admin Dashboard");
+        System.out.println("✓ Redirected to Admin Dashboard successfully");
     }
 
 

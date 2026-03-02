@@ -2,7 +2,8 @@ package uniearn.services;
 
 import uniearn.database.MyConnection;
 import uniearn.model.entities.projet.Project;
-import uniearn.model.entities.users.User;
+import uniearn.model.entities.users.freelancer.Freelancer;
+import uniearn.model.enums.UserRole;
 import uniearn.model.entities.Payment;
 import uniearn.model.entities.contracts.ContractType;
 import uniearn.services.projet.ProjectService;
@@ -30,17 +31,25 @@ public class DataLoaderService {
     /**
      * Charger tous les freelancers
      */
-    public List<User> getAllFreelancers() {
-        List<User> freelancers = new ArrayList<>();
-        String sql = "SELECT * FROM user WHERE role = 'FREELANCER' ORDER BY name";
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+    public List<Freelancer> getAllFreelancers() {
+        List<Freelancer> freelancers = new ArrayList<>();
+        String sql = "SELECT u.idUser, u.name, u.email, u.profilePicturePath, u.role, u.activated, " +
+                "f.idFreelancer FROM freelancer f " +
+                "JOIN user u ON f.idUser = u.idUser " +
+                "ORDER BY u.name";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                User user = new User();
-                user.setIdUser(rs.getInt("idUser"));
-                user.setName(rs.getString("name"));
-                user.setEmail(rs.getString("email"));
-                freelancers.add(user);
+                Freelancer freelancer = new Freelancer();
+                freelancer.setIdUser(rs.getInt("idUser"));
+                freelancer.setName(rs.getString("name"));
+                freelancer.setEmail(rs.getString("email"));
+                freelancer.setProfilePicturePath(rs.getString("profilePicturePath"));
+                freelancer.setRole(UserRole.valueOf(rs.getString("role")));
+                freelancer.setActivated(rs.getBoolean("activated"));
+                freelancer.setIdFreelancer(rs.getInt("idFreelancer"));
+                freelancers.add(freelancer);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -206,5 +215,24 @@ public class DataLoaderService {
             e.printStackTrace();
         }
         return contractTypes;
+    }
+
+    /**
+     * Récupère l'idFreelancer à partir de l'idUser
+     */
+    public Integer getFreelancerIdByUserId(int idUser) {
+        String sql = "SELECT idFreelancer FROM freelancer WHERE idUser = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, idUser);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("idFreelancer");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de la récupération du freelancer: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
     }
 }

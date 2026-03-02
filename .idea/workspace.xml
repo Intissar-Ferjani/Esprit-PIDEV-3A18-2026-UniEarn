@@ -5,25 +5,41 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/GUIDE_UTILISATION_CONTRATS.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/INTÉGRATION_CONTRATS_COMPLÈTEMENT.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fix_freelancer_fk.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminContractTemplatesController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientContractsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerContractsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-contracts.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/admin/admin-contract-templates.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/client/client-contracts.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EXEMPLES_TEST_MOYENS_PAIEMENT.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/INTEGRATION_MOYENS_PAIEMENT.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/INTEGRATION_PAIEMENTS_ESCROW.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/create_bank_account_table.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/create_payment_escrow_table.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/fix_payment_escrow_nullable.sql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminPaymentMethodsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminPaymentsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientPaymentMethodsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientPaymentsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerPaymentMethodsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerPaymentsController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/BankAccount.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/PaymentEscrow.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/BankAccountService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/payment/BankAccountService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/payment/EscrowPaymentService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-payment-methods.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-payments.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/admin/admin-payment-methods.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/admin/admin-payments.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/client/client-payment-methods.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/client/client-payments.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/admin/AdminContractController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/admin/AdminContractController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/LoginController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/client/ClientContractDialogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/client/ClientContractDialogController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/contrat/ContractSignatureController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/contrat/ContractSignatureController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminDashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientContractsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientContractsController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientProfileController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerProfileController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/DataLoaderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/DataLoaderService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/contracts/ContratService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/contracts/ContratService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/contracts/admin_contracts.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/contracts/admin_contracts.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/users/admin/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/users/admin/AdminService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/contracts/client_contract_dialog.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/contracts/client_contract_dialog.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-profile.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/admin/admin-dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/admin/admin-dashboard.fxml" afterDir="false" />
@@ -45,6 +61,7 @@
     <selectedModels>
       <entry key="chat-panel" value="Claude Haiku 4.5" />
       <entry key="agent-panel" value="Claude Haiku 4.5" />
+      <entry key="edit-panel" value="GPT-5.1-Codex" />
     </selectedModels>
   </component>
   <component name="FileTemplateManagerImpl">
@@ -88,38 +105,39 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.ClientContractApp.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MainApp.executor&quot;: &quot;Run&quot;,
-    &quot;Batch.build_and_run.executor&quot;: &quot;Run&quot;,
-    &quot;Batch.build_compile.executor&quot;: &quot;Run&quot;,
-    &quot;Batch.install_maven.executor&quot;: &quot;Run&quot;,
-    &quot;Batch.run_app_mvn.executor&quot;: &quot;Run&quot;,
-    &quot;Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.uniearn_java [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.uniearn_java [org.apache.maven.plugins:maven-install-plugin:3.1.2:install].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.uniearn_java [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;contrat__transaction__final&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/MSI/Desktop/uniearn_java&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.ClientContractApp.executor": "Run",
+    "Application.MainApp.executor": "Run",
+    "Batch.build_and_run.executor": "Run",
+    "Batch.build_compile.executor": "Run",
+    "Batch.install_maven.executor": "Run",
+    "Batch.run_app_mvn.executor": "Run",
+    "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
+    "Maven.uniearn_java [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor": "Run",
+    "Maven.uniearn_java [org.apache.maven.plugins:maven-clean-plugin:3.2.0:help].executor": "Run",
+    "Maven.uniearn_java [org.apache.maven.plugins:maven-install-plugin:3.1.2:install].executor": "Run",
+    "Maven.uniearn_java [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "contrat__transaction__final",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/MSI/Desktop/uniearn_java",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Siam Info\IdeaProjects\uniearn_java\src\main\resources\contracts\styles" />
@@ -151,7 +169,10 @@
       <workItem from="1772293907370" duration="572000" />
       <workItem from="1772294592326" duration="3948000" />
       <workItem from="1772330240775" duration="9282000" />
-      <workItem from="1772341400123" duration="1879000" />
+      <workItem from="1772341400123" duration="2058000" />
+      <workItem from="1772369052736" duration="7737000" />
+      <workItem from="1772377016102" duration="1249000" />
+      <workItem from="1772404315287" duration="12300000" />
     </task>
     <servers />
   </component>

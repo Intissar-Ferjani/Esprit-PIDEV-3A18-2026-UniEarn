@@ -38,4 +38,40 @@ public class AdminService {
 
         return -1;
     }
+
+    public Admin getAdminById(int userId) {
+        String sql = "SELECT u.*, a.idAdmin FROM user u " +
+                     "LEFT JOIN admin a ON u.idUser = a.idUser " +
+                     "WHERE u.idUser = ?";
+
+        try {
+            PreparedStatement ps = cn.prepareStatement(sql);
+            ps.setInt(1, userId);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Admin admin = new Admin();
+                admin.setIdUser(rs.getInt("idUser"));
+                admin.setName(rs.getString("name"));
+                admin.setEmail(rs.getString("email"));
+                admin.setPassword(rs.getString("password"));
+                admin.setRole(UserRole.valueOf(rs.getString("role")));
+                admin.setActivated(rs.getBoolean("activated"));
+
+                int idAdmin = rs.getInt("idAdmin");
+                if (idAdmin > 0) {
+                    admin.setIdAdmin(idAdmin);
+                }
+
+                return admin;
+            }
+
+        } catch (SQLException e) {
+            System.err.println("✗ Error loading admin by ID: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

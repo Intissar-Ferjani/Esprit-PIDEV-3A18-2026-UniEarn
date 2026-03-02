@@ -7,8 +7,8 @@ import javafx.stage.Stage;
 import uniearn.model.entities.contracts.Contrat;
 import uniearn.model.entities.contracts.ContractTemplate;
 import uniearn.model.entities.contracts.ContractType;
-import uniearn.model.entities.Payment;
 import uniearn.model.entities.projet.Project;
+import uniearn.model.entities.users.freelancer.Freelancer;
 import uniearn.services.contracts.ContractTemplateService;
 import uniearn.services.contracts.ContractTypeService;
 import uniearn.services.contracts.ContratService;
@@ -16,7 +16,9 @@ import uniearn.services.DataLoaderService;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -34,7 +36,6 @@ public class ClientContractDialogController {
     @FXML private TextField tfAmount;
     @FXML private DatePicker dpStartDate;
     @FXML private DatePicker dpEndDate;
-    @FXML private ComboBox<Payment> cbPayment;
     @FXML private TextArea taTemplatePreview;
     @FXML private Button btnCancel;
     @FXML private Button btnCreate;
@@ -47,6 +48,8 @@ public class ClientContractDialogController {
     private DataLoaderService dataLoaderService;
     private Consumer<Contrat> onContractCreated;
 
+    private final Map<Integer, Integer> freelancerUserToFreelancerId = new HashMap<>();
+
     @FXML
     public void initialize() {
         templateService = new ContractTemplateService();
@@ -57,7 +60,6 @@ public class ClientContractDialogController {
         loadTemplates();
         loadMetiers();
         loadFreelancers();
-        loadPayments();
         // Les projets seront chargés dans setClientID()
     }
 
@@ -160,39 +162,20 @@ public class ClientContractDialogController {
             DataLoaderService loader = new DataLoaderService();
             var freelancers = loader.getAllFreelancers();
 
-            // Afficher le nom du freelancer
             cbFreelancer.setCellFactory(param -> new ListCell<Integer>() {
-                private DataLoaderService loaderService = new DataLoaderService();
-
+                private final DataLoaderService loaderService = new DataLoaderService();
                 @Override
                 protected void updateItem(Integer item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                    } else {
-                        String name = loaderService.getFreelancerName(item);
-                        setText(name + " (ID: " + item + ")");
-                    }
+                    setText(empty || item == null ? null : loaderService.getFreelancerName(item) + " (ID: " + item + ")");
                 }
             });
+            cbFreelancer.setButtonCell(cbFreelancer.getCellFactory().call(null));
 
-            cbFreelancer.setButtonCell(new ListCell<Integer>() {
-                private DataLoaderService loaderService = new DataLoaderService();
-
-                @Override
-                protected void updateItem(Integer item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                    } else {
-                        String name = loaderService.getFreelancerName(item);
-                        setText(name + " (ID: " + item + ")");
-                    }
-                }
-            });
-
+            freelancerUserToFreelancerId.clear();
             var freelancerIds = new ArrayList<Integer>();
-            for (var f : freelancers) {
+            for (Freelancer f : freelancers) {
+                freelancerUserToFreelancerId.put(f.getIdUser(), f.getIdFreelancer());
                 freelancerIds.add(f.getIdUser());
             }
             cbFreelancer.setItems(FXCollections.observableArrayList(freelancerIds));
@@ -256,34 +239,6 @@ public class ClientContractDialogController {
         }
     }
 
-    private void loadPayments() {
-        try {
-            DataLoaderService loader = new DataLoaderService();
-            var payments = loader.getAvailablePayments();
-            cbPayment.setItems(FXCollections.observableArrayList(payments));
-
-            // Afficher le montant du paiement
-            cbPayment.setCellFactory(param -> new ListCell<Payment>() {
-                @Override
-                protected void updateItem(Payment item, boolean empty) {
-                    super.updateItem(item, empty);
-                    setText(empty || item == null ? null : String.format("Paiement #%d - %.2f DA", item.getIdPayment(), item.getAmount()));
-                }
-            });
-
-            cbPayment.setButtonCell(new ListCell<Payment>() {
-                @Override
-                protected void updateItem(Payment item, boolean empty) {
-                    super.updateItem(item, empty);
-                    setText(empty || item == null ? null : String.format("Paiement #%d - %.2f DA", item.getIdPayment(), item.getAmount()));
-                }
-            });
-        } catch (Exception e) {
-            System.err.println("Erreur chargement paiements: " + e.getMessage());
-            cbPayment.setItems(FXCollections.observableArrayList());
-        }
-    }
-
     private void updateTemplatePreview(ContractTemplate template) {
         String preview = template.getTemplateContent()
             .replace("[ClientName]", "Votre Nom")
@@ -344,20 +299,27 @@ public class ClientContractDialogController {
             contrat.setType(typeName);
             contrat.setTemplateID(cbTemplate.getValue().getIdTemplate());
             contrat.setClientID(clientID);
-            // Utiliser le freelancerID sélectionné par le client (qui est l'idUser du freelancer)
+
+            // Utiliser directement l'idUser du freelancer (la FK référence user.idUser, pas freelancer.idFreelancer)
             if (cbFreelancer.getValue() != null && cbFreelancer.getValue() > 0) {
-                contrat.setFreelancerID(cbFreelancer.getValue());
-                System.out.println("DEBUG: Freelancer sélectionné: " + cbFreelancer.getValue());
+                Integer selectedUserId = cbFreelancer.getValue();
+                Integer freelancerDbId = freelancerUserToFreelancerId.get(selectedUserId);
+                if (freelancerDbId == null) {
+                    throw new IllegalStateException("Freelancer introuvable pour l'utilisateur " + selectedUserId);
+                }
+                contrat.setFreelancerID(freelancerDbId);
+                System.out.println("DEBUG: Freelancer idFreelancer sélectionné: " + freelancerDbId);
             } else {
-                System.out.println("WARN: Aucun freelancer sélectionné - sera NULL");
+                System.out.println("WARN: Aucun freelancer sélectionné");
                 contrat.setFreelancerID(0);
             }
+
             contrat.setProjectID(cbProject.getValue().getIdproject());
             contrat.setAmount(Double.parseDouble(tfAmount.getText()));
             contrat.setStartDate(Timestamp.valueOf(dpStartDate.getValue().atStartOfDay()));
             contrat.setEndDate(Timestamp.valueOf(dpEndDate.getValue().atStartOfDay()));
             contrat.setStatus(0); // Brouillon
-            contrat.setPaymentID(cbPayment.getValue() != null ? cbPayment.getValue().getIdPayment() : 0);
+            contrat.setPaymentID(0);
 
             System.out.println("DEBUG: Contrat à créer: " + contrat);
 
@@ -398,4 +360,3 @@ public class ClientContractDialogController {
         alert.showAndWait();
     }
 }
-

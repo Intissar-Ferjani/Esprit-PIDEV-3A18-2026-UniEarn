@@ -18,10 +18,18 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import uniearn.model.entities.users.client.Client;
 import uniearn.model.entities.contracts.Contrat;
+import uniearn.model.entities.PaymentEscrow;
 import uniearn.services.contracts.ContratService;
+import uniearn.services.payment.EscrowPaymentService;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
+import uniearn.database.MyConnection;
 
 /**
  * Contrôleur pour afficher les contrats du client dans son profil
@@ -95,32 +103,41 @@ public class ClientContractsController {
 
         // Colonne Actions
         colActions = new TableColumn<>("Actions");
-        colActions.setPrefWidth(200);
+        colActions.setPrefWidth(250);
         colActions.setCellFactory(param -> new javafx.scene.control.TableCell<Contrat, Void>() {
             private final HBox pane = new HBox(5);
+            private final Button payBtn = new Button("💳 Payer");
+            private final Button signBtn = new Button("✍ Signer");
+            private final Button viewBtn = new Button("👁 Détails");
+            private final Button deleteBtn = new Button("🗑 Supprimer");
 
             {
-                Button signBtn = new Button("✍ Signer");
+                payBtn.setStyle("-fx-padding: 5 10; -fx-font-size: 11; -fx-text-fill: white; -fx-background-color: #4CAF50;");
+                payBtn.setOnAction(event -> openPaymentDialog(getTableView().getItems().get(getIndex())));
+
                 signBtn.setStyle("-fx-padding: 5 10; -fx-font-size: 11;");
                 signBtn.setOnAction(event -> openSignatureDialog(getTableView().getItems().get(getIndex())));
 
-                Button viewBtn = new Button("👁 Détails");
                 viewBtn.setStyle("-fx-padding: 5 10; -fx-font-size: 11;");
                 viewBtn.setOnAction(event -> showContractDetails(getTableView().getItems().get(getIndex())));
 
-                Button deleteBtn = new Button("🗑 Supprimer");
                 deleteBtn.setStyle("-fx-padding: 5 10; -fx-font-size: 11;");
                 deleteBtn.setOnAction(event -> deleteContract(getTableView().getItems().get(getIndex())));
 
-                pane.getChildren().addAll(signBtn, viewBtn, deleteBtn);
+                pane.getChildren().addAll(payBtn, signBtn, viewBtn, deleteBtn);
             }
 
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
-                if (empty) {
+                if (empty || getTableView() == null || getIndex() < 0) {
                     setGraphic(null);
                 } else {
+                    // Afficher le bouton Payer seulement pour les contrats Actif (status = 3 - signés par les deux)
+                    Contrat currentContract = getTableView().getItems().get(getIndex());
+                    payBtn.setVisible(currentContract.getStatus() == 3);
+                    payBtn.setManaged(currentContract.getStatus() == 3);
+
                     setGraphic(pane);
                 }
             }
@@ -389,5 +406,114 @@ public class ClientContractsController {
             showError("Erreur lors de l'ouverture du dialog de signature: " + e.getMessage());
         }
     }
+
+    private void openPaymentDialog(Contrat contract) {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Effectuer le Paiement");
+        dialog.initModality(Modality.APPLICATION_MODAL);
+
+        VBox content = new VBox(10);
+        content.setPadding(new Insets(20));
+
+        // Informations du contrat
+        Label titleLabel = new Label("💳 Paiement du Contrat");
+        titleLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+
+        Label typeLabel = new Label("Type: " + contract.getType());
+        Label amountLabel = new Label("Montant: " + String.format("%.2f", contract.getAmount()) + " TND");
+        Label idLabel = new Label("Contrat ID: " + contract.getIdContract());
+
+        content.getChildren().addAll(
+            titleLabel,
+            new Separator(),
+            typeLabel,
+            amountLabel,
+            idLabel,
+            new Separator()
+        );
+
+        // Sélectionner le compte bancaire
+        Label bankLabel = new Label("Sélectionner le compte bancaire:");
+        bankLabel.setStyle("-fx-font-weight: bold;");
+        ComboBox<String> bankCombo = new ComboBox<>();
+        bankCombo.setItems(FXCollections.observableArrayList(
+            "Compte bancaire - BNP Paribas (****2606)",
+            "Ajouter un nouveau compte"
+        ));
+        bankCombo.setValue("Compte bancaire - BNP Paribas (****2606)");
+
+        content.getChildren().addAll(bankLabel, bankCombo);
+
+        // Message de confirmation
+        Label confirmLabel = new Label("✅ En cliquant \"Confirmer\", vous autorisez le paiement de " +
+            String.format("%.2f", contract.getAmount()) + " TND");
+        confirmLabel.setStyle("-fx-text-fill: #FF9800; -fx-font-size: 11;");
+        confirmLabel.setWrapText(true);
+
+        content.getChildren().add(confirmLabel);
+
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            // Simuler le paiement
+            simulatePayment(contract);
+        }
+    }
+
+    private void simulatePayment(Contrat contract) {
+        if (contract.getFreelancerID() <= 0) {
+            showError("❌ Erreur: Aucun freelancer n'est associé à ce contrat.\n\nVeuillez contacter l'administrateur.");
+            return;
+        }
+
+        Integer freelancerDbId = resolveFreelancerForeignKey(contract.getFreelancerID());
+        if (freelancerDbId == null) {
+            showError("❌ Erreur: Impossible de retrouver le freelancer associé.\nVeuillez contacter l'administrateur.");
+            return;
+        }
+
+        EscrowPaymentService escrowService = new EscrowPaymentService();
+        try {
+            PaymentEscrow escrow = escrowService.createEscrow(
+                contract.getIdContract(),
+                currentClient.getIdClient(),
+                freelancerDbId,
+                new java.math.BigDecimal(contract.getAmount())
+            );
+
+            if (escrow != null) {
+                showSuccess("✅ Paiement effectué avec succès!\n\nMontant bloqué chez l'administrateur en attente de validation.");
+                loadContracts();
+            } else {
+                showError("Impossible d'effectuer le paiement. Veuillez réessayer.");
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Erreur lors de la création de l'escrow: " + e.getMessage());
+            e.printStackTrace();
+            showError("❌ Erreur lors du paiement:\n\n" + e.getMessage());
+        }
+    }
+
+    private Integer resolveFreelancerForeignKey(int storedIdentifier) {
+        String sql = "SELECT idFreelancer FROM freelancer WHERE idFreelancer = ? OR idUser = ? LIMIT 1";
+        try {
+            Connection cnx = MyConnection.getInstance().getCnx();
+            try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+                ps.setInt(1, storedIdentifier);
+                ps.setInt(2, storedIdentifier);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return rs.getInt("idFreelancer");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur résolution freelancer: " + e.getMessage());
+        }
+        return null;
+    }
 }
+
 
