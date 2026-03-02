@@ -20,8 +20,8 @@ import com.sun.net.httpserver.HttpServer;
 
 public class GoogleOAuthService {
 
-    private static final String CLIENT_ID     = "";
-    private static final String CLIENT_SECRET = "";
+    private static final String CLIENT_ID = null;
+    private static final String CLIENT_SECRET = null;
     // ─────────────────────────────────────────────────────────────────────
     private static final int    CALLBACK_PORT  = 8585;
     private static final String REDIRECT_URI   = "http://localhost:" + CALLBACK_PORT + "/oauth/callback";
