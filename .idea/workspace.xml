@@ -4,12 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="i fixed some things">
+    <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="i fixed some thingssss">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/LoginController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerDashboardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/candidature/EvaluationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/candidature/EvaluationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/utils/candidature/ApiManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/utils/candidature/ApiManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application/FreelancerDashboardView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application/FreelancerDashboardView.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-profile.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -137,7 +139,7 @@
       <workItem from="1772337191277" duration="4068000" />
       <workItem from="1772404239198" duration="350000" />
       <workItem from="1772404682239" duration="9142000" />
-      <workItem from="1772418346491" duration="12761000" />
+      <workItem from="1772418346491" duration="17766000" />
     </task>
     <task id="LOCAL-00001" summary="i added the candidature and evaluation correctly and projets and tasks">
       <option name="closed" value="true" />
@@ -163,7 +165,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772430109136</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="i fixed some thingssss">
+      <option name="closed" value="true" />
+      <created>1772432098003</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1772432098003</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -173,7 +183,8 @@
     <MESSAGE value="i added the candidature and evaluation correctly and projets and tasks" />
     <MESSAGE value="i added the avis and proposals correctly" />
     <MESSAGE value="i fixed some things" />
-    <option name="LAST_COMMIT_MESSAGE" value="i fixed some things" />
+    <MESSAGE value="i fixed some thingssss" />
+    <option name="LAST_COMMIT_MESSAGE" value="i fixed some thingssss" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

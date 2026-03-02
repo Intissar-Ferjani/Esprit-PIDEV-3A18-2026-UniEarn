@@ -1,6 +1,5 @@
 package uniearn.controller.auth.user;
 
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -23,12 +22,18 @@ import java.util.regex.Pattern;
 
 public class LoginController {
 
-    @FXML private TextField emailField;
-    @FXML private PasswordField passwordField;
-    @FXML private Button loginButton;
-    @FXML private Hyperlink forgotPasswordLink;
-    @FXML private Label emailError;
-    @FXML private Label passwordError;
+    @FXML
+    private TextField emailField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private Button loginButton;
+    @FXML
+    private Hyperlink forgotPasswordLink;
+    @FXML
+    private Label emailError;
+    @FXML
+    private Label passwordError;
 
     private final UserService userService = new UserService();
     private final ClientService clientService = new ClientService();
@@ -36,22 +41,23 @@ public class LoginController {
     private static final String MAIN_WINDOW_POLICY_KEY = "uniearn.main_window_policy";
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
-    );
+            "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
     @FXML
     public void initialize() {
         emailField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) validateEmail();
+            if (!newVal)
+                validateEmail();
         });
 
         passwordField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) validatePassword();
+            if (!newVal)
+                validatePassword();
         });
     }
 
-    //    ----------------------------------------------------------------------
-//    --- Login ---
+    // ----------------------------------------------------------------------
+    // --- Login ---
     private boolean validateEmail() {
         String email = emailField.getText().trim();
 
@@ -102,14 +108,14 @@ public class LoginController {
                     .findFirst()
                     .orElse(null);
 
-//            User not found
+            // User not found
             if (foundUser == null) {
                 showError(emailError, "No account found with this email");
                 loginButton.setDisable(false);
                 return;
             }
 
-//            Account not activated
+            // Account not activated
             if (!foundUser.isActivated()) {
                 showErrorAlert("Account Deactivated",
                         "Your account has been deactivated.\n\n" +
@@ -118,14 +124,14 @@ public class LoginController {
                 return;
             }
 
-//          verify password using BCrypt
+            // verify password using BCrypt
             if (!PasswordUtil.verifyPassword(password, foundUser.getPassword())) {
                 showError(passwordError, "Incorrect password");
                 loginButton.setDisable(false);
                 return;
             }
 
-//            Store user in session if user found
+            // Store user in session if user found
             SessionManager.getInstance().setCurrentUser(foundUser);
 
             System.out.println("✓ Login successful: " + foundUser.getName() + " (" + foundUser.getRole() + ")");
@@ -173,7 +179,7 @@ public class LoginController {
 
         Client client = clientService.getClientById(user.getIdUser());
 
-//        Client not found
+        // Client not found
         if (client == null) {
             System.err.println("Client data is null for user ID: " + user.getIdUser());
             showErrorAlert("Error", "Unable to load client data from database.");
@@ -189,9 +195,8 @@ public class LoginController {
         ClientProfileController controller = loader.getController();
         controller.setClientData(client);
 
-        stage.setScene(new Scene(root));
+        stage.setScene(new Scene(root, 1200, 750));
         stage.setTitle("Client Profile - UniEarn");
-        stage.setMaximized(true);
         stage.centerOnScreen();
 
         System.out.println("✓ Redirected to Client Profile successfully");
@@ -202,7 +207,7 @@ public class LoginController {
 
         Freelancer freelancer = freelancerService.getFreelancerById(user.getIdUser());
 
-//        Freelancer not found
+        // Freelancer not found
         if (freelancer == null) {
             System.err.println("Freelancer data is null for user ID: " + user.getIdUser());
             showErrorAlert("Error", "Unable to load freelancer profile.");
@@ -218,9 +223,8 @@ public class LoginController {
         FreelancerProfileController controller = loader.getController();
         controller.setFreelancerData(freelancer);
 
-        stage.setScene(new Scene(root));
+        stage.setScene(new Scene(root, 1200, 750));
         stage.setTitle("Freelancer Profile - UniEarn");
-        stage.setMaximized(true);
         stage.centerOnScreen();
 
         System.out.println("✓ Redirected to Freelancer Profile successfully");
@@ -230,17 +234,15 @@ public class LoginController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/admin/admin-dashboard.fxml"));
         Parent root = loader.load();
 
-        stage.setScene(new Scene(root));
+        stage.setScene(new Scene(root, 1200, 750));
         stage.setTitle("Admin Dashboard - UniEarn");
-        stage.setMaximized(true);
         stage.centerOnScreen();
 
         System.out.println("✓ Redirected to Admin Dashboard");
     }
 
-
-    //    ----------------------------------------------------------------------
-//    --- Signup ---
+    // ----------------------------------------------------------------------
+    // --- Signup ---
     @FXML
     private void handleSignupRedirect() {
         try {
@@ -249,9 +251,8 @@ public class LoginController {
 
             Stage stage = (Stage) loginButton.getScene().getWindow();
             ensureMainWindowPolicy(stage);
-            stage.setScene(new Scene(signupRoot));
+            stage.setScene(new Scene(signupRoot, 1200, 750));
             stage.setTitle("Sign Up - UniEarn");
-            stage.setMaximized(true);
             stage.centerOnScreen();
 
         } catch (IOException e) {
@@ -260,8 +261,8 @@ public class LoginController {
         }
     }
 
-    //    ----------------------------------------------------------------------
-//    --- Forget pass ---
+    // ----------------------------------------------------------------------
+    // --- Forget pass ---
     @FXML
     private void handleForgotPassword() {
         try {
@@ -269,9 +270,8 @@ public class LoginController {
             Parent root = loader.load();
             Stage stage = (Stage) loginButton.getScene().getWindow();
             ensureMainWindowPolicy(stage);
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(root, 1200, 750));
             stage.setTitle("Forgot Password - UniEarn");
-            stage.setMaximized(true);
             stage.centerOnScreen();
         } catch (IOException e) {
             e.printStackTrace();
@@ -308,10 +308,6 @@ public class LoginController {
         stage.getProperties().put(MAIN_WINDOW_POLICY_KEY, true);
         stage.setMinWidth(900);
         stage.setMinHeight(600);
-        stage.sceneProperty().addListener((obs, oldScene, newScene) -> {
-            if (newScene != null) {
-                Platform.runLater(() -> stage.setMaximized(true));
-            }
-        });
+        stage.setResizable(true);
     }
 }
