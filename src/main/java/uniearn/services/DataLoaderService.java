@@ -80,7 +80,7 @@ public class DataLoaderService {
                 Payment payment = new Payment();
                 payment.setIdPayment(rs.getInt("idPayment"));
                 payment.setAmount(rs.getDouble("amount"));
-                payment.setPaymentStatus(0); // Défaut : En attente
+                payment.setPaymentStatus("PENDING"); // Défaut : En attente
                 payments.add(payment);
             }
             System.out.println("DEBUG: Chargé " + payments.size() + " paiements disponibles");

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox spacing="20.0" styleClass="main-content" stylesheets="@../../profile/profile.css"
+      xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="uniearn.controller.profile.freelancer.FreelancerPaymentMethodsController">
+    <padding>
+        <Insets bottom="30.0" left="36.0" right="36.0" top="24.0" />
+    </padding>
+
+    <!-- Header -->
+    <VBox spacing="6.0">
+        <Label styleClass="section-title" text="💳 Moyens de Paiement">
+            <font><Font name="System Bold" size="26.0" /></font>
+        </Label>
+        <Label styleClass="profile-email-large" text="Gérez vos comptes bancaires pour recevoir vos paiements">
+            <font><Font size="13.0" /></font>
+        </Label>
+    </VBox>
+
+    <HBox spacing="24.0" VBox.vgrow="ALWAYS">
+
+        <!-- Left: Comptes enregistrés -->
+        <VBox spacing="12.0" styleClass="content-section" HBox.hgrow="ALWAYS">
+            <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
+            <HBox alignment="CENTER_LEFT">
+                <Label styleClass="section-title" text="Comptes bancaires">
+                    <font><Font name="System Bold" size="15.0" /></font>
+                </Label>
+            </HBox>
+            <Separator />
+            <ScrollPane fitToWidth="true" prefHeight="360.0">
+                <content>
+                    <VBox fx:id="accountsContainer" spacing="8.0">
+                        <padding><Insets top="4.0" /></padding>
+                    </VBox>
+                </content>
+            </ScrollPane>
+        </VBox>
+
+        <!-- Right: Formulaire -->
+        <VBox fx:id="formPane" spacing="14.0" styleClass="content-section" prefWidth="340.0">
+            <padding><Insets bottom="20.0" left="20.0" right="20.0" top="20.0" /></padding>
+            <Label styleClass="section-title" text="Ajouter / Modifier">
+                <font><Font name="System Bold" size="15.0" /></font>
+            </Label>
+            <Separator />
+
+            <Label text="Nom du titulaire *" style="-fx-font-weight: bold;" />
+            <TextField fx:id="holderNameField" promptText="Jean Dupont" />
+
+            <Label text="IBAN *" style="-fx-font-weight: bold;" />
+            <TextField fx:id="ibanField" promptText="TN59..." />
+
+            <Label text="BIC/SWIFT" style="-fx-font-weight: bold;" />
+            <TextField fx:id="bicField" promptText="BIATTNTT" />
+
+            <Label text="Nom de la banque *" style="-fx-font-weight: bold;" />
+            <TextField fx:id="bankNameField" promptText="BIAT, STB, BNA..." />
+
+            <CheckBox fx:id="defaultCheckBox" text="Définir comme compte par défaut" />
+
+            <Label fx:id="statusLabel" text="" wrapText="true" visible="false" />
+
+            <HBox spacing="10.0">
+                <Button onAction="#handleSave" styleClass="btn-primary" text="💾 Enregistrer" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                <Button onAction="#handleCancel" styleClass="btn-secondary" text="Annuler" />
+            </HBox>
+        </VBox>
+
+    </HBox>
+
+</VBox>

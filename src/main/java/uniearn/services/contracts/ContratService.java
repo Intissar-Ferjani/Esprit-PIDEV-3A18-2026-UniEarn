@@ -446,6 +446,32 @@ public class ContratService implements IContrat {
     }
 
     /**
+     * Créer un enregistrement payment placeholder avec statut PENDING.
+     *
+     * @param amount   Montant du paiement
+     * @param clientId ID de l'utilisateur client
+     * @return ID du paiement créé, ou -1 en cas d'échec
+     */
+    public int createPlaceholderPayment(double amount, int clientId) {
+        String sql = "INSERT INTO payment (amount, paymentStatus, taskID, userID) VALUES (?, 'PENDING', NULL, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setDouble(1, amount);
+            stmt.setInt(2, clientId);
+            if (stmt.executeUpdate() > 0) {
+                try (ResultSet rs = stmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la création du payment placeholder: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    /**
      * Vérifier si un contrat est signé par le client
      */
     public boolean isSignedByClient(int contractID) {

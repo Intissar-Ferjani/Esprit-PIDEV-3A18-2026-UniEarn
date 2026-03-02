@@ -62,6 +62,12 @@
                             </font>
                         </Button>
 
+                        <Button onAction="#handleManagePayments" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="💳 Manage Payments">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
                         <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📊 Reports">
                             <font>
                                 <Font size="14.0" />
