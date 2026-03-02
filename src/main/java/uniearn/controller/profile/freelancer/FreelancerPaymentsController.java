@@ -170,7 +170,6 @@ public class FreelancerPaymentsController {
                 "Tous",
                 "Bloqué",
                 "Livré",
-                "Libéré",
                 "Remboursé"
             );
             filterStatus.setItems(statuses);
@@ -195,13 +194,20 @@ public class FreelancerPaymentsController {
         }
         new Thread(() -> {
             try {
-                List<PaymentEscrow> payments = escrowService.getEscrowsByFreelancer(freelancerId);
+                List<PaymentEscrow> allPayments = escrowService.getEscrowsByFreelancer(freelancerId);
 
-                // Filtre par statut
+                // Calculer les statistiques sur TOUS les paiements
+                javafx.application.Platform.runLater(() -> {
+                    updateStatistics(allPayments);
+                });
+
+                // Filtre par statut pour l'affichage
                 String selectedStatus = filterStatus != null ? filterStatus.getValue() : "Tous";
+                List<PaymentEscrow> filteredPayments = allPayments;
+
                 if (!selectedStatus.equals("Tous")) {
                     String statusFilter = translateStatusToEnglish(selectedStatus);
-                    payments = payments.stream()
+                    filteredPayments = allPayments.stream()
                         .filter(p -> p.getStatus().equals(statusFilter))
                         .toList();
                 }
@@ -209,18 +215,17 @@ public class FreelancerPaymentsController {
                 // Filtre par recherche
                 String searchText = searchField != null ? searchField.getText().toLowerCase() : "";
                 if (!searchText.isEmpty()) {
-                    final List<PaymentEscrow> finalPayments = payments;
-                    payments = finalPayments.stream()
+                    final List<PaymentEscrow> finalPayments = filteredPayments;
+                    filteredPayments = finalPayments.stream()
                         .filter(p -> String.valueOf(p.getContractId()).contains(searchText) ||
                                     p.getAmount().toString().contains(searchText))
                         .toList();
                 }
 
-                final List<PaymentEscrow> finalPayments = payments;
+                final List<PaymentEscrow> displayPayments = filteredPayments;
                 javafx.application.Platform.runLater(() -> {
                     paymentsData.clear();
-                    paymentsData.addAll(finalPayments);
-                    updateStatistics(finalPayments);
+                    paymentsData.addAll(displayPayments);
                 });
             } catch (Exception e) {
                 System.err.println("❌ Erreur lors du chargement des paiements: " + e.getMessage());
@@ -241,7 +246,11 @@ public class FreelancerPaymentsController {
         btnDetails.setStyle("-fx-padding: 5px 15px; -fx-font-size: 12px;");
         btnDetails.setOnAction(e -> showPaymentDetails(escrow));
 
-        hbox.getChildren().add(btnDetails);
+        Button btnDelete = new Button("Supprimer");
+        btnDelete.setStyle("-fx-padding: 5px 15px; -fx-font-size: 12px; -fx-text-fill: white; -fx-background-color: #F44336;");
+        btnDelete.setOnAction(e -> deletePayment(escrow));
+
+        hbox.getChildren().addAll(btnDetails, btnDelete);
         return hbox;
     }
 
@@ -285,13 +294,15 @@ public class FreelancerPaymentsController {
      * Met à jour les statistiques
      */
     private void updateStatistics(List<PaymentEscrow> payments) {
+        // Montants en Attente = PENDING uniquement (montants bloqués)
         BigDecimal totalPending = payments.stream()
-            .filter(p -> p.getStatus().equals("PENDING") || p.getStatus().equals("COMPLETED"))
+            .filter(p -> p.getStatus().equals("PENDING"))
             .map(PaymentEscrow::getAmount)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal totalAvailable = payments.stream()
-            .filter(p -> p.getStatus().equals("RELEASED"))
+        // Montants Reçus = RELEASED ou COMPLETED (montants livrés)
+        BigDecimal totalReceived = payments.stream()
+            .filter(p -> p.getStatus().equals("RELEASED") || p.getStatus().equals("COMPLETED"))
             .map(PaymentEscrow::getAmount)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -299,7 +310,7 @@ public class FreelancerPaymentsController {
             totalPendingLabel.setText(String.format("%.2f TND", totalPending.doubleValue()));
         }
         if (totalAvailableLabel != null) {
-            totalAvailableLabel.setText(String.format("%.2f TND", totalAvailable.doubleValue()));
+            totalAvailableLabel.setText(String.format("%.2f TND", totalReceived.doubleValue()));
         }
     }
 
@@ -310,7 +321,7 @@ public class FreelancerPaymentsController {
         return switch (status) {
             case "PENDING" -> "Bloqué";
             case "COMPLETED" -> "Livré";
-            case "RELEASED" -> "Libéré";
+            case "RELEASED" -> "Livré";
             case "REFUNDED" -> "Remboursé";
             default -> status;
         };
@@ -322,8 +333,7 @@ public class FreelancerPaymentsController {
     private String translateStatusToEnglish(String status) {
         return switch (status) {
             case "Bloqué" -> "PENDING";
-            case "Livré" -> "COMPLETED";
-            case "Libéré" -> "RELEASED";
+            case "Livré" -> "RELEASED";
             case "Remboursé" -> "REFUNDED";
             default -> status;
         };
@@ -334,10 +344,66 @@ public class FreelancerPaymentsController {
      */
     private String getStatusStyle(String status) {
         return switch (status) {
-            case "PENDING", "COMPLETED" -> "-fx-text-fill: #FF9800; -fx-font-weight: bold;";
-            case "RELEASED" -> "-fx-text-fill: #4CAF50; -fx-font-weight: bold;";
+            case "PENDING" -> "-fx-text-fill: #FF9800; -fx-font-weight: bold;";
+            case "COMPLETED", "RELEASED" -> "-fx-text-fill: #4CAF50; -fx-font-weight: bold;";
             case "REFUNDED" -> "-fx-text-fill: #F44336; -fx-font-weight: bold;";
             default -> "";
         };
+    }
+
+    /**
+     * Supprime un paiement après confirmation
+     */
+    private void deletePayment(PaymentEscrow escrow) {
+        // Créer une boîte de dialogue de confirmation
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmer la suppression");
+        alert.setHeaderText("Êtes-vous sûr de vouloir supprimer ce paiement ?");
+        alert.setContentText("Contrat ID: " + escrow.getContractId() + "\nMontant: " + escrow.getAmount() + " TND\n\nCette action ne peut pas être annulée.");
+
+        java.util.Optional<javafx.scene.control.ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == javafx.scene.control.ButtonType.OK) {
+            new Thread(() -> {
+                try {
+                    // Supprimer le paiement via le service
+                    boolean success = escrowService.deleteEscrow(escrow.getId());
+
+                    if (success) {
+                        javafx.application.Platform.runLater(() -> {
+                            System.out.println("✅ Paiement supprimé avec succès : ID " + escrow.getId());
+                            // Recharger les paiements
+                            loadPayments();
+
+                            // Afficher un message de confirmation
+                            Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
+                            successAlert.setTitle("Succès");
+                            successAlert.setHeaderText("Paiement supprimé");
+                            successAlert.setContentText("Le paiement a été supprimé avec succès.");
+                            successAlert.showAndWait();
+                        });
+                    } else {
+                        javafx.application.Platform.runLater(() -> {
+                            System.err.println("❌ Erreur lors de la suppression du paiement");
+                            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                            errorAlert.setTitle("Erreur");
+                            errorAlert.setHeaderText("Erreur lors de la suppression");
+                            errorAlert.setContentText("Une erreur s'est produite lors de la suppression du paiement.");
+                            errorAlert.showAndWait();
+                        });
+                    }
+                } catch (Exception e) {
+                    System.err.println("❌ Exception lors de la suppression du paiement: " + e.getMessage());
+                    e.printStackTrace();
+                    javafx.application.Platform.runLater(() -> {
+                        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+                        errorAlert.setTitle("Erreur");
+                        errorAlert.setHeaderText("Erreur lors de la suppression");
+                        errorAlert.setContentText("Erreur: " + e.getMessage());
+                        errorAlert.showAndWait();
+                    });
+                }
+            }).start();
+        }
     }
 }

@@ -5,45 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/EXEMPLES_TEST_MOYENS_PAIEMENT.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/INTEGRATION_MOYENS_PAIEMENT.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/INTEGRATION_PAIEMENTS_ESCROW.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_bank_account_table.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_payment_escrow_table.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fix_payment_escrow_nullable.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminPaymentMethodsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminPaymentsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientPaymentMethodsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientPaymentsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerPaymentMethodsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerPaymentsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/BankAccount.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/PaymentEscrow.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/BankAccountService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/payment/BankAccountService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/payment/EscrowPaymentService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-payment-methods.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-payments.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/admin/admin-payment-methods.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/admin/admin-payments.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/client/client-payment-methods.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/client/client-payments.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/client/ClientContractDialogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/client/ClientContractDialogController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/contrat/ContractSignatureController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/contrat/ContractSignatureController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminDashboardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientContractsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientContractsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/DataLoaderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/DataLoaderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/contracts/ContratService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/contracts/ContratService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/users/admin/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/users/admin/AdminService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/contracts/client_contract_dialog.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/contracts/client_contract_dialog.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminPaymentsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminPaymentsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientPaymentsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientPaymentsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerPaymentsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerPaymentsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/payment/EscrowPaymentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/payment/EscrowPaymentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-payments.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-payments.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-profile.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/admin/admin-dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/admin/admin-dashboard.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/client/client-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/client/client-profile.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -172,7 +141,7 @@
       <workItem from="1772341400123" duration="2058000" />
       <workItem from="1772369052736" duration="7737000" />
       <workItem from="1772377016102" duration="1249000" />
-      <workItem from="1772404315287" duration="12300000" />
+      <workItem from="1772404315287" duration="16393000" />
     </task>
     <servers />
   </component>

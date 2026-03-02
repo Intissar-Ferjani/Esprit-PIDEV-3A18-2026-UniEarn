@@ -53,7 +53,7 @@
                 </children>
             </VBox>
 
-            <!-- Card: Montant Disponible -->
+            <!-- Card: Montant Reçu -->
             <VBox styleClass="card, stat-card" HBox.hgrow="ALWAYS">
                 <padding>
                     <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
@@ -64,7 +64,7 @@
                             <FontIcon iconLiteral="fas-piggy-bank" iconSize="24" style="-fx-fill: #4CAF50;" />
                             <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                                 <children>
-                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #666;" text="Montants Disponibles" />
+                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #666;" text="Montants Reçus" />
                                     <Label fx:id="totalAvailableLabel" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;" text="0.00 TND" />
                                 </children>
                             </VBox>

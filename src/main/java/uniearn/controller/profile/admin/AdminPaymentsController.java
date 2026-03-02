@@ -164,7 +164,6 @@ public class AdminPaymentsController {
                 "Tous",
                 "Bloqué",
                 "Livré",
-                "Libéré",
                 "Remboursé"
             );
             filterStatus.setItems(statuses);
@@ -390,18 +389,31 @@ public class AdminPaymentsController {
      * Met à jour les statistiques
      */
     private void updateStatistics(List<PaymentEscrow> payments) {
-        BigDecimal totalBlocked = escrowService.getTotalBlockedAmount();
+        // Charger TOUS les paiements pour calculer les statistiques globales
+        try {
+            List<PaymentEscrow> allPayments = escrowService.getPendingEscrows();
 
-        BigDecimal totalReleased = payments.stream()
-            .filter(p -> p.getStatus().equals("RELEASED"))
-            .map(PaymentEscrow::getAmount)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+            // Calculer le total des montants bloqués (statut PENDING)
+            BigDecimal totalBlocked = allPayments.stream()
+                .filter(p -> p.getStatus().equals("PENDING"))
+                .map(PaymentEscrow::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        if (totalBlockedLabel != null) {
-            totalBlockedLabel.setText(String.format("%.2f TND", totalBlocked.doubleValue()));
-        }
-        if (totalReleasedLabel != null) {
-            totalReleasedLabel.setText(String.format("%.2f TND", totalReleased.doubleValue()));
+            // Calculer le total des montants livrés (statut RELEASED ou COMPLETED)
+            BigDecimal totalReleased = allPayments.stream()
+                .filter(p -> p.getStatus().equals("RELEASED") || p.getStatus().equals("COMPLETED"))
+                .map(PaymentEscrow::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            if (totalBlockedLabel != null) {
+                totalBlockedLabel.setText(String.format("%.2f TND", totalBlocked.doubleValue()));
+            }
+            if (totalReleasedLabel != null) {
+                totalReleasedLabel.setText(String.format("%.2f TND", totalReleased.doubleValue()));
+            }
+        } catch (Exception e) {
+            System.err.println("❌ Erreur lors du calcul des statistiques: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -423,7 +435,7 @@ public class AdminPaymentsController {
         return switch (status) {
             case "PENDING" -> "Bloqué";
             case "COMPLETED" -> "Livré";
-            case "RELEASED" -> "Libéré";
+            case "RELEASED" -> "Livré";
             case "REFUNDED" -> "Remboursé";
             default -> status;
         };
@@ -436,7 +448,6 @@ public class AdminPaymentsController {
         return switch (status) {
             case "Bloqué" -> "PENDING";
             case "Livré" -> "COMPLETED";
-            case "Libéré" -> "RELEASED";
             case "Remboursé" -> "REFUNDED";
             default -> status;
         };

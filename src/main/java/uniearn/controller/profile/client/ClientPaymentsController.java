@@ -171,7 +171,6 @@ public class ClientPaymentsController {
                 "Tous",
                 "Bloqué",
                 "Livré",
-                "Libéré",
                 "Remboursé"
             );
             filterStatus.setItems(statuses);
@@ -276,13 +275,15 @@ public class ClientPaymentsController {
      * Met à jour les statistiques
      */
     private void updateStatistics(List<PaymentEscrow> payments) {
+        // Montants bloqués = uniquement PENDING (en attente)
         BigDecimal totalBlocked = payments.stream()
-            .filter(p -> p.getStatus().equals("PENDING") || p.getStatus().equals("COMPLETED"))
+            .filter(p -> p.getStatus().equals("PENDING"))
             .map(PaymentEscrow::getAmount)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        // Montants libérés = COMPLETED + RELEASED (projet livré ou montant transféré)
         BigDecimal totalReleased = payments.stream()
-            .filter(p -> p.getStatus().equals("RELEASED"))
+            .filter(p -> p.getStatus().equals("COMPLETED") || p.getStatus().equals("RELEASED"))
             .map(PaymentEscrow::getAmount)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -301,7 +302,7 @@ public class ClientPaymentsController {
         return switch (status) {
             case "PENDING" -> "Bloqué";
             case "COMPLETED" -> "Livré";
-            case "RELEASED" -> "Libéré";
+            case "RELEASED" -> "Livré";
             case "REFUNDED" -> "Remboursé";
             default -> status;
         };
@@ -313,8 +314,7 @@ public class ClientPaymentsController {
     private String translateStatusToEnglish(String status) {
         return switch (status) {
             case "Bloqué" -> "PENDING";
-            case "Livré" -> "COMPLETED";
-            case "Libéré" -> "RELEASED";
+            case "Livré" -> "RELEASED";
             case "Remboursé" -> "REFUNDED";
             default -> status;
         };
@@ -325,8 +325,8 @@ public class ClientPaymentsController {
      */
     private String getStatusStyle(String status) {
         return switch (status) {
-            case "PENDING", "COMPLETED" -> "-fx-text-fill: #FF9800; -fx-font-weight: bold;";
-            case "RELEASED" -> "-fx-text-fill: #4CAF50; -fx-font-weight: bold;";
+            case "PENDING" -> "-fx-text-fill: #FF9800; -fx-font-weight: bold;";
+            case "COMPLETED", "RELEASED" -> "-fx-text-fill: #4CAF50; -fx-font-weight: bold;";
             case "REFUNDED" -> "-fx-text-fill: #F44336; -fx-font-weight: bold;";
             default -> "";
         };

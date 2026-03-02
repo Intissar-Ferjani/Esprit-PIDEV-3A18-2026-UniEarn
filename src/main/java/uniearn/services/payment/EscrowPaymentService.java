@@ -276,5 +276,29 @@ public class EscrowPaymentService {
 
         return escrow;
     }
+
+    /**
+     * Supprime un paiement escrow
+     */
+    public boolean deleteEscrow(int escrowId) {
+        String sql = "DELETE FROM payment_escrow WHERE id = ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, escrowId);
+
+            int rowsDeleted = stmt.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("✅ Escrow supprimé avec succès: ID=" + escrowId);
+                return true;
+            } else {
+                System.err.println("❌ Aucun escrow trouvé avec l'ID: " + escrowId);
+                return false;
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de la suppression du paiement escrow: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
 
