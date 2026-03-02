@@ -38,6 +38,21 @@ public class ProjectController {
 
     private ObservableList<Project> projectList = FXCollections.observableArrayList();
 
+    private boolean isFreelancerMode = false;
+
+    public void setFreelancerMode(boolean isFreelancer) {
+        this.isFreelancerMode = isFreelancer;
+        if (isFreelancer) {
+            if (addButton != null)
+                addButton.setVisible(false);
+            if (updateButton != null)
+                updateButton.setVisible(false);
+            if (clearButton != null)
+                clearButton.setVisible(false);
+        }
+        handleRefresh();
+    }
+
     public void setClientData(Client client) {
         this.currentClient = client;
         handleRefresh();
@@ -379,7 +394,10 @@ public class ProjectController {
 
     @FXML
     void handleRefresh() {
-        if (currentClient != null) {
+        if (isFreelancerMode) {
+            projectList.setAll(services.getAllProjects());
+            setupFiltering();
+        } else if (currentClient != null) {
             projectList.setAll(services.getProjectsByClientId(currentClient.getIdClient()));
             setupFiltering();
         } else {
@@ -574,6 +592,7 @@ public class ProjectController {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void handleSettings() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

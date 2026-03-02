@@ -188,32 +188,36 @@ public class TaskFormController {
         LocalDateTime deadline = deadlinePicker.getValue().atStartOfDay();
         int projectId = projectComboBox.getValue().getIdproject();
 
-        if (currentTask == null) {
-            // Add NEW Task
-            Task newTask = new Task(title, desc, deadline, status, LocalDateTime.now(), role, priority, projectId);
-            try {
+        try {
+            if (currentTask == null) {
+                // Add NEW Task
+                Task newTask = new Task(title, desc, deadline, status, LocalDateTime.now(), role, priority, projectId);
                 taskService.addTask(newTask);
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } else {
+                // UPDATE Task
+                currentTask.setTitle(title);
+                currentTask.setDescription(desc);
+                currentTask.setRole(role);
+                currentTask.setPriority(priority);
+                currentTask.setTaskstatus(status);
+                currentTask.setDeadline(deadline);
+                currentTask.setProjectid(projectId);
+                taskService.updateTask(currentTask);
             }
-        } else {
-            // UPDATE Task
-            currentTask.setTitle(title);
-            currentTask.setDescription(desc);
-            currentTask.setRole(role);
-            currentTask.setPriority(priority);
-            currentTask.setTaskstatus(status);
-            currentTask.setDeadline(deadline);
-            currentTask.setProjectid(projectId);
 
-            taskService.updateTask(currentTask);
+            // Callback and Close
+            if (onSaveCallback != null) {
+                onSaveCallback.run();
+            }
+            closeWindow();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur");
+            alert.setHeaderText("Impossible d'enregistrer la tâche");
+            alert.setContentText(e.getMessage());
+            alert.showAndWait();
         }
-
-        // Callback and Close
-        if (onSaveCallback != null) {
-            onSaveCallback.run();
-        }
-        closeWindow();
     }
 
     @FXML

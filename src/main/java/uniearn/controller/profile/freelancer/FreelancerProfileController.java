@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -715,40 +716,6 @@ public class FreelancerProfileController {
     }
 
     @FXML
-    private void handleFreelancerProjects() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-projects.fxml"));
-            Parent root = loader.load();
-            uniearn.controller.projet.FreelancerProjectsController controller = loader.getController();
-            controller.setFreelancerData(currentFreelancer);
-
-            Stage stage = (Stage) nameLabel.getScene().getWindow();
-            stage.setScene(new Scene(root, 1200, 700));
-            stage.setTitle("Projets Disponibles - UniEarn");
-        } catch (IOException e) {
-            e.printStackTrace();
-            showErrorAlert("Error", "Failed to load projects: " + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void handleTaskBoard() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/TaskBoard.fxml"));
-            Parent root = loader.load();
-            TaskBoardController controller = loader.getController();
-            controller.setFreelancerData(currentFreelancer);
-
-            Stage stage = (Stage) nameLabel.getScene().getWindow();
-            stage.setScene(new Scene(root, 1200, 700));
-            stage.setTitle("Mes Tâches - TaskBoard");
-        } catch (IOException e) {
-            e.printStackTrace();
-            showErrorAlert("Error", "Failed to load task board: " + e.getMessage());
-        }
-    }
-
-    @FXML
     private void handleSettings() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Settings");
@@ -806,7 +773,7 @@ public class FreelancerProfileController {
     }
 
     @FXML
-    private void handleApplications() {
+    public void handleApplications() {
         try {
             if (embeddedDashboard == null) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/FreelancerDashboardView.fxml"));
@@ -830,7 +797,32 @@ public class FreelancerProfileController {
     }
 
     @FXML
-    private void handleShowDashboard() {
+    public void handleEvaluations() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/FreelancerEvaluationView.fxml"));
+            Parent embeddedView = loader.load();
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+            contentArea.getChildren().add(embeddedView);
+            embeddedView.setVisible(true);
+            embeddedView.setManaged(true);
+
+            System.out.println("✓ Embedded Freelancer Evaluations loaded into contentArea");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorAlert("Erreur de navigation", "Impossible d'ouvrir la page des évaluations: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void handleShowDashboard() {
         if (embeddedDashboard != null) {
             embeddedDashboard.setVisible(false);
             embeddedDashboard.setManaged(false);
@@ -845,19 +837,81 @@ public class FreelancerProfileController {
     }
 
     @FXML
-    private void handleMesProjets() {
+    public void handleFreelancerProjects() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/Projet.fxml"));
-            Parent embeddedView = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-projects.fxml"));
+            Parent root = loader.load();
 
-            // Since we are a freelancer, we might not have currentClient, but let's try to
-            // pass something if needed
-            // For now, if currentFreelancer is available, we can pass it as a User or
-            // similar if ProjectController supports it
-            // ProjectController.setClientData expects Client. Let's see if we can get a
-            // Client wrapper or if it fails gracefully.
-            // If the user wants "Mes projets" to work for freelancers too, we might need to
-            // adjust ProjectController later.
+            uniearn.controller.projet.FreelancerProjectsController controller = loader.getController();
+            controller.setFreelancerData(currentFreelancer);
+
+            // Extract the center node if it's a BorderPane to avoid redundant sidebars
+            Node content = root;
+            if (root instanceof BorderPane) {
+                content = ((BorderPane) root).getCenter();
+            }
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            // Remove any previously added embedded views except the main dashboard parts
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+
+            contentArea.getChildren().add(content);
+            content.setVisible(true);
+            content.setManaged(true);
+
+            System.out.println("✓ Embedded Freelancer Projects (Center only) loaded into contentArea");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load projects page: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void handleTaskBoard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/TaskBoard.fxml"));
+            Parent root = loader.load();
+
+            // *** KEY FIX: pass the current freelancer so the board loads the right tasks/projects ***
+            TaskBoardController controller = loader.getController();
+            controller.setFreelancerData(currentFreelancer);
+
+            // Extract the center node if it's a BorderPane to avoid redundant sidebars
+            Node content = root;
+            if (root instanceof BorderPane) {
+                content = ((BorderPane) root).getCenter();
+            }
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+            contentArea.getChildren().add(content);
+            content.setVisible(true);
+            content.setManaged(true);
+
+            System.out.println("✓ Embedded Task Board loaded for freelancer ID: " + currentFreelancer.getIdFreelancer());
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load Task Board: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void handleMesContrats() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/contracts/freelancer_contracts.fxml"));
+            Parent embeddedView = loader.load();
 
             dashboardView.setVisible(false);
             dashboardView.setManaged(false);
@@ -871,15 +925,15 @@ public class FreelancerProfileController {
             embeddedView.setVisible(true);
             embeddedView.setManaged(true);
 
-            System.out.println("✓ Embedded Mes Projets loaded into contentArea (Freelancer)");
+            System.out.println("✓ Embedded Contracts loaded into contentArea");
         } catch (IOException e) {
             e.printStackTrace();
-            showErrorAlert("Error", "Failed to load projects page: " + e.getMessage());
+            showErrorAlert("Error", "Failed to load contracts page: " + e.getMessage());
         }
     }
 
     @FXML
-    private void handleBrowseFreelancers() {
+    public void handleBrowseFreelancers() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/list-freelancers.fxml"));
             Parent embeddedView = loader.load();

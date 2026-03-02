@@ -1,6 +1,7 @@
-package uniearn.services.contracts;
+package uniearn.services;
 
 import uniearn.model.entities.contracts.Contrat;
+import uniearn.services.contracts.ContratService;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -17,11 +18,12 @@ public class ContratServiceTest {
 
         // Vérification des IDs existants
         System.out.println("Vérification des données requises...");
-        int clientID = 1;  // À adapter selon ta BD
+        int clientID = 1; // À adapter selon ta BD
         int projectID = 1; // À adapter selon ta BD
         int paymentID = 1; // À adapter selon ta BD
 
-        System.out.println("⚠️  IMPORTANT: Assurez-vous que clientID=" + clientID + ", projectID=" + projectID + ", paymentID=" + paymentID + " existent en BD!");
+        System.out.println("⚠️  IMPORTANT: Assurez-vous que clientID=" + clientID + ", projectID=" + projectID
+                + ", paymentID=" + paymentID + " existent en BD!");
         System.out.println("    Sinon, modifiez ces valeurs avec les IDs réels de votre base de données.\n");
 
         // Test 1: Créer un contrat
@@ -34,7 +36,6 @@ public class ContratServiceTest {
         contrat.setProjectID(projectID);
         contrat.setClientID(clientID);
         contrat.setPaymentID(paymentID);
-
 
         if (service.createContrat(contrat)) {
             System.out.println("✓ Contrat créé avec succès\n");
@@ -102,9 +103,9 @@ public class ContratServiceTest {
             // Test 10: Supprimer un contrat (optionnel)
             // System.out.println("Test 10: Supprimer un contrat");
             // if (service.deleteContrat(retrieved.getIdContract())) {
-            //     System.out.println("✓ Contrat supprimé avec succès\n");
+            // System.out.println("✓ Contrat supprimé avec succès\n");
             // } else {
-            //     System.out.println("✗ Échec de suppression\n");
+            // System.out.println("✗ Échec de suppression\n");
             // }
         }
 

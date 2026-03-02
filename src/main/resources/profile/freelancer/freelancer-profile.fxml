@@ -34,17 +34,10 @@
                     <padding><Insets bottom="15.0" left="14.0" right="14.0" top="22.0" /></padding>
                     <children>
 
-                        <Button prefHeight="42.0" prefWidth="220.0" styleClass="nav-button, active">
+                        <Button onAction="#handleShowDashboard" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button, active">
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
                                 <FontIcon iconLiteral="fas-home" iconSize="15" />
                                 <Label text="Dashboard" style="-fx-font-size: 14px;" />
-                            </children></HBox></graphic>
-                        </Button>
-
-                        <Button onAction="#handleMesProjets" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
-                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
-                                <FontIcon iconLiteral="fas-clipboard-list" iconSize="15" />
-                                <Label text="Projets disponibles" style="-fx-font-size: 14px;" />
                             </children></HBox></graphic>
                         </Button>
 
@@ -61,6 +54,27 @@
                                 <Label text="Evaluations" style="-fx-font-size: 14px;" />
                             </children></HBox></graphic>
                         </Button>
+
+                        <Button text="📋 Projets disponibles" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0" onAction="#handleFreelancerProjects">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+
+                        <Button onAction="#handleMesContrats" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
+                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                <FontIcon iconLiteral="fas-file-contract" iconSize="15" />
+                                <Label text="Mes contrats" style="-fx-font-size: 14px;" />
+                            </children></HBox></graphic>
+                        </Button>
+
+                        <Button text="☑ Mes tâches" styleClass="nav-button" prefWidth="220.0" prefHeight="40.0" onAction="#handleTaskBoard">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
 
                         <Button onAction="#handleViewPortfolio" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
@@ -108,8 +122,10 @@
 
     <!-- ══ Main Content ════════════════════════════════════════════════ -->
     <center>
-        <ScrollPane fitToWidth="true" styleClass="content-scroll">
-            <content>
+        <StackPane fx:id="contentArea">
+            <children>
+                <ScrollPane fx:id="dashboardView" fitToWidth="true" styleClass="content-scroll">
+                    <content>
                 <VBox spacing="20.0" styleClass="main-content">
                     <padding><Insets bottom="40.0" left="36.0" right="36.0" top="30.0" /></padding>
                     <children>
@@ -289,6 +305,8 @@
                 </VBox>
             </content>
         </ScrollPane>
+            </children>
+        </StackPane>
     </center>
 
 </BorderPane>

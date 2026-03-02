@@ -8,7 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import uniearn.services.users.EmailService;
+import uniearn.services.users.mail.EmailService;
 import uniearn.services.users.UserService;
 
 import java.io.IOException;
@@ -16,23 +16,36 @@ import java.io.IOException;
 public class ForgotPasswordController {
 
     // ── Step 1: Enter email ──
-    @FXML private TextField emailField;
-    @FXML private Label emailError;
-    @FXML private Button sendCodeButton;
+    @FXML
+    private TextField emailField;
+    @FXML
+    private Label emailError;
+    @FXML
+    private Button sendCodeButton;
 
     // ── Step 2: Enter code + new password ──
-    @FXML private TextField codeField;
-    @FXML private PasswordField newPasswordField;
-    @FXML private PasswordField confirmPasswordField;
-    @FXML private Label codeError;
-    @FXML private Label newPasswordError;
-    @FXML private Label confirmPasswordError;
-    @FXML private Button resetButton;
+    @FXML
+    private TextField codeField;
+    @FXML
+    private PasswordField newPasswordField;
+    @FXML
+    private PasswordField confirmPasswordField;
+    @FXML
+    private Label codeError;
+    @FXML
+    private Label newPasswordError;
+    @FXML
+    private Label confirmPasswordError;
+    @FXML
+    private Button resetButton;
 
     // ── Layout sections ──
-    @FXML private javafx.scene.layout.VBox emailStep;
-    @FXML private javafx.scene.layout.VBox resetStep;
-    @FXML private Label statusLabel;
+    @FXML
+    private javafx.scene.layout.VBox emailStep;
+    @FXML
+    private javafx.scene.layout.VBox resetStep;
+    @FXML
+    private Label statusLabel;
 
     private final UserService userService = new UserService();
     private final EmailService emailService = new EmailService();
@@ -65,7 +78,8 @@ public class ForgotPasswordController {
             @Override
             protected Boolean call() throws Exception {
                 String token = userService.generateResetToken(email);
-                if (token == null) return false; // Email not found
+                if (token == null)
+                    return false; // Email not found
 
                 emailService.sendPasswordResetEmail(email, token);
                 return true;
@@ -123,7 +137,8 @@ public class ForgotPasswordController {
         if (newPassword.length() < 8) {
             showError(newPasswordError, "Minimum 8 caractères");
             valid = false;
-        } else if (!newPassword.matches(".*[A-Z].*") || !newPassword.matches(".*[a-z].*") || !newPassword.matches(".*\\d.*")) {
+        } else if (!newPassword.matches(".*[A-Z].*") || !newPassword.matches(".*[a-z].*")
+                || !newPassword.matches(".*\\d.*")) {
             showError(newPasswordError, "Doit contenir majuscule, minuscule et chiffre");
             valid = false;
         } else {
@@ -137,7 +152,8 @@ public class ForgotPasswordController {
             hideError(confirmPasswordError);
         }
 
-        if (!valid) return;
+        if (!valid)
+            return;
 
         try {
             var user = userService.getUserByEmail(pendingEmail);
@@ -155,7 +171,8 @@ public class ForgotPasswordController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Mot de passe réinitialisé");
         alert.setHeaderText(null);
-        alert.setContentText("✅ Votre mot de passe a été réinitialisé avec succès!\n\nVous pouvez maintenant vous connecter.");
+        alert.setContentText(
+                "✅ Votre mot de passe a été réinitialisé avec succès!\n\nVous pouvez maintenant vous connecter.");
         alert.showAndWait();
         navigateToLogin();
     }

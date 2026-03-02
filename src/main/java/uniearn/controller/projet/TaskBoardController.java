@@ -28,6 +28,7 @@ import uniearn.model.entities.users.freelancer.Freelancer;
 import uniearn.model.entities.users.freelancer.Portfolio;
 import uniearn.model.enums.taskpriorityenum;
 import uniearn.model.enums.taskstatusenum;
+import uniearn.services.candidature.ApplicationService;
 import uniearn.services.projet.ProjectService;
 import uniearn.services.projet.TaskService;
 
@@ -56,6 +57,7 @@ public class TaskBoardController {
     private final TaskService taskService = new TaskService();
     private final ProjectService projectService = new ProjectService();
     private final PortfolioService portfolioService = new PortfolioService();
+    private final ApplicationService applicationService = new ApplicationService();
 
     private ObservableList<Task> allTasks = FXCollections.observableArrayList();
     private List<Project> clientProjects = new ArrayList<>();
@@ -94,16 +96,26 @@ public class TaskBoardController {
         List<Task> tempTasks = new ArrayList<>();
 
         if (currentFreelancer != null) {
-            // Freelancer mode: show tasks where the freelancerIDD matches
-            // Get ALL projects and collect those that match this freelancer
-            List<Project> allProjects = projectService.getAllProjects();
+            // Freelancer mode: only show projects where the freelancer has an ACCEPTED
+            // application
             clientProjects = new ArrayList<>();
-            for (Project p : allProjects) {
-                if (p.getFreelancerid() == currentFreelancer.getIdFreelancer()) {
-                    clientProjects.add(p);
+            try {
+                List<uniearn.model.entities.candidature.application.Application> acceptedApps = applicationService
+                        .getApplicationsByFreelancer(currentFreelancer.getIdFreelancer())
+                        .stream()
+                        .filter(a -> a.getStatus() == uniearn.model.enums.ApplicationStatus.ACCEPTED)
+                        .collect(java.util.stream.Collectors.toList());
+
+                for (uniearn.model.entities.candidature.application.Application app : acceptedApps) {
+                    Project p = projectService.getProjectById(app.getProjectId());
+                    if (p != null) {
+                        clientProjects.add(p);
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            // Filter tasks that belong to those projects
+            // Filter tasks that belong to those accepted projects
             for (Task t : allDBTasks) {
                 boolean belongs = clientProjects.stream().anyMatch(p -> p.getIdproject() == t.getProjectid());
                 if (belongs)
