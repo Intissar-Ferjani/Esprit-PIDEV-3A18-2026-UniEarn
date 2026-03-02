@@ -6,12 +6,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
+import javafx.application.Platform;
 
 import java.io.IOException;
 
 public class HomePageController {
 
     @FXML private Button signupButton;
+    private static final String MAIN_WINDOW_POLICY_KEY = "uniearn.main_window_policy";
 
     @FXML
     public void initialize() {
@@ -56,10 +58,12 @@ public class HomePageController {
 
             Stage stage = getCurrentStage();
             if (stage == null) stage = new Stage();
+            ensureMainWindowPolicy(stage);
 
-            stage.setScene(new Scene(root, width, height));
+            stage.setScene(new Scene(root));
             stage.setTitle(title);
             stage.setResizable(true);
+            stage.setMaximized(true);
             stage.centerOnScreen();
             stage.show();
 
@@ -76,5 +80,19 @@ public class HomePageController {
             }
         } catch (Exception ignored) {}
         return null;
+    }
+
+    private void ensureMainWindowPolicy(Stage stage) {
+        if (stage.getProperties().containsKey(MAIN_WINDOW_POLICY_KEY)) {
+            return;
+        }
+        stage.getProperties().put(MAIN_WINDOW_POLICY_KEY, true);
+        stage.setMinWidth(900);
+        stage.setMinHeight(600);
+        stage.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                Platform.runLater(() -> stage.setMaximized(true));
+            }
+        });
     }
 }

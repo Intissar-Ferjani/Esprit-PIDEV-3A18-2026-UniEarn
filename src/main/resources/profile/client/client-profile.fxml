@@ -9,7 +9,7 @@
 <?import javafx.scene.text.*?>
 <?import org.kordamp.ikonli.javafx.*?>
 
-<BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root" stylesheets="@../../profile/profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.client.ClientProfileController">
+<BorderPane styleClass="root" stylesheets="@../../profile/profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.client.ClientProfileController">
 
     <!-- ══ Top Navigation Bar ══════════════════════════════════════════ -->
     <top>
@@ -118,7 +118,7 @@
                         <VBox styleClass="profile-header-card">
 
                             <!-- Gradient banner strip -->
-                            <Pane prefHeight="24.0" prefWidth="862.0" styleClass="profile-banner">
+                            <Pane maxHeight="24.0" minHeight="24.0" styleClass="profile-banner">
                         <VBox.margin>
                            <Insets bottom="20.0" />
                         </VBox.margin></Pane>
@@ -257,7 +257,7 @@
                                                     <padding><Insets bottom="0" left="10" right="10" top="0" /></padding>
                                                     <children>
                                                         <FontIcon iconLiteral="fas-search" iconSize="13" styleClass="search-icon" />
-                                                        <TextField fx:id="searchField" prefWidth="175.0" promptText="Search projects..." styleClass="search-field-inner">
+                                                        <TextField fx:id="searchField" promptText="Search projects..." styleClass="search-field-inner">
                                                             <font><Font size="13.0" /></font>
                                                         </TextField>
                                                     </children>
@@ -272,7 +272,7 @@
                                 </Separator>
 
                                 <!-- Projects list -->
-                                <ScrollPane fitToWidth="true" prefHeight="340.0" styleClass="projects-scroll">
+                                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="projects-scroll">
                                     <content>
                                         <VBox fx:id="postedProjectsContainer" spacing="12.0">
                                             <padding><Insets top="4.0" /></padding>

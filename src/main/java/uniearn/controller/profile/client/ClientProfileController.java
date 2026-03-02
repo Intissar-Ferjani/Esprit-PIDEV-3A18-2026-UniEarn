@@ -711,8 +711,9 @@ public class ClientProfileController {
             }
 
             if (stage != null) {
-                stage.setScene(new Scene(root, 750, 600));
+                stage.setScene(new Scene(root));
                 stage.setTitle("Login - UniEarn");
+                stage.setMaximized(true);
                 stage.centerOnScreen();
             } else {
                 showErrorAlert("Error", "Unable to navigate to login page.");

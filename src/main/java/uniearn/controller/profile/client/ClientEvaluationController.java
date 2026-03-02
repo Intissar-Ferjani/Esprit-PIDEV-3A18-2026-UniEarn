@@ -21,7 +21,7 @@ public class ClientEvaluationController {
 
     // --- FXML Fields: Sidebar ---
     @FXML
-    private VBox sidebarListContainer;
+    private FlowPane sidebarListContainer;
     @FXML
     private TextField txtSearchTerm;
     @FXML

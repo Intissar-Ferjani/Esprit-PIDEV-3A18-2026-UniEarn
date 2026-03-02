@@ -402,8 +402,9 @@ public class ListUsersController {
             }
 
             Stage stage = (Stage) usersRowsContainer.getScene().getWindow();
-            stage.setScene(new Scene(root, 1200, 700));
+            stage.setScene(new Scene(root));
             stage.setTitle("Admin Dashboard - UniEarn");
+            stage.setMaximized(true);
             stage.centerOnScreen();
         } catch (IOException e) {
             e.printStackTrace();
@@ -435,8 +436,9 @@ public class ListUsersController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/login/login.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) usersRowsContainer.getScene().getWindow();
-            stage.setScene(new Scene(root, 750, 600));
+            stage.setScene(new Scene(root));
             stage.setTitle("Login - UniEarn");
+            stage.setMaximized(true);
             stage.centerOnScreen();
         } catch (IOException e) {
             e.printStackTrace();

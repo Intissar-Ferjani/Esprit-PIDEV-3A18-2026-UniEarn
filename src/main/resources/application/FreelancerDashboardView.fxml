@@ -7,47 +7,43 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.chart.*?>
 
-<BorderPane prefHeight="700.0" prefWidth="1200.0"
-            style="-fx-background-color: #f5f7fa;"
-            xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="uniearn.controller.profile.freelancer.FreelancerDashboardController">
+<VBox spacing="0.0" style="-fx-background-color: #f5f7fa;"
+      xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="uniearn.controller.profile.freelancer.FreelancerDashboardController">
 
-    <!-- ═══════════════════════════════════════════════════════ TOP BAR -->
-    <top>
-        <HBox alignment="CENTER_LEFT" prefHeight="70.0" spacing="20.0"
-              style="-fx-background-color: white; -fx-border-color: #e1e8ed; -fx-border-width: 0 0 1 0;
-                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
-            <padding><Insets left="30.0" right="30.0"/></padding>
-            <children>
-                <Button fx:id="btnBackToProjects" onAction="#handleBackToProjects" text="← Projets"
-                        visible="false" managed="false"
-                        style="-fx-background-color: #f0f4f8; -fx-text-fill: #4a5568; -fx-font-weight: bold;
-                               -fx-background-radius: 8; -fx-padding: 8 16; -fx-cursor: hand; -fx-font-size: 13px;"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <!-- Tab Toggle Pill -->
-                <HBox fx:id="topNavPill" spacing="4.0" alignment="CENTER"
-                      style="-fx-background-color: #f0f4f8; -fx-background-radius: 10; -fx-padding: 4;">
-                    <Button fx:id="btnTglApps" onAction="#handleShowApps" text="📋  Candidatures"
-                            style="-fx-background-color: #1877f2; -fx-text-fill: white; -fx-font-weight: bold;
-                                   -fx-font-size: 12px; -fx-background-radius: 7; -fx-cursor: hand; -fx-padding: 7 18;
-                                   -fx-effect: dropshadow(gaussian, rgba(24,119,242,0.4), 6, 0, 0, 2);"/>
-                    <Button fx:id="btnTglEvals" onAction="#handleShowEvals" text="⭐  Avis"
-                            style="-fx-background-color: transparent; -fx-text-fill: #64748b;
-                                   -fx-font-size: 12px; -fx-background-radius: 7; -fx-cursor: hand; -fx-padding: 7 18;"/>
-                    <Button fx:id="btnTglStats" onAction="#handleShowStats" text="📊  Stats"
-                            style="-fx-background-color: transparent; -fx-text-fill: #64748b;
-                                   -fx-font-size: 12px; -fx-background-radius: 7; -fx-cursor: hand; -fx-padding: 7 18;"/>
-                </HBox>
-                <Region HBox.hgrow="ALWAYS"/>
-            </children>
-        </HBox>
-    </top>
+    <!-- ═══════════════════════════════════════════════════════ SUB-NAVIGATION BAR -->
+    <HBox alignment="CENTER_LEFT" prefHeight="70.0" spacing="20.0"
+          style="-fx-background-color: white; -fx-border-color: #e1e8ed; -fx-border-width: 0 0 1 0;
+                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+        <padding><Insets left="30.0" right="30.0"/></padding>
+        <children>
+            <Button fx:id="btnBackToProjects" onAction="#handleBackToProjects" text="← Projets"
+                    visible="false" managed="false"
+                    style="-fx-background-color: #f0f4f8; -fx-text-fill: #4a5568; -fx-font-weight: bold;
+                           -fx-background-radius: 8; -fx-padding: 8 16; -fx-cursor: hand; -fx-font-size: 13px;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <!-- Tab Toggle Pill -->
+            <HBox fx:id="topNavPill" spacing="4.0" alignment="CENTER"
+                  style="-fx-background-color: #f0f4f8; -fx-background-radius: 10; -fx-padding: 4;">
+                <Button fx:id="btnTglApps" onAction="#handleShowApps" text="📋  Candidatures"
+                        style="-fx-background-color: #1877f2; -fx-text-fill: white; -fx-font-weight: bold;
+                               -fx-font-size: 12px; -fx-background-radius: 7; -fx-cursor: hand; -fx-padding: 7 18;
+                               -fx-effect: dropshadow(gaussian, rgba(24,119,242,0.4), 6, 0, 0, 2);"/>
+                <Button fx:id="btnTglEvals" onAction="#handleShowEvals" text="⭐  Avis"
+                        style="-fx-background-color: transparent; -fx-text-fill: #64748b;
+                               -fx-font-size: 12px; -fx-background-radius: 7; -fx-cursor: hand; -fx-padding: 7 18;"/>
+                <Button fx:id="btnTglStats" onAction="#handleShowStats" text="📊  Stats"
+                        style="-fx-background-color: transparent; -fx-text-fill: #64748b;
+                               -fx-font-size: 12px; -fx-background-radius: 7; -fx-cursor: hand; -fx-padding: 7 18;"/>
+            </HBox>
+            <Region HBox.hgrow="ALWAYS"/>
+        </children>
+    </HBox>
 
     <!-- ═══════════════════════════════════════════════════ MAIN CONTENT -->
-    <center>
-        <StackPane fx:id="mainContent">
-            <children>
+    <StackPane fx:id="mainContent" VBox.vgrow="ALWAYS">
+        <children>
 
                 <!-- ══════════════════════════════════════════
                      VIEW: APPLICATIONS (FlowPane cards)
@@ -508,7 +504,6 @@
                                   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);"/>
                 </VBox>
 
-            </children>
         </StackPane>
-    </center>
-</BorderPane>
+    </children>
+</VBox>

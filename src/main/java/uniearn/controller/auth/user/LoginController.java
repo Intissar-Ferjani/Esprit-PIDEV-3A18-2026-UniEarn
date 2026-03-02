@@ -1,5 +1,6 @@
 package uniearn.controller.auth.user;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -32,6 +33,7 @@ public class LoginController {
     private final UserService userService = new UserService();
     private final ClientService clientService = new ClientService();
     private final FreelancerService freelancerService = new FreelancerService();
+    private static final String MAIN_WINDOW_POLICY_KEY = "uniearn.main_window_policy";
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
@@ -139,6 +141,7 @@ public class LoginController {
     private void redirectToProfile(User user) {
         try {
             Stage stage = (Stage) loginButton.getScene().getWindow();
+            ensureMainWindowPolicy(stage);
 
             switch (user.getRole()) {
                 case CLIENT:
@@ -186,8 +189,9 @@ public class LoginController {
         ClientProfileController controller = loader.getController();
         controller.setClientData(client);
 
-        stage.setScene(new Scene(root, 1200, 800));
+        stage.setScene(new Scene(root));
         stage.setTitle("Client Profile - UniEarn");
+        stage.setMaximized(true);
         stage.centerOnScreen();
 
         System.out.println("✓ Redirected to Client Profile successfully");
@@ -214,8 +218,9 @@ public class LoginController {
         FreelancerProfileController controller = loader.getController();
         controller.setFreelancerData(freelancer);
 
-        stage.setScene(new Scene(root, 1200, 800));
+        stage.setScene(new Scene(root));
         stage.setTitle("Freelancer Profile - UniEarn");
+        stage.setMaximized(true);
         stage.centerOnScreen();
 
         System.out.println("✓ Redirected to Freelancer Profile successfully");
@@ -225,8 +230,9 @@ public class LoginController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/admin/admin-dashboard.fxml"));
         Parent root = loader.load();
 
-        stage.setScene(new Scene(root, 1200, 700));
+        stage.setScene(new Scene(root));
         stage.setTitle("Admin Dashboard - UniEarn");
+        stage.setMaximized(true);
         stage.centerOnScreen();
 
         System.out.println("✓ Redirected to Admin Dashboard");
@@ -242,8 +248,10 @@ public class LoginController {
             Parent signupRoot = loader.load();
 
             Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(new Scene(signupRoot, 750, 800));
+            ensureMainWindowPolicy(stage);
+            stage.setScene(new Scene(signupRoot));
             stage.setTitle("Sign Up - UniEarn");
+            stage.setMaximized(true);
             stage.centerOnScreen();
 
         } catch (IOException e) {
@@ -260,8 +268,10 @@ public class LoginController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/login/forgot-password.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(new Scene(root, 750, 550));
+            ensureMainWindowPolicy(stage);
+            stage.setScene(new Scene(root));
             stage.setTitle("Forgot Password - UniEarn");
+            stage.setMaximized(true);
             stage.centerOnScreen();
         } catch (IOException e) {
             e.printStackTrace();
@@ -289,5 +299,19 @@ public class LoginController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private void ensureMainWindowPolicy(Stage stage) {
+        if (stage.getProperties().containsKey(MAIN_WINDOW_POLICY_KEY)) {
+            return;
+        }
+        stage.getProperties().put(MAIN_WINDOW_POLICY_KEY, true);
+        stage.setMinWidth(900);
+        stage.setMinHeight(600);
+        stage.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                Platform.runLater(() -> stage.setMaximized(true));
+            }
+        });
     }
 }

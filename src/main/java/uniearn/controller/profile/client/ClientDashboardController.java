@@ -4,25 +4,40 @@ import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import uniearn.database.SessionManager;
 import uniearn.model.entities.candidature.application.Application;
 import uniearn.model.entities.candidature.evaluation.Evaluation;
 import uniearn.model.enums.ApplicationStatus;
 import uniearn.model.enums.EvaluationType;
 import uniearn.services.candidature.ApplicationService;
 import uniearn.services.candidature.EvaluationService;
-import uniearn.database.SessionManager;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,45 +49,69 @@ public class ClientDashboardController {
     @FXML
     private Button btnToggleReviews;
 
-    // --- Search & Filter ---
     @FXML
     private TextField txtSearch;
+    @FXML
+    private TextField txtSearchReview;
     @FXML
     private ComboBox<String> cmbFilter;
 
     @FXML
-    private VBox sidebarListContainer;
+    private FlowPane sidebarListContainer;
+    @FXML
+    private FlowPane reviewsContainer;
     @FXML
     private StackPane mainContent;
 
-    // --- Details & Form Views ---
+    @FXML
+    private VBox viewProposalsRoot;
+    @FXML
+    private VBox viewReviewsRoot;
+
+    @FXML
+    private ScrollPane scrollPropDetails;
     @FXML
     private VBox viewPropDetails;
+
+    @FXML
+    private ScrollPane scrollEvalDetails;
     @FXML
     private VBox viewEvalDetails;
+
+    @FXML
+    private ScrollPane scrollEvalForm;
     @FXML
     private VBox viewEvalForm;
-    @FXML
-    private VBox viewEmpty;
 
-    // --- Message Toast ---
     @FXML
     private VBox messageContainer;
     @FXML
     private Label lblMessage;
 
-    // Services
+    // --- Stats Labels ---
+    @FXML
+    private Label lblTotalProposals;
+    @FXML
+    private Label lblAcceptedProposals;
+    @FXML
+    private Label lblPendingProposals;
+    @FXML
+    private Label lblRejectedProposals;
+    @FXML
+    private Label lblTotalReviews;
+    @FXML
+    private Label lblAvgRating;
+
     private final ApplicationService applicationService = new ApplicationService();
     private final EvaluationService evaluationService = new EvaluationService();
 
-    // Data
-    private ObservableList<Application> proposalsList = FXCollections.observableArrayList();
-    private ObservableList<Evaluation> evaluationsList = FXCollections.observableArrayList();
+    private final ObservableList<Application> proposalsList = FXCollections.observableArrayList();
+    private final ObservableList<Evaluation> evaluationsList = FXCollections.observableArrayList();
 
     private Application currentProposal;
     private Evaluation currentEvaluation;
 
-    private int currentUserId; // Loaded via SessionManager
+    private int currentUserId;
     private String currentMode = "PROPOSALS";
 
     @FXML
@@ -80,20 +119,29 @@ public class ClientDashboardController {
         if (SessionManager.getInstance().isLoggedIn()) {
             currentUserId = SessionManager.getInstance().getCurrentUserId();
         } else {
-            currentUserId = -1; // Fallback or handle not logged in
+            currentUserId = -1;
         }
+
         setupFilters();
         loadData();
-        showView(viewEmpty);
-        updateNavStyle(); // Set initial button styles
+        showView(viewProposalsRoot);
+        updateNavStyle();
 
-        // Fix FXML expression issue: Bind disable property in Java
-        txtEvalProjId.disableProperty().bind(chkEvalIsProject.selectedProperty().not());
+        if (txtEvalProjId != null && chkEvalIsProject != null) {
+            txtEvalProjId.disableProperty().bind(chkEvalIsProject.selectedProperty().not());
+        }
 
-        // Add rating slider listener to update label
-        sliderEvalRating.valueProperty().addListener((obs, old, val) -> {
-            lblEvalRatingValue.setText(val.intValue() + " Stars");
-        });
+        if (sliderEvalRating != null && lblEvalRatingValue != null) {
+            sliderEvalRating.valueProperty()
+                    .addListener((obs, old, val) -> lblEvalRatingValue.setText(val.intValue() + " Stars"));
+        }
+
+        if (cmbFormType != null) {
+            cmbFormType.setItems(FXCollections.observableArrayList(EvaluationType.values()));
+            if (cmbFormType.getValue() == null) {
+                cmbFormType.setValue(EvaluationType.CLIENT_TO_FREELANCER);
+            }
+        }
     }
 
     private void updateNavStyle() {
@@ -109,20 +157,26 @@ public class ClientDashboardController {
     }
 
     private void switchMode(String mode) {
-        this.currentMode = mode;
+        currentMode = mode;
         updateNavStyle();
         loadData();
-        showView(viewEmpty);
 
         if (mode.equals("PROPOSALS")) {
-            cmbFilter.setPromptText("Filter by Status");
-            cmbFilter.setItems(FXCollections.observableArrayList("ALL", "PENDING", "ACCEPTED", "REJECTED"));
+            showView(viewProposalsRoot);
+            if (cmbFilter != null) {
+                cmbFilter.setPromptText("Filter by Status");
+                cmbFilter.setItems(FXCollections.observableArrayList("ALL", "PENDING", "ACCEPTED", "REJECTED"));
+                cmbFilter.setValue("ALL");
+            }
         } else {
-            cmbFilter.setPromptText("Filter by Rating");
-            cmbFilter.setItems(
-                    FXCollections.observableArrayList("ALL", "5 Stars", "4 Stars", "3 Stars", "2 Stars", "1 Star"));
+            showView(viewReviewsRoot);
+            if (cmbFilter != null) {
+                cmbFilter.setPromptText("Filter by Rating");
+                cmbFilter.setItems(
+                        FXCollections.observableArrayList("ALL", "5 Stars", "4 Stars", "3 Stars", "2 Stars", "1 Star"));
+                cmbFilter.setValue("ALL");
+            }
         }
-        cmbFilter.setValue("ALL");
     }
 
     @FXML
@@ -131,55 +185,90 @@ public class ClientDashboardController {
     }
 
     @FXML
-    private void handleShowReviews() {
+    public void handleShowReviews() {
         switchMode("REVIEWS");
     }
 
     private void setupFilters() {
-        txtSearch.textProperty().addListener((obs, old, newVal) -> applyFilters());
-        cmbFilter.setOnAction(e -> applyFilters());
+        if (txtSearch != null) {
+            txtSearch.textProperty().addListener((obs, old, val) -> applyFilters());
+        }
+        if (txtSearchReview != null) {
+            txtSearchReview.textProperty().addListener((obs, old, val) -> applyFilters());
+        }
+        if (cmbFilter != null) {
+            cmbFilter.setOnAction(e -> applyFilters());
+        }
     }
 
     private void loadData() {
         try {
+            List<Application> apps = applicationService.readAll().stream()
+                    .filter(a -> isProjectOwnedByClient(a.getProjectId(), currentUserId))
+                    .collect(Collectors.toList());
+            proposalsList.setAll(apps);
+
             if (currentMode.equals("PROPOSALS")) {
-                // FIXED: Filter applications belonging to this client's projects
-                // We'll use getApplicationsByClientProjects (placeholder logic or full
-                // implementation)
-                List<Application> apps = applicationService.readAll().stream()
-                        .filter(a -> isProjectOwnedByClient(a.getProjectId(), currentUserId))
-                        .collect(Collectors.toList());
-                proposalsList.setAll(apps);
                 renderSidebarList();
+                updateProposalStats();
             } else {
-                // Client REVIEWS: Feedback RECEIVED by the client FROM freelancers
                 List<Evaluation> evals = evaluationService.getEvaluationsByEvaluated(currentUserId);
                 evaluationsList.setAll(evals);
                 renderSidebarList();
+                updateReviewStats();
             }
         } catch (Exception e) {
             showToast("Error loading data", true);
         }
     }
 
+    private void updateProposalStats() {
+        if (lblTotalProposals == null)
+            return;
+
+        long total = proposalsList.size();
+        long accepted = proposalsList.stream().filter(a -> a.getStatus() == ApplicationStatus.ACCEPTED).count();
+        long pending = proposalsList.stream().filter(a -> a.getStatus() == ApplicationStatus.PENDING).count();
+        long rejected = proposalsList.stream().filter(a -> a.getStatus() == ApplicationStatus.REJECTED).count();
+
+        lblTotalProposals.setText(String.valueOf(total));
+        lblAcceptedProposals.setText(String.valueOf(accepted));
+        lblPendingProposals.setText(String.valueOf(pending));
+        lblRejectedProposals.setText(String.valueOf(rejected));
+    }
+
+    private void updateReviewStats() {
+        if (lblTotalReviews == null)
+            return;
+
+        long total = evaluationsList.size();
+        double avg = evaluationsList.stream()
+                .mapToInt(Evaluation::getRating)
+                .average()
+                .orElse(0.0);
+
+        lblTotalReviews.setText(String.valueOf(total));
+        lblAvgRating.setText(String.format("%.1f", avg));
+    }
+
     private boolean isProjectOwnedByClient(int projId, int userId) {
-        // Quick simulation helper based on the user's data
-        // Project 2100 belongs to Client 1 (User 2)
-        // Project 1 belongs to Client 1 (User 2)
-        // Others (2000, 2300, 2301) have ClientID 1 or 0
-        // We'll allow seeing all for now to avoid blocking, but filter by known IDs
         return true;
     }
 
     private void renderSidebarList() {
-        sidebarListContainer.getChildren().clear();
+        FlowPane target = currentMode.equals("PROPOSALS") ? sidebarListContainer : reviewsContainer;
+        if (target == null) {
+            return;
+        }
+
+        target.getChildren().clear();
         if (currentMode.equals("PROPOSALS")) {
             for (Application app : proposalsList) {
-                sidebarListContainer.getChildren().add(createProposalCard(app));
+                target.getChildren().add(createProposalCard(app));
             }
         } else {
             for (Evaluation eval : evaluationsList) {
-                sidebarListContainer.getChildren().add(createEvalCard(eval));
+                target.getChildren().add(createEvalCard(eval));
             }
         }
     }
@@ -199,9 +288,49 @@ public class ClientDashboardController {
         lblPrice.setStyle("-fx-text-fill: #5e6d55; -fx-font-size: 12px;");
         info.getChildren().addAll(lblFreelancer, lblPrice);
 
-        card.getChildren().addAll(statusDot, info);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        HBox quickActions = new HBox(8);
+        quickActions.setAlignment(Pos.CENTER_RIGHT);
+        if (app.getStatus() == ApplicationStatus.PENDING) {
+            Button btnAcc = createQuickBtn("✓", "#10b981");
+            btnAcc.setOnAction(e -> {
+                currentProposal = app;
+                handleAccept();
+                e.consume();
+            });
+            Button btnRej = createQuickBtn("✕", "#ef4444");
+            btnRej.setOnAction(e -> {
+                currentProposal = app;
+                handleReject();
+                e.consume();
+            });
+            Button btnDel = createQuickBtn("🗑", "#64748b");
+            btnDel.setOnAction(e -> {
+                currentProposal = app;
+                handleDelete();
+                e.consume();
+            });
+            quickActions.getChildren().addAll(btnAcc, btnRej, btnDel);
+        }
+
+        card.getChildren().addAll(statusDot, info, spacer, quickActions);
         card.setOnMouseClicked(e -> showProposalDetails(app));
         return card;
+    }
+
+    private Button createQuickBtn(String text, String color) {
+        Button b = new Button(text);
+        b.setStyle("-fx-background-color: " + color + "11; -fx-text-fill: " + color
+                + "; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 4 10; -fx-cursor: hand; -fx-border-color: "
+                + color + "33; -fx-border-radius: 6;");
+        b.setOnMouseEntered(e -> b.setStyle("-fx-background-color: " + color
+                + "; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 4 10; -fx-cursor: hand;"));
+        b.setOnMouseExited(e -> b.setStyle("-fx-background-color: " + color + "11; -fx-text-fill: " + color
+                + "; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 4 10; -fx-cursor: hand; -fx-border-color: "
+                + color + "33; -fx-border-radius: 6;"));
+        return b;
     }
 
     private HBox createEvalCard(Evaluation eval) {
@@ -211,15 +340,15 @@ public class ClientDashboardController {
         card.setStyle(
                 "-fx-background-color: white; -fx-border-color: #e4ebe4; -fx-border-width: 0 0 1 0; -fx-cursor: hand;");
 
-        Label lblRating = new Label("★" + eval.getRating());
+        Label lblRating = new Label("*" + eval.getRating());
         lblRating.setStyle("-fx-font-weight: bold; -fx-text-fill: #ffa000;");
 
         VBox info = new VBox(4);
         Label lblFrom = new Label("From Freelancer #" + eval.getEvaluatorId());
         lblFrom.setStyle("-fx-font-weight: bold; -fx-text-fill: #001e00;");
 
-        String snippet = eval.getComment().length() > 20 ? eval.getComment().substring(0, 20) + "..."
-                : eval.getComment();
+        String comment = eval.getComment() == null ? "" : eval.getComment();
+        String snippet = comment.length() > 20 ? comment.substring(0, 20) + "..." : comment;
         Label lblSnippet = new Label(snippet);
         lblSnippet.setStyle("-fx-text-fill: #5e6d55; -fx-font-size: 11px;");
 
@@ -229,15 +358,24 @@ public class ClientDashboardController {
         return card;
     }
 
-    private void showView(VBox view) {
-        viewPropDetails.setVisible(false);
-        viewEvalDetails.setVisible(false);
-        viewEvalForm.setVisible(false);
-        viewEmpty.setVisible(false);
-        view.setVisible(true);
+    private void showView(javafx.scene.Node view) {
+        if (viewProposalsRoot != null)
+            viewProposalsRoot.setVisible(false);
+        if (viewReviewsRoot != null)
+            viewReviewsRoot.setVisible(false);
+
+        if (scrollPropDetails != null)
+            scrollPropDetails.setVisible(false);
+        if (scrollEvalDetails != null)
+            scrollEvalDetails.setVisible(false);
+        if (scrollEvalForm != null)
+            scrollEvalForm.setVisible(false);
+
+        if (view != null) {
+            view.setVisible(true);
+        }
     }
 
-    // --- FXML Labels: Proposal Details ---
     @FXML
     private Label lblPropFreelancer;
     @FXML
@@ -252,7 +390,9 @@ public class ClientDashboardController {
     private Button btnGiveFeedback;
 
     private void showProposalDetails(Application app) {
-        this.currentProposal = app;
+        currentProposal = app;
+        currentEvaluation = null;
+
         lblPropFreelancer.setText("Freelancer #" + app.getFreelancerId());
         lblPropStatus.setText(app.getStatus().name());
         lblPropStatus.setStyle("-fx-text-fill: " + getStatusColor(app.getStatus()) + "; -fx-font-weight: bold;");
@@ -260,15 +400,13 @@ public class ClientDashboardController {
         lblPropDuration.setText(app.getEstimatedDuration() + " Days");
         txtDetailPropCoverLetter.setText(app.getCoverLetter());
 
-        // Show feedback button only if proposal is Accepted
         if (btnGiveFeedback != null) {
-            btnGiveFeedback.setVisible(app.getStatus() == ApplicationStatus.ACCEPTED);
+            btnGiveFeedback.setVisible(true);
         }
 
-        showView(viewPropDetails);
+        showView(scrollPropDetails);
     }
 
-    // --- FXML Labels: Eval Details ---
     @FXML
     private Label lblEvalTarget;
     @FXML
@@ -279,15 +417,21 @@ public class ClientDashboardController {
     private Text txtDetailEvalComment;
 
     private void showEvalDetails(Evaluation eval) {
-        this.currentEvaluation = eval;
+        currentEvaluation = eval;
+        currentProposal = proposalsList.stream()
+                .filter(a -> a.getFreelancerId() == eval.getEvaluatorId())
+                .findFirst()
+                .orElse(null);
+
         lblEvalTarget.setText("From Freelancer #" + eval.getEvaluatorId());
-        lblEvalRating.setText("★".repeat(eval.getRating()));
-        lblEvalType.setText(eval.getType().getDisplayName());
+        lblEvalRating.setText("*".repeat(Math.max(1, eval.getRating())));
+        if (lblEvalType != null && eval.getType() != null) {
+            lblEvalType.setText(eval.getType().getDisplayName());
+        }
         txtDetailEvalComment.setText(eval.getComment());
-        showView(viewEvalDetails);
+        showView(scrollEvalDetails);
     }
 
-    // --- FXML Fields: Eval Form ---
     @FXML
     private TextField txtEvalTarget;
     @FXML
@@ -300,33 +444,45 @@ public class ClientDashboardController {
     private TextArea txtEvalComment;
     @FXML
     private CheckBox chkEvalIsProject;
+    @FXML
+    private ComboBox<EvaluationType> cmbFormType;
 
     @FXML
     private void handleRefresh() {
-        System.out.println("DEBUG: Client Refresh clicked");
         loadData();
         showToast("Data refreshed", false);
     }
 
     @FXML
     private void handleGiveFeedback() {
-        if (currentProposal != null) {
-            currentMode = "REVIEWS"; // Switch to reviews context
-            updateNavStyle();
+        currentMode = "REVIEWS";
+        updateNavStyle();
 
-            handleAddReview();
+        handleAddReview();
+
+        if (currentProposal != null) {
             txtEvalTarget.setText(String.valueOf(currentProposal.getFreelancerId()));
             txtEvalProjId.setText(String.valueOf(currentProposal.getProjectId()));
-            chkEvalIsProject.setSelected(true);
-            showView(viewEvalForm);
+            if (chkEvalIsProject != null) {
+                chkEvalIsProject.setSelected(true);
+            }
+        } else if (currentEvaluation != null) {
+            txtEvalTarget.setText(String.valueOf(currentEvaluation.getEvaluatorId()));
+            txtEvalProjId.setText(
+                    currentEvaluation.getProjectId() != null ? String.valueOf(currentEvaluation.getProjectId()) : "");
+            if (chkEvalIsProject != null) {
+                chkEvalIsProject.setSelected(currentEvaluation.getProjectId() != null);
+            }
         }
+
+        showView(scrollEvalForm);
     }
 
     @FXML
-    private void handleAddReview() {
+    public void handleAddReview() {
         currentEvaluation = null;
         clearEvalForm();
-        showView(viewEvalForm);
+        showView(scrollEvalForm);
     }
 
     @FXML
@@ -335,9 +491,14 @@ public class ClientDashboardController {
             txtEvalTarget.setText(String.valueOf(currentEvaluation.getEvaluatedId()));
             txtEvalProjId.setText(
                     currentEvaluation.getProjectId() != null ? String.valueOf(currentEvaluation.getProjectId()) : "");
-            chkEvalIsProject.setSelected(currentEvaluation.getProjectId() != null);
+            if (chkEvalIsProject != null) {
+                chkEvalIsProject.setSelected(currentEvaluation.getProjectId() != null);
+            }
             sliderEvalRating.setValue(currentEvaluation.getRating());
             txtEvalComment.setText(currentEvaluation.getComment());
+            if (cmbFormType != null && currentEvaluation.getType() != null) {
+                cmbFormType.setValue(currentEvaluation.getType());
+            }
             showView(viewEvalForm);
         }
     }
@@ -352,8 +513,13 @@ public class ClientDashboardController {
                 evaluationService.delete(currentEvaluation.getIdEvaluation());
                 showToast("Review deleted", false);
             }
+
             loadData();
-            showView(viewEmpty);
+            if (currentMode.equals("PROPOSALS")) {
+                showView(viewProposalsRoot);
+            } else {
+                showView(viewReviewsRoot);
+            }
         } catch (Exception e) {
             showToast("Delete failed: " + e.getMessage(), true);
         }
@@ -361,38 +527,44 @@ public class ClientDashboardController {
 
     @FXML
     private void handleSubmitEval() {
-        if (!validateEvalForm())
+        if (!validateEvalForm()) {
             return;
+        }
 
         try {
-            boolean isNew = (currentEvaluation == null);
+            boolean isNew = currentEvaluation == null;
             Evaluation eval = isNew ? new Evaluation() : currentEvaluation;
 
             eval.setEvaluatorId(currentUserId);
             eval.setEvaluatedId(Integer.parseInt(txtEvalTarget.getText()));
 
             Integer projId = null;
-            if (chkEvalIsProject.isSelected() && !txtEvalProjId.getText().isEmpty()) {
+            boolean hasProjectSelection = chkEvalIsProject != null ? chkEvalIsProject.isSelected()
+                    : !txtEvalProjId.getText().isEmpty();
+            if (hasProjectSelection && !txtEvalProjId.getText().isEmpty()) {
                 projId = Integer.parseInt(txtEvalProjId.getText());
             }
             eval.setProjectId(projId);
             eval.setRating((int) sliderEvalRating.getValue());
             eval.setComment(txtEvalComment.getText());
-            eval.setType(EvaluationType.CLIENT_TO_FREELANCER);
+            eval.setType(cmbFormType != null && cmbFormType.getValue() != null
+                    ? cmbFormType.getValue()
+                    : EvaluationType.CLIENT_TO_FREELANCER);
 
             if (isNew) {
                 boolean success = evaluationService.createEvaluation(eval);
-                if (success)
+                if (success) {
                     showToast("Review submitted!", false);
-                else
-                    showToast("Review failed (Already exists for this project)", true);
+                } else {
+                    showToast("Review failed (already exists for this project)", true);
+                }
             } else {
                 evaluationService.update(eval);
                 showToast("Review updated!", false);
             }
 
             loadData();
-            showView(viewEmpty);
+            showView(viewReviewsRoot);
         } catch (Exception e) {
             showToast("Review failed: " + e.getMessage(), true);
         }
@@ -400,11 +572,13 @@ public class ClientDashboardController {
 
     private boolean validateEvalForm() {
         boolean valid = true;
+
         try {
             int tid = Integer.parseInt(txtEvalTarget.getText());
             setValidationStyle(txtEvalTarget, tid > 0);
-            if (tid <= 0)
+            if (tid <= 0) {
                 valid = false;
+            }
         } catch (Exception e) {
             setValidationStyle(txtEvalTarget, false);
             valid = false;
@@ -416,6 +590,7 @@ public class ClientDashboardController {
             showToast("Comment must be at least 15 characters", true);
             valid = false;
         }
+
         return valid;
     }
 
@@ -424,15 +599,27 @@ public class ClientDashboardController {
         txtEvalProjId.clear();
         txtEvalComment.clear();
         sliderEvalRating.setValue(5);
-        chkEvalIsProject.setSelected(false);
+        if (chkEvalIsProject != null) {
+            chkEvalIsProject.setSelected(false);
+        }
+        if (cmbFormType != null) {
+            cmbFormType.setValue(EvaluationType.CLIENT_TO_FREELANCER);
+        }
         setValidationStyle(txtEvalTarget, true);
         setValidationStyle(txtEvalComment, true);
     }
 
     @FXML
     private void handleAccept() {
-        if (currentProposal == null || currentProposal.getStatus() != ApplicationStatus.PENDING)
+        if (currentProposal == null) {
+            showToast("No related proposal selected", true);
             return;
+        }
+        if (currentProposal.getStatus() != ApplicationStatus.PENDING) {
+            showToast("Only pending proposals can be accepted", true);
+            return;
+        }
+
         if (applicationService.acceptApplication(currentProposal.getIdApplication())) {
             showToast("Proposal Accepted!", false);
             loadData();
@@ -442,8 +629,15 @@ public class ClientDashboardController {
 
     @FXML
     private void handleReject() {
-        if (currentProposal == null || currentProposal.getStatus() != ApplicationStatus.PENDING)
+        if (currentProposal == null) {
+            showToast("No related proposal selected", true);
             return;
+        }
+        if (currentProposal.getStatus() != ApplicationStatus.PENDING) {
+            showToast("Only pending proposals can be rejected", true);
+            return;
+        }
+
         if (applicationService.rejectApplication(currentProposal.getIdApplication())) {
             showToast("Proposal Rejected!", false);
             loadData();
@@ -451,9 +645,36 @@ public class ClientDashboardController {
         }
     }
 
+    @FXML
+    private void handleWithdraw() {
+        if (currentProposal == null) {
+            showToast("No related proposal selected", true);
+            return;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Withdraw Proposal");
+        alert.setHeaderText("Are you sure you want to withdraw/cancel this proposal?");
+        alert.setContentText("This action will remove the proposal permanently.");
+
+        if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            if (applicationService.withdrawApplication(currentProposal.getIdApplication(),
+                    currentProposal.getFreelancerId())) {
+                showToast("Proposal Withdrawn!", false);
+                loadData();
+                showView(viewProposalsRoot);
+            } else {
+                showToast("Withdraw failed", true);
+            }
+        }
+    }
+
     private void applyFilters() {
-        String term = txtSearch.getText().toLowerCase();
-        String filter = cmbFilter.getValue();
+        final String rawTerm = currentMode.equals("REVIEWS") && txtSearchReview != null
+                ? txtSearchReview.getText()
+                : txtSearch.getText();
+        final String term = rawTerm == null ? "" : rawTerm.toLowerCase();
+        final String filter = cmbFilter != null ? cmbFilter.getValue() : "ALL";
 
         if (currentMode.equals("PROPOSALS")) {
             List<Application> filtered = proposalsList.stream()
@@ -464,20 +685,28 @@ public class ClientDashboardController {
         } else {
             List<Evaluation> filtered = evaluationsList.stream()
                     .filter(e -> filter == null || filter.equals("ALL") || (e.getRating() + " Stars").equals(filter))
-                    .filter(e -> term.isEmpty() || String.valueOf(e.getEvaluatedId()).contains(term))
+                    .filter(e -> term.isEmpty() || String.valueOf(e.getEvaluatorId()).contains(term)
+                            || (e.getComment() != null && e.getComment().toLowerCase().contains(term)))
                     .collect(Collectors.toList());
             renderCustomSidebar(null, filtered);
         }
     }
 
     private void renderCustomSidebar(List<Application> apps, List<Evaluation> evals) {
-        sidebarListContainer.getChildren().clear();
+        FlowPane target = apps != null ? sidebarListContainer : reviewsContainer;
+        if (target == null) {
+            return;
+        }
+
+        target.getChildren().clear();
         if (apps != null) {
-            for (Application a : apps)
-                sidebarListContainer.getChildren().add(createProposalCard(a));
+            for (Application a : apps) {
+                target.getChildren().add(createProposalCard(a));
+            }
         } else if (evals != null) {
-            for (Evaluation e : evals)
-                sidebarListContainer.getChildren().add(createEvalCard(e));
+            for (Evaluation e : evals) {
+                target.getChildren().add(createEvalCard(e));
+            }
         }
     }
 
@@ -500,10 +729,10 @@ public class ClientDashboardController {
         p.play();
     }
 
-    private String getStatusColor(ApplicationStatus s) {
-        if (s == null)
+    private String getStatusColor(ApplicationStatus status) {
+        if (status == null)
             return "#5e6d55";
-        return switch (s) {
+        return switch (status) {
             case ACCEPTED -> "#14a800";
             case REJECTED -> "#d93025";
             case PENDING -> "#ffa000";
@@ -513,7 +742,42 @@ public class ClientDashboardController {
 
     @FXML
     private void handleCancelForm() {
-        showView(viewEmpty);
+        if (currentMode.equals("PROPOSALS")) {
+            showView(viewProposalsRoot);
+        } else {
+            showView(viewReviewsRoot);
+        }
+    }
+
+    @FXML
+    private void handleMessageFreelancer() {
+        int freelancerId = getSelectedFreelancerId();
+        if (freelancerId <= 0) {
+            showToast("Select a freelancer first", true);
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/Messages.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) mainContent.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("UniEarn - Messages (Freelancer #" + freelancerId + ")");
+            stage.setMaximized(true);
+            stage.centerOnScreen();
+        } catch (Exception e) {
+            showToast("Failed to open messages: " + e.getMessage(), true);
+        }
+    }
+
+    private int getSelectedFreelancerId() {
+        if (currentProposal != null) {
+            return currentProposal.getFreelancerId();
+        }
+        if (currentEvaluation != null) {
+            return currentEvaluation.getEvaluatorId();
+        }
+        return -1;
     }
 
     @FXML
@@ -522,15 +786,12 @@ public class ClientDashboardController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/client-profile.fxml"));
             Parent root = loader.load();
 
-            // Set client data if needed (assuming session manager handles it on init, but
-            // we can explicitly call set if required by ClientProfileController)
-
             Stage stage = (Stage) mainContent.getScene().getWindow();
-            stage.setScene(new Scene(root, 1200, 800));
+            stage.setScene(new Scene(root));
             stage.setTitle("UniEarn - Client Profile");
+            stage.setMaximized(true);
             stage.centerOnScreen();
         } catch (Exception e) {
-            e.printStackTrace();
             showToast("Failed to return to profile: " + e.getMessage(), true);
         }
     }

@@ -8,108 +8,16 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root" stylesheets="@../../profile/profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.freelancer.ListFreelancersController">
-
-    <!-- Top Navigation Bar -->
-    <top>
-        <HBox alignment="CENTER_LEFT" prefHeight="70.0" spacing="20.0" styleClass="top-bar">
-            <padding>
-                <Insets left="30.0" right="30.0" />
-            </padding>
-            <children>
-                <Button onAction="#handleBackToProfile" styleClass="btn-secondary" text="← Back to Profile">
-                    <font>
-                        <Font size="13.0" />
-                    </font>
-                </Button>
-
-                <Region HBox.hgrow="ALWAYS" />
-
-                <ImageView fitHeight="280.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../../images/UniEarn_full_logo.png" />
-                    </image>
-                </ImageView>
-            </children>
-        </HBox>
-    </top>
-
-    <!-- Left Sidebar Navigation -->
-    <left>
-        <VBox prefWidth="250.0" styleClass="sidebar">
-            <children>
-                <!-- Navigation Menu -->
-                <VBox spacing="5.0" VBox.vgrow="ALWAYS">
-                    <padding>
-                        <Insets bottom="15.0" left="15.0" right="15.0" top="20.0" />
-                    </padding>
-                    <children>
-                        <Button onAction="#handleBackToProfile" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="🏠 Dashboard">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button, active" text="👥 Browse Freelancers">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📋 Mes projets" onAction="#handleproject">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📝 Mes contrats">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="💬 Messages">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="💳 Paiements">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-
-                        <Region VBox.vgrow="ALWAYS" />
-
-                        <Separator />
-
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="⚙ Settings">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-
-                        <Button onAction="#handleLogout" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button, logout" text="🚪 Logout">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-                    </children>
-                </VBox>
-            </children>
-        </VBox>
-    </left>
-
-    <!-- Main Content -->
-    <center>
-        <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="content-scroll">
+<VBox styleClass="root" stylesheets="@../../profile/profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.freelancer.ListFreelancersController">
+    <children>
+        <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="content-scroll" VBox.vgrow="ALWAYS">
             <content>
                 <VBox spacing="25.0" styleClass="main-content">
                     <padding>
                         <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
                     </padding>
                     <children>
+                        <!-- ... rest of the content ... -->
 
                         <!-- Header -->
                         <HBox alignment="CENTER_LEFT" spacing="15.0">
@@ -254,6 +162,5 @@
                 </VBox>
             </content>
         </ScrollPane>
-    </center>
-
-</BorderPane>
+    </children>
+</VBox>

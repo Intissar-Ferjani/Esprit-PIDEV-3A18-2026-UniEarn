@@ -1,6 +1,7 @@
 package uniearn.app;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -12,13 +13,25 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/home/HomePage.fxml"));
 
-        Scene scene = new Scene(root, 1100, 700);
+        Scene scene = new Scene(root);
+
+        // Keep the main window maximized whenever a new Scene is set.
+        primaryStage.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                Platform.runLater(() -> {
+                    primaryStage.setMinWidth(900);
+                    primaryStage.setMinHeight(600);
+                    primaryStage.setMaximized(true);
+                });
+            }
+        });
 
         primaryStage.setTitle("UniEarn — Plateforme de freelancing étudiant");
         primaryStage.setScene(scene);
         primaryStage.setResizable(true);
         primaryStage.setMinWidth(900);
         primaryStage.setMinHeight(600);
+        primaryStage.setMaximized(true);
         primaryStage.centerOnScreen();
         primaryStage.show();
     }
