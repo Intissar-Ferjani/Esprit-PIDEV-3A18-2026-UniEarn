@@ -5,9 +5,15 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import org.kordamp.ikonli.javafx.*?>
 
-<BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root" stylesheets="@../../profile/profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.freelancer.FreelancerProfileController">
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root"
+            stylesheets="@../forum/profile.css"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="uniearn.controller.profile.freelancer.FreelancerProfileController">
 
     <!-- ══ Top Navigation Bar ══════════════════════════════════════════ -->
     <top>
@@ -37,12 +43,12 @@
                             </children></HBox></graphic>
                         </Button>
 
-                        <Button onAction="#handleFreelancerProjects" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📋 Projets disponibles">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
+                        <Button onAction="#handleFreelancerProjects" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
+                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                <FontIcon iconLiteral="fas-clipboard-list" iconSize="15" />
+                                <Label style="-fx-font-size: 14px;" text="Projets disponibles" />
+                            </children></HBox></graphic>
                         </Button>
-
 
                         <Button prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
@@ -51,10 +57,11 @@
                             </children></HBox></graphic>
                         </Button>
 
-                        <Button onAction="#handleTaskBoard" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📝 Mes tâches">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
+                        <Button onAction="#handleTaskBoard" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
+                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                <FontIcon iconLiteral="fas-tasks" iconSize="15" />
+                                <Label style="-fx-font-size: 14px;" text="Mes tâches" />
+                            </children></HBox></graphic>
                         </Button>
 
                         <Button onAction="#handleViewPortfolio" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
@@ -64,10 +71,17 @@
                             </children></HBox></graphic>
                         </Button>
 
-                        <Button prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
+                        <Button onAction="#handleMessages" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
                                 <FontIcon iconLiteral="fas-comments" iconSize="15" />
                                 <Label style="-fx-font-size: 14px;" text="Messages" />
+                            </children></HBox></graphic>
+                        </Button>
+
+                        <Button onAction="#handleForum" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
+                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                <FontIcon iconLiteral="fas-comments" iconSize="15" />
+                                <Label style="-fx-font-size: 14px;" text="Forum" />
                             </children></HBox></graphic>
                         </Button>
 
@@ -106,7 +120,7 @@
                         <VBox styleClass="profile-header-card">
 
                             <!-- Gradient banner strip -->
-                            <Pane prefHeight="12.0" prefWidth="862.0" styleClass="profile-banner" />
+                            <Pane prefHeight="12.0" styleClass="profile-banner" />
 
                             <!-- Avatar + details row (overlaps banner) -->
                             <HBox alignment="BOTTOM_LEFT" spacing="22.0" styleClass="profile-header-body">
@@ -173,9 +187,6 @@
                                             -->
                                             <FlowPane fx:id="skillsContainer" hgap="7.0" prefWrapLength="560.0" styleClass="skills-flow" vgap="6.0" />
                                         </children>
-                              <HBox.margin>
-                                 <Insets />
-                              </HBox.margin>
                                     </VBox>
 
                                     <!-- Edit button top-right -->
@@ -184,17 +195,13 @@
                                         <children>
                                             <Button fx:id="editProfileButton" onAction="#handleEditProfile" prefHeight="38.0" prefWidth="50.0" styleClass="btn-primary">
                                                 <graphic><HBox alignment="CENTER" spacing="7.0"><children>
-                                                    <FontIcon iconLiteral="fas-pencil-alt" iconSize="12" wrappingWidth="5.000001907348633" />
-                                                    <Label style="-fx-font-size: 13px;" />
+                                                    <FontIcon iconLiteral="fas-pencil-alt" iconSize="12" />
                                                 </children></HBox></graphic>
                                             </Button>
                                         </children>
                                     </VBox>
 
                                 </children>
-                        <VBox.margin>
-                           <Insets top="20.0" />
-                        </VBox.margin>
                             </HBox>
                         </VBox>
 

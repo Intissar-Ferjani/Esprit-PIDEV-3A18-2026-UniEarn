@@ -180,6 +180,7 @@
                         <TableColumn fx:id="statusColumn" prefWidth="130.0" style="-fx-alignment:CENTER;" text="Statut" />
                         <TableColumn fx:id="clientIdColumn" prefWidth="90.0" style="-fx-alignment:CENTER;" text="ID Client" />
                         <TableColumn fx:id="actionColumn" prefWidth="180.0" sortable="false" style="-fx-alignment:CENTER;" text="Actions" />
+                        <TableColumn fx:id="chatColumn" prefWidth="100.0" sortable="false" style="-fx-alignment:CENTER;" text="Chat" />
                     </columns>
                     <placeholder>
                         <Label style="-fx-text-fill:#95a5a6;" text="Aucun projet disponible.">

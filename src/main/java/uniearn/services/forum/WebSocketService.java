@@ -1,18 +1,22 @@
 package uniearn.services.forum;
 
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.simp.stomp.*;
-import org.springframework.web.socket.client.standard.StandardWebSocketClient;
-import org.springframework.web.socket.messaging.WebSocketStompClient;
-
 import java.lang.reflect.Type;
 import java.util.function.Consumer;
+
+import org.springframework.messaging.converter.MappingJackson2MessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 public class WebSocketService {
 
     private static WebSocketService instance;
     private StompSession session;
     private String username;
+    private final java.util.Set<String> subscribedTopics = new java.util.HashSet<>();
 
     private WebSocketService() {
     }
@@ -65,6 +69,12 @@ public class WebSocketService {
 
     public <T> void subscribe(String topic, Class<T> payloadType, Consumer<T> callback) {
         if (isConnected()) {
+            // Avoid duplicate subscriptions to the same topic
+            if (subscribedTopics.contains(topic)) {
+                System.out.println("Already subscribed to " + topic + ", skipping duplicate.");
+                return;
+            }
+            subscribedTopics.add(topic);
             session.subscribe(topic, new StompFrameHandler() {
 
                 @Override

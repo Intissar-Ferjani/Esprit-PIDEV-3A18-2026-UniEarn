@@ -121,13 +121,13 @@
                                                             </children>
                                                         </HBox>
                                                         <Label fx:id="portfolioInfoTitle" prefHeight="15.0" prefWidth="347.0" styleClass="portfolio-stat-value" text="Portfolio Title">
-                                             <VBox.margin>
-                                                <Insets top="5.0" />
-                                             </VBox.margin></Label>
+                                                            <VBox.margin>
+                                                                <Insets top="5.0" />
+                                                            </VBox.margin></Label>
                                                     </children>
-                                       <HBox.margin>
-                                          <Insets right="10.0" />
-                                       </HBox.margin>
+                                                    <HBox.margin>
+                                                        <Insets right="10.0" />
+                                                    </HBox.margin>
                                                 </VBox>
 
                                                 <Separator orientation="VERTICAL" styleClass="portfolio-divider">
@@ -149,13 +149,13 @@
                                                             </children>
                                                         </HBox>
                                                         <Label fx:id="portfolioCreatedDate" styleClass="portfolio-stat-value" text="Jan 1, 2024">
-                                             <VBox.margin>
-                                                <Insets top="5.0" />
-                                             </VBox.margin></Label>
+                                                            <VBox.margin>
+                                                                <Insets top="5.0" />
+                                                            </VBox.margin></Label>
                                                     </children>
-                                       <HBox.margin>
-                                          <Insets left="10.0" right="10.0" />
-                                       </HBox.margin>
+                                                    <HBox.margin>
+                                                        <Insets left="10.0" right="10.0" />
+                                                    </HBox.margin>
                                                 </VBox>
 
                                                 <Separator orientation="VERTICAL" styleClass="portfolio-divider">
@@ -176,16 +176,16 @@
                                                             </children>
                                                         </HBox>
                                                         <Label fx:id="portfolioItemCount" styleClass="portfolio-stat-count" text="0">
-                                             <VBox.margin>
-                                                <Insets left="50.0" top="10.0" />
-                                             </VBox.margin>
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font></Label>
+                                                            <VBox.margin>
+                                                                <Insets left="50.0" top="10.0" />
+                                                            </VBox.margin>
+                                                            <font>
+                                                                <Font size="14.0" />
+                                                            </font></Label>
                                                     </children>
-                                       <HBox.margin>
-                                          <Insets left="10.0" right="10.0" />
-                                       </HBox.margin>
+                                                    <HBox.margin>
+                                                        <Insets left="10.0" right="10.0" />
+                                                    </HBox.margin>
                                                 </VBox>
 
                                             </children>

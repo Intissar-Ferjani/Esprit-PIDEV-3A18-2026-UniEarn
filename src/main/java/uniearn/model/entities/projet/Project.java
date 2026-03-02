@@ -8,6 +8,7 @@ public class Project {
     private int status;
     private int clientid;
     private int freelancerid;
+    private String freelancerName;
 
     public Project() {};
 
@@ -74,5 +75,8 @@ public class Project {
     public void setFreelancerid(int freelancerid) {
         this.freelancerid = freelancerid;
     }
+
+    public String getFreelancerName() { return freelancerName; }
+    public void setFreelancerName(String freelancerName) { this.freelancerName = freelancerName; }
 }
 

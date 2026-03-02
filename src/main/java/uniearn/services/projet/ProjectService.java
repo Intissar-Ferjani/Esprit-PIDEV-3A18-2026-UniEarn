@@ -1,9 +1,5 @@
 package uniearn.services.projet;
 
-import uniearn.database.MyConnection;
-import uniearn.interfaces.Projet.IProject;
-import uniearn.model.entities.projet.Project;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,13 +7,35 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import uniearn.database.MyConnection;
+import uniearn.interfaces.Projet.IProject;
+import uniearn.model.entities.projet.Project;
+
 public class ProjectService implements IProject<Project> {
 
     private final Connection cn = MyConnection.getInstance().getCnx();
 
+    public ProjectService() {
+        ensureFreelancerColumn();
+    }
+
+    private void ensureFreelancerColumn() {
+        if (cn == null) return;
+        try {
+            ResultSet rs = cn.getMetaData().getColumns(null, null, "project", "freelancerID");
+            if (!rs.next()) {
+                cn.createStatement().executeUpdate(
+                    "ALTER TABLE project ADD COLUMN freelancerID INT DEFAULT NULL");
+                System.out.println("Added 'freelancerID' column to project table");
+            }
+        } catch (SQLException e) {
+            System.out.println("freelancerID column check: " + e.getMessage());
+        }
+    }
+
     @Override
     public void addProject(Project Project) throws SQLException {
-        String request = "INSERT INTO project (title, description, budget, status, ClientID,freelancerIDD) VALUES (?, ?, ?, ?, ?, ?)";
+        String request = "INSERT INTO project (title, description, budget, status, ClientID, freelancerID) VALUES (?, ?, ?, ?, ?, ?)";
 
         PreparedStatement pst = cn.prepareStatement(request);
 
@@ -107,7 +125,9 @@ public class ProjectService implements IProject<Project> {
     @Override
     public List<Project> getAllProjects() {
         List<Project> projects = new ArrayList<>();
-        String request = "SELECT * FROM project";
+        String request = "SELECT p.*, u.name AS freelancer_name FROM project p "
+                + "LEFT JOIN freelancer f ON p.freelancerID = f.idFreelancer "
+                + "LEFT JOIN user u ON f.idUser = u.idUser";
         try (PreparedStatement pst = cn.prepareStatement(request);
                 ResultSet rs = pst.executeQuery()) {
 
@@ -119,6 +139,9 @@ public class ProjectService implements IProject<Project> {
                 project.setBudget(rs.getDouble("budget"));
                 project.setStatus(rs.getInt("status"));
                 project.setClient_id(rs.getInt("ClientID"));
+                project.setFreelancerid(rs.getInt("freelancerID"));
+                String fname = rs.getString("freelancer_name");
+                project.setFreelancerName(fname != null ? fname : "Unknown");
                 projects.add(project);
             }
         } catch (SQLException e) {
@@ -129,7 +152,10 @@ public class ProjectService implements IProject<Project> {
 
     public List<Project> getProjectsByClientId(int clientId) {
         List<Project> projects = new ArrayList<>();
-        String request = "SELECT * FROM project WHERE ClientID=?";
+        String request = "SELECT p.*, u.name AS freelancer_name FROM project p "
+                + "LEFT JOIN freelancer f ON p.freelancerID = f.idFreelancer "
+                + "LEFT JOIN user u ON f.idUser = u.idUser "
+                + "WHERE p.ClientID=?";
         try {
             PreparedStatement pst = cn.prepareStatement(request);
             pst.setInt(1, clientId);
@@ -144,11 +170,29 @@ public class ProjectService implements IProject<Project> {
                 project.setBudget(rs.getDouble("budget"));
                 project.setStatus(rs.getInt("status"));
                 project.setClient_id(rs.getInt("ClientID"));
+                project.setFreelancerid(rs.getInt("freelancerID"));
+                String fname = rs.getString("freelancer_name");
+                project.setFreelancerName(fname != null ? fname : "Unknown");
                 projects.add(project);
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return projects;
+    }
+
+    /** Get the name of the freelancer assigned to a project */
+    public String getFreelancerNameById(int freelancerId) {
+        if (cn == null) return "Unknown";
+        String sql = "SELECT u.name FROM freelancer f JOIN user u ON f.idUser = u.idUser WHERE f.idFreelancer = ?";
+        try {
+            PreparedStatement ps = cn.prepareStatement(sql);
+            ps.setInt(1, freelancerId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getString("name");
+        } catch (SQLException e) {
+            System.out.println("Error getting freelancer name: " + e.getMessage());
+        }
+        return "Unknown";
     }
 }

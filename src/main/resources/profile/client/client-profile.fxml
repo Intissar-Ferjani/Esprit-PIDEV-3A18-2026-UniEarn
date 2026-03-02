@@ -84,6 +84,13 @@
                         <Region VBox.vgrow="ALWAYS" />
                         <Separator />
 
+                        <Button onAction="#handleSettings" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
+                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                <FontIcon iconLiteral="fas-cog" iconSize="15" />
+                                <Label style="-fx-font-size: 14px;" text="Settings" />
+                            </children></HBox></graphic>
+                        </Button>
+
                         <Button onAction="#handleLogout" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button, logout">
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
                                 <FontIcon iconLiteral="fas-sign-out-alt" iconSize="15" />
@@ -111,7 +118,7 @@
                         <VBox styleClass="profile-header-card">
 
                             <!-- Gradient banner strip -->
-                            <Pane prefHeight="10.0" prefWidth="862.0" styleClass="profile-banner">
+                            <Pane prefHeight="24.0" prefWidth="862.0" styleClass="profile-banner">
                         <VBox.margin>
                            <Insets bottom="20.0" />
                         </VBox.margin></Pane>
@@ -125,7 +132,7 @@
                                     <StackPane styleClass="avatar-stack">
                                         <VBox.margin><Insets top="-38.0" /></VBox.margin>
                                         <children>
-                                            <Pane prefHeight="165.0" prefWidth="153.0" styleClass="avatar-ring" />
+                                            <Pane prefHeight="138.0" prefWidth="138.0" styleClass="avatar-ring" />
                                             <ImageView fx:id="profileImageView" fitHeight="124.0" fitWidth="124.0" preserveRatio="true" styleClass="profile-avatar" StackPane.alignment="CENTER">
                                                 <image><Image url="@../../images/default-avatar.jpg" /></image>
                                             </ImageView>
@@ -193,7 +200,20 @@
                         </VBox>
 
                         <!-- ── Statistics Cards ────────────────────────── -->
-                        <HBox spacing="16.0" />
+                        <HBox spacing="16.0">
+                            <children>
+
+                                <VBox spacing="10.0" styleClass="stat-card-new stat-card-yellow" HBox.hgrow="ALWAYS">
+                                    <padding><Insets bottom="20.0" left="22.0" right="22.0" top="20.0" /></padding>
+                                    <children>
+                                        <Label fx:id="completedProjectsLabel" styleClass="stat-value">
+                                            <font><Font name="System Bold" size="24.0" /></font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+
+                            </children>
+                        </HBox>
 
                         <!-- ── Posted Projects Section ─────────────────── -->
                         <VBox styleClass="content-section" VBox.vgrow="ALWAYS">
@@ -261,9 +281,6 @@
                                 </ScrollPane>
 
                             </children>
-                           <VBox.margin>
-                              <Insets top="20.0" />
-                           </VBox.margin>
                         </VBox>
 
                     </children>

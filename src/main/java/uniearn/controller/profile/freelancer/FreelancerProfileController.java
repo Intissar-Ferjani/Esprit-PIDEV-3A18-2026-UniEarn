@@ -1,5 +1,15 @@
 package uniearn.controller.profile.freelancer;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.List;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -7,18 +17,38 @@ import javafx.geometry.VPos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import uniearn.controller.profile.freelancer.FreelancerPortfolioController;
 import uniearn.controller.projet.TaskBoardController;
+import uniearn.database.SessionManager;
 import uniearn.model.entities.users.User;
 import uniearn.model.entities.users.freelancer.Freelancer;
 import uniearn.model.entities.users.freelancer.Portfolio;
+import uniearn.services.users.UserService;
 import uniearn.services.users.freelancer.FreelancerService;
 import uniearn.services.users.freelancer.PortfolioService;
 import uniearn.services.users.UserService;
@@ -75,6 +105,40 @@ public class FreelancerProfileController {
     private ScrollPane dashboardView;
 
     private Parent embeddedDashboard;
+
+    @FXML
+    private void handleForum() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/Forum.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) profileImageView.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("Forum - UniEarn");
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.err.println("Navigation error to Forum.fxml: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleMessages() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/Messages.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) profileImageView.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("Messages - UniEarn");
+            stage.setResizable(true);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load Messages page: " + e.getMessage());
+        }
+    }
 
     private final FreelancerService freelancerService = new FreelancerService();
     private final UserService userService = new UserService();

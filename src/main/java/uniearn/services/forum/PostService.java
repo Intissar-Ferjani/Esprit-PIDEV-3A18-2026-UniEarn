@@ -16,18 +16,38 @@ public class PostService {
 
     private final Connection cn = MyConnection.getInstance().getCnx();
 
+    public PostService() {
+        ensureViewsColumn();
+    }
+
+    /** Add views column if it doesn't exist yet */
+    private void ensureViewsColumn() {
+        if (cn == null) return;
+        try {
+            ResultSet rs = cn.getMetaData().getColumns(null, null, "freelancer_forum_post", "views");
+            if (!rs.next()) {
+                cn.createStatement().executeUpdate(
+                    "ALTER TABLE freelancer_forum_post ADD COLUMN views INT NOT NULL DEFAULT 0");
+                System.out.println("Added 'views' column to freelancer_forum_post");
+            }
+        } catch (SQLException e) {
+            System.out.println("Views column check: " + e.getMessage());
+        }
+    }
+
     /**
      * Insert a new post. Returns the generated post_id.
      * Schema: freelancer_forum_post (post_id, freelancer_id, title, content, created_at, updated_at)
      */
     public int addPost(Post post) throws SQLException {
         if (cn == null) throw new SQLException("Database not connected.");
-        String sql = "INSERT INTO freelancer_forum_post (title, content, gif_url, category, updated_at) VALUES (?, ?, ?, ?, NOW())";
+        String sql = "INSERT INTO freelancer_forum_post (freelancer_id, title, content, gif_url, category, updated_at) VALUES (?, ?, ?, ?, ?, NOW())";
         PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-        ps.setString(1, post.getTitle());
-        ps.setString(2, post.getContent());
-        ps.setString(3, post.getGifUrl());
-        ps.setString(4, post.getCategory());
+        ps.setInt(1, post.getAuthorId());
+        ps.setString(2, post.getTitle());
+        ps.setString(3, post.getContent());
+        ps.setString(4, post.getGifUrl());
+        ps.setString(5, post.getCategory());
         ps.executeUpdate();
 
         ResultSet keys = ps.getGeneratedKeys();
@@ -43,19 +63,26 @@ public class PostService {
     public List<Post> getAllPosts() {
         List<Post> posts = new ArrayList<>();
         if (cn == null) return posts;
-        String sql = "SELECT p.post_id, p.title, p.content, p.gif_url, p.category, p.created_at, p.updated_at FROM freelancer_forum_post p ORDER BY p.post_id DESC";
+        String sql = "SELECT p.post_id, p.freelancer_id, p.title, p.content, p.gif_url, p.category, p.views, p.created_at, p.updated_at, "
+                + "u.name AS author_name "
+                + "FROM freelancer_forum_post p "
+                + "LEFT JOIN freelancer f ON p.freelancer_id = f.idFreelancer "
+                + "LEFT JOIN user u ON f.idUser = u.idUser "
+                + "ORDER BY p.post_id DESC";
         try {
             Statement st = cn.createStatement();
             ResultSet rs = st.executeQuery(sql);
             while (rs.next()) {
                 Post post = new Post();
                 post.setId(rs.getInt("post_id"));
-                post.setAuthorId(0);
+                post.setAuthorId(rs.getInt("freelancer_id"));
                 post.setTitle(rs.getString("title"));
                 post.setContent(rs.getString("content"));
                 post.setGifUrl(rs.getString("gif_url"));
                 post.setCategory(rs.getString("category"));
-                post.setAuthorName("Forum User");
+                post.setViews(rs.getInt("views"));
+                String authorName = rs.getString("author_name");
+                post.setAuthorName(authorName != null ? authorName : "Forum User");
                 Timestamp ts = rs.getTimestamp("updated_at");
                 if (ts != null) {
                     post.setCreatedAt(ts.toLocalDateTime());
@@ -87,6 +114,21 @@ public class PostService {
             ps.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Error updating post: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Increment the view count for a post.
+     */
+    public void incrementViews(int postId) {
+        if (cn == null) return;
+        String sql = "UPDATE freelancer_forum_post SET views = views + 1 WHERE post_id = ?";
+        try {
+            PreparedStatement ps = cn.prepareStatement(sql);
+            ps.setInt(1, postId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error incrementing views: " + e.getMessage());
         }
     }
 

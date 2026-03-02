@@ -5,9 +5,54 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-portfolio.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-portfolio.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-profile.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/app/forumApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/app/forumApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ApplicationController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ClientController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/FreelancerController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/LoginController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/ProjectController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/forum/FreelancerForumController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/forum/FreelancerForumController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/forum/MessagesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/forum/MessagesController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/forum/NotificationsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/forum/NotificationsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/database/MyConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/database/MyConnection.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/interfaces/users/IUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/interfaces/users/IUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Admin.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Application.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Chat.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Client.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Contrat.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Evaluation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Freelancer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Message.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Payment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Payment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Portfolio.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/PortfolioItem.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Project.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/Task.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/User.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/forum/ChatMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/forum/ChatMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/forum/NotificationMsg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/forum/NotificationMsg.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/forum/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/forum/Post.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/enums/VerifStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/enums/VerifStatus.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/server/forum/ChatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/server/forum/ChatController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/CommentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/CommentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/PostService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/UserService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/WebSocketService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/WebSocketService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/admin/adminDashboard.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/client/clientDashboard.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/forum/profile.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/forum/profile.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/Forum.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/Forum.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/Freelancer.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/Messages.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/Messages.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,7 +64,6 @@
       <entry key="_C:/Users/MSI/Desktop/uniearn" value="3AH3tI7E0M8Za79ICgaKJYHKcPR" />
       <entry key="_C:/Users/MSI/Desktop/uniearn2" value="3AHNW31UKqGSq1OOTfcadoHkZ4m" />
       <entry key="_C:/Users/MSI/Desktop/uniearn_java" value="3AIyuGBFDGmrvsZ7dmnHM8Qez9G" />
-      <entry key="_C:/Users/Siam Info/IdeaProjects/uniearn_java" value="3AM7HLcw2pDS7PrmxBO3NjDdZEr" />
     </persistenceIdMap>
   </component>
   <component name="CopilotUserSelectedModel">
@@ -31,9 +75,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaFXApplication" />
         <option value="FxmlFile" />
-        <option value="Class" />
+        <option value="JavaFXApplication" />
       </list>
     </option>
   </component>
@@ -46,12 +89,12 @@
     &quot;assignee&quot;: &quot;eya-ghzaiel&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Intissar-Ferjani/UniEarn-Java.git&quot;,
-    &quot;accountId&quot;: &quot;3ce0974e-fcd6-4439-844a-ead706256448&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Intissar-Ferjani/UniEarn-Java.git",
+    "accountId": "08c76d87-cd02-47eb-89a8-4ad64243adc8"
   }
-}</component>
+}]]></component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
@@ -70,49 +113,55 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
-    &quot;Application.ClientContractApp.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MainApp.executor&quot;: &quot;Run&quot;,
-    &quot;Batch.build_and_run.executor&quot;: &quot;Run&quot;,
-    &quot;Batch.build_compile.executor&quot;: &quot;Run&quot;,
-    &quot;Batch.install_maven.executor&quot;: &quot;Run&quot;,
-    &quot;Batch.run_app_mvn.executor&quot;: &quot;Run&quot;,
-    &quot;Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.uniearn_java [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.uniearn_java [org.apache.maven.plugins:maven-install-plugin:3.1.2:install].executor&quot;: &quot;Run&quot;,
-    &quot;Maven.uniearn_java [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;gestion__utilisateurs__profils&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Siam Info/IdeaProjects/uniearn_java/src/main/resources/images&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.ClientContractApp.executor": "Run",
+    "Application.MainApp.executor": "Run",
+    "Batch.build_and_run.executor": "Run",
+    "Batch.build_compile.executor": "Run",
+    "Batch.install_maven.executor": "Run",
+    "Batch.run_app_mvn.executor": "Run",
+    "Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor": "Run",
+    "Maven.uniearn_java [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor": "Run",
+    "Maven.uniearn_java [org.apache.maven.plugins:maven-install-plugin:3.1.2:install].executor": "Run",
+    "Maven.uniearn_java [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "gestion__forum__messagerie",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/MSI/Desktop/uniearn_java",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Siam Info\IdeaProjects\uniearn_java\src\main\resources\images" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Siam Info\IdeaProjects\uniearn_java\src\main\resources\contracts\styles" />
       <recent name="C:\Users\MSI\Desktop\uniearn_java\src\main\resources\contracts" />
       <recent name="C:\Users\MSI\Desktop\uniearn_java\src\main\java\uniearn\interfaces\contracts" />
     </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.30387.90" />
+      </set>
+    </attachedChunks>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -129,25 +178,12 @@
       <workItem from="1772292566492" duration="1310000" />
       <workItem from="1772293907370" duration="572000" />
       <workItem from="1772294592326" duration="3948000" />
+      <workItem from="1772393102879" duration="8572000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="UnknownFeatures">
-    <option featureType="com.intellij.fileTypeFactory" implementationName=".env" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
