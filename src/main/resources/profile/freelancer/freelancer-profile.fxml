@@ -69,7 +69,7 @@
                             </children></HBox></graphic>
                         </Button>
 
-                        <Button prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
+                        <Button onAction="#handlePayments" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
                                 <FontIcon iconLiteral="fas-credit-card" iconSize="15" />
                                 <Label text="Paiements" style="-fx-font-size: 14px;" />

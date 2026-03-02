@@ -6,8 +6,9 @@ package uniearn.model.entities;
 public class Payment {
     private int idPayment;
     private double amount;
-    private int paymentStatus; // 0: En attente, 1: Complété, 2: Échoué, etc.
-    private int taskID;
+    private String paymentStatus; // PENDING, COMPLETED, FAILED, etc.
+    private Integer taskID;
+    private Integer userID;
 
     /**
      * Constructeur par défaut
@@ -18,7 +19,7 @@ public class Payment {
     /**
      * Constructeur complet
      */
-    public Payment(int idPayment, double amount, int paymentStatus, int taskID) {
+    public Payment(int idPayment, double amount, String paymentStatus, Integer taskID) {
         this.idPayment = idPayment;
         this.amount = amount;
         this.paymentStatus = paymentStatus;
@@ -42,20 +43,28 @@ public class Payment {
         this.amount = amount;
     }
 
-    public int getPaymentStatus() {
+    public String getPaymentStatus() {
         return paymentStatus;
     }
 
-    public void setPaymentStatus(int paymentStatus) {
+    public void setPaymentStatus(String paymentStatus) {
         this.paymentStatus = paymentStatus;
     }
 
-    public int getTaskID() {
+    public Integer getTaskID() {
         return taskID;
     }
 
-    public void setTaskID(int taskID) {
+    public void setTaskID(Integer taskID) {
         this.taskID = taskID;
+    }
+
+    public Integer getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Integer userID) {
+        this.userID = userID;
     }
 
     @Override

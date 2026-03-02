@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox spacing="20.0" styleClass="main-content" stylesheets="@../../profile/profile.css"
+      xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="uniearn.controller.profile.client.ClientPaymentsController">
+    <padding>
+        <Insets bottom="30.0" left="36.0" right="36.0" top="24.0" />
+    </padding>
+
+    <!-- Header -->
+    <VBox spacing="6.0">
+        <Label styleClass="section-title" text="💳 Mes Paiements">
+            <font><Font name="System Bold" size="26.0" /></font>
+        </Label>
+        <Label styleClass="profile-email-large" text="Suivi de vos paiements en escrow">
+            <font><Font size="13.0" /></font>
+        </Label>
+    </VBox>
+
+    <!-- Statistics Cards -->
+    <HBox spacing="16.0">
+        <VBox spacing="6.0" styleClass="stat-card, stat-yellow" HBox.hgrow="ALWAYS">
+            <padding><Insets bottom="16.0" left="20.0" right="20.0" top="16.0" /></padding>
+            <Label styleClass="stat-label" text="💰 Total" />
+            <Label fx:id="totalAmountLabel" styleClass="stat-value" text="0.00 DT">
+                <font><Font name="System Bold" size="22.0" /></font>
+            </Label>
+        </VBox>
+        <VBox spacing="6.0" styleClass="stat-card, stat-yellow" HBox.hgrow="ALWAYS">
+            <padding><Insets bottom="16.0" left="20.0" right="20.0" top="16.0" /></padding>
+            <Label styleClass="stat-label" text="🔒 Bloqués" />
+            <Label fx:id="pendingCountLabel" styleClass="stat-value" text="0">
+                <font><Font name="System Bold" size="22.0" /></font>
+            </Label>
+        </VBox>
+        <VBox spacing="6.0" styleClass="stat-card, stat-blue" HBox.hgrow="ALWAYS">
+            <padding><Insets bottom="16.0" left="20.0" right="20.0" top="16.0" /></padding>
+            <Label styleClass="stat-label" text="📦 Livrés" />
+            <Label fx:id="completedCountLabel" styleClass="stat-value" text="0">
+                <font><Font name="System Bold" size="22.0" /></font>
+            </Label>
+        </VBox>
+        <VBox spacing="6.0" styleClass="stat-card, stat-green" HBox.hgrow="ALWAYS">
+            <padding><Insets bottom="16.0" left="20.0" right="20.0" top="16.0" /></padding>
+            <Label styleClass="stat-label" text="✅ Libérés" />
+            <Label fx:id="releasedCountLabel" styleClass="stat-value" text="0">
+                <font><Font name="System Bold" size="22.0" /></font>
+            </Label>
+        </VBox>
+    </HBox>
+
+    <!-- Payments List -->
+    <VBox styleClass="content-section" VBox.vgrow="ALWAYS">
+        <padding><Insets bottom="20.0" left="24.0" right="24.0" top="20.0" /></padding>
+        <HBox alignment="CENTER_LEFT" spacing="12.0">
+            <VBox.margin><Insets bottom="12.0" /></VBox.margin>
+            <Label styleClass="section-title" text="Historique des paiements">
+                <font><Font name="System Bold" size="16.0" /></font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button onAction="#handleRefresh" styleClass="btn-primary" text="🔄 Actualiser" />
+        </HBox>
+        <Separator>
+            <VBox.margin><Insets bottom="10.0" /></VBox.margin>
+        </Separator>
+        <ScrollPane fitToWidth="true" prefHeight="380.0">
+            <content>
+                <VBox fx:id="paymentsContainer" spacing="4.0">
+                    <padding><Insets top="4.0" /></padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </VBox>
+
+</VBox>

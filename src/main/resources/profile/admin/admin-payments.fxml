@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox spacing="20.0" styleClass="main-content" stylesheets="@../../profile/profile.css"
+      xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="uniearn.controller.profile.admin.AdminPaymentMethodsController">
+    <padding>
+        <Insets bottom="30.0" left="36.0" right="36.0" top="24.0" />
+    </padding>
+
+    <!-- Header -->
+    <VBox spacing="6.0">
+        <Label styleClass="section-title" text="💳 Comptes Bancaires">
+            <font><Font name="System Bold" size="26.0" /></font>
+        </Label>
+        <Label styleClass="profile-email-large" text="Gestion des comptes bancaires des utilisateurs">
+            <font><Font size="13.0" /></font>
+        </Label>
+    </VBox>
+
+    <!-- Stat Card -->
+    <HBox spacing="16.0">
+        <VBox spacing="6.0" styleClass="stat-card, stat-blue" prefWidth="200.0">
+            <padding><Insets bottom="16.0" left="20.0" right="20.0" top="16.0" /></padding>
+            <Label styleClass="stat-label" text="🏦 Total Comptes" />
+            <Label fx:id="totalAccountsLabel" styleClass="stat-value" text="0">
+                <font><Font name="System Bold" size="28.0" /></font>
+            </Label>
+        </VBox>
+    </HBox>
+
+    <!-- Accounts List -->
+    <VBox styleClass="content-section" VBox.vgrow="ALWAYS">
+        <padding><Insets bottom="20.0" left="24.0" right="24.0" top="20.0" /></padding>
+
+        <!-- Table Header -->
+        <HBox alignment="CENTER_LEFT" spacing="12.0">
+            <VBox.margin><Insets bottom="10.0" /></VBox.margin>
+            <Label styleClass="section-title" text="Liste des comptes">
+                <font><Font name="System Bold" size="15.0" /></font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="statusLabel" text="" visible="false" />
+            <Button onAction="#handleRefresh" styleClass="btn-primary" text="🔄 Actualiser" />
+        </HBox>
+
+        <!-- Column Headers -->
+        <HBox spacing="16.0" style="-fx-background-color: #f5f5f5; -fx-padding: 8 16 8 16;">
+            <Label text="User ID" style="-fx-font-weight: bold; -fx-text-fill: #5e6d55;" prefWidth="70.0" />
+            <Label text="Banque" style="-fx-font-weight: bold; -fx-text-fill: #5e6d55;" prefWidth="140.0" />
+            <Label text="Titulaire" style="-fx-font-weight: bold; -fx-text-fill: #5e6d55;" prefWidth="160.0" />
+            <Label text="IBAN" style="-fx-font-weight: bold; -fx-text-fill: #5e6d55;" prefWidth="140.0" />
+            <Label text="Statut" style="-fx-font-weight: bold; -fx-text-fill: #5e6d55;" prefWidth="70.0" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label text="Actions" style="-fx-font-weight: bold; -fx-text-fill: #5e6d55;" />
+        </HBox>
+
+        <Separator />
+
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" prefHeight="420.0">
+            <content>
+                <VBox fx:id="accountsContainer" spacing="0.0" />
+            </content>
+        </ScrollPane>
+    </VBox>
+
+</VBox>

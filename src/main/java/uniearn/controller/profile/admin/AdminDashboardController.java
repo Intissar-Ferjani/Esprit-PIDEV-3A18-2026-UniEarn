@@ -159,6 +159,22 @@ public class AdminDashboardController {
     }
 
     @FXML
+    private void handleManagePayments() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/admin/admin-payments.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) adminNameLabel.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("Manage Payments - UniEarn");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Navigation Error", "Failed to load payments management page: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleLogout() {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Logout");
