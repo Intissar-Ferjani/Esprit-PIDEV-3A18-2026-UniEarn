@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import uniearn.server.security.SecurityCallbackServer;
 
 public class MainApp extends Application {
 
@@ -22,6 +23,12 @@ public class MainApp extends Application {
         primaryStage.centerOnScreen();
         primaryStage.show();
     }
+    @Override
+    public void stop() throws Exception {
+        SecurityCallbackServer.stop();
+        super.stop();
+    }
+
 
     public static void main(String[] args) {
         launch(args);
