@@ -1,0 +1,283 @@
+/* ===================================================================
+   STYLES CSS POUR L'APPLICATION DE GESTION DES CONTRATS
+   Couleurs personnalisées : #1E56DB, #4CAF50, #F5F5F5
+   =================================================================== */
+
+/* ===== ROOT STYLES ===== */
+.root {
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+    -fx-font-size: 12px;
+}
+
+/* ===== TEXT FIELD STYLES ===== */
+.text-field-custom {
+    -fx-border-color: #CCCCCC;
+    -fx-border-radius: 5;
+    -fx-padding: 10;
+    -fx-font-size: 12;
+    -fx-background-color: white;
+}
+
+.text-field-custom:focused {
+    -fx-border-color: #1E56DB;
+    -fx-border-width: 2;
+    -fx-padding: 9;
+}
+
+/* ===== DATE PICKER STYLES ===== */
+.date-picker-custom {
+    -fx-border-color: #CCCCCC;
+    -fx-border-radius: 5;
+    -fx-padding: 10;
+    -fx-font-size: 12;
+    -fx-background-color: white;
+}
+
+.date-picker-custom:focused {
+    -fx-border-color: #1E56DB;
+    -fx-border-width: 2;
+}
+
+/* ===== COMBO BOX STYLES ===== */
+.combo-box-custom {
+    -fx-border-color: #CCCCCC;
+    -fx-border-radius: 5;
+    -fx-padding: 10;
+    -fx-font-size: 12;
+    -fx-background-color: white;
+}
+
+.combo-box-custom:focused {
+    -fx-border-color: #1E56DB;
+    -fx-border-width: 2;
+}
+
+/* ===== BUTTON STYLES ===== */
+.btn-primary {
+    -fx-padding: 12 30;
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #45a049;
+}
+
+.btn-primary:pressed {
+    -fx-background-color: #3d8b40;
+}
+
+.btn-secondary {
+    -fx-padding: 12 30;
+    -fx-background-color: #1E56DB;
+    -fx-text-fill: white;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #1a45b8;
+}
+
+.btn-secondary:pressed {
+    -fx-background-color: #152d7f;
+}
+
+.btn-danger {
+    -fx-padding: 12 30;
+    -fx-background-color: #FF6B6B;
+    -fx-text-fill: white;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5;
+    -fx-cursor: hand;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #ff5252;
+}
+
+.btn-danger:pressed {
+    -fx-background-color: #cc5555;
+}
+
+/* ===== LABEL STYLES ===== */
+.title-label {
+    -fx-text-fill: white;
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+}
+
+.subtitle-label {
+    -fx-text-fill: #EEEEEE;
+    -fx-font-size: 12;
+    -fx-padding: 5 0 0 0;
+}
+
+/* ===== TABLE VIEW STYLES ===== */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #DDDDDD;
+}
+
+.table-view:focused {
+    -fx-border-color: #1E56DB;
+}
+
+.table-column {
+    -fx-text-fill: #333333;
+    -fx-font-weight: bold;
+}
+
+.table-row-cell {
+    -fx-padding: 5;
+    -fx-text-fill: #333333;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #F0F8FF;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #E3F2FD;
+}
+
+/* ===== HEADER/FOOTER STYLES ===== */
+.header {
+    -fx-background-color: #1E56DB;
+    -fx-padding: 20;
+    -fx-text-fill: white;
+}
+
+.footer {
+    -fx-background-color: white;
+    -fx-padding: 15;
+    -fx-border-color: #DDDDDD;
+    -fx-border-width: 1 0 0 0;
+}
+
+/* ===== FORM CONTAINER ===== */
+.form-container {
+    -fx-padding: 30;
+    -fx-spacing: 20;
+    -fx-background-color: #F5F5F5;
+}
+
+/* ===== SEPARATOR STYLES ===== */
+.separator {
+    -fx-padding: 0 10;
+}
+
+/* ===== SCROLL BAR STYLES ===== */
+.scroll-bar {
+    -fx-padding: 0;
+}
+
+.scroll-bar:vertical .increment-button,
+.scroll-bar:vertical .decrement-button {
+    -fx-padding: 0;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #CCCCCC;
+    -fx-background-radius: 5;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #1E56DB;
+}
+
+/* ===== CONTEXT MENU STYLES ===== */
+.context-menu {
+    -fx-padding: 5;
+    -fx-background-color: white;
+    -fx-border-color: #CCCCCC;
+}
+
+.context-menu .menu-item:hover {
+    -fx-background-color: #E3F2FD;
+}
+
+/* ===== DIALOG STYLES ===== */
+.dialog-pane {
+    -fx-background-color: #F5F5F5;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #1E56DB;
+    -fx-text-fill: white;
+}
+
+/* ===== ALERT STYLES ===== */
+.alert {
+    -fx-font-family: "Segoe UI";
+}
+
+.alert:information .graphic {
+    -fx-graphic: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="%234CAF50"/><text x="32" y="40" font-size="40" fill="white" text-anchor="middle">ⓘ</text></svg>');
+}
+
+/* ===== SPECIAL EFFECTS ===== */
+.card {
+    -fx-background-color: white;
+    -fx-border-color: #DDDDDD;
+    -fx-border-radius: 5;
+    -fx-padding: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0, 0, 2);
+}
+
+.card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0, 0, 4);
+}
+
+/* ===== COLORS ===== */
+.color-primary {
+    -fx-fill: #1E56DB;
+    -fx-text-fill: #1E56DB;
+}
+
+.color-secondary {
+    -fx-fill: #4CAF50;
+    -fx-text-fill: #4CAF50;
+}
+
+.color-background {
+    -fx-fill: #F5F5F5;
+    -fx-background-color: #F5F5F5;
+}
+
+.color-success {
+    -fx-text-fill: #4CAF50;
+}
+
+.color-error {
+    -fx-text-fill: #FF6B6B;
+}
+
+.color-warning {
+    -fx-text-fill: #FF9800;
+}
+
+.color-info {
+    -fx-text-fill: #2196F3;
+}
+
+/* ===== RESPONSIVE STYLES ===== */
+@media (max-width: 800px) {
+    .title-label {
+        -fx-font-size: 18;
+    }
+
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger {
+        -fx-padding: 8 15;
+    }
+}
+

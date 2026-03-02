@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+    xmlns:fx="http://javafx.com/fxml"
+    fx:controller="uniearn.controller.profile.forum.NotificationsController"
+    prefHeight="600.0" prefWidth="900.0"
+    style="-fx-background-color: #f5f5f5;">
+
+    <!-- Top Bar -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15"
+            style="-fx-background-color: #2c3e50; -fx-padding: 15;">
+            <Button fx:id="backButton" onAction="#goBack"
+                text="← Back"
+                style="-fx-background-color: transparent; -fx-text-fill: white;
+                    -fx-font-size: 14px; -fx-cursor: hand;" />
+
+            <Label text="🔔 Notifications" textFill="white">
+                <font>
+                    <Font name="System Bold" size="20" />
+                </font>
+            </Label>
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Button text="Mark All as Read" onAction="#markAllRead"
+                style="-fx-background-color: #3498db; -fx-text-fill: white;
+                    -fx-padding: 8 16 8 16; -fx-background-radius: 20;
+                    -fx-font-size: 12px; -fx-cursor: hand;" />
+        </HBox>
+    </top>
+
+    <!-- Center: Notification List -->
+    <center>
+        <ScrollPane fitToWidth="true"
+            style="-fx-background-color: transparent; -fx-background: transparent;">
+            <VBox fx:id="notificationsContainer" spacing="8" style="-fx-padding: 20;">
+
+                <!-- Today Section -->
+                <Label text="Today"
+                    style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;">
+                    <padding>
+                        <Insets bottom="5" />
+                    </padding>
+                </Label>
+
+                <!-- Notification 1 - Like -->
+                <HBox spacing="12" alignment="CENTER_LEFT"
+                    style="-fx-background-color: #eaf6ff; -fx-padding: 15;
+                             -fx-background-radius: 10; -fx-border-color: #d4edfc;
+                             -fx-border-radius: 10; -fx-cursor: hand;">
+                    <Label text="👍" style="-fx-font-size: 24px;" />
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="Alice Smith liked your post"
+                            style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+                        <Label text="&quot;Tips for Freelance Success&quot;"
+                            style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;" wrapText="true" />
+                        <Label text="2 hours ago"
+                            style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;" />
+                    </VBox>
+                    <Region prefWidth="8"
+                        style="-fx-background-color: #3498db; -fx-background-radius: 4; -fx-min-width: 8;" />
+                </HBox>
+
+                <!-- Notification 2 - Comment -->
+                <HBox spacing="12" alignment="CENTER_LEFT"
+                    style="-fx-background-color: #eaf6ff; -fx-padding: 15;
+                             -fx-background-radius: 10; -fx-border-color: #d4edfc;
+                             -fx-border-radius: 10; -fx-cursor: hand;">
+                    <Label text="💬" style="-fx-font-size: 24px;" />
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="Bob Johnson commented on your post"
+                            style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+                        <Label text="&quot;I'm interested! Can you share more details?&quot;"
+                            style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;" wrapText="true" />
+                        <Label text="3 hours ago"
+                            style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;" />
+                    </VBox>
+                    <Region prefWidth="8"
+                        style="-fx-background-color: #3498db; -fx-background-radius: 4; -fx-min-width: 8;" />
+                </HBox>
+
+                <!-- Notification 3 - Reaction -->
+                <HBox spacing="12" alignment="CENTER_LEFT"
+                    style="-fx-background-color: #eaf6ff; -fx-padding: 15;
+                             -fx-background-radius: 10; -fx-border-color: #d4edfc;
+                             -fx-border-radius: 10; -fx-cursor: hand;">
+                    <Label text="❤️" style="-fx-font-size: 24px;" />
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="Sarah Lee reacted to your post"
+                            style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+                        <Label text="&quot;Looking for UI/UX Designer&quot;"
+                            style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;" wrapText="true" />
+                        <Label text="4 hours ago"
+                            style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;" />
+                    </VBox>
+                    <Region prefWidth="8"
+                        style="-fx-background-color: #3498db; -fx-background-radius: 4; -fx-min-width: 8;" />
+                </HBox>
+
+                <!-- Yesterday Section -->
+                <Label text="Yesterday"
+                    style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;">
+                    <padding>
+                        <Insets top="15" bottom="5" />
+                    </padding>
+                </Label>
+
+                <!-- Notification 4 - New follower (read) -->
+                <HBox spacing="12" alignment="CENTER_LEFT"
+                    style="-fx-background-color: white; -fx-padding: 15;
+                             -fx-background-radius: 10; -fx-border-color: #e0e0e0;
+                             -fx-border-radius: 10; -fx-cursor: hand;">
+                    <Label text="👤" style="-fx-font-size: 24px;" />
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="Diana Prince started following you"
+                            style="-fx-font-size: 14px; -fx-text-fill: #555;" />
+                        <Label text="Yesterday at 5:30 PM"
+                            style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;" />
+                    </VBox>
+                </HBox>
+
+                <!-- Notification 5 - Gig update (read) -->
+                <HBox spacing="12" alignment="CENTER_LEFT"
+                    style="-fx-background-color: white; -fx-padding: 15;
+                             -fx-background-radius: 10; -fx-border-color: #e0e0e0;
+                             -fx-border-radius: 10; -fx-cursor: hand;">
+                    <Label text="💼" style="-fx-font-size: 24px;" />
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="Your gig 'Java Spring Boot API' received a new order"
+                            style="-fx-font-size: 14px; -fx-text-fill: #555;" wrapText="true" />
+                        <Label text="Yesterday at 2:15 PM"
+                            style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;" />
+                    </VBox>
+                </HBox>
+
+                <!-- Notification 6 - Comment reply (read) -->
+                <HBox spacing="12" alignment="CENTER_LEFT"
+                    style="-fx-background-color: white; -fx-padding: 15;
+                             -fx-background-radius: 10; -fx-border-color: #e0e0e0;
+                             -fx-border-radius: 10; -fx-cursor: hand;">
+                    <Label text="🔁" style="-fx-font-size: 24px;" />
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="Mark Thompson replied to your comment"
+                            style="-fx-font-size: 14px; -fx-text-fill: #555;" />
+                        <Label text="&quot;Thanks for the tip! I'll try that approach.&quot;"
+                            style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;" wrapText="true" />
+                        <Label text="Yesterday at 10:00 AM"
+                            style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;" />
+                    </VBox>
+                </HBox>
+
+                <!-- Older Section -->
+                <Label text="This Week"
+                    style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;">
+                    <padding>
+                        <Insets top="15" bottom="5" />
+                    </padding>
+                </Label>
+
+                <!-- Notification 7 (read) -->
+                <HBox spacing="12" alignment="CENTER_LEFT"
+                    style="-fx-background-color: white; -fx-padding: 15;
+                             -fx-background-radius: 10; -fx-border-color: #e0e0e0;
+                             -fx-border-radius: 10; -fx-cursor: hand;">
+                    <Label text="⭐" style="-fx-font-size: 24px;" />
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="You received a 5-star review from a client"
+                            style="-fx-font-size: 14px; -fx-text-fill: #555;" />
+                        <Label text="&quot;Excellent work! Highly recommended freelancer.&quot;"
+                            style="-fx-font-size: 12px; -fx-text-fill: #7f8c8d;" wrapText="true" />
+                        <Label text="3 days ago"
+                            style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;" />
+                    </VBox>
+                </HBox>
+
+                <!-- Notification 8 (read) -->
+                <HBox spacing="12" alignment="CENTER_LEFT"
+                    style="-fx-background-color: white; -fx-padding: 15;
+                             -fx-background-radius: 10; -fx-border-color: #e0e0e0;
+                             -fx-border-radius: 10; -fx-cursor: hand;">
+                    <Label text="🎉" style="-fx-font-size: 24px;" />
+                    <VBox spacing="3" HBox.hgrow="ALWAYS">
+                        <Label text="Congratulations! Your profile reached 100 views"
+                            style="-fx-font-size: 14px; -fx-text-fill: #555;" />
+                        <Label text="5 days ago"
+                            style="-fx-font-size: 11px; -fx-text-fill: #95a5a6;" />
+                    </VBox>
+                </HBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
