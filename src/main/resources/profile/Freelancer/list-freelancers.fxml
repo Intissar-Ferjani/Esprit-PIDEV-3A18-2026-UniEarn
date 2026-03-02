@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root" stylesheets="@../../profile/profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.freelancer.ListFreelancersController">
+
+    <!-- Top Navigation Bar -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="70.0" spacing="20.0" styleClass="top-bar">
+            <padding>
+                <Insets left="30.0" right="30.0" />
+            </padding>
+            <children>
+                <Button onAction="#handleBackToProfile" styleClass="btn-secondary" text="← Back to Profile">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <ImageView fitHeight="280.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../images/UniEarn_full_logo.png" />
+                    </image>
+                </ImageView>
+            </children>
+        </HBox>
+    </top>
+
+    <!-- Left Sidebar Navigation -->
+    <left>
+        <VBox prefWidth="250.0" styleClass="sidebar">
+            <children>
+                <!-- Navigation Menu -->
+                <VBox spacing="5.0" VBox.vgrow="ALWAYS">
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="20.0" />
+                    </padding>
+                    <children>
+                        <Button onAction="#handleBackToProfile" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="🏠 Dashboard">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button, active" text="👥 Browse Freelancers">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📋 Mes projets" onAction="#handleproject">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📝 Mes contrats">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="💬 Messages">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="💳 Paiements">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Region VBox.vgrow="ALWAYS" />
+
+                        <Separator />
+
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="⚙ Settings">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button onAction="#handleLogout" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button, logout" text="🚪 Logout">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </left>
+
+    <!-- Main Content -->
+    <center>
+        <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="content-scroll">
+            <content>
+                <VBox spacing="25.0" styleClass="main-content">
+                    <padding>
+                        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+                    </padding>
+                    <children>
+
+                        <!-- Header -->
+                        <HBox alignment="CENTER_LEFT" spacing="15.0">
+                            <children>
+                                <Label styleClass="section-title" text="👥 Browse Freelancers">
+                                    <font>
+                                        <Font name="System Bold" size="28.0" />
+                                    </font>
+                                </Label>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Label fx:id="resultsCountLabel" styleClass="profile-tag" text="0 freelancers found">
+                                    <font>
+                                        <Font size="14.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                        </HBox>
+
+                        <!-- Search and Filter Bar -->
+                        <HBox alignment="CENTER_LEFT" spacing="15.0" styleClass="profile-header">
+                            <padding>
+                                <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
+                            </padding>
+                            <children>
+                                <!-- Search Field -->
+                                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <TextField fx:id="searchField" prefWidth="400.0" promptText="🔍 Search by name, skills, or bio..." styleClass="search-field">
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                 <VBox.margin>
+                                    <Insets top="16.0" />
+                                 </VBox.margin>
+                                        </TextField>
+                                    </children>
+                                </VBox>
+
+                                <!-- Filters Group -->
+                                <HBox alignment="CENTER_LEFT" spacing="12.0">
+                                    <children>
+                                        <!-- Verification Status Filter -->
+                                        <VBox spacing="5.0">
+                                            <children>
+                                                <Label styleClass="filter-label" text="Status">
+                                                    <font>
+                                                        <Font size="12.0" />
+                                                    </font>
+                                                </Label>
+                                                <ComboBox fx:id="verificationFilterCombo" prefWidth="130.0" styleClass="filter-combo">
+                                                    <items>
+                                                        <FXCollections fx:factory="observableArrayList">
+                                                            <String fx:value="All" />
+                                                            <String fx:value="Verified" />
+                                                            <String fx:value="Unverified" />
+                                                        </FXCollections>
+                                                    </items>
+                                                </ComboBox>
+                                            </children>
+                                        </VBox>
+
+                                        <!-- Rating Filter -->
+                                        <VBox spacing="5.0">
+                                            <children>
+                                                <Label styleClass="filter-label" text="Rating">
+                                                    <font>
+                                                        <Font size="12.0" />
+                                                    </font>
+                                                </Label>
+                                                <ComboBox fx:id="ratingFilterCombo" prefWidth="110.0" styleClass="filter-combo">
+                                                    <items>
+                                                        <FXCollections fx:factory="observableArrayList">
+                                                            <String fx:value="Any" />
+                                                            <String fx:value="4.0+" />
+                                                            <String fx:value="4.5+" />
+                                                        </FXCollections>
+                                                    </items>
+                                                </ComboBox>
+                                            </children>
+                                        </VBox>
+
+                                        <!-- Sort By -->
+                                        <VBox spacing="5.0">
+                                            <children>
+                                                <Label styleClass="filter-label" text="Sort By">
+                                                    <font>
+                                                        <Font size="12.0" />
+                                                    </font>
+                                                </Label>
+                                                <ComboBox fx:id="sortByCombo" prefWidth="150.0" styleClass="filter-combo">
+                                                    <items>
+                                                        <FXCollections fx:factory="observableArrayList">
+                                                            <String fx:value="Rating (High)" />
+                                                            <String fx:value="Rating (Low)" />
+                                                            <String fx:value="Price (Low)" />
+                                                            <String fx:value="Price (High)" />
+                                                            <String fx:value="Name (A-Z)" />
+                                                        </FXCollections>
+                                                    </items>
+                                                </ComboBox>
+                                            </children>
+                                        </VBox>
+
+                                        <!-- Clear Filters Button -->
+                                        <VBox alignment="BOTTOM_CENTER">
+                                            <children>
+                                                <Button onAction="#handleClearFilters" prefHeight="34.0" prefWidth="96.0" styleClass="btn-secondary" text="Clear">
+                                                    <font>
+                                                        <Font size="12.0" />
+                                                    </font>
+                                                </Button>
+                                            </children>
+                                            <VBox.margin>
+                                                <Insets top="20.0" />
+                                            </VBox.margin>
+                                        </VBox>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </HBox>
+
+                        <!-- Freelancers List -->
+                        <VBox spacing="15.0" styleClass="content-section" VBox.vgrow="ALWAYS">
+                            <padding>
+                                <Insets bottom="20.0" left="25.0" right="25.0" top="20.0" />
+                            </padding>
+                            <children>
+                                <ScrollPane fitToWidth="true" prefHeight="500.0" styleClass="projects-scroll">
+                                    <content>
+                                        <VBox fx:id="freelancersContainer" spacing="15.0">
+                                            <padding>
+                                                <Insets top="5.0" />
+                                            </padding>
+                                            <!-- Freelancer cards loaded dynamically -->
+                                        </VBox>
+                                    </content>
+                                </ScrollPane>
+                            </children>
+                        </VBox>
+
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

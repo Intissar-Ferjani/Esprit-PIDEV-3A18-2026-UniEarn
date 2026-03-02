@@ -1,5 +1,6 @@
 package uniearn.interfaces.users;
 
+import uniearn.model.entities.users.User;
 
 import java.sql.SQLException;
 import java.util.List;

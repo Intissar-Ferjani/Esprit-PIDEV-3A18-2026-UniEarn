@@ -4,34 +4,59 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+
 public class MyConnection {
 
-    private String url = "jdbc:mysql://localhost:3306/uniearn_db";
-
-    private String login = "root";
-
-    private String pwd = "";
+    // Database credentials
+    private final String url = "jdbc:mysql://localhost:3306/uniearn_db";
+    private final String login = "root";
+    private final String pwd = "";
 
     private Connection cnx;
+
+    // Single MyConnection instance (Singleton)
     private static MyConnection instance;
 
-    public Connection getCnx() {
-        return cnx;
-    }
-
-    public MyConnection() {
+    private MyConnection() {
         try {
             cnx = DriverManager.getConnection(url, login, pwd);
             System.out.println("Connected to database successfully!");
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.err.println("Database connection failed: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    public static MyConnection getInstance() {
+    //get single instance of MyConnection -> Thread-safe
+    public static synchronized MyConnection getInstance() {
         if (instance == null) {
             instance = new MyConnection();
         }
         return instance;
+    }
+
+    //always returns the same connection
+    public Connection getCnx() {
+        return cnx;
+    }
+
+    public boolean isConnected() {
+        try {
+            return cnx != null && !cnx.isClosed();
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    // if cnx is lost
+    public void reconnect() {
+        try {
+            if (!isConnected()) {
+                cnx = DriverManager.getConnection(url, login, pwd);
+                System.out.println("Reconnected to database successfully!");
+            }
+        } catch (SQLException e) {
+            System.err.println("Reconnection failed: " + e.getMessage());
+        }
     }
 }

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+
+<BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root" stylesheets="@../../profile/profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.freelancer.FreelancerPortfolioController">
+
+    <!-- Top Navigation Bar -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="70.0" styleClass="top-bar" spacing="20.0">
+            <padding>
+                <Insets left="30.0" right="30.0" />
+            </padding>
+            <children>
+                <Button text="← Back to Profile" onAction="#handleBack" styleClass="btn-secondary">
+                    <font>
+                        <Font size="13.0" />
+                    </font>
+                </Button>
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <ImageView fitHeight="280.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@../../images/UniEarn_full_logo.png" />
+                    </image>
+                </ImageView>
+            </children>
+        </HBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="content-scroll">
+            <content>
+                <VBox spacing="30.0" styleClass="main-content">
+                    <padding>
+                        <Insets top="40.0" bottom="40.0" left="60.0" right="60.0" />
+                    </padding>
+                    <children>
+
+                        <!-- Portfolio Header -->
+                        <VBox spacing="15.0" alignment="CENTER_LEFT">
+                            <children>
+                                <HBox alignment="CENTER_LEFT" spacing="20.0">
+                                    <children>
+                                        <Label fx:id="portfolioTitleLabel" text="My Portfolio" styleClass="page-title">
+                                            <font>
+                                                <Font name="System Bold" size="32.0" />
+                                            </font>
+                                        </Label>
+
+                                        <Region HBox.hgrow="ALWAYS" />
+
+                                        <Button fx:id="addPortfolioButton" text="+ Add Project" styleClass="btn-primary" onAction="#handleAddPortfolio">
+                                            <font>
+                                                <Font size="14.0" />
+                                            </font>
+                                        </Button>
+                                    </children>
+                                </HBox>
+
+                                <Label fx:id="portfolioDescriptionLabel" text="Showcase your best work to attract clients" style="-fx-text-fill: #666; -fx-font-size: 15px;" wrapText="true" />
+                            </children>
+                        </VBox>
+
+                        <!-- Portfolio Info Card -->
+                        <VBox spacing="15.0" styleClass="content-section" style="-fx-background-color: #f8f9fa; -fx-border-color: #e0e0e0; -fx-border-width: 1; -fx-border-radius: 10; -fx-background-radius: 10;">
+                            <padding>
+                                <Insets top="20.0" bottom="20.0" left="25.0" right="25.0" />
+                            </padding>
+                            <children>
+                                <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                    <children>
+                                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <Label text="📋 Portfolio Information" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #333;" />
+                                                <HBox spacing="20.0" alignment="CENTER_LEFT">
+                                                    <children>
+                                                        <VBox spacing="3.0">
+                                                            <children>
+                                                                <Label text="Title:" style="-fx-text-fill: #666; -fx-font-size: 12px;" />
+                                                                <Label fx:id="portfolioInfoTitle" text="Portfolio Title" style="-fx-font-weight: 600; -fx-font-size: 14px; -fx-text-fill: #1a1a1a;" />
+                                                            </children>
+                                                        </VBox>
+                                                        <Separator orientation="VERTICAL" />
+                                                        <VBox spacing="3.0">
+                                                            <children>
+                                                                <Label text="Created:" style="-fx-text-fill: #666; -fx-font-size: 12px;" />
+                                                                <Label fx:id="portfolioCreatedDate" text="Jan 1, 2024" style="-fx-font-size: 13px; -fx-text-fill: #555;" />
+                                                            </children>
+                                                        </VBox>
+                                                        <Separator orientation="VERTICAL" />
+                                                        <VBox spacing="3.0">
+                                                            <children>
+                                                                <Label text="Total Projects:" style="-fx-text-fill: #666; -fx-font-size: 12px;" />
+                                                                <Label fx:id="portfolioItemCount" text="0" style="-fx-font-weight: 600; -fx-font-size: 14px; -fx-text-fill: #1976d2;" />
+                                                            </children>
+                                                        </VBox>
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+
+                                        <VBox spacing="8.0" alignment="CENTER_RIGHT">
+                                            <children>
+                                                <Button text="✏ Edit Info" styleClass="btn-secondary-small" onAction="#handleEditPortfolioInfo" style="-fx-font-size: 12px; -fx-padding: 6 12;">
+                                                    <font>
+                                                        <Font size="12.0" />
+                                                    </font>
+                                                </Button>
+                                                <Button text="🗑 Delete Portfolio" style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 6 12; -fx-cursor: hand; -fx-background-radius: 5;" onAction="#handleDeletePortfolio">
+                                                    <font>
+                                                        <Font size="12.0" />
+                                                    </font>
+                                                </Button>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+
+                        <Separator />
+
+                        <!-- Empty State (shown when no items) -->
+                        <VBox fx:id="emptyStateContainer" alignment="CENTER" spacing="20.0" style="-fx-padding: 60px;" managed="false" visible="false">
+                            <children>
+                                <Label text="💼" style="-fx-font-size: 64px;" />
+                                <Label text="No Portfolio Items Yet" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+                                <Label text="Start showcasing your work by adding your first project" style="-fx-text-fill: #666; -fx-font-size: 14px;" />
+                                <Button text="+ Add Your First Project" styleClass="btn-primary" onAction="#handleAddPortfolio" style="-fx-font-size: 14px; -fx-padding: 12 24;" />
+                            </children>
+                        </VBox>
+
+                        <!-- Portfolio Items Container -->
+                        <VBox fx:id="portfolioItemsContainer" spacing="20.0">
+                            <!-- Portfolio items loaded dynamically -->
+                        </VBox>
+
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
