@@ -5,6 +5,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import uniearn.controller.auth.client.ClientSignupController;
@@ -12,37 +15,57 @@ import uniearn.controller.auth.freelancer.FreelancerSignupController;
 import uniearn.model.entities.users.User;
 import uniearn.model.entities.users.admin.Admin;
 import uniearn.model.enums.UserRole;
-import uniearn.services.users.AdminService;
+import uniearn.services.users.admin.AdminService;
 import uniearn.services.users.UserService;
 import uniearn.utils.user.PasswordUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.regex.Pattern;
-
 
 // - Step 1 : Basic User Signup
 
 public class SignupController {
 
-    @FXML private TextField nameField;
-    @FXML private TextField emailField;
-    @FXML private PasswordField passwordField;
-    @FXML private TextField passwordFieldVisible;
-    @FXML private PasswordField confirmPasswordField;
-    @FXML private TextField confirmPasswordFieldVisible;
-    @FXML private ComboBox<UserRole> roleComboBox;
-    @FXML private Button signupButton;
-    @FXML private Button generatePasswordButton;
-    @FXML private Button togglePasswordButton;
-    @FXML private Button toggleConfirmPasswordButton;
-    @FXML private Label nameError;
-    @FXML private Label emailError;
-    @FXML private Label passwordError;
-    @FXML private Label confirmPasswordError;
-    @FXML private Label roleError;
-    @FXML private CheckBox termsCheckbox;
-    @FXML private Label termsError;
+    @FXML
+    private TextField nameField;
+    @FXML
+    private TextField emailField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private TextField passwordFieldVisible;
+    @FXML
+    private PasswordField confirmPasswordField;
+    @FXML
+    private TextField confirmPasswordFieldVisible;
+    @FXML
+    private ComboBox<UserRole> roleComboBox;
+    @FXML
+    private Button signupButton;
+    @FXML
+    private Button generatePasswordButton;
+    @FXML
+    private Button togglePasswordButton;
+    @FXML
+    private Button toggleConfirmPasswordButton;
+    @FXML
+    private Label nameError;
+    @FXML
+    private Label emailError;
+    @FXML
+    private Label passwordError;
+    @FXML
+    private Label confirmPasswordError;
+    @FXML
+    private Label roleError;
+    @FXML
+    private CheckBox termsCheckbox;
+    @FXML
+    private Label termsError;
+    @FXML
+    private ImageView profileImageView;
 
     private final UserService userService = new UserService();
     private final AdminService adminService = new AdminService();
@@ -51,28 +74,37 @@ public class SignupController {
     private boolean isPasswordVisible = false;
     private boolean isConfirmPasswordVisible = false;
 
+    // Stores the selected photo file temporarily until the user is created in DB
+    private File selectedProfilePhoto = null;
+
     @FXML
     public void initialize() {
         setupRoleComboBox();
         setupPasswordFieldSync();
 
         nameField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) validateName();
+            if (!newVal)
+                validateName();
         });
         emailField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) validateEmail();
+            if (!newVal)
+                validateEmail();
         });
         passwordField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) validatePassword();
+            if (!newVal)
+                validatePassword();
         });
         confirmPasswordField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) validateConfirmPassword();
+            if (!newVal)
+                validateConfirmPassword();
         });
         roleComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) hideError(roleError);
+            if (newVal != null)
+                hideError(roleError);
         });
         termsCheckbox.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal) hideError(termsError);
+            if (newVal)
+                hideError(termsError);
         });
 
         passwordFieldVisible.setVisible(false);
@@ -200,16 +232,24 @@ public class SignupController {
         roleComboBox.setConverter(new StringConverter<UserRole>() {
             @Override
             public String toString(UserRole role) {
-                if (role == null) return "";
+                if (role == null)
+                    return "";
                 switch (role) {
-                    case ADMIN: return "Administrator";
-                    case CLIENT: return "Client";
-                    case FREELANCER: return "Freelancer";
-                    default: return role.name();
+                    case ADMIN:
+                        return "Administrator";
+                    case CLIENT:
+                        return "Client";
+                    case FREELANCER:
+                        return "Freelancer";
+                    default:
+                        return role.name();
                 }
             }
+
             @Override
-            public UserRole fromString(String string) { return null; }
+            public UserRole fromString(String string) {
+                return null;
+            }
         });
     }
 
@@ -224,10 +264,22 @@ public class SignupController {
 
     private boolean validateName() {
         String name = nameField.getText().trim();
-        if (name.isEmpty()) { showError(nameError, "Name is required"); return false; }
-        if (name.length() < 2) { showError(nameError, "Name must be at least 2 characters"); return false; }
-        if (name.length() > 50) { showError(nameError, "Name must not exceed 50 characters"); return false; }
-        if (!name.matches("^[a-zA-Z\\s]+$")) { showError(nameError, "Name can only contain letters and spaces"); return false; }
+        if (name.isEmpty()) {
+            showError(nameError, "Name is required");
+            return false;
+        }
+        if (name.length() < 2) {
+            showError(nameError, "Name must be at least 2 characters");
+            return false;
+        }
+        if (name.length() > 50) {
+            showError(nameError, "Name must not exceed 50 characters");
+            return false;
+        }
+        if (!name.matches("^[a-zA-Z\\s]+$")) {
+            showError(nameError, "Name can only contain letters and spaces");
+            return false;
+        }
         hideError(nameError);
         return true;
     }
@@ -261,32 +313,54 @@ public class SignupController {
     }
 
     private boolean validatePassword() {
-        String password = isPasswordVisible ?
-                passwordFieldVisible.getText() : passwordField.getText();
+        String password = isPasswordVisible ? passwordFieldVisible.getText() : passwordField.getText();
 
-        if (password.isEmpty()) { showError(passwordError, "Password is required"); return false; }
-        if (password.length() < 8) { showError(passwordError, "Password must be at least 8 characters"); return false; }
-        if (!password.matches(".*[A-Z].*")) { showError(passwordError, "Password must contain at least one uppercase letter"); return false; }
-        if (!password.matches(".*[a-z].*")) { showError(passwordError, "Password must contain at least one lowercase letter"); return false; }
-        if (!password.matches(".*\\d.*")) { showError(passwordError, "Password must contain at least one number"); return false; }
+        if (password.isEmpty()) {
+            showError(passwordError, "Password is required");
+            return false;
+        }
+        if (password.length() < 8) {
+            showError(passwordError, "Password must be at least 8 characters");
+            return false;
+        }
+        if (!password.matches(".*[A-Z].*")) {
+            showError(passwordError, "Password must contain at least one uppercase letter");
+            return false;
+        }
+        if (!password.matches(".*[a-z].*")) {
+            showError(passwordError, "Password must contain at least one lowercase letter");
+            return false;
+        }
+        if (!password.matches(".*\\d.*")) {
+            showError(passwordError, "Password must contain at least one number");
+            return false;
+        }
         hideError(passwordError);
         return true;
     }
 
     private boolean validateConfirmPassword() {
-        String password = isPasswordVisible ?
-                passwordFieldVisible.getText() : passwordField.getText();
-        String confirmPassword = isConfirmPasswordVisible ?
-                confirmPasswordFieldVisible.getText() : confirmPasswordField.getText();
+        String password = isPasswordVisible ? passwordFieldVisible.getText() : passwordField.getText();
+        String confirmPassword = isConfirmPasswordVisible ? confirmPasswordFieldVisible.getText()
+                : confirmPasswordField.getText();
 
-        if (confirmPassword.isEmpty()) { showError(confirmPasswordError, "Please confirm your password"); return false; }
-        if (!password.equals(confirmPassword)) { showError(confirmPasswordError, "Passwords do not match"); return false; }
+        if (confirmPassword.isEmpty()) {
+            showError(confirmPasswordError, "Please confirm your password");
+            return false;
+        }
+        if (!password.equals(confirmPassword)) {
+            showError(confirmPasswordError, "Passwords do not match");
+            return false;
+        }
         hideError(confirmPasswordError);
         return true;
     }
 
     private boolean validateRole() {
-        if (roleComboBox.getValue() == null) { showError(roleError, "Please select a role"); return false; }
+        if (roleComboBox.getValue() == null) {
+            showError(roleError, "Please select a role");
+            return false;
+        }
         hideError(roleError);
         return true;
     }
@@ -295,8 +369,7 @@ public class SignupController {
         try {
             signupButton.setDisable(true);
 
-            String password = isPasswordVisible ?
-                    passwordFieldVisible.getText() : passwordField.getText();
+            String password = isPasswordVisible ? passwordFieldVisible.getText() : passwordField.getText();
 
             UserRole selectedRole = roleComboBox.getValue();
 
@@ -312,11 +385,10 @@ public class SignupController {
                 return;
 
             } else if (selectedRole == UserRole.ADMIN) {
-                // Insert into both user table and admin table
                 Admin newAdmin = new Admin();
                 newAdmin.setName(nameField.getText().trim());
                 newAdmin.setEmail(emailField.getText().trim());
-                newAdmin.setPassword(password);  // Will be hashed in UserService
+                newAdmin.setPassword(password);
                 newAdmin.setRole(UserRole.ADMIN);
                 newAdmin.setProfilePicturePath(null);
                 newAdmin.setActivated(true);
@@ -346,14 +418,50 @@ public class SignupController {
         }
     }
 
-    // Helper to build a basic User object from form fields
+    /**
+     * Builds a base User object from the form fields.
+     * If a profile photo was selected, its absolute path is stored temporarily
+     * so the downstream controller (Client/Freelancer) can copy and save it
+     * after the user row has been inserted into the DB and an ID is available.
+     */
     private User buildBaseUser(String password) {
         User user = new User();
         user.setName(nameField.getText().trim());
         user.setEmail(emailField.getText().trim());
         user.setPassword(password);
         user.setRole(roleComboBox.getValue());
+        // Pass the absolute path of the chosen photo (null if none selected).
+        // The receiving controller is responsible for copying the file and
+        // calling userService.updateProfilePicture() once it has a real userId.
+        if (selectedProfilePhoto != null) {
+            user.setProfilePicturePath(selectedProfilePhoto.getAbsolutePath());
+        }
         return user;
+    }
+
+    /**
+     * Lets the user pick a profile photo during signup.
+     * We only preview the image here — we do NOT copy or save it yet because
+     * the user row doesn't exist in the DB yet (no userId available).
+     * The actual file copy + DB update happens in ClientSignupController /
+     * FreelancerSignupController after the INSERT returns a userId.
+     */
+    @FXML
+    private void handleChangePhoto() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Profile Picture");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
+
+        File selected = fileChooser.showOpenDialog(profileImageView.getScene().getWindow());
+
+        if (selected != null) {
+            selectedProfilePhoto = selected;
+            // Preview only — file is NOT copied until after DB insert
+            Image preview = new Image(selected.toURI().toString());
+            profileImageView.setImage(preview);
+            System.out.println("✓ Profile photo selected (preview only): " + selected.getAbsolutePath());
+        }
     }
 
     private void redirectToClientSignup(User userData) {
@@ -388,7 +496,8 @@ public class SignupController {
                 return;
             }
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/signup/freelancer/freelancer-information.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/auth/signup/freelancer/freelancer-information.fxml"));
             Parent root = loader.load();
 
             FreelancerSignupController controller = loader.getController();
@@ -407,7 +516,9 @@ public class SignupController {
     }
 
     @FXML
-    private void handleLoginRedirect() { redirectToLogin(); }
+    private void handleLoginRedirect() {
+        redirectToLogin();
+    }
 
     private void redirectToLogin() {
         try {

@@ -33,7 +33,7 @@ public class ProjectService implements IProject<Project> {
 
     @Override
     public void updateProject(int id, Project Project) {
-        String request = "UPDATE project SET title=?, description=?, budget=?, status=?, ClientID=? WHERE idproject=?";
+        String request = "UPDATE project SET title=?, description=?, budget=?, status=?, ClientID=?, freelancerIDD=? WHERE idproject=?";
         try {
 
             PreparedStatement pst = cn.prepareStatement(request);
@@ -43,7 +43,8 @@ public class ProjectService implements IProject<Project> {
             pst.setDouble(3, Project.getBudget());
             pst.setInt(4, Project.getStatus());
             pst.setInt(5, Project.getClient_id());
-            pst.setInt(6, id);
+            pst.setInt(6, Project.getFreelancerid());
+            pst.setInt(7, id);
 
             int rows = pst.executeUpdate();
 
@@ -94,6 +95,7 @@ public class ProjectService implements IProject<Project> {
                 project.setBudget(rs.getDouble("budget"));
                 project.setStatus(rs.getInt("status"));
                 project.setClient_id(rs.getInt("ClientID"));
+                project.setFreelancerid(rs.getInt("freelancerIDD"));
                 return project;
             } else {
                 System.out.println("No project found with the given ID.");
@@ -119,6 +121,7 @@ public class ProjectService implements IProject<Project> {
                 project.setBudget(rs.getDouble("budget"));
                 project.setStatus(rs.getInt("status"));
                 project.setClient_id(rs.getInt("ClientID"));
+                project.setFreelancerid(rs.getInt("freelancerIDD"));
                 projects.add(project);
             }
         } catch (SQLException e) {
@@ -144,6 +147,7 @@ public class ProjectService implements IProject<Project> {
                 project.setBudget(rs.getDouble("budget"));
                 project.setStatus(rs.getInt("status"));
                 project.setClient_id(rs.getInt("ClientID"));
+                project.setFreelancerid(rs.getInt("freelancerIDD"));
                 projects.add(project);
             }
         } catch (SQLException e) {

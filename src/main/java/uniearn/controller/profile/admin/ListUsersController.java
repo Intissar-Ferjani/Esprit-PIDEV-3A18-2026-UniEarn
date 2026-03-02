@@ -10,7 +10,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import uniearn.controller.projet.ProjectController;
 import uniearn.model.entities.users.User;
 import uniearn.model.entities.users.admin.Admin;
 import uniearn.model.entities.users.client.Client;
@@ -47,21 +46,11 @@ public class ListUsersController {
     public void initialize() {
         System.out.println("ManageUsersController initialized");
 
-        // Initialize with default values
-        if (roleFilterCombo != null) {
-            roleFilterCombo.setValue("All");
-        }
-        if (statusFilterCombo != null) {
-            statusFilterCombo.setValue("All");
-        }
-        if (sortByCombo != null) {
-            sortByCombo.setValue("Name (A-Z)");
-        }
+        if (roleFilterCombo != null)   roleFilterCombo.setValue("All");
+        if (statusFilterCombo != null) statusFilterCombo.setValue("All");
+        if (sortByCombo != null)       sortByCombo.setValue("Name (A-Z)");
 
-        // Setup filter listeners
         setupFilterListeners();
-
-        // Auto-load users on initialization
         loadUsers();
     }
 
@@ -76,21 +65,11 @@ public class ListUsersController {
     }
 
     private void setupFilterListeners() {
-        // Search field listener
-        if (searchField != null) {
+        if (searchField != null)
             searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
-        }
-
-        // Filter combo listeners
-        if (roleFilterCombo != null) {
-            roleFilterCombo.setOnAction(e -> applyFilters());
-        }
-        if (statusFilterCombo != null) {
-            statusFilterCombo.setOnAction(e -> applyFilters());
-        }
-        if (sortByCombo != null) {
-            sortByCombo.setOnAction(e -> applyFilters());
-        }
+        if (roleFilterCombo != null)   roleFilterCombo.setOnAction(e -> applyFilters());
+        if (statusFilterCombo != null) statusFilterCombo.setOnAction(e -> applyFilters());
+        if (sortByCombo != null)       sortByCombo.setOnAction(e -> applyFilters());
     }
 
     private void loadUsers() {
@@ -110,7 +89,7 @@ public class ListUsersController {
 
         filteredUsers = new ArrayList<>(allUsers);
 
-        // search filter
+        // Search
         String searchTerm = searchField.getText().toLowerCase().trim();
         if (!searchTerm.isEmpty()) {
             filteredUsers = filteredUsers.stream()
@@ -118,7 +97,7 @@ public class ListUsersController {
                     .collect(Collectors.toList());
         }
 
-        // role filter
+        // Role
         String roleFilter = roleFilterCombo.getValue();
         if (!"All".equals(roleFilter)) {
             UserRole targetRole = UserRole.valueOf(roleFilter.toUpperCase());
@@ -127,7 +106,7 @@ public class ListUsersController {
                     .collect(Collectors.toList());
         }
 
-        // status filter
+        // Status
         String statusFilter = statusFilterCombo.getValue();
         if (!"All".equals(statusFilter)) {
             boolean isActive = "Active".equals(statusFilter);
@@ -136,47 +115,27 @@ public class ListUsersController {
                     .collect(Collectors.toList());
         }
 
-        // sorting
+        // Sort
         String sortBy = sortByCombo.getValue();
         switch (sortBy) {
-            case "Name (A-Z)":
-                filteredUsers.sort(Comparator.comparing(User::getName));
-                break;
-            case "Name (Z-A)":
-                filteredUsers.sort(Comparator.comparing(User::getName).reversed());
-                break;
-            case "Email (A-Z)":
-                filteredUsers.sort(Comparator.comparing(User::getEmail));
-                break;
-            case "Role":
-                filteredUsers.sort(Comparator.comparing(u -> u.getRole().name()));
-                break;
-            case "Status":
-                filteredUsers.sort(Comparator.comparing(User::isActivated).reversed());
-                break;
+            case "Name (A-Z)":  filteredUsers.sort(Comparator.comparing(User::getName)); break;
+            case "Name (Z-A)":  filteredUsers.sort(Comparator.comparing(User::getName).reversed()); break;
+            case "Email (A-Z)": filteredUsers.sort(Comparator.comparing(User::getEmail)); break;
+            case "Role":        filteredUsers.sort(Comparator.comparing(u -> u.getRole().name())); break;
+            case "Status":      filteredUsers.sort(Comparator.comparing(User::isActivated).reversed()); break;
         }
 
         displayUsers();
     }
 
     private boolean matchesSearchTerm(User user, String searchTerm) {
-        // Search in name
-        if (user.getName().toLowerCase().contains(searchTerm)) {
-            return true;
-        }
-
-        // Search in email
-        if (user.getEmail().toLowerCase().contains(searchTerm)) {
-            return true;
-        }
-
-        return false;
+        return user.getName().toLowerCase().contains(searchTerm)
+                || user.getEmail().toLowerCase().contains(searchTerm);
     }
 
     private void displayUsers() {
         usersRowsContainer.getChildren().clear();
 
-        // Update total count
         totalUsersLabel.setText(filteredUsers.size() + " user" +
                 (filteredUsers.size() != 1 ? "s" : ""));
 
@@ -185,9 +144,9 @@ public class ListUsersController {
             return;
         }
 
-        // Display each user as a table row
-        for (User user : filteredUsers) {
-            usersRowsContainer.getChildren().add(createUserRow(user));
+        // ✅ Pass index for alternating row colors
+        for (int i = 0; i < filteredUsers.size(); i++) {
+            usersRowsContainer.getChildren().add(createUserRow(filteredUsers.get(i), i % 2 == 0));
         }
     }
 
@@ -209,109 +168,96 @@ public class ListUsersController {
         usersRowsContainer.getChildren().add(emptyState);
     }
 
-    private HBox createUserRow(User user) {
-        HBox row = new HBox(10);
+    // ✅ FIXED: badges wrapped in HBox containers so columns align with header
+    // Column widths match FXML header: Name=200 | Email=240 | Role=150 | Status=150 | grow | Actions=220
+    private HBox createUserRow(User user, boolean isEven) {
+        HBox row = new HBox();
         row.setAlignment(Pos.CENTER_LEFT);
-        row.setStyle(
-                "-fx-background-color: white; " +
-                        "-fx-border-color: #e1e8ed; " +
-                        "-fx-border-width: 0 0 1 0; " +
-                        "-fx-padding: 15;"
-        );
+        row.setSpacing(0);
+        row.setPadding(new Insets(12, 16, 12, 16));
 
-        // Name
+        String baseStyle = (isEven ? "-fx-background-color: #ffffff;" : "-fx-background-color: #fafbfc;")
+                + "-fx-border-color: transparent transparent #e1e8ed transparent;"
+                + "-fx-border-width: 0 0 1 0;";
+        row.setStyle(baseStyle);
+
+        // ✅ Hover effect
+        row.setOnMouseEntered(e -> row.setStyle(
+                "-fx-background-color: #eff6ff;"
+                        + "-fx-border-color: transparent transparent #dbeafe transparent;"
+                        + "-fx-border-width: 0 0 1 0; -fx-cursor: hand;"));
+        row.setOnMouseExited(e -> row.setStyle(baseStyle));
+
+        // ── Name (200px) ──
         Label nameLabel = new Label(user.getName());
         nameLabel.setPrefWidth(200);
         nameLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #14171a; -fx-font-weight: bold;");
 
-        // Email
+        // ── Email (240px) ──
         Label emailLabel = new Label(user.getEmail());
-        emailLabel.setPrefWidth(220);
+        emailLabel.setPrefWidth(240);
         emailLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #657786;");
 
-        // Role Badge
+        // ── Role badge wrapped in 150px HBox so it occupies the full column ──
         Label roleLabel = new Label(user.getRole().name());
-        roleLabel.setPrefWidth(100);
-        String roleColor = getRoleColor(user.getRole());
         roleLabel.setStyle(
-                "-fx-background-color: " + roleColor + "; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-padding: 4 12; " +
-                        "-fx-background-radius: 12; " +
-                        "-fx-font-size: 11px; " +
-                        "-fx-font-weight: bold;"
-        );
-        roleLabel.setMaxWidth(85);
+                "-fx-background-color: " + getRoleColor(user.getRole()) + ";"
+                        + "-fx-text-fill: white; -fx-padding: 4 12;"
+                        + "-fx-background-radius: 12;"
+                        + "-fx-font-size: 11px; -fx-font-weight: bold;");
+        HBox roleBox = new HBox(roleLabel);
+        roleBox.setPrefWidth(150);
+        roleBox.setAlignment(Pos.CENTER_LEFT);
 
-        // Status Badge
-        Label statusLabel = new Label(user.isActivated() ? "Active" : "Deactivated");
-        statusLabel.setPrefWidth(100);
-        String statusColor = user.isActivated() ? "#27ae60" : "#e74c3c";
+        // ── Status badge wrapped in 150px HBox so it occupies the full column ──
+        boolean active = user.isActivated();
+        Label statusLabel = new Label(active ? "Active" : "Deactivated");
         statusLabel.setStyle(
-                "-fx-background-color: " + statusColor + "; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-padding: 4 12; " +
-                        "-fx-background-radius: 12; " +
-                        "-fx-font-size: 11px; " +
-                        "-fx-font-weight: bold;"
-        );
-        statusLabel.setMaxWidth(90);
+                "-fx-background-color: " + (active ? "#27ae60" : "#e74c3c") + ";"
+                        + "-fx-text-fill: white; -fx-padding: 4 12;"
+                        + "-fx-background-radius: 12;"
+                        + "-fx-font-size: 11px; -fx-font-weight: bold;");
+        HBox statusBox = new HBox(statusLabel);
+        statusBox.setPrefWidth(150);
+        statusBox.setAlignment(Pos.CENTER_LEFT);
 
+        // ── Spacer ──
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        // Action Buttons
-        HBox actionsBox = new HBox(8);
-        actionsBox.setAlignment(Pos.CENTER_RIGHT);
-        actionsBox.setPrefWidth(250);
-
-        // View Button
+        // ── Actions (220px) ──
         Button viewBtn = new Button("👁 View");
         viewBtn.setStyle(
-                "-fx-background-color: #3498db; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-size: 12px; " +
-                        "-fx-padding: 6 16; " +
-                        "-fx-background-radius: 6; " +
-                        "-fx-cursor: hand;"
-        );
+                "-fx-background-color: #3498db; -fx-text-fill: white;"
+                        + "-fx-font-size: 12px; -fx-padding: 6 16;"
+                        + "-fx-background-radius: 6; -fx-cursor: hand;");
         viewBtn.setOnAction(e -> handleViewUser(user));
 
-        // Activate/Deactivate Button
-        Button toggleStatusBtn = new Button(user.isActivated() ? "🚫 Deactivate" : "✓ Activate");
-        String btnColor = user.isActivated() ? "#e74c3c" : "#27ae60";
+        Button toggleStatusBtn = new Button(active ? "🚫 Deactivate" : "✓ Activate");
         toggleStatusBtn.setStyle(
-                "-fx-background-color: " + btnColor + "; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-size: 12px; " +
-                        "-fx-padding: 6 16; " +
-                        "-fx-background-radius: 6; " +
-                        "-fx-cursor: hand;"
-        );
+                "-fx-background-color: " + (active ? "#e74c3c" : "#27ae60") + ";"
+                        + "-fx-text-fill: white; -fx-font-size: 12px; -fx-padding: 6 16;"
+                        + "-fx-background-radius: 6; -fx-cursor: hand;");
         toggleStatusBtn.setOnAction(e -> handleToggleUserStatus(user, toggleStatusBtn));
 
-        actionsBox.getChildren().addAll(viewBtn, toggleStatusBtn);
+        HBox actionsBox = new HBox(8, viewBtn, toggleStatusBtn);
+        actionsBox.setPrefWidth(220);
+        actionsBox.setAlignment(Pos.CENTER_RIGHT);
 
-        row.getChildren().addAll(nameLabel, emailLabel, roleLabel, statusLabel, spacer, actionsBox);
-
+        row.getChildren().addAll(nameLabel, emailLabel, roleBox, statusBox, spacer, actionsBox);
         return row;
     }
 
     private String getRoleColor(UserRole role) {
         switch (role) {
-            case ADMIN:
-                return "#e74c3c";
-            case CLIENT:
-                return "#3498db";
-            case FREELANCER:
-                return "#9b59b6";
-            default:
-                return "#95a5a6";
+            case ADMIN:      return "#e74c3c";
+            case CLIENT:     return "#3498db";
+            case FREELANCER: return "#9b59b6";
+            default:         return "#95a5a6";
         }
     }
 
     private void handleViewUser(User user) {
-        // User view dialog
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("View User Details");
         dialog.initModality(Modality.APPLICATION_MODAL);
@@ -320,32 +266,26 @@ public class ListUsersController {
         dialogPane.setStyle("-fx-background-color: white;");
         dialogPane.setPrefWidth(600);
 
-        // Header
         VBox header = new VBox(10);
         header.setStyle("-fx-background-color: " + getRoleColor(user.getRole()) + "; -fx-padding: 20px;");
         header.setAlignment(Pos.CENTER);
 
         Label nameLabel = new Label(user.getName());
         nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;");
-
         Label emailLabel = new Label(user.getEmail());
         emailLabel.setStyle("-fx-text-fill: #ecf0f1; -fx-font-size: 14px;");
-
         header.getChildren().addAll(nameLabel, emailLabel);
 
-        // Content
         VBox content = new VBox(15);
         content.setPadding(new Insets(25));
 
-        // Basic Info
         content.getChildren().addAll(
                 createInfoRow("User ID:", String.valueOf(user.getIdUser())),
-                createInfoRow("Role:", user.getRole().name()),
-                createInfoRow("Status:", user.isActivated() ? "Active" : "Deactivated"),
-                createInfoRow("Email:", user.getEmail())
+                createInfoRow("Role:",    user.getRole().name()),
+                createInfoRow("Status:",  user.isActivated() ? "Active" : "Deactivated"),
+                createInfoRow("Email:",   user.getEmail())
         );
 
-        // Role-specific info
         if (user.getRole() == UserRole.CLIENT) {
             Client client = clientService.getClientById(user.getIdUser());
             if (client != null) {
@@ -354,10 +294,10 @@ public class ListUsersController {
                 clientHeader.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
                 content.getChildren().addAll(
                         clientHeader,
-                        createInfoRow("Company:", client.getCompany() != null ? client.getCompany() : "N/A"),
-                        createInfoRow("Industry:", client.getIndustry() != null ? client.getIndustry() : "N/A"),
+                        createInfoRow("Company:",     client.getCompany() != null ? client.getCompany() : "N/A"),
+                        createInfoRow("Industry:",    client.getIndustry() != null ? client.getIndustry() : "N/A"),
                         createInfoRow("Total Spent:", String.format("%.2f TND", client.getAmount())),
-                        createInfoRow("Rating:", String.format("%.1f", client.getRating()))
+                        createInfoRow("Rating:",      String.format("%.1f", client.getRating()))
                 );
             }
         } else if (user.getRole() == UserRole.FREELANCER) {
@@ -368,11 +308,11 @@ public class ListUsersController {
                 freelancerHeader.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
                 content.getChildren().addAll(
                         freelancerHeader,
-                        createInfoRow("Price/Hour:", String.format("%.2f TND", freelancer.getPricePerHour())),
+                        createInfoRow("Price/Hour:",   String.format("%.2f TND", freelancer.getPricePerHour())),
                         createInfoRow("Total Earned:", String.format("%.2f TND", freelancer.getAmount())),
-                        createInfoRow("Rating:", String.format("%.1f", freelancer.getRating())),
+                        createInfoRow("Rating:",       String.format("%.1f", freelancer.getRating())),
                         createInfoRow("Verification:", freelancer.getVerificationStatus().name()),
-                        createInfoRow("Skills:", String.join(", ", freelancer.getSkills()))
+                        createInfoRow("Skills:",       String.join(", ", freelancer.getSkills()))
                 );
             }
         }
@@ -384,9 +324,7 @@ public class ListUsersController {
         VBox dialogContent = new VBox();
         dialogContent.getChildren().addAll(header, scrollPane);
         dialogPane.setContent(dialogContent);
-
-        ButtonType closeButton = new ButtonType("Close", ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialogPane.getButtonTypes().add(closeButton);
+        dialogPane.getButtonTypes().add(new ButtonType("Close", ButtonBar.ButtonData.CANCEL_CLOSE));
 
         dialog.setDialogPane(dialogPane);
         dialog.showAndWait();
@@ -415,10 +353,11 @@ public class ListUsersController {
         confirm.setTitle("Confirm Action");
         confirm.setHeaderText("Are you sure you want to " + action + " this user?");
         confirm.setContentText(
-                "User: " + user.getName() + "\n" +
-                        "Email: " + user.getEmail() + "\n\n" +
-                        (willActivate ? "This will allow the user to login again." :
-                                "This will prevent the user from logging in.")
+                "User: " + user.getName() + "\n"
+                        + "Email: " + user.getEmail() + "\n\n"
+                        + (willActivate
+                        ? "This will allow the user to login again."
+                        : "This will prevent the user from logging in.")
         );
 
         confirm.showAndWait().ifPresent(response -> {
@@ -431,10 +370,7 @@ public class ListUsersController {
                         userService.deactivateUser(user.getIdUser());
                         showSuccessAlert("Success", "User account deactivated successfully!");
                     }
-
-                    // Reload users to reflect changes
                     loadUsers();
-
                 } catch (Exception e) {
                     showErrorAlert("Error", "Failed to " + action + " user: " + e.getMessage());
                     e.printStackTrace();
@@ -476,26 +412,6 @@ public class ListUsersController {
     }
 
     @FXML
-    private void handleproject() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/Projet.fxml"));
-            Parent root = loader.load();
-
-            ProjectController controller = loader.getController();
-
-            Stage stage = (Stage) root.getScene().getWindow();
-            stage.setScene(new Scene(root, 1600, 900));
-            stage.setTitle("Manage Projects - UniEarn");
-            stage.centerOnScreen();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            showErrorAlert("Navigation Error", "Failed to load project management page: " + e.getMessage());
-        }
-
-    }
-
-    @FXML
     private void handleLogout() {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Logout");
@@ -514,12 +430,10 @@ public class ListUsersController {
         });
     }
 
-
-        private void redirectToLogin() {
+    private void redirectToLogin() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/login/login.fxml"));
             Parent root = loader.load();
-
             Stage stage = (Stage) usersRowsContainer.getScene().getWindow();
             stage.setScene(new Scene(root, 750, 600));
             stage.setTitle("Login - UniEarn");

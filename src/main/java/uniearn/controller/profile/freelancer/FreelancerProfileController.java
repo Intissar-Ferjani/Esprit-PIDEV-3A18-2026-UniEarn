@@ -4,12 +4,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -22,6 +24,9 @@ import uniearn.services.users.freelancer.FreelancerService;
 import uniearn.services.users.freelancer.PortfolioService;
 import uniearn.services.users.UserService;
 import uniearn.database.SessionManager;
+import uniearn.utils.user.PasswordUtil;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.FlowPane;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,9 +53,9 @@ public class FreelancerProfileController {
     @FXML
     private Label verificationLabel;
     @FXML
-    private HBox skillsContainer;
+    private FlowPane skillsContainer;
     @FXML
-    private Label bioLabel;
+    private TextArea bioLabel;
     @FXML
     private Label totalEarnedLabel;
     @FXML
@@ -65,6 +70,12 @@ public class FreelancerProfileController {
     private Button viewPortfolioButton;
     @FXML
     private Button viewPortfolioCardButton;
+    @FXML
+    private StackPane contentArea;
+    @FXML
+    private ScrollPane dashboardView;
+
+    private Parent embeddedDashboard;
 
     private final FreelancerService freelancerService = new FreelancerService();
     private final UserService userService = new UserService();
@@ -104,13 +115,13 @@ public class FreelancerProfileController {
         }
 
         if (ratingLabel != null) {
-            ratingLabel.setText(String.format("⭐ %.1f", currentFreelancer.getRating()));
+            ratingLabel.setText(String.format(" %.1f", currentFreelancer.getRating()));
         }
 
         if (verificationLabel != null) {
             String verificationText = switch (currentFreelancer.getVerificationStatus()) {
-                case verified -> "✓ Verified";
-                case unverified -> "✗ Not Verified";
+                case verified -> "Verified";
+                case unverified -> "Not Verified";
             };
             verificationLabel.setText(verificationText);
         }
@@ -145,25 +156,50 @@ public class FreelancerProfileController {
         }
     }
 
+    private void applyCircleClip() {
+        double radius = profileImageView.getFitWidth() / 2;
+        Circle clip = new Circle(radius, radius, radius);
+        profileImageView.setClip(clip);
+    }
+
     private void loadProfilePicture() {
         try {
             User user = userService.getUserById(currentFreelancer.getIdUser());
+            String picturePath = (user != null) ? user.getProfilePicturePath() : null;
 
-            if (user != null && user.getProfilePicturePath() != null && !user.getProfilePicturePath().isEmpty()) {
-                File imageFile = new File(user.getProfilePicturePath());
+            if (picturePath != null) {
+                currentFreelancer.setProfilePicturePath(picturePath);
+            }
 
+            if (picturePath != null && !picturePath.isEmpty()) {
+                File imageFile = new File(picturePath);
                 if (imageFile.exists()) {
-                    Image image = new Image(imageFile.toURI().toString());
-                    profileImageView.setImage(image);
-                    System.out.println("✓ Loaded profile picture: " + user.getProfilePicturePath());
+                    profileImageView.setImage(new Image(imageFile.toURI().toString()));
+                    System.out.println("✓ Loaded profile picture: " + picturePath);
                 } else {
-                    System.out.println("⚠ Profile picture file not found: " + user.getProfilePicturePath());
+                    System.out.println("⚠ Profile picture file not found: " + picturePath);
+                    setDefaultProfilePicture();
                 }
             } else {
                 System.out.println("Using default avatar - no profile picture set");
+                setDefaultProfilePicture();
             }
         } catch (Exception e) {
             System.out.println("Error loading profile picture: " + e.getMessage());
+            setDefaultProfilePicture();
+        } finally {
+            applyCircleClip();
+        }
+    }
+
+    private void setDefaultProfilePicture() {
+        try {
+            var defaultImageUrl = getClass().getResource("/images/default-avatar.png");
+            if (defaultImageUrl != null) {
+                profileImageView.setImage(new Image(defaultImageUrl.toString()));
+            }
+        } catch (Exception e) {
+            System.out.println("No default avatar available");
         }
     }
 
@@ -183,9 +219,6 @@ public class FreelancerProfileController {
         System.out.println("✓ Statistics loaded");
     }
 
-    /**
-     * Check if portfolio exists and update UI accordingly
-     */
     private void checkPortfolioStatus() {
         List<Portfolio> portfolios = portfolioService.getAllPortfolios();
         currentPortfolio = portfolios.stream()
@@ -196,14 +229,12 @@ public class FreelancerProfileController {
         updatePortfolioUI();
     }
 
-    // Update portfolio UI based on portfolio existence
     private void updatePortfolioUI() {
         if (portfolioSection == null) {
             System.out.println("⚠ Portfolio section not found in FXML");
             return;
         }
 
-        // Clear existing content
         portfolioSection.getChildren().clear();
 
         HBox portfolioHeader = new HBox(15);
@@ -213,7 +244,6 @@ public class FreelancerProfileController {
         if (currentPortfolio == null) {
             System.out.println("⚠ No portfolio found - showing Create button");
 
-            // No portfolio - show create option
             VBox createContent = new VBox(10);
             createContent.setAlignment(javafx.geometry.Pos.CENTER);
             createContent.setSpacing(10);
@@ -238,7 +268,6 @@ public class FreelancerProfileController {
         } else {
             System.out.println("✓ Portfolio loaded - showing View button");
 
-            // Portfolio exists - show view option
             VBox viewContent = new VBox(10);
             viewContent.setAlignment(javafx.geometry.Pos.CENTER);
             viewContent.setSpacing(10);
@@ -278,8 +307,6 @@ public class FreelancerProfileController {
             currentPortfolio = newPortfolio;
 
             showSuccessAlert("Success", "Portfolio created successfully!");
-
-            // Update UI
             updatePortfolioUI();
 
             System.out.println("✓ Portfolio created for freelancer ID: " + currentFreelancer.getIdFreelancer());
@@ -292,10 +319,9 @@ public class FreelancerProfileController {
 
     @FXML
     private void handleViewPortfolio() {
-        // Check if portfolio still exists before navigating
         if (currentPortfolio == null) {
             showErrorAlert("Error", "No portfolio found. Please create a portfolio first.");
-            checkPortfolioStatus(); // Refresh UI state
+            checkPortfolioStatus();
             return;
         }
 
@@ -338,8 +364,8 @@ public class FreelancerProfileController {
 
                 Files.copy(selectedFile.toPath(), destination, StandardCopyOption.REPLACE_EXISTING);
 
-                Image image = new Image(destination.toUri().toString());
-                profileImageView.setImage(image);
+                profileImageView.setImage(new Image(destination.toUri().toString()));
+                applyCircleClip();
 
                 String relativePath = "uploads/profiles/" + filename;
 
@@ -369,7 +395,7 @@ public class FreelancerProfileController {
 
         VBox header = new VBox(5);
         header.setStyle("-fx-background-color: #1976d2; -fx-padding: 20px;");
-        Label headerLabel = new Label("✏ Edit Profile");
+        Label headerLabel = new Label("✏");
         headerLabel.setStyle("-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;");
         header.getChildren().add(headerLabel);
 
@@ -413,6 +439,67 @@ public class FreelancerProfileController {
         GridPane.setValignment(createLabel("Bio:"), VPos.TOP);
         grid.add(bioArea, 1, row++);
 
+        Separator passwordSeparator = new Separator();
+        GridPane.setColumnSpan(passwordSeparator, 2);
+        grid.add(passwordSeparator, 0, row++);
+
+        Label passwordSectionLabel = new Label("🔒 Change Password");
+        passwordSectionLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #2c3e50;");
+        GridPane.setColumnSpan(passwordSectionLabel, 2);
+        grid.add(passwordSectionLabel, 0, row++);
+
+        Label passwordNote = new Label("Leave blank to keep your current password");
+        passwordNote.setStyle("-fx-font-size: 11px; -fx-text-fill: #7f8c8d; -fx-font-style: italic;");
+        GridPane.setColumnSpan(passwordNote, 2);
+        grid.add(passwordNote, 0, row++);
+
+        PasswordField currentPasswordField = new PasswordField();
+        currentPasswordField.setPromptText("Enter current password");
+        currentPasswordField.setStyle("-fx-pref-width: 300px; -fx-font-size: 13px;");
+        grid.add(createLabel("Current Password:"), 0, row);
+        grid.add(currentPasswordField, 1, row++);
+
+        PasswordField newPasswordField = new PasswordField();
+        newPasswordField.setPromptText("Enter new password (min 8 characters)");
+        newPasswordField.setStyle("-fx-pref-width: 300px; -fx-font-size: 13px;");
+
+        Label passwordStrengthLabel = new Label();
+        passwordStrengthLabel.setStyle("-fx-font-size: 11px;");
+        passwordStrengthLabel.setVisible(false);
+
+        newPasswordField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal.isEmpty()) {
+                passwordStrengthLabel.setVisible(false);
+            } else {
+                passwordStrengthLabel.setVisible(true);
+                int strength = calculatePasswordStrength(newVal);
+                switch (strength) {
+                    case 0:
+                        passwordStrengthLabel.setText("⚠ Weak password");
+                        passwordStrengthLabel.setStyle("-fx-text-fill: #e74c3c; -fx-font-size: 11px;");
+                        break;
+                    case 1:
+                        passwordStrengthLabel.setText("⚡ Medium password");
+                        passwordStrengthLabel.setStyle("-fx-text-fill: #f39c12; -fx-font-size: 11px;");
+                        break;
+                    case 2:
+                        passwordStrengthLabel.setText("✅ Strong password");
+                        passwordStrengthLabel.setStyle("-fx-text-fill: #27ae60; -fx-font-size: 11px;");
+                        break;
+                }
+            }
+        });
+
+        grid.add(createLabel("New Password:"), 0, row);
+        VBox newPasswordBox = new VBox(5, newPasswordField, passwordStrengthLabel);
+        grid.add(newPasswordBox, 1, row++);
+
+        PasswordField confirmPasswordField = new PasswordField();
+        confirmPasswordField.setPromptText("Confirm new password");
+        confirmPasswordField.setStyle("-fx-pref-width: 300px; -fx-font-size: 13px;");
+        grid.add(createLabel("Confirm Password:"), 0, row);
+        grid.add(confirmPasswordField, 1, row++);
+
         Separator separator = new Separator();
         GridPane.setColumnSpan(separator, 2);
         grid.add(separator, 0, row++);
@@ -436,8 +523,13 @@ public class FreelancerProfileController {
         dangerZone.getChildren().addAll(dangerLabel, dangerDesc, deactivateBtn);
         grid.add(dangerZone, 0, row);
 
+        ScrollPane scrollPane = new ScrollPane(grid);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setPrefHeight(500);
+        scrollPane.setStyle("-fx-background-color: white; -fx-background: white;");
+
         VBox content = new VBox();
-        content.getChildren().addAll(header, grid);
+        content.getChildren().addAll(header, scrollPane);
         dialogPane.setContent(content);
 
         ButtonType saveButton = new ButtonType("Save Changes", ButtonBar.ButtonData.OK_DONE);
@@ -449,6 +541,27 @@ public class FreelancerProfileController {
         dialog.showAndWait().ifPresent(response -> {
             if (response == saveButton) {
                 try {
+                    String currentPassword = currentPasswordField.getText();
+                    String newPassword = newPasswordField.getText();
+                    String confirmPassword = confirmPasswordField.getText();
+
+                    boolean passwordChangeRequested = !currentPassword.isEmpty() ||
+                            !newPassword.isEmpty() ||
+                            !confirmPassword.isEmpty();
+
+                    if (passwordChangeRequested) {
+                        if (!validatePasswordChange(currentPassword, newPassword, confirmPassword)) {
+                            return;
+                        }
+                        userService.updatePassword(currentFreelancer.getIdUser(), newPassword);
+                        System.out.println("✅ Password updated via userService");
+
+                        User refreshed = userService.getUserById(currentFreelancer.getIdUser());
+                        if (refreshed != null) {
+                            currentFreelancer.setPassword(refreshed.getPassword());
+                        }
+                    }
+
                     currentFreelancer.setName(nameField.getText().trim());
                     currentFreelancer.setEmail(emailField.getText().trim());
                     currentFreelancer.setPricePerHour(Double.parseDouble(priceField.getText().trim()));
@@ -462,7 +575,13 @@ public class FreelancerProfileController {
 
                     freelancerService.updateFreelancer(currentFreelancer.getIdUser(), currentFreelancer);
                     populateProfileData();
-                    showSuccessAlert("Success", "Profile updated successfully!");
+
+                    if (passwordChangeRequested) {
+                        showSuccessAlert("Success", "✅ Profile and password updated successfully!");
+                    } else {
+                        showSuccessAlert("Success", "Profile updated successfully!");
+                    }
+
                 } catch (NumberFormatException ex) {
                     showErrorAlert("Invalid Input", "Please enter a valid price per hour.");
                 } catch (Exception ex) {
@@ -471,6 +590,91 @@ public class FreelancerProfileController {
                 }
             }
         });
+    }
+
+    private boolean validatePasswordChange(String currentPassword, String newPassword, String confirmPassword) {
+        if (currentPassword.isEmpty() && (newPassword.isEmpty() || confirmPassword.isEmpty())) {
+            showErrorAlert("Validation Error", "Please enter your current password to change it.");
+            return false;
+        }
+
+        if (currentPassword.isEmpty()) {
+            showErrorAlert("Validation Error", "Please enter your current password.");
+            return false;
+        }
+
+        try {
+            var user = userService.getUserById(currentFreelancer.getIdUser());
+            if (user == null) {
+                showErrorAlert("Error", "User not found.");
+                return false;
+            }
+
+            if (!PasswordUtil.verifyPassword(currentPassword, user.getPassword())) {
+                showErrorAlert("Validation Error", "❌ Current password is incorrect.\n\nPlease try again.");
+                return false;
+            }
+        } catch (Exception e) {
+            showErrorAlert("Error", "Failed to verify current password: " + e.getMessage());
+            return false;
+        }
+
+        if (newPassword.isEmpty()) {
+            showErrorAlert("Validation Error", "Please enter a new password.");
+            return false;
+        }
+
+        if (newPassword.length() < 8) {
+            showErrorAlert("Validation Error", "New password must be at least 8 characters long.");
+            return false;
+        }
+
+        if (!newPassword.matches(".*[A-Z].*")) {
+            showErrorAlert("Validation Error", "New password must contain at least one uppercase letter.");
+            return false;
+        }
+
+        if (!newPassword.matches(".*[a-z].*")) {
+            showErrorAlert("Validation Error", "New password must contain at least one lowercase letter.");
+            return false;
+        }
+
+        if (!newPassword.matches(".*\\d.*")) {
+            showErrorAlert("Validation Error", "New password must contain at least one number.");
+            return false;
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            showErrorAlert("Validation Error",
+                    "❌ New passwords do not match.\n\nPlease make sure both passwords are identical.");
+            return false;
+        }
+
+        if (currentPassword.equals(newPassword)) {
+            showErrorAlert("Validation Error", "New password must be different from your current password.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private int calculatePasswordStrength(String password) {
+        int strength = 0;
+
+        if (password.length() >= 8)
+            strength++;
+        if (password.matches(".*[A-Z].*") && password.matches(".*[a-z].*"))
+            strength++;
+        if (password.matches(".*\\d.*"))
+            strength++;
+        if (password.matches(".*[!@#$%^&*(),.?\":{}|<>].*"))
+            strength++;
+
+        if (strength <= 1)
+            return 0;
+        if (strength <= 3)
+            return 1;
+        return 2;
     }
 
     private void handleDeactivateAccount(Dialog<?> parentDialog) {
@@ -490,10 +694,7 @@ public class FreelancerProfileController {
             if (response == ButtonType.OK && "DEACTIVATE".equalsIgnoreCase(confirmField.getText())) {
                 try {
                     userService.deactivateUser(currentFreelancer.getIdUser());
-
-                    // Clear session on deactivation
                     SessionManager.getInstance().logout();
-
                     showSuccessAlert("Account Deactivated",
                             "Your account has been deactivated. Contact support to reactivate.");
                     parentDialog.close();
@@ -512,40 +713,6 @@ public class FreelancerProfileController {
         Label label = new Label(text);
         label.setStyle("-fx-font-weight: bold; -fx-font-size: 13px; -fx-text-fill: #2c3e50;");
         return label;
-    }
-
-    @FXML
-    private void handleFreelancerProjects() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-projects.fxml"));
-            Parent root = loader.load();
-            uniearn.controller.projet.FreelancerProjectsController controller = loader.getController();
-            controller.setFreelancerData(currentFreelancer);
-
-            Stage stage = (Stage) nameLabel.getScene().getWindow();
-            stage.setScene(new Scene(root, 1200, 700));
-            stage.setTitle("Projets Disponibles - UniEarn");
-        } catch (IOException e) {
-            e.printStackTrace();
-            showErrorAlert("Error", "Failed to load projects: " + e.getMessage());
-        }
-    }
-
-    @FXML
-    private void handleTaskBoard() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/TaskBoard.fxml"));
-            Parent root = loader.load();
-            TaskBoardController controller = loader.getController();
-            controller.setFreelancerData(currentFreelancer);
-
-            Stage stage = (Stage) nameLabel.getScene().getWindow();
-            stage.setScene(new Scene(root, 1200, 700));
-            stage.setTitle("Mes Tâches - TaskBoard");
-        } catch (IOException e) {
-            e.printStackTrace();
-            showErrorAlert("Error", "Failed to load task board: " + e.getMessage());
-        }
     }
 
     @FXML
@@ -568,9 +735,7 @@ public class FreelancerProfileController {
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 try {
-                    // Clear session on logout
                     SessionManager.getInstance().logout();
-
                     redirectToLogin();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -604,6 +769,194 @@ public class FreelancerProfileController {
         } catch (IOException e) {
             e.printStackTrace();
             showErrorAlert("Error", "Failed to load login page: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void handleApplications() {
+        try {
+            if (embeddedDashboard == null) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/FreelancerDashboardView.fxml"));
+                embeddedDashboard = loader.load();
+            }
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+
+            if (!contentArea.getChildren().contains(embeddedDashboard)) {
+                contentArea.getChildren().add(embeddedDashboard);
+            }
+            embeddedDashboard.setVisible(true);
+            embeddedDashboard.setManaged(true);
+
+            System.out.println("✓ Embedded Freelancer Dashboard loaded into contentArea");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorAlert("Erreur de navigation", "Impossible d'ouvrir la page des candidatures: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void handleEvaluations() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/FreelancerEvaluationView.fxml"));
+            Parent embeddedView = loader.load();
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+            contentArea.getChildren().add(embeddedView);
+            embeddedView.setVisible(true);
+            embeddedView.setManaged(true);
+
+            System.out.println("✓ Embedded Freelancer Evaluations loaded into contentArea");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorAlert("Erreur de navigation", "Impossible d'ouvrir la page des évaluations: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void handleShowDashboard() {
+        if (embeddedDashboard != null) {
+            embeddedDashboard.setVisible(false);
+            embeddedDashboard.setManaged(false);
+        }
+
+        // Hide any other embedded views
+        contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+
+        dashboardView.setVisible(true);
+        dashboardView.setManaged(true);
+        System.out.println("✓ Switched back to main freelancer dashboard");
+    }
+
+    @FXML
+    public void handleFreelancerProjects() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-projects.fxml"));
+            Parent root = loader.load();
+
+            uniearn.controller.projet.FreelancerProjectsController controller = loader.getController();
+            controller.setFreelancerData(currentFreelancer);
+
+            // Extract the center node if it's a BorderPane to avoid redundant sidebars
+            Node content = root;
+            if (root instanceof BorderPane) {
+                content = ((BorderPane) root).getCenter();
+            }
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            // Remove any previously added embedded views except the main dashboard parts
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+
+            contentArea.getChildren().add(content);
+            content.setVisible(true);
+            content.setManaged(true);
+
+            System.out.println("✓ Embedded Freelancer Projects (Center only) loaded into contentArea");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load projects page: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void handleTaskBoard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/TaskBoard.fxml"));
+            Parent root = loader.load();
+
+            // *** KEY FIX: pass the current freelancer so the board loads the right tasks/projects ***
+            TaskBoardController controller = loader.getController();
+            controller.setFreelancerData(currentFreelancer);
+
+            // Extract the center node if it's a BorderPane to avoid redundant sidebars
+            Node content = root;
+            if (root instanceof BorderPane) {
+                content = ((BorderPane) root).getCenter();
+            }
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+            contentArea.getChildren().add(content);
+            content.setVisible(true);
+            content.setManaged(true);
+
+            System.out.println("✓ Embedded Task Board loaded for freelancer ID: " + currentFreelancer.getIdFreelancer());
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load Task Board: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void handleMesContrats() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/contracts/freelancer_contracts.fxml"));
+            Parent embeddedView = loader.load();
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+            contentArea.getChildren().add(embeddedView);
+            embeddedView.setVisible(true);
+            embeddedView.setManaged(true);
+
+            System.out.println("✓ Embedded Contracts loaded into contentArea");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load contracts page: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    public void handleBrowseFreelancers() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/list-freelancers.fxml"));
+            Parent embeddedView = loader.load();
+
+            // ListFreelancersController controller = loader.getController();
+            // controller.setClientData(currentClient);
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+            contentArea.getChildren().add(embeddedView);
+            embeddedView.setVisible(true);
+            embeddedView.setManaged(true);
+
+            System.out.println("✓ Embedded Browse Freelancers loaded into contentArea (Freelancer)");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load browse freelancers page: " + e.getMessage());
         }
     }
 

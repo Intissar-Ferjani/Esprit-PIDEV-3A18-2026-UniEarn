@@ -12,7 +12,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import uniearn.controller.projet.ProjectController;
 import uniearn.model.entities.users.client.Client;
 import uniearn.model.entities.users.freelancer.Freelancer;
 import uniearn.model.enums.VerifStatus;
@@ -38,8 +37,6 @@ public class ListFreelancersController {
     private VBox freelancersContainer;
     @FXML
     private Label resultsCountLabel;
-    @FXML
-    private Label nameLabel;
 
     private final FreelancerService freelancerService = new FreelancerService();
     private Client currentClient;
@@ -472,6 +469,25 @@ public class ListFreelancersController {
     }
 
     @FXML
+    private void handleproject() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/Projet.fxml"));
+            Parent root = loader.load();
+
+            uniearn.controller.projet.ProjectController controller = loader.getController();
+            controller.setClientData(currentClient);
+
+            Stage stage = (Stage) freelancersContainer.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 800));
+            stage.setTitle("Mes Projets - UniEarn");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load projects page: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleBackToProfile() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/client-profile.fxml"));
@@ -480,34 +496,13 @@ public class ListFreelancersController {
             uniearn.controller.profile.client.ClientProfileController controller = loader.getController();
             controller.setClientData(currentClient);
 
-            Stage stage = (Stage) resultsCountLabel.getScene().getWindow();
+            Stage stage = (Stage) freelancersContainer.getScene().getWindow();
             stage.setScene(new Scene(root, 1200, 700));
             stage.centerOnScreen();
         } catch (IOException e) {
             // e.printStackTrace();
             showErrorAlert("Error", "Failed to load profile page: " + e.getMessage());
         }
-    }
-
-    @FXML
-    private void handleproject() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/Projet.fxml"));
-            Parent root = loader.load();
-
-            ProjectController controller = loader.getController();
-            controller.setClientData(currentClient);
-
-            Stage stage = (Stage) freelancersContainer.getScene().getWindow();
-            stage.setScene(new Scene(root, 1600, 900));
-            stage.setTitle("Mes Projets - UniEarn");
-            stage.centerOnScreen();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            showErrorAlert("Navigation Error", "Failed to load project management page: " + e.getMessage());
-        }
-
     }
 
     @FXML

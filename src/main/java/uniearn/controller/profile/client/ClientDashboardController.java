@@ -10,6 +10,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import uniearn.model.entities.candidature.application.Application;
@@ -18,39 +22,28 @@ import uniearn.model.enums.ApplicationStatus;
 import uniearn.model.enums.EvaluationType;
 import uniearn.services.candidature.ApplicationService;
 import uniearn.services.candidature.EvaluationService;
+import uniearn.database.SessionManager;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClientDashboardController {
 
-    // --- Sidebar Navigation ---
     @FXML
-    private VBox navProposals;
+    private Button btnToggleProposals;
     @FXML
-    private VBox navReviews;
-    @FXML
-    private Label lblNavProposals;
-    @FXML
-    private Label lblNavReviews;
+    private Button btnToggleReviews;
 
     // --- Search & Filter ---
     @FXML
     private TextField txtSearch;
     @FXML
-    private TextField txtActiveProfileId;
-    @FXML
     private ComboBox<String> cmbFilter;
 
-    // --- Main Content Area ---
     @FXML
     private VBox sidebarListContainer;
     @FXML
     private StackPane mainContent;
-    @FXML
-    private VBox viewProposals;
-    @FXML
-    private VBox viewEvaluations;
 
     // --- Details & Form Views ---
     @FXML
@@ -79,18 +72,20 @@ public class ClientDashboardController {
     private Application currentProposal;
     private Evaluation currentEvaluation;
 
-    private int currentUserId = 2; // Simulation (Client)
+    private int currentUserId; // Loaded via SessionManager
     private String currentMode = "PROPOSALS";
 
     @FXML
     public void initialize() {
-        if (txtActiveProfileId != null) {
-            txtActiveProfileId.setText(String.valueOf(currentUserId));
+        if (SessionManager.getInstance().isLoggedIn()) {
+            currentUserId = SessionManager.getInstance().getCurrentUserId();
+        } else {
+            currentUserId = -1; // Fallback or handle not logged in
         }
-        setupNavigation();
         setupFilters();
         loadData();
         showView(viewEmpty);
+        updateNavStyle(); // Set initial button styles
 
         // Fix FXML expression issue: Bind disable property in Java
         txtEvalProjId.disableProperty().bind(chkEvalIsProject.selectedProperty().not());
@@ -101,10 +96,16 @@ public class ClientDashboardController {
         });
     }
 
-    private void setupNavigation() {
-        navProposals.setOnMouseClicked(e -> switchMode("PROPOSALS"));
-        navReviews.setOnMouseClicked(e -> switchMode("REVIEWS"));
-        updateNavStyle();
+    private void updateNavStyle() {
+        if (currentMode.equals("PROPOSALS")) {
+            btnToggleProposals.setStyle("-fx-background-color: #00457c; -fx-text-fill: white;");
+            btnToggleReviews
+                    .setStyle("-fx-background-color: white; -fx-text-fill: #00457c; -fx-border-color: #00457c;");
+        } else {
+            btnToggleReviews.setStyle("-fx-background-color: #00457c; -fx-text-fill: white;");
+            btnToggleProposals
+                    .setStyle("-fx-background-color: white; -fx-text-fill: #00457c; -fx-border-color: #00457c;");
+        }
     }
 
     private void switchMode(String mode) {
@@ -124,17 +125,14 @@ public class ClientDashboardController {
         cmbFilter.setValue("ALL");
     }
 
-    private void updateNavStyle() {
-        String active = "-fx-background-color: #f1f9f1; -fx-border-color: transparent transparent transparent #14a800; -fx-border-width: 0 0 0 4;";
-        String inactive = "-fx-background-color: transparent;";
+    @FXML
+    private void handleShowProposals() {
+        switchMode("PROPOSALS");
+    }
 
-        navProposals.setStyle(currentMode.equals("PROPOSALS") ? active : inactive);
-        navReviews.setStyle(currentMode.equals("REVIEWS") ? active : inactive);
-
-        lblNavProposals.setStyle(currentMode.equals("PROPOSALS") ? "-fx-text-fill: #14a800; -fx-font-weight: bold;"
-                : "-fx-text-fill: #5e6d55;");
-        lblNavReviews.setStyle(currentMode.equals("REVIEWS") ? "-fx-text-fill: #14a800; -fx-font-weight: bold;"
-                : "-fx-text-fill: #5e6d55;");
+    @FXML
+    private void handleShowReviews() {
+        switchMode("REVIEWS");
     }
 
     private void setupFilters() {
@@ -144,15 +142,6 @@ public class ClientDashboardController {
 
     private void loadData() {
         try {
-            // Update currentUserId from field
-            if (txtActiveProfileId != null && !txtActiveProfileId.getText().isEmpty()) {
-                try {
-                    currentUserId = Integer.parseInt(txtActiveProfileId.getText());
-                } catch (NumberFormatException e) {
-                    txtActiveProfileId.setText(String.valueOf(currentUserId));
-                }
-            }
-
             if (currentMode.equals("PROPOSALS")) {
                 // FIXED: Filter applications belonging to this client's projects
                 // We'll use getApplicationsByClientProjects (placeholder logic or full
@@ -525,5 +514,24 @@ public class ClientDashboardController {
     @FXML
     private void handleCancelForm() {
         showView(viewEmpty);
+    }
+
+    @FXML
+    private void handleBackToProfile() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/client-profile.fxml"));
+            Parent root = loader.load();
+
+            // Set client data if needed (assuming session manager handles it on init, but
+            // we can explicitly call set if required by ClientProfileController)
+
+            Stage stage = (Stage) mainContent.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 800));
+            stage.setTitle("UniEarn - Client Profile");
+            stage.centerOnScreen();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showToast("Failed to return to profile: " + e.getMessage(), true);
+        }
     }
 }

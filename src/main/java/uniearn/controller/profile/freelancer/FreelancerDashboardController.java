@@ -8,8 +8,13 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import uniearn.model.entities.candidature.application.Application;
@@ -20,7 +25,10 @@ import uniearn.services.candidature.ApplicationService;
 import uniearn.services.candidature.EvaluationService;
 import uniearn.utils.candidature.ApiManager;
 import uniearn.utils.candidature.PdfExporter;
+import uniearn.database.SessionManager;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,17 +36,15 @@ public class FreelancerDashboardController {
 
     // --- Sidebar Navigation ---
     @FXML
-    private VBox navMyApplications;
+    private Button btnTglApps;
     @FXML
-    private VBox navMyReviews;
+    private Button btnTglEvals;
     @FXML
-    private VBox navStats;
+    private Button btnTglStats;
     @FXML
-    private Label lblNavApplications;
+    private HBox topNavPill;
     @FXML
-    private Label lblNavReviews;
-    @FXML
-    private Label lblNavStats;
+    private Button btnBackToProjects;
 
     // --- Search & Filter ---
     @FXML
@@ -50,17 +56,17 @@ public class FreelancerDashboardController {
     @FXML
     private StackPane mainContent;
     @FXML
-    private VBox viewApplications;
+    private VBox viewAppsRoot;
     @FXML
-    private VBox viewEvaluations;
+    private VBox viewEvalsRoot;
     @FXML
-    private TextField txtActiveProfileId;
+    private FlowPane sidebarListContainer; // For Applications in new FXML
     @FXML
-    private VBox sidebarListContainer;
+    private FlowPane evalsContainer; // For Evaluations in new FXML
 
-    // --- Details & Form Views ---
     @FXML
-    private StackPane detailArea;
+    private ScrollPane viewStats;
+
     @FXML
     private VBox viewAppDetails;
     @FXML
@@ -69,10 +75,6 @@ public class FreelancerDashboardController {
     private VBox viewEvalDetails;
     @FXML
     private VBox viewEvalForm;
-    @FXML
-    private VBox viewStats;
-    @FXML
-    private VBox viewEmpty;
 
     // Statistics Fields
     @FXML
@@ -105,18 +107,29 @@ public class FreelancerDashboardController {
     private Application currentApplication;
     private Evaluation currentEvaluation;
 
-    private int currentUserId = 1; // Simulation
+    private int currentUserId; // Loaded via SessionManager
+    private int currentFreelancerId = -1;
     private String currentMode = "APPLICATIONS"; // APPLICATIONS or EVALUATIONS
+    private boolean cameFromProjects = false;
+    private Integer selectedProjectId;
 
     @FXML
     public void initialize() {
-        if (txtActiveProfileId != null) {
-            txtActiveProfileId.setText(String.valueOf(currentUserId));
+        if (SessionManager.getInstance().isLoggedIn()) {
+            currentUserId = SessionManager.getInstance().getCurrentUserId();
+            // Fetch freelancer profile to get the correct idFreelancer
+            uniearn.services.users.freelancer.FreelancerService fs = new uniearn.services.users.freelancer.FreelancerService();
+            uniearn.model.entities.users.freelancer.Freelancer f = fs.getFreelancerById(currentUserId);
+            if (f != null) {
+                currentFreelancerId = f.getIdFreelancer();
+            }
+        } else {
+            currentUserId = -1;
         }
         setupNavigation();
         setupFilters();
         loadData();
-        showView(viewEmpty);
+        showView(viewAppsRoot);
 
         // Fix FXML expression issue: Bind disable property in Java
         txtEvalProjId.disableProperty().bind(chkEvalIsProject.selectedProperty().not());
@@ -127,18 +140,86 @@ public class FreelancerDashboardController {
         });
     }
 
+    /**
+     * Public method to allow navigation from the Projects view directly to a
+     * specific application form.
+     */
+    public void switchToApplicationForm(int projectId) {
+        javafx.application.Platform.runLater(() -> {
+            switchMode("APPLICATIONS");
+            currentApplication = null;
+            clearAppForm();
+            this.selectedProjectId = projectId;
+            this.cameFromProjects = true;
+            showView(viewAppForm);
+        });
+    }
+
+    @FXML
+    public void handleBackToProjects() {
+        this.cameFromProjects = false;
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-profile.fxml"));
+            Parent root = loader.load();
+
+            FreelancerProfileController profileController = loader.getController();
+
+            // Re-fetch the full freelancer object
+            uniearn.services.users.freelancer.FreelancerService freelancerService = new uniearn.services.users.freelancer.FreelancerService();
+            uniearn.model.entities.users.freelancer.Freelancer freelancer = freelancerService
+                    .getFreelancerById(currentUserId);
+
+            profileController.setFreelancerData(freelancer);
+
+            // Switch to the projects view inside the profile shell
+            profileController.handleFreelancerProjects();
+
+            Stage stage = (Stage) mainContent.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 800));
+            stage.setTitle("Mon Profil - UniEarn");
+            stage.centerOnScreen();
+
+            System.out.println("✓ Navigated directly back to main profile (Projects view)");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showToast("Navigation failed: " + e.getMessage(), true);
+        }
+    }
+
     private void setupNavigation() {
-        navMyApplications.setOnMouseClicked(e -> switchMode("APPLICATIONS"));
-        navMyReviews.setOnMouseClicked(e -> switchMode("EVALUATIONS"));
-        navStats.setOnMouseClicked(e -> switchMode("STATS"));
+        // Navigation is handled via onAction in FXML
         updateNavStyle();
+    }
+
+    @FXML
+    private void handleShowApps() {
+        this.cameFromProjects = false;
+        switchMode("APPLICATIONS");
+    }
+
+    @FXML
+    private void handleShowEvals() {
+        this.cameFromProjects = false;
+        switchMode("EVALUATIONS");
+    }
+
+    @FXML
+    private void handleShowStats() {
+        this.cameFromProjects = false;
+        switchMode("STATS");
     }
 
     private void switchMode(String mode) {
         this.currentMode = mode;
         updateNavStyle();
         loadData();
-        showView(viewEmpty);
+        // Updated: Show the root view of the current mode instead of viewEmpty
+        if (mode.equals("APPLICATIONS"))
+            showView(viewAppsRoot);
+        else if (mode.equals("EVALUATIONS"))
+            showView(viewEvalsRoot);
+        else if (mode.equals("STATS"))
+            showView(viewStats);
 
         if (mode.equals("APPLICATIONS")) {
             cmbFilter.setPromptText("Filter by Status");
@@ -155,20 +236,16 @@ public class FreelancerDashboardController {
     }
 
     private void updateNavStyle() {
-        String active = "-fx-background-color: #f1f9f1; -fx-border-color: transparent transparent transparent #14a800; -fx-border-width: 0 0 0 4;";
-        String inactive = "-fx-background-color: transparent;";
+        // Styling for Buttons
+        String activeStyle = "-fx-background-color: #00457c; -fx-text-fill: white; -fx-font-size: 11px; -fx-background-radius: 4; -fx-cursor: hand; -fx-pref-width: 90;";
+        String inactiveStyle = "-fx-background-color: white; -fx-text-fill: #00457c; -fx-border-color: #00457c; -fx-border-radius: 4; -fx-font-size: 11px; -fx-background-radius: 4; -fx-cursor: hand; -fx-pref-width: 80;";
 
-        navMyApplications.setStyle(currentMode.equals("APPLICATIONS") ? active : inactive);
-        navMyReviews.setStyle(currentMode.equals("EVALUATIONS") ? active : inactive);
-        navStats.setStyle(currentMode.equals("STATS") ? active : inactive);
-
-        lblNavApplications
-                .setStyle(currentMode.equals("APPLICATIONS") ? "-fx-text-fill: #14a800; -fx-font-weight: bold;"
-                        : "-fx-text-fill: #5e6d55;");
-        lblNavReviews.setStyle(currentMode.equals("EVALUATIONS") ? "-fx-text-fill: #14a800; -fx-font-weight: bold;"
-                : "-fx-text-fill: #5e6d55;");
-        lblNavStats.setStyle(currentMode.equals("STATS") ? "-fx-text-fill: #14a800; -fx-font-weight: bold;"
-                : "-fx-text-fill: #5e6d55;");
+        if (btnTglApps != null)
+            btnTglApps.setStyle(currentMode.equals("APPLICATIONS") ? activeStyle : inactiveStyle);
+        if (btnTglEvals != null)
+            btnTglEvals.setStyle(currentMode.equals("EVALUATIONS") ? activeStyle : inactiveStyle);
+        if (btnTglStats != null)
+            btnTglStats.setStyle(currentMode.equals("STATS") ? activeStyle : inactiveStyle);
     }
 
     private void setupFilters() {
@@ -178,40 +255,35 @@ public class FreelancerDashboardController {
 
     private void loadData() {
         try {
-            // Update currentUserId from the sidebar field if present
-            if (txtActiveProfileId != null && !txtActiveProfileId.getText().isEmpty()) {
-                try {
-                    currentUserId = Integer.parseInt(txtActiveProfileId.getText());
-                } catch (NumberFormatException e) {
-                    // Revert to field if parsing fails
-                    txtActiveProfileId.setText(String.valueOf(currentUserId));
-                }
-            }
-
             if (currentMode.equals("APPLICATIONS")) {
-                List<Application> apps = applicationService.getApplicationsByFreelancer(currentUserId);
+                List<Application> apps = (currentFreelancerId != -1)
+                        ? applicationService.getApplicationsByFreelancer(currentFreelancerId)
+                        : new ArrayList<>();
                 applicationsList.setAll(apps);
                 renderSidebarList();
             } else {
-                // FIXED: Showing reviews RECEIVED by the freelancer (Evaluated)
+                // Evaluations are linked to the user account or freelancer profile?
+                // Based on previous logic, they were linked to idUser.
                 List<Evaluation> evals = evaluationService.getEvaluationsByEvaluated(currentUserId);
                 evaluationsList.setAll(evals);
                 renderSidebarList();
             }
         } catch (Exception e) {
+            e.printStackTrace();
             showToast("Error loading data", true);
         }
     }
 
     private void renderSidebarList() {
-        sidebarListContainer.getChildren().clear();
         if (currentMode.equals("APPLICATIONS")) {
+            sidebarListContainer.getChildren().clear();
             for (Application app : applicationsList) {
                 sidebarListContainer.getChildren().add(createAppCard(app));
             }
-        } else {
+        } else if (currentMode.equals("EVALUATIONS")) {
+            evalsContainer.getChildren().clear();
             for (Evaluation eval : evaluationsList) {
-                sidebarListContainer.getChildren().add(createEvalCard(eval));
+                evalsContainer.getChildren().add(createEvalCard(eval));
             }
         }
     }
@@ -263,14 +335,40 @@ public class FreelancerDashboardController {
     }
 
     // --- Detail Switching ---
-    private void showView(VBox view) {
-        viewAppDetails.setVisible(false);
-        viewAppForm.setVisible(false);
-        viewEvalDetails.setVisible(false);
-        viewEvalForm.setVisible(false);
-        viewStats.setVisible(false);
-        viewEmpty.setVisible(false);
-        view.setVisible(true);
+    private void showView(Region view) {
+        if (viewAppsRoot != null)
+            viewAppsRoot.setVisible(false);
+        if (viewAppDetails != null)
+            viewAppDetails.setVisible(false);
+        if (viewAppForm != null)
+            viewAppForm.setVisible(false);
+        if (viewEvalsRoot != null)
+            viewEvalsRoot.setVisible(false);
+        if (viewEvalDetails != null)
+            viewEvalDetails.setVisible(false);
+        if (viewEvalForm != null)
+            viewEvalForm.setVisible(false);
+        if (viewStats != null)
+            viewStats.setVisible(false);
+
+        if (view != null)
+            view.setVisible(true);
+
+        // Hide top navigation when in form mode
+        if (topNavPill != null) {
+            boolean isForm = (view == viewAppForm || view == viewEvalForm);
+            topNavPill.setVisible(!isForm);
+            topNavPill.setManaged(!isForm);
+        }
+
+        // Handle btnBackToProjects visibility:
+        // Only show if we came from projects AND we are NOT in the main list views
+        if (btnBackToProjects != null) {
+            boolean isMainList = (view == viewAppsRoot || view == viewEvalsRoot || view == viewStats);
+            boolean shouldShow = cameFromProjects && !isMainList;
+            btnBackToProjects.setVisible(shouldShow);
+            btnBackToProjects.setManaged(shouldShow);
+        }
     }
 
     // --- FXML Labels: App Details ---
@@ -288,10 +386,6 @@ public class FreelancerDashboardController {
     private Button btnReviewClient;
 
     // --- FXML Fields: App Form ---
-    @FXML
-    private TextField txtAppFreelancerId;
-    @FXML
-    private TextField txtAppProjId;
     @FXML
     private TextField txtAppBudget;
     @FXML
@@ -326,7 +420,7 @@ public class FreelancerDashboardController {
     private CheckBox chkEvalIsProject;
 
     @FXML
-    private void handleDownloadPDF() {
+    public void handleExportPdf() {
         if (currentApplication == null)
             return;
 
@@ -418,10 +512,7 @@ public class FreelancerDashboardController {
         if (currentMode.equals("APPLICATIONS")) {
             currentApplication = null;
             clearAppForm();
-            // Pre-fill with the active profile ID from the sidebar
-            if (txtActiveProfileId != null) {
-                txtAppFreelancerId.setText(txtActiveProfileId.getText());
-            }
+            selectedProjectId = null; // Manual add from dashboard? User shouldn't really do this now
             showView(viewAppForm);
         } else {
             currentEvaluation = null;
@@ -452,8 +543,7 @@ public class FreelancerDashboardController {
     @FXML
     private void handleEdit() {
         if (currentMode.equals("APPLICATIONS") && currentApplication != null) {
-            txtAppFreelancerId.setText(String.valueOf(currentApplication.getFreelancerId()));
-            txtAppProjId.setText(String.valueOf(currentApplication.getProjectId()));
+            selectedProjectId = currentApplication.getProjectId();
             txtAppBudget.setText(String.valueOf(currentApplication.getProposedBudget()));
             txtAppDuration.setText(String.valueOf(currentApplication.getEstimatedDuration()));
             txtAppCoverLetter.setText(currentApplication.getCoverLetter());
@@ -480,7 +570,10 @@ public class FreelancerDashboardController {
                 showToast("Review deleted", false);
             }
             loadData();
-            showView(viewEmpty);
+            if (currentMode.equals("APPLICATIONS"))
+                showView(viewAppsRoot);
+            else
+                showView(viewEvalsRoot);
         } catch (Exception e) {
             showToast("Delete failed: " + e.getMessage(), true);
         }
@@ -492,14 +585,21 @@ public class FreelancerDashboardController {
             return;
 
         try {
+            if (currentFreelancerId == -1) {
+                showToast("Error: No freelancer profile found", true);
+                return;
+            }
+
             boolean isNew = (currentApplication == null);
             Application app = isNew ? new Application() : currentApplication;
 
-            app.setFreelancerId(Integer.parseInt(txtAppFreelancerId.getText()));
-            app.setProjectId(Integer.parseInt(txtAppProjId.getText()));
+            app.setFreelancerId(currentFreelancerId);
+            app.setProjectId(isNew ? selectedProjectId : currentApplication.getProjectId());
             app.setCoverLetter(txtAppCoverLetter.getText());
             app.setProposedBudget(Double.parseDouble(txtAppBudget.getText()));
             app.setEstimatedDuration(Integer.parseInt(txtAppDuration.getText()));
+
+            System.out.println("Submitting App: Freelancer=" + currentFreelancerId + " Project=" + app.getProjectId());
 
             if (isNew) {
                 applicationService.applyToProject(app);
@@ -510,7 +610,11 @@ public class FreelancerDashboardController {
             }
 
             loadData();
-            showView(viewEmpty);
+            if (cameFromProjects) {
+                handleBackToProjects();
+            } else {
+                showView(viewAppsRoot);
+            }
         } catch (Exception e) {
             showToast("Failed: " + e.getMessage(), true);
         }
@@ -519,24 +623,9 @@ public class FreelancerDashboardController {
     private boolean validateAppForm() {
         boolean valid = true;
 
-        try {
-            int fid = Integer.parseInt(txtAppFreelancerId.getText());
-            setValidationStyle(txtAppFreelancerId, fid > 0);
-            if (fid <= 0)
-                valid = false;
-        } catch (Exception e) {
-            setValidationStyle(txtAppFreelancerId, false);
-            valid = false;
-        }
-
-        try {
-            int pid = Integer.parseInt(txtAppProjId.getText());
-            setValidationStyle(txtAppProjId, pid > 0);
-            if (pid <= 0)
-                valid = false;
-        } catch (Exception e) {
-            setValidationStyle(txtAppProjId, false);
-            valid = false;
+        if (currentApplication == null && selectedProjectId == null) {
+            showToast("Error: No project selected", true);
+            return false;
         }
 
         try {
@@ -563,10 +652,10 @@ public class FreelancerDashboardController {
             valid = false;
         }
 
-        boolean cvValid = txtAppCoverLetter.getText().trim().length() >= 50;
+        boolean cvValid = txtAppCoverLetter.getText().trim().length() >= 20;
         setValidationStyle(txtAppCoverLetter, cvValid);
         if (!cvValid) {
-            showToast("Cover letter must be at least 50 chars", true);
+            showToast("Cover letter must be at least 20 chars", true);
             valid = false;
         }
 
@@ -632,7 +721,11 @@ public class FreelancerDashboardController {
             }
 
             loadData();
-            showView(viewEmpty);
+            if (cameFromProjects) {
+                handleBackToProjects();
+            } else {
+                showView(viewEvalsRoot);
+            }
         } catch (Exception e) {
             showToast("Review failed: " + e.getMessage(), true);
         }
@@ -673,13 +766,9 @@ public class FreelancerDashboardController {
 
     // --- TO BE CONTINUED WITH FORM LOGIC AND FXML FIELDS ---
     private void clearAppForm() {
-        txtAppFreelancerId.clear();
-        txtAppProjId.clear();
         txtAppBudget.clear();
         txtAppDuration.clear();
         txtAppCoverLetter.clear();
-        setValidationStyle(txtAppFreelancerId, true);
-        setValidationStyle(txtAppProjId, true);
         setValidationStyle(txtAppBudget, true);
         setValidationStyle(txtAppDuration, true);
         setValidationStyle(txtAppCoverLetter, true);
@@ -705,25 +794,20 @@ public class FreelancerDashboardController {
                     .filter(a -> term.isEmpty() || String.valueOf(a.getProjectId()).contains(term)
                             || a.getCoverLetter().toLowerCase().contains(term))
                     .collect(Collectors.toList());
-            renderCustomSidebar(filtered, null);
-        } else {
+
+            sidebarListContainer.getChildren().clear();
+            for (Application a : filtered)
+                sidebarListContainer.getChildren().add(createAppCard(a));
+        } else if (currentMode.equals("EVALUATIONS")) {
             List<Evaluation> filtered = evaluationsList.stream()
                     .filter(e -> filter == null || filter.equals("ALL") || (e.getRating() + " Stars").equals(filter))
                     .filter(e -> term.isEmpty() || String.valueOf(e.getEvaluatedId()).contains(term)
                             || e.getComment().toLowerCase().contains(term))
                     .collect(Collectors.toList());
-            renderCustomSidebar(null, filtered);
-        }
-    }
 
-    private void renderCustomSidebar(List<Application> apps, List<Evaluation> evals) {
-        sidebarListContainer.getChildren().clear();
-        if (apps != null) {
-            for (Application a : apps)
-                sidebarListContainer.getChildren().add(createAppCard(a));
-        } else if (evals != null) {
-            for (Evaluation e : evals)
-                sidebarListContainer.getChildren().add(createEvalCard(e));
+            evalsContainer.getChildren().clear();
+            for (Evaluation e : filtered)
+                evalsContainer.getChildren().add(createEvalCard(e));
         }
     }
 
@@ -739,7 +823,14 @@ public class FreelancerDashboardController {
 
     @FXML
     private void handleCancelForm() {
-        showView(viewEmpty);
+        if (cameFromProjects) {
+            handleBackToProjects();
+        } else {
+            if (currentMode.equals("APPLICATIONS"))
+                showView(viewAppsRoot);
+            else
+                showView(viewEvalsRoot);
+        }
     }
 
     @FXML
@@ -800,5 +891,21 @@ public class FreelancerDashboardController {
             case PENDING -> "#ffa000";
             case WITHDRAWN -> "#5e6d55";
         };
+    }
+
+    @FXML
+    private void handleBackToProfile() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-profile.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) mainContent.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 800));
+            stage.setTitle("UniEarn - Freelancer Profile");
+            stage.centerOnScreen();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showToast("Failed to return to profile: " + e.getMessage(), true);
+        }
     }
 }

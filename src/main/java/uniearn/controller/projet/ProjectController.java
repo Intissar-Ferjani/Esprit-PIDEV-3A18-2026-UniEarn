@@ -38,8 +38,24 @@ public class ProjectController {
 
     private ObservableList<Project> projectList = FXCollections.observableArrayList();
 
+    private boolean isFreelancerMode = false;
+
+    public void setFreelancerMode(boolean isFreelancer) {
+        this.isFreelancerMode = isFreelancer;
+        if (isFreelancer) {
+            if (addButton != null)
+                addButton.setVisible(false);
+            if (updateButton != null)
+                updateButton.setVisible(false);
+            if (clearButton != null)
+                clearButton.setVisible(false);
+        }
+        handleRefresh();
+    }
+
     public void setClientData(Client client) {
         this.currentClient = client;
+        handleRefresh();
     }
 
     @FXML
@@ -145,6 +161,13 @@ public class ProjectController {
         clientIdColumn.setCellValueFactory(new PropertyValueFactory<>("client_id"));
 
         projectTable.setItems(projectList); // Initialize table with the observable list
+
+        // Add selection listener to populate form when a row is clicked
+        projectTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                populateFormForEdit(newValue);
+            }
+        });
 
         // add action buttons column (Modifier / Supprimer) if present in FXML
         if (actionColumn != null) {
@@ -371,7 +394,10 @@ public class ProjectController {
 
     @FXML
     void handleRefresh() {
-        if (currentClient != null) {
+        if (isFreelancerMode) {
+            projectList.setAll(services.getAllProjects());
+            setupFiltering();
+        } else if (currentClient != null) {
             projectList.setAll(services.getProjectsByClientId(currentClient.getIdClient()));
             setupFiltering();
         } else {
@@ -566,6 +592,7 @@ public class ProjectController {
             e.printStackTrace();
         }
     }
+
     @FXML
     private void handleSettings() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

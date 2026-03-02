@@ -10,9 +10,15 @@ import uniearn.controller.auth.user.SignupController;
 import uniearn.model.entities.users.client.Client;
 import uniearn.model.entities.users.User;
 import uniearn.model.enums.UserRole;
+import uniearn.services.users.UserService;
 import uniearn.services.users.client.ClientService;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 public class ClientSignupController {
 
@@ -27,9 +33,11 @@ public class ClientSignupController {
     @FXML private Label termsError;
 
     private final ClientService clientService = new ClientService();
+    private final UserService userService = new UserService();
     SignupController signupController = new SignupController();
 
     private User basicUserData;
+    private File stagedPhotoFile = null;
 
     @FXML
     public void initialize() {
@@ -84,6 +92,15 @@ public class ClientSignupController {
 
     public void setUserData(User user) {
         this.basicUserData = user;
+        // If SignupController stored a photo path in the user object, stage it here
+        if (user.getProfilePicturePath() != null) {
+            File f = new File(user.getProfilePicturePath());
+            if (f.exists()) this.stagedPhotoFile = f;
+        }
+    }
+
+    public void setStagedPhotoFile(File file) {
+        this.stagedPhotoFile = file;
     }
 
     public void restoreClientData(String amount, String company, String industry) {
@@ -110,25 +127,21 @@ public class ClientSignupController {
 
         String company = companyField.getText().trim();
 
-        // Company is REQUIRED
         if (company.isEmpty()) {
             showError(companyError, "Company name is required");
             return false;
         }
 
-        // Check minimum length
         if (company.length() < 2) {
             showError(companyError, "Company name must be at least 2 characters");
             return false;
         }
 
-        // Check maximum length
         if (company.length() > 100) {
             showError(companyError, "Company name must not exceed 100 characters");
             return false;
         }
 
-        // ✅ FIX: Proper error handling for company uniqueness check
         try {
             boolean exists = clientService.companyExists(company);
             if (exists) {
@@ -136,11 +149,8 @@ public class ClientSignupController {
                 return false;
             }
         } catch (Exception e) {
-            // Log the error but don't show alert - just show inline error
             System.err.println("Error checking company uniqueness: " + e.getMessage());
             e.printStackTrace();
-
-            // Show user-friendly error in the label, not an alert
             showError(companyError, "Unable to verify company name. Please try again.");
             return false;
         }
@@ -194,7 +204,6 @@ public class ClientSignupController {
             }
 
             Client client = new Client();
-
             client.setName(basicUserData.getName());
             client.setEmail(basicUserData.getEmail());
             client.setPassword(basicUserData.getPassword());
@@ -213,6 +222,13 @@ public class ClientSignupController {
             client.setRating(0.0);
 
             clientService.addClient(client);
+            // idUser is set on the object by addClient → super.addUser()
+            int userId = client.getIdUser();
+
+            // ── Save profile photo now that we have a real userId ──
+            if (userId > 0) {
+                saveAndLinkPhoto(userId);
+            }
 
             showSuccessAlert("Welcome to UniEarn!",
                     "Your client account has been created successfully!\n\n" +
@@ -224,8 +240,7 @@ public class ClientSignupController {
             redirectToLogin();
 
         } catch (Exception e) {
-            showErrorAlert("Unexpected Error",
-                    "An error occurred: " + e.getMessage());
+            showErrorAlert("Unexpected Error", "An error occurred: " + e.getMessage());
             e.printStackTrace();
             if (completeButton != null) {
                 completeButton.setDisable(false);
@@ -233,12 +248,32 @@ public class ClientSignupController {
         }
     }
 
+    /**
+     * Copies the pre-selected profile photo to uploads/profiles and updates the DB.
+     * Called only after the user row exists and userId is known.
+     */
+    private void saveAndLinkPhoto(int userId) {
+        if (stagedPhotoFile == null || !stagedPhotoFile.exists()) return;
+        try {
+            File profileDir = new File("uploads/profiles");
+            if (!profileDir.exists()) profileDir.mkdirs();
+
+            String ext = stagedPhotoFile.getName()
+                    .substring(stagedPhotoFile.getName().lastIndexOf("."));
+            String filename = "client_" + userId + ext;
+            Path dest = Paths.get(profileDir.getPath(), filename);
+
+            Files.copy(stagedPhotoFile.toPath(), dest, StandardCopyOption.REPLACE_EXISTING);
+            userService.updateProfilePicture(userId, "uploads/profiles/" + filename);
+            System.out.println("✓ Profile photo linked for user: " + userId);
+        } catch (Exception e) {
+            System.out.println("⚠ Failed to save profile photo (non-fatal): " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     @FXML
     private void handleBack() {
-        String currentAmount = amountField != null ? amountField.getText() : "";
-        String currentCompany = companyField != null ? companyField.getText() : "";
-        String currentIndustry = industryComboBox != null ? industryComboBox.getValue() : null;
-
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/signup/signup.fxml"));
             Parent signupRoot = loader.load();
@@ -246,8 +281,7 @@ public class ClientSignupController {
             signupController.restoreUserData(basicUserData);
 
             Stage stage = (Stage) backButton.getScene().getWindow();
-            Scene signupScene = new Scene(signupRoot);
-            stage.setScene(signupScene);
+            stage.setScene(new Scene(signupRoot));
             stage.setTitle("Sign Up - UniEarn");
 
         } catch (IOException e) {
@@ -262,8 +296,7 @@ public class ClientSignupController {
             Parent loginRoot = loader.load();
 
             Stage stage = (Stage) completeButton.getScene().getWindow();
-            Scene loginScene = new Scene(loginRoot);
-            stage.setScene(loginScene);
+            stage.setScene(new Scene(loginRoot));
             stage.setTitle("Login - UniEarn");
 
         } catch (IOException | NullPointerException e) {

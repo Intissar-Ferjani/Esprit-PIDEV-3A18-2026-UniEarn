@@ -18,7 +18,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import uniearn.controller.profile.freelancer.FreelancerPortfolioController;
 import uniearn.controller.profile.freelancer.FreelancerProfileController;
-import uniearn.controller.profile.freelancer.ListFreelancersController;
 import uniearn.database.SessionManager;
 import uniearn.services.users.freelancer.PortfolioService;
 import uniearn.model.entities.projet.Project;
@@ -28,8 +27,14 @@ import uniearn.model.entities.users.freelancer.Freelancer;
 import uniearn.model.entities.users.freelancer.Portfolio;
 import uniearn.model.enums.taskpriorityenum;
 import uniearn.model.enums.taskstatusenum;
+import uniearn.services.candidature.ApplicationService;
+import uniearn.services.projet.PDFService;
 import uniearn.services.projet.ProjectService;
+import uniearn.services.projet.TaskAIService;
 import uniearn.services.projet.TaskService;
+
+import javafx.stage.FileChooser;
+import java.io.File;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -50,12 +55,18 @@ public class TaskBoardController {
     @FXML
     private HBox boardContainer;
 
+    @FXML
+    private ComboBox<Project> projectSelector;
+
     private Client currentClient;
     private Freelancer currentFreelancer; // Freelancer mode support
 
     private final TaskService taskService = new TaskService();
     private final ProjectService projectService = new ProjectService();
     private final PortfolioService portfolioService = new PortfolioService();
+    private final ApplicationService applicationService = new ApplicationService();
+    private final TaskAIService taskAIService = new TaskAIService();
+    private final PDFService pdfService = new PDFService();
 
     private ObservableList<Task> allTasks = FXCollections.observableArrayList();
     private List<Project> clientProjects = new ArrayList<>();
@@ -87,6 +98,22 @@ public class TaskBoardController {
             renderBoard();
         });
         viewToggle.setSelected(true); // Default to Status view
+
+        projectSelector.setConverter(new javafx.util.StringConverter<Project>() {
+            @Override
+            public String toString(Project p) {
+                return p != null ? p.getTitle() : "Tous les projets";
+            }
+
+            @Override
+            public Project fromString(String string) {
+                return null;
+            }
+        });
+
+        projectSelector.valueProperty().addListener((obs, oldVal, newVal) -> {
+            renderBoard();
+        });
     }
 
     private void loadData() {
@@ -94,16 +121,26 @@ public class TaskBoardController {
         List<Task> tempTasks = new ArrayList<>();
 
         if (currentFreelancer != null) {
-            // Freelancer mode: show tasks where the freelancerIDD matches
-            // Get ALL projects and collect those that match this freelancer
-            List<Project> allProjects = projectService.getAllProjects();
+            // Freelancer mode: only show projects where the freelancer has an ACCEPTED
+            // application
             clientProjects = new ArrayList<>();
-            for (Project p : allProjects) {
-                if (p.getFreelancerid() == currentFreelancer.getIdFreelancer()) {
-                    clientProjects.add(p);
+            try {
+                List<uniearn.model.entities.candidature.application.Application> acceptedApps = applicationService
+                        .getApplicationsByFreelancer(currentFreelancer.getIdFreelancer())
+                        .stream()
+                        .filter(a -> a.getStatus() == uniearn.model.enums.ApplicationStatus.ACCEPTED)
+                        .collect(java.util.stream.Collectors.toList());
+
+                for (uniearn.model.entities.candidature.application.Application app : acceptedApps) {
+                    Project p = projectService.getProjectById(app.getProjectId());
+                    if (p != null) {
+                        clientProjects.add(p);
+                    }
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            // Filter tasks that belong to those projects
+            // Filter tasks that belong to those accepted projects
             for (Task t : allDBTasks) {
                 boolean belongs = clientProjects.stream().anyMatch(p -> p.getIdproject() == t.getProjectid());
                 if (belongs)
@@ -120,17 +157,28 @@ public class TaskBoardController {
         }
 
         allTasks.setAll(tempTasks);
+        projectSelector.setItems(FXCollections.observableArrayList(clientProjects));
+        if (!clientProjects.isEmpty() && projectSelector.getValue() == null) {
+            projectSelector.getSelectionModel().selectFirst();
+        }
         renderBoard();
     }
 
     private void renderBoard() {
+        if (boardContainer == null)
+            return;
         boardContainer.getChildren().clear();
-        String searchText = searchField.getText() == null ? "" : searchField.getText().toLowerCase();
+        String searchText = searchField.getText() == null ? "" : searchField.getText().toLowerCase().trim();
+        Project selectedProject = projectSelector.getValue();
 
         List<Task> filteredTasks = new ArrayList<>();
         for (Task t : allTasks) {
-            if (t.getTitle().toLowerCase().contains(searchText) ||
-                    (t.getDescription() != null && t.getDescription().toLowerCase().contains(searchText))) {
+            boolean matchesSearch = t.getTitle().toLowerCase().contains(searchText) ||
+                    (t.getDescription() != null && t.getDescription().toLowerCase().contains(searchText));
+
+            boolean matchesProject = selectedProject == null || t.getProjectid() == selectedProject.getIdproject();
+
+            if (matchesSearch && matchesProject) {
                 filteredTasks.add(t);
             }
         }
@@ -145,12 +193,12 @@ public class TaskBoardController {
     private void renderByStatus(List<Task> tasks) {
         // Define Columns: To Do, In Progress, Done, Blocked
         Map<String, VBox> columns = new HashMap<>();
-        String[] statuses = { "A_FAIRE", "EN_COURS", "TERMINEE", "BLOCKED" };
-        String[] labels = { "To Do", "In Progress", "Done", "Blocked" };
-        String[] borders = { "#a89b8c", "#7db8e8", "#7ec8a4", "#e07d7d" };
+        String[] statuses = { "TODO", "InProgress", "Review", "Done" };
+        String[] labels = { "To Do", "In Progress", "Review", "Done" };
+        String[] borders = { "#a89b8c", "#7db8e8", "#f39c12", "#7ec8a4" };
 
         for (int i = 0; i < statuses.length; i++) {
-            VBox col = createColumn(labels[i], borders[i]);
+            VBox col = createColumn(labels[i], borders[i], null, null);
             columns.put(statuses[i], col);
             boardContainer.getChildren().add(col);
         }
@@ -162,12 +210,7 @@ public class TaskBoardController {
             VBox targetCol = columns.get(statusKey);
             // Default mappings if enum doesn't exact match
             if (targetCol == null) {
-                if (statusKey.contains("FAIRE"))
-                    targetCol = columns.get("A_FAIRE");
-                else if (statusKey.contains("COURS"))
-                    targetCol = columns.get("EN_COURS");
-                else
-                    targetCol = columns.get("TERMINEE");
+                targetCol = columns.get("TODO");
             }
 
             if (targetCol != null) {
@@ -182,7 +225,43 @@ public class TaskBoardController {
         Map<Integer, VBox> projectCols = new HashMap<>();
 
         for (Project p : clientProjects) {
-            VBox col = createColumn(p.getTitle(), "#34495e");
+            // Calculate progress for this project
+            List<Task> projectTasks = allTasks.stream()
+                    .filter(t -> t.getProjectid() == p.getIdproject())
+                    .collect(java.util.stream.Collectors.toList());
+
+            Double progress = null;
+            LocalDateTime estimatedDeadline = null;
+            if (!projectTasks.isEmpty()) {
+                long totalTasks = projectTasks.size();
+                long doneCount = projectTasks.stream()
+                        .filter(t -> t.getTaskstatus() == taskstatusenum.Done)
+                        .count();
+                long remainingTasks = totalTasks - doneCount;
+                progress = (double) doneCount / totalTasks;
+
+                // Smart Deadline Adjustment: Today + SUM(weight of remaining tasks)
+                // We use Priority as the weight variable: High=5, Medium=3, Low=1
+                long totalEstimatedDays = projectTasks.stream()
+                        .filter(t -> t.getTaskstatus() != taskstatusenum.Done)
+                        .mapToLong(t -> {
+                            if (t.getPriority() == taskpriorityenum.High)
+                                return 5;
+                            if (t.getPriority() == taskpriorityenum.Low)
+                                return 1;
+                            return 3; // Medium or default
+                        })
+                        .sum();
+
+                if (totalEstimatedDays > 0) {
+                    estimatedDeadline = LocalDateTime.now().plusDays(totalEstimatedDays);
+                } else if (remainingTasks > 0) {
+                    // Fallback
+                    estimatedDeadline = LocalDateTime.now().plusDays(remainingTasks * 2);
+                }
+            }
+
+            VBox col = createColumn(p.getTitle(), "#34495e", progress, estimatedDeadline);
             projectCols.put(p.getIdproject(), col);
             boardContainer.getChildren().add(col);
         }
@@ -197,20 +276,51 @@ public class TaskBoardController {
         }
     }
 
-    private VBox createColumn(String headerText, String borderColor) {
+    private VBox createColumn(String headerText, String borderColor, Double progress, LocalDateTime estimatedDeadline) {
         VBox col = new VBox();
         col.setSpacing(15);
         col.setPrefWidth(280);
         col.setMinWidth(280);
 
-        // Header
+        // Header Label
         Label headerLabel = new Label(headerText.toUpperCase());
         headerLabel.setStyle(
                 "-fx-font-family: 'Georgia'; -fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #2c3e50; " +
                         "-fx-border-color: transparent transparent transparent " + borderColor
                         + "; -fx-border-width: 0 0 0 4px; -fx-padding: 0 0 0 10px;");
 
-        HBox headerBox = new HBox(headerLabel);
+        VBox headerContent = new VBox(8, headerLabel);
+
+        // Add Progress UI if progress is provided (for project view)
+        if (progress != null) {
+            ProgressBar pb = new ProgressBar(progress);
+            pb.setPrefWidth(250);
+            pb.setPrefHeight(10);
+            pb.setStyle(
+                    "-fx-accent: #2ecc71; -fx-control-inner-background: #e1e8ed; -fx-background-radius: 5; -fx-padding: 0;");
+
+            HBox labelsBox = new HBox();
+            labelsBox.setAlignment(Pos.CENTER_LEFT);
+            labelsBox.setSpacing(10);
+
+            Label pctLabel = new Label(String.format("%.0f%% Completed", progress * 100));
+            pctLabel.setStyle("-fx-text-fill: #14171a; -fx-font-size: 13px; -fx-font-weight: bold;");
+
+            labelsBox.getChildren().add(pctLabel);
+
+            if (estimatedDeadline != null) {
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd");
+                Label dlLabel = new Label("Deadline le  " + dtf.format(estimatedDeadline));
+                dlLabel.setStyle("-fx-text-fill: #3498db; -fx-font-size: 13px; -fx-font-weight: bold;");
+                Region spacer = new Region();
+                HBox.setHgrow(spacer, Priority.ALWAYS);
+                labelsBox.getChildren().addAll(spacer, dlLabel);
+            }
+
+            headerContent.getChildren().addAll(pb, labelsBox);
+        }
+
+        HBox headerBox = new HBox(headerContent);
         headerBox.setPadding(new Insets(0, 0, 10, 0));
 
         col.getChildren().add(headerBox);
@@ -319,6 +429,59 @@ public class TaskBoardController {
             e.printStackTrace();
             showErrorAlert("Error", "Failed to load projects: " + e.getMessage());
         }
+    }
+
+    @FXML
+    private void handleAISuggestions() {
+        Project targetProject = projectSelector.getValue();
+        if (targetProject == null) {
+            showErrorAlert("Aucun projet", "Veuillez sélectionner un projet pour suggérer des tâches.");
+            return;
+        }
+
+        // Progress indicator could be added here, but for now we'll just block briefly
+        List<String> suggestions = taskAIService.suggestTasks(targetProject.getTitle(), targetProject.getDescription());
+
+        if (suggestions.isEmpty()) {
+            System.err.println("❌ AI Suggestions: No results for " + targetProject.getTitle());
+            showErrorAlert("AI Error",
+                    "L'IA n'a pas pu générer de suggestions. Vérifiez que votre projet a une description.");
+            return;
+        }
+
+        int count = 0;
+        for (String title : suggestions) {
+            try {
+                Task newTask = new Task();
+                newTask.setTitle(title);
+                newTask.setDescription("Généré par IA pour le projet: " + targetProject.getTitle());
+                newTask.setProjectid(targetProject.getIdproject());
+                newTask.setTaskstatus(taskstatusenum.TODO);
+                newTask.setPriority(taskpriorityenum.Medium);
+                newTask.setDateAssigned(LocalDateTime.now());
+                newTask.setDeadline(LocalDateTime.now().plusDays(7));
+                newTask.setRole("Freelancer"); // Default role
+
+                if (taskService.addTask(newTask)) {
+                    count++;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (count > 0) {
+            loadData(); // Refresh board
+            showSuccessAlert("IA Suggestions", count + " tâches ont été suggérées et ajoutées avec succès.");
+        }
+    }
+
+    private void showSuccessAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     @FXML
@@ -459,6 +622,48 @@ public class TaskBoardController {
      * alert.showAndWait();
      * }
      */
+
+    @FXML
+    private void handleExportPDF() {
+        Project targetProject = projectSelector.getValue();
+        if (targetProject == null) {
+            showErrorAlert("Aucun projet", "Veuillez sélectionner un projet pour exporter un rapport.");
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Enregistrer le rapport PDF");
+        fileChooser.setInitialFileName(
+                "Rapport_Projet_" + targetProject.getTitle().replaceAll("[^a-zA-Z0-9]", "_") + ".pdf");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+
+        Stage stage = (Stage) boardContainer.getScene().getWindow();
+        File file = fileChooser.showSaveDialog(stage);
+
+        if (file != null) {
+            try {
+                // Filter tasks for this project
+                List<Task> projectTasks = new ArrayList<>();
+                for (Task t : allTasks) {
+                    if (t.getProjectid() == targetProject.getIdproject()) {
+                        projectTasks.add(t);
+                    }
+                }
+
+                pdfService.generateProjectReport(targetProject, projectTasks, file.getAbsolutePath());
+
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Export terminé");
+                alert.setHeaderText(null);
+                alert.setContentText("Le rapport PDF a été généré avec succès !");
+                alert.showAndWait();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                showErrorAlert("Erreur Export", "Impossible de générer le PDF : " + e.getMessage());
+            }
+        }
+    }
 
     private void showErrorAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
