@@ -125,12 +125,7 @@ public class Evaluation {
                 rating >= 1 && rating <= 5 &&
                 comment != null && comment.trim().length() >= 15;
 
-        if (type == EvaluationType.USER_TO_USER || type == EvaluationType.FREELANCER_TO_CLIENT) {
-            return basicValid;
-        } else {
-            // For client/freelancer connection, project might still be required
-            return basicValid && (projectId != null && projectId > 0);
-        }
+        return basicValid;
     }
 
     @Override

@@ -20,6 +20,9 @@ import uniearn.services.candidature.EvaluationService;
 import uniearn.utils.candidature.ApiManager;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -317,14 +320,33 @@ public class FreelancerEvaluationController {
             return;
 
         try {
-            int evaluatedId = Integer.parseInt(txtFormEvaluatedId.getText());
+            int targetId = Integer.parseInt(txtFormEvaluatedId.getText());
+            int evaluatedId = targetId;
+            // Resolve if clientId was entered
+            int resolvedUid = getUserIdByClientId(targetId);
+            if (resolvedUid != -1) {
+                evaluatedId = resolvedUid;
+            }
+
+            if (evaluatedId <= 0) {
+                showToast("ID Client invalide", true);
+                return;
+            }
+
             int rating = (int) sliderRating.getValue();
             String comment = txtFormComment.getText();
 
             Integer projectId = null;
             if (chkIsProjectRelated != null && chkIsProjectRelated.isSelected()
                     && !txtFormProjectId.getText().isEmpty()) {
-                projectId = Integer.parseInt(txtFormProjectId.getText());
+                try {
+                    int p = Integer.parseInt(txtFormProjectId.getText());
+                    if (p > 0) {
+                        projectId = p;
+                    }
+                } catch (NumberFormatException e) {
+                    // Treat as null
+                }
             }
 
             EvaluationType type = EvaluationType.FREELANCER_TO_CLIENT;
@@ -351,17 +373,16 @@ public class FreelancerEvaluationController {
             } else {
                 // Create
                 Evaluation newEval = new Evaluation(currentUserId, evaluatedId, projectId, rating, comment, type);
-                if (evaluationService.createEvaluation(newEval)) {
-                    showToast("Posted successfully", false);
-                    loadFreelancerEvaluations();
-                    showView(viewListRoot);
-                } else {
-                    showToast("Failed: Already reviewed?", true);
-                }
+                evaluationService.createEvaluation(newEval);
+                showToast("Posted successfully", false);
+                loadFreelancerEvaluations();
+                showView(viewListRoot);
             }
 
         } catch (NumberFormatException e) {
             showToast("Invalid Numbers", true);
+        } catch (SQLException e) {
+            showToast(e.getMessage(), true);
         } catch (Exception e) {
             showToast("Error: " + e.getMessage(), true);
             e.printStackTrace();
@@ -450,5 +471,19 @@ public class FreelancerEvaluationController {
             messageContainer.setManaged(false);
         });
         delay.play();
+    }
+
+    private int getUserIdByClientId(int idClient) {
+        String sql = "SELECT userID FROM client WHERE idClient = ?";
+        try (PreparedStatement ps = uniearn.database.MyConnection.getInstance().getCnx().prepareStatement(sql)) {
+            ps.setInt(1, idClient);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    return rs.getInt("userID");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error resolving userID from idClient: " + e.getMessage());
+        }
+        return -1;
     }
 }

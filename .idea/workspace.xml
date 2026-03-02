@@ -4,26 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="i added the candidature and evaluation correctly and projets and tasks">
+    <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="i added the avis and proposals correctly">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/app/MainApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/app/MainApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/home/HomePageController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/home/HomePageController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminDashboardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/ListUsersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/ListUsersController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientApplicationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientApplicationController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientDashboardController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientEvaluationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientEvaluationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application/ClientApplicationView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application/ClientApplicationView.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerDashboardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerEvaluationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerEvaluationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/candidature/evaluation/Evaluation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/candidature/evaluation/Evaluation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/candidature/EvaluationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/candidature/EvaluationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/users/freelancer/FreelancerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/users/freelancer/FreelancerService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/application/ClientDashboardView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application/ClientDashboardView.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application/ClientEvaluationView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application/ClientEvaluationView.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application/FreelancerDashboardView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application/FreelancerDashboardView.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/client/Projet.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/client/Projet.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/client/client-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/client/client-profile.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-profile.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/list-freelancers.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -151,7 +142,7 @@
       <workItem from="1772337191277" duration="4068000" />
       <workItem from="1772404239198" duration="350000" />
       <workItem from="1772404682239" duration="9142000" />
-      <workItem from="1772418346491" duration="7892000" />
+      <workItem from="1772418346491" duration="10921000" />
     </task>
     <task id="LOCAL-00001" summary="i added the candidature and evaluation correctly and projets and tasks">
       <option name="closed" value="true" />
@@ -161,7 +152,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772415080877</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="i added the avis and proposals correctly">
+      <option name="closed" value="true" />
+      <created>1772427148919</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1772427148919</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -169,7 +168,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="i added the candidature and evaluation correctly and projets and tasks" />
-    <option name="LAST_COMMIT_MESSAGE" value="i added the candidature and evaluation correctly and projets and tasks" />
+    <MESSAGE value="i added the avis and proposals correctly" />
+    <option name="LAST_COMMIT_MESSAGE" value="i added the avis and proposals correctly" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

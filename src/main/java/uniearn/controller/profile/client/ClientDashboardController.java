@@ -39,6 +39,12 @@ import uniearn.model.enums.EvaluationType;
 import uniearn.services.candidature.ApplicationService;
 import uniearn.services.candidature.EvaluationService;
 
+import uniearn.services.projet.ProjectService;
+import uniearn.services.users.UserService;
+import uniearn.services.users.freelancer.FreelancerService;
+import uniearn.model.entities.projet.Project;
+import uniearn.model.entities.users.User;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -101,9 +107,20 @@ public class ClientDashboardController {
     private Label lblTotalReviews;
     @FXML
     private Label lblAvgRating;
+    @FXML
+    private Label lblEvalFreelancerName;
+    @FXML
+    private Label lblEvalProjectName;
+    @FXML
+    private Label lblPropProjectName;
+    @FXML
+    private Label lblEvalProjectNameDetail;
 
     private final ApplicationService applicationService = new ApplicationService();
     private final EvaluationService evaluationService = new EvaluationService();
+    private final ProjectService projectService = new ProjectService();
+    private final UserService userService = new UserService();
+    private final FreelancerService freelancerService = new FreelancerService();
 
     private final ObservableList<Application> proposalsList = FXCollections.observableArrayList();
     private final ObservableList<Evaluation> evaluationsList = FXCollections.observableArrayList();
@@ -126,10 +143,6 @@ public class ClientDashboardController {
         loadData();
         showView(viewProposalsRoot);
         updateNavStyle();
-
-        if (txtEvalProjId != null && chkEvalIsProject != null) {
-            txtEvalProjId.disableProperty().bind(chkEvalIsProject.selectedProperty().not());
-        }
 
         if (sliderEvalRating != null && lblEvalRatingValue != null) {
             sliderEvalRating.valueProperty()
@@ -212,7 +225,7 @@ public class ClientDashboardController {
                 renderSidebarList();
                 updateProposalStats();
             } else {
-                List<Evaluation> evals = evaluationService.getEvaluationsByEvaluated(currentUserId);
+                List<Evaluation> evals = evaluationService.getEvaluationsByEvaluator(currentUserId);
                 evaluationsList.setAll(evals);
                 renderSidebarList();
                 updateReviewStats();
@@ -340,19 +353,19 @@ public class ClientDashboardController {
         card.setStyle(
                 "-fx-background-color: white; -fx-border-color: #e4ebe4; -fx-border-width: 0 0 1 0; -fx-cursor: hand;");
 
-        Label lblRating = new Label("*" + eval.getRating());
+        Label lblRating = new Label("⭐" + eval.getRating());
         lblRating.setStyle("-fx-font-weight: bold; -fx-text-fill: #ffa000;");
 
         VBox info = new VBox(4);
-        Label lblFrom = new Label("From Freelancer #" + eval.getEvaluatorId());
-        lblFrom.setStyle("-fx-font-weight: bold; -fx-text-fill: #001e00;");
+        Label lblTo = new Label("Pour: " + getUserName(eval.getEvaluatedId()));
+        lblTo.setStyle("-fx-font-weight: bold; -fx-text-fill: #001e00;");
 
         String comment = eval.getComment() == null ? "" : eval.getComment();
-        String snippet = comment.length() > 20 ? comment.substring(0, 20) + "..." : comment;
+        String snippet = comment.length() > 30 ? comment.substring(0, 30) + "..." : comment;
         Label lblSnippet = new Label(snippet);
         lblSnippet.setStyle("-fx-text-fill: #5e6d55; -fx-font-size: 11px;");
 
-        info.getChildren().addAll(lblFrom, lblSnippet);
+        info.getChildren().addAll(lblTo, lblSnippet);
         card.getChildren().addAll(lblRating, info);
         card.setOnMouseClicked(e -> showEvalDetails(eval));
         return card;
@@ -393,7 +406,8 @@ public class ClientDashboardController {
         currentProposal = app;
         currentEvaluation = null;
 
-        lblPropFreelancer.setText("Freelancer #" + app.getFreelancerId());
+        lblPropFreelancer.setText(getUserName(app.getFreelancerId()));
+        lblPropProjectName.setText(getProjectTitle(app.getProjectId()));
         lblPropStatus.setText(app.getStatus().name());
         lblPropStatus.setStyle("-fx-text-fill: " + getStatusColor(app.getStatus()) + "; -fx-font-weight: bold;");
         lblPropBudget.setText(app.getProposedBudget() + " DT");
@@ -423,7 +437,12 @@ public class ClientDashboardController {
                 .findFirst()
                 .orElse(null);
 
-        lblEvalTarget.setText("From Freelancer #" + eval.getEvaluatorId());
+        lblEvalTarget.setText("Pour: " + getUserName(eval.getEvaluatedId()));
+        if (eval.getProjectId() != null) {
+            lblEvalProjectNameDetail.setText(getProjectTitle(eval.getProjectId()));
+        } else {
+            lblEvalProjectNameDetail.setText("Aucun projet");
+        }
         lblEvalRating.setText("*".repeat(Math.max(1, eval.getRating())));
         if (lblEvalType != null && eval.getType() != null) {
             lblEvalType.setText(eval.getType().getDisplayName());
@@ -461,21 +480,37 @@ public class ClientDashboardController {
         handleAddReview();
 
         if (currentProposal != null) {
-            txtEvalTarget.setText(String.valueOf(currentProposal.getFreelancerId()));
-            txtEvalProjId.setText(String.valueOf(currentProposal.getProjectId()));
-            if (chkEvalIsProject != null) {
-                chkEvalIsProject.setSelected(true);
-            }
+            int fId = currentProposal.getFreelancerId();
+            int pId = currentProposal.getProjectId();
+
+            txtEvalTarget.setText(String.valueOf(fId));
+            txtEvalProjId.setText(pId > 0 ? String.valueOf(pId) : "");
+
+            lblEvalFreelancerName.setText(getUserName(fId));
+            lblEvalProjectName.setText(pId > 0 ? getProjectTitle(pId) : "Général (Aucun projet)");
+
         } else if (currentEvaluation != null) {
-            txtEvalTarget.setText(String.valueOf(currentEvaluation.getEvaluatorId()));
-            txtEvalProjId.setText(
-                    currentEvaluation.getProjectId() != null ? String.valueOf(currentEvaluation.getProjectId()) : "");
-            if (chkEvalIsProject != null) {
-                chkEvalIsProject.setSelected(currentEvaluation.getProjectId() != null);
-            }
+            int fId = currentEvaluation.getEvaluatedId();
+            Integer pId = currentEvaluation.getProjectId();
+
+            txtEvalTarget.setText(String.valueOf(fId));
+            txtEvalProjId.setText(pId != null ? String.valueOf(pId) : "");
+
+            lblEvalFreelancerName.setText(getUserName(fId));
+            lblEvalProjectName.setText(pId != null ? getProjectTitle(pId) : "Aucun projet spécifié");
         }
 
         showView(scrollEvalForm);
+    }
+
+    private String getUserName(int id) {
+        User u = userService.getUserById(id);
+        return u != null ? u.getName() : "Freelancer #" + id;
+    }
+
+    private String getProjectTitle(int id) {
+        Project p = projectService.getProjectById(id);
+        return p != null ? p.getTitle() : "Projet #" + id;
     }
 
     @FXML
@@ -536,13 +571,26 @@ public class ClientDashboardController {
             Evaluation eval = isNew ? new Evaluation() : currentEvaluation;
 
             eval.setEvaluatorId(currentUserId);
-            eval.setEvaluatedId(Integer.parseInt(txtEvalTarget.getText()));
+            int targetIdFromTxt = Integer.parseInt(txtEvalTarget.getText());
+            // Resolve if freelancerId was entered (coming from application)
+            int resolvedEvaluatedId = freelancerService.getUserIdByFreelancerId(targetIdFromTxt);
+            if (resolvedEvaluatedId != -1) {
+                eval.setEvaluatedId(resolvedEvaluatedId);
+            } else {
+                // Already a userId or invalid
+                eval.setEvaluatedId(targetIdFromTxt);
+            }
 
             Integer projId = null;
-            boolean hasProjectSelection = chkEvalIsProject != null ? chkEvalIsProject.isSelected()
-                    : !txtEvalProjId.getText().isEmpty();
-            if (hasProjectSelection && !txtEvalProjId.getText().isEmpty()) {
-                projId = Integer.parseInt(txtEvalProjId.getText());
+            if (!txtEvalProjId.getText().isEmpty()) {
+                try {
+                    int p = Integer.parseInt(txtEvalProjId.getText());
+                    if (p > 0) {
+                        projId = p;
+                    }
+                } catch (NumberFormatException e) {
+                    // Ignore invalid numeric input, keep as null
+                }
             }
             eval.setProjectId(projId);
             eval.setRating((int) sliderEvalRating.getValue());
@@ -552,19 +600,17 @@ public class ClientDashboardController {
                     : EvaluationType.CLIENT_TO_FREELANCER);
 
             if (isNew) {
-                boolean success = evaluationService.createEvaluation(eval);
-                if (success) {
-                    showToast("Review submitted!", false);
-                } else {
-                    showToast("Review failed (already exists for this project)", true);
-                }
+                evaluationService.createEvaluation(eval);
+                showToast("Review submitted!", false);
             } else {
                 evaluationService.update(eval);
                 showToast("Review updated!", false);
             }
 
             loadData();
-            showView(viewReviewsRoot);
+            showEvalDetails(eval);
+        } catch (SQLException e) {
+            showToast(e.getMessage(), true);
         } catch (Exception e) {
             showToast("Review failed: " + e.getMessage(), true);
         }
@@ -598,6 +644,10 @@ public class ClientDashboardController {
         txtEvalTarget.clear();
         txtEvalProjId.clear();
         txtEvalComment.clear();
+        if (lblEvalFreelancerName != null)
+            lblEvalFreelancerName.setText("—");
+        if (lblEvalProjectName != null)
+            lblEvalProjectName.setText("—");
         sliderEvalRating.setValue(5);
         if (chkEvalIsProject != null) {
             chkEvalIsProject.setSelected(false);

@@ -28,6 +28,7 @@ import uniearn.utils.candidature.PdfExporter;
 import uniearn.database.SessionManager;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -706,15 +707,11 @@ public class FreelancerDashboardController {
             }
 
             if (isNew) {
-                boolean success = evaluationService.createEvaluation(eval);
-                if (success) {
-                    showToast("Review submitted!", false);
-                    // API 4: Simulated Email Notification
-                    System.out.println(
-                            "SIMULATED API: Sending email to user " + eval.getEvaluatedId() + " about new review...");
-                } else {
-                    showToast("Review failed (Already exists for this project)", true);
-                }
+                evaluationService.createEvaluation(eval);
+                showToast("Review submitted!", false);
+                // API 4: Simulated Email Notification
+                System.out.println(
+                        "SIMULATED API: Sending email to user " + eval.getEvaluatedId() + " about new review...");
             } else {
                 evaluationService.update(eval);
                 showToast("Review updated!", false);
@@ -726,6 +723,8 @@ public class FreelancerDashboardController {
             } else {
                 showView(viewEvalsRoot);
             }
+        } catch (SQLException e) {
+            showToast(e.getMessage(), true);
         } catch (Exception e) {
             showToast("Review failed: " + e.getMessage(), true);
         }

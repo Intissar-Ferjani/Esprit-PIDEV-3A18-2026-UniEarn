@@ -3,6 +3,7 @@ package uniearn.controller.profile.client;
 import uniearn.model.entities.candidature.evaluation.Evaluation;
 import uniearn.model.enums.EvaluationType;
 import uniearn.services.candidature.EvaluationService;
+import uniearn.services.users.freelancer.FreelancerService;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,6 +15,7 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,6 +72,7 @@ public class ClientEvaluationController {
     private Label lblMessage;
 
     private EvaluationService evaluationService;
+    private FreelancerService freelancerService;
     private ObservableList<Evaluation> evaluationsList;
     private Evaluation currentEvaluation;
 
@@ -78,11 +81,15 @@ public class ClientEvaluationController {
 
     public ClientEvaluationController() {
         this.evaluationService = new EvaluationService();
+        this.freelancerService = new FreelancerService();
         this.evaluationsList = FXCollections.observableArrayList();
     }
 
     @FXML
     public void initialize() {
+        if (uniearn.database.SessionManager.getInstance().isLoggedIn()) {
+            this.currentUserId = uniearn.database.SessionManager.getInstance().getCurrentUserId();
+        }
         // Setup Filter
         cmbRatingFilter.setItems(FXCollections.observableArrayList(1, 2, 3, 4, 5));
         cmbRatingFilter.setOnAction(e -> applyFilters());
@@ -239,13 +246,27 @@ public class ClientEvaluationController {
             return;
 
         try {
-            int evaluatedId = Integer.parseInt(txtFormEvaluatedId.getText());
+            int targetId = Integer.parseInt(txtFormEvaluatedId.getText());
+            int evaluatedId = targetId;
+            int resolvedUid = freelancerService.getUserIdByFreelancerId(targetId);
+            if (resolvedUid != -1) {
+                evaluatedId = resolvedUid;
+            }
+
+            if (evaluatedId <= 0) {
+                showToast("ID Freelancer invalide", true);
+                return;
+            }
+
             Integer projectId = null;
             if (!txtFormProjectId.getText().isEmpty()) {
                 try {
-                    projectId = Integer.parseInt(txtFormProjectId.getText());
+                    int p = Integer.parseInt(txtFormProjectId.getText());
+                    if (p > 0) {
+                        projectId = p;
+                    }
                 } catch (NumberFormatException e) {
-                    // Ignore or treat as null/0
+                    // Treat as null
                 }
             }
 
@@ -275,17 +296,16 @@ public class ClientEvaluationController {
             } else {
                 // Create
                 Evaluation newEval = new Evaluation(currentUserId, evaluatedId, projectId, rating, comment, type);
-                if (evaluationService.createEvaluation(newEval)) {
-                    showToast("Posted successfully", false);
-                    loadClientEvaluations();
-                    showView(viewEmpty);
-                } else {
-                    showToast("Failed: Already reviewed?", true);
-                }
+                evaluationService.createEvaluation(newEval);
+                showToast("Posted successfully", false);
+                loadClientEvaluations();
+                showView(viewEmpty);
             }
 
         } catch (NumberFormatException e) {
             showToast("Invalid Numbers", true);
+        } catch (SQLException e) {
+            showToast(e.getMessage(), true);
         } catch (Exception e) {
             showToast("Database Error: " + e.getMessage(), true);
             e.printStackTrace();

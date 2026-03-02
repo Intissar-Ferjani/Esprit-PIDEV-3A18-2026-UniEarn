@@ -51,7 +51,8 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
         }
 
         String sql = "INSERT INTO freelancer " +
-                "(idUser, pricePerHour, amount, rating, skills, bio, studentCardPath, cvPath, verificationStatus, status, idTask) " +
+                "(idUser, pricePerHour, amount, rating, skills, bio, studentCardPath, cvPath, verificationStatus, status, idTask) "
+                +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -100,7 +101,8 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setString(1, email.toLowerCase().trim());
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt("idUser");
+            if (rs.next())
+                return rs.getInt("idUser");
         } catch (SQLException e) {
             System.err.println("Error checking existing user by email: " + e.getMessage());
         }
@@ -108,21 +110,38 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
     }
 
     // ── Helper: check if a freelancer row already exists for this userId ──────
+    // ── Helper: check if a freelancer row already exists for this userId ──────
     private boolean freelancerRowExists(int userId) {
         String sql = "SELECT COUNT(*) FROM freelancer WHERE idUser = ?";
         try {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt(1) > 0;
+            if (rs.next())
+                return rs.getInt(1) > 0;
         } catch (SQLException e) {
             System.err.println("Error checking existing freelancer row: " + e.getMessage());
         }
         return false;
     }
 
+    public int getUserIdByFreelancerId(int freelancerId) {
+        String sql = "SELECT idUser FROM freelancer WHERE idFreelancer = ?";
+        try {
+            PreparedStatement ps = cn.prepareStatement(sql);
+            ps.setInt(1, freelancerId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next())
+                return rs.getInt("idUser");
+        } catch (SQLException e) {
+            System.err.println("Error resolving userId from freelancerId: " + e.getMessage());
+        }
+        return -1;
+    }
+
     // ── Step 3: Update freelancer with student card verification ──────────────
-    public void updateVerificationData(int freelancerId, String studentCardPath, VerifStatus status) throws SQLException {
+    public void updateVerificationData(int freelancerId, String studentCardPath, VerifStatus status)
+            throws SQLException {
         String sql = "UPDATE freelancer SET studentCardPath = ?, verificationStatus = ? WHERE idUser = ?";
         PreparedStatement ps = cn.prepareStatement(sql);
         ps.setString(1, studentCardPath);
@@ -191,7 +210,8 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
     @Override
     public Freelancer getFreelancerById(int id) {
         User baseUser = super.getUserById(id);
-        if (baseUser == null) return null;
+        if (baseUser == null)
+            return null;
 
         String sql = "SELECT * FROM freelancer WHERE idUser=?";
         try {
@@ -243,7 +263,8 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
         for (User u : users) {
             if (u.getRole() == UserRole.FREELANCER) {
                 Freelancer f = getFreelancerById(u.getIdUser());
-                if (f != null) freelancers.add(f);
+                if (f != null)
+                    freelancers.add(f);
             }
         }
         return freelancers;
