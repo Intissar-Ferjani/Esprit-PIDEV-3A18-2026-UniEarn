@@ -62,21 +62,9 @@
                             </font>
                         </Button>
 
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📊 Reports">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
-
                         <Region VBox.vgrow="ALWAYS" />
 
                         <Separator />
-
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="⚙ Settings">
-                            <font>
-                                <Font size="14.0" />
-                            </font>
-                        </Button>
 
                         <Button onAction="#handleLogout" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button, logout" text="🚪 Logout">
                             <font>
@@ -186,44 +174,6 @@
                                     <Label fx:id="activePercentLabel" styleClass="stat-label" text="0% of total">
                                         <font>
                                             <Font size="12.0" />
-                                        </font>
-                                    </Label>
-                                </children>
-                            </VBox>
-
-                            <!-- Total Projects Card -->
-                            <VBox spacing="12.0" styleClass="stat-card, stat-yellow" GridPane.columnIndex="0" GridPane.rowIndex="1">
-                                <padding>
-                                    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
-                                </padding>
-                                <children>
-                                    <Label styleClass="stat-label" text="📋 Total Projects">
-                                        <font>
-                                            <Font size="14.0" />
-                                        </font>
-                                    </Label>
-                                    <Label fx:id="totalProjectsLabel" styleClass="stat-value" text="Coming Soon">
-                                        <font>
-                                            <Font name="System Bold" size="28.0" />
-                                        </font>
-                                    </Label>
-                                </children>
-                            </VBox>
-
-                            <!-- Total Revenue Card -->
-                            <VBox spacing="12.0" styleClass="stat-card, stat-green" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                <padding>
-                                    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
-                                </padding>
-                                <children>
-                                    <Label styleClass="stat-label" text="💰 Platform Revenue">
-                                        <font>
-                                            <Font size="14.0" />
-                                        </font>
-                                    </Label>
-                                    <Label fx:id="totalRevenueLabel" styleClass="stat-value" text="Coming Soon">
-                                        <font>
-                                            <Font name="System Bold" size="28.0" />
                                         </font>
                                     </Label>
                                 </children>

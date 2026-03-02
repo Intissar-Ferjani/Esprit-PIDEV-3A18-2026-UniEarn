@@ -749,16 +749,6 @@ public class FreelancerProfileController {
     }
 
     @FXML
-    private void handleSettings() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Settings");
-        alert.setHeaderText("Account Settings");
-        alert.setContentText(
-                "Settings page coming soon!\n\nFeatures:\n• Change password\n• Notification preferences\n• Privacy settings\n• Language selection");
-        alert.showAndWait();
-    }
-
-    @FXML
     private void handleLogout() {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Logout");

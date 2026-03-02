@@ -144,7 +144,6 @@ public class ListUsersController {
             return;
         }
 
-        // ✅ Pass index for alternating row colors
         for (int i = 0; i < filteredUsers.size(); i++) {
             usersRowsContainer.getChildren().add(createUserRow(filteredUsers.get(i), i % 2 == 0));
         }
@@ -168,8 +167,7 @@ public class ListUsersController {
         usersRowsContainer.getChildren().add(emptyState);
     }
 
-    // ✅ FIXED: badges wrapped in HBox containers so columns align with header
-    // Column widths match FXML header: Name=200 | Email=240 | Role=150 | Status=150 | grow | Actions=220
+
     private HBox createUserRow(User user, boolean isEven) {
         HBox row = new HBox();
         row.setAlignment(Pos.CENTER_LEFT);
@@ -181,24 +179,23 @@ public class ListUsersController {
                 + "-fx-border-width: 0 0 1 0;";
         row.setStyle(baseStyle);
 
-        // ✅ Hover effect
         row.setOnMouseEntered(e -> row.setStyle(
                 "-fx-background-color: #eff6ff;"
                         + "-fx-border-color: transparent transparent #dbeafe transparent;"
                         + "-fx-border-width: 0 0 1 0; -fx-cursor: hand;"));
         row.setOnMouseExited(e -> row.setStyle(baseStyle));
 
-        // ── Name (200px) ──
+        // ── Name ──
         Label nameLabel = new Label(user.getName());
         nameLabel.setPrefWidth(200);
         nameLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #14171a; -fx-font-weight: bold;");
 
-        // ── Email (240px) ──
+        // ── Email ──
         Label emailLabel = new Label(user.getEmail());
         emailLabel.setPrefWidth(240);
         emailLabel.setStyle("-fx-font-size: 13px; -fx-text-fill: #657786;");
 
-        // ── Role badge wrapped in 150px HBox so it occupies the full column ──
+        // ── Role ──
         Label roleLabel = new Label(user.getRole().name());
         roleLabel.setStyle(
                 "-fx-background-color: " + getRoleColor(user.getRole()) + ";"
@@ -209,7 +206,7 @@ public class ListUsersController {
         roleBox.setPrefWidth(150);
         roleBox.setAlignment(Pos.CENTER_LEFT);
 
-        // ── Status badge wrapped in 150px HBox so it occupies the full column ──
+        // ── Status ──
         boolean active = user.isActivated();
         Label statusLabel = new Label(active ? "Active" : "Deactivated");
         statusLabel.setStyle(
@@ -225,7 +222,7 @@ public class ListUsersController {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        // ── Actions (220px) ──
+        // ── Actions ──
         Button viewBtn = new Button("👁 View");
         viewBtn.setStyle(
                 "-fx-background-color: #3498db; -fx-text-fill: white;"

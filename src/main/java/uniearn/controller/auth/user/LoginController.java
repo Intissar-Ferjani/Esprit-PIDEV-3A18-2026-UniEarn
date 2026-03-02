@@ -1,5 +1,6 @@
 package uniearn.controller.auth.user;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,283 +12,280 @@ import uniearn.controller.profile.freelancer.FreelancerProfileController;
 import uniearn.model.entities.users.User;
 import uniearn.model.entities.users.client.Client;
 import uniearn.model.entities.users.freelancer.Freelancer;
+import uniearn.server.security.SecurityCallbackServer;
+import uniearn.services.users.mail.EmailService;
 import uniearn.services.users.UserService;
 import uniearn.services.users.client.ClientService;
 import uniearn.services.users.freelancer.FreelancerService;
 import uniearn.database.SessionManager;
+import uniearn.services.users.security.LoginAttemptService;
+import uniearn.services.users.security.WebcamCaptureService;
 import uniearn.utils.user.PasswordUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
 public class LoginController {
 
-    @FXML private TextField emailField;
+    @FXML private TextField     emailField;
     @FXML private PasswordField passwordField;
-    @FXML private Button loginButton;
-    @FXML private Hyperlink forgotPasswordLink;
-    @FXML private Label emailError;
-    @FXML private Label passwordError;
+    @FXML private Button        loginButton;
+    @FXML private Button        googleLoginButton;
+    @FXML private Hyperlink     forgotPasswordLink;
+    @FXML private Label         emailError;
+    @FXML private Label         passwordError;
+    @FXML private Label         googleStatusLabel;
 
-    private final UserService userService = new UserService();
-    private final ClientService clientService = new ClientService();
+    private final UserService       userService       = new UserService();
+    private final ClientService     clientService     = new ClientService();
     private final FreelancerService freelancerService = new FreelancerService();
+    private final EmailService      emailService      = new EmailService();
+    private final GoogleAuthHandler googleAuthHandler = new GoogleAuthHandler();
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
-    );
+            "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
     @FXML
     public void initialize() {
-        emailField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) validateEmail();
-        });
+        SecurityCallbackServer.start(
+                this::openForgotPassword,
+                email -> showError(passwordError,
+                        "🔒 Compte verrouillé via email. Réessayez dans "
+                                + LoginAttemptService.remainingLockTime(email) + ".")
+        );
 
-        passwordField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) validatePassword();
-        });
+        emailField.focusedProperty().addListener((o, ov, nv)    -> { if (!nv) validateEmail(); });
+        passwordField.focusedProperty().addListener((o, ov, nv) -> { if (!nv) validatePassword(); });
     }
 
-    //    ----------------------------------------------------------------------
-//    --- Login ---
+    // ── Standard login ────────────────────────────────────────────────────
+
     private boolean validateEmail() {
         String email = emailField.getText().trim();
-
-        if (email.isEmpty()) {
-            showError(emailError, "Email is required");
-            return false;
-        }
-
-        if (!EMAIL_PATTERN.matcher(email).matches()) {
-            showError(emailError, "Please enter a valid email address");
-            return false;
-        }
-
+        if (email.isEmpty())                         { showError(emailError, "Email requis");          return false; }
+        if (!EMAIL_PATTERN.matcher(email).matches()) { showError(emailError, "Email invalide");        return false; }
         hideError(emailError);
         return true;
     }
 
     private boolean validatePassword() {
-        String password = passwordField.getText();
-
-        if (password.isEmpty()) {
-            showError(passwordError, "Password is required");
-            return false;
-        }
-
+        if (passwordField.getText().isEmpty()) { showError(passwordError, "Mot de passe requis"); return false; }
         hideError(passwordError);
         return true;
     }
 
-    @FXML
-    private void handleLogin() {
+    @FXML private void handleLogin() {
         clearAllErrors();
-
-        if (validateEmail() && validatePassword()) {
-            authenticateUser();
-        }
+        if (validateEmail() && validatePassword()) authenticateUser();
     }
 
     private void authenticateUser() {
+        loginButton.setDisable(true);
+        String email    = emailField.getText().trim();
+        String password = passwordField.getText();
+
         try {
-            loginButton.setDisable(true);
-
-            String email = emailField.getText().trim();
-            String password = passwordField.getText();
-
-            User foundUser = userService.getAllUsersIncludingAdmins().stream()
-                    .filter(user -> user.getEmail().equalsIgnoreCase(email))
-                    .findFirst()
-                    .orElse(null);
-
-//            User not found
-            if (foundUser == null) {
-                showError(emailError, "No account found with this email");
+            if (LoginAttemptService.isLocked(email)) {
+                showError(passwordError, "⏳ Compte verrouillé. Réessayez dans "
+                        + LoginAttemptService.remainingLockTime(email) + ".");
                 loginButton.setDisable(false);
                 return;
             }
 
-//            Account not activated
-            if (!foundUser.isActivated()) {
-                showErrorAlert("Account Deactivated",
-                        "Your account has been deactivated.\n\n" +
-                                "Please contact support to reactivate your account.");
+            User user = userService.getAllUsersIncludingAdmins().stream()
+                    .filter(u -> u.getEmail().equalsIgnoreCase(email))
+                    .findFirst().orElse(null);
+
+            if (user == null) {
+                showError(emailError, "Aucun compte trouvé avec cet email");
+                loginButton.setDisable(false);
+                return;
+            }
+            if (!user.isActivated()) {
+                showErrorAlert("Compte désactivé", "Votre compte a été désactivé.\nContactez le support.");
+                loginButton.setDisable(false);
+                return;
+            }
+            if (!PasswordUtil.verifyPassword(password, user.getPassword())) {
+                handleWrongPassword(email, user);
                 loginButton.setDisable(false);
                 return;
             }
 
-//          verify password using BCrypt
-            if (!PasswordUtil.verifyPassword(password, foundUser.getPassword())) {
-                showError(passwordError, "Incorrect password");
-                loginButton.setDisable(false);
-                return;
-            }
-
-//            Store user in session if user found
-            SessionManager.getInstance().setCurrentUser(foundUser);
-
-            System.out.println("✓ Login successful: " + foundUser.getName() + " (" + foundUser.getRole() + ")");
-            redirectToProfile(foundUser);
+            LoginAttemptService.reset(email);
+            SessionManager.getInstance().setCurrentUser(user);
+            System.out.println("✓ Login: " + user.getName());
+            redirectToProfile(user);
 
         } catch (Exception e) {
-            showErrorAlert("Login Error", "An error occurred during login: " + e.getMessage());
+            showErrorAlert("Erreur", e.getMessage());
             e.printStackTrace();
             loginButton.setDisable(false);
         }
     }
 
+    private void handleWrongPassword(String email, User user) {
+        int fails     = LoginAttemptService.recordFailure(email);
+        int remaining = LoginAttemptService.maxAttempts() - fails;
+
+        if (fails < LoginAttemptService.maxAttempts()) {
+            showError(passwordError, "Mot de passe incorrect. " + remaining + " tentative(s) restante(s).");
+            return;
+        }
+
+        showError(passwordError, "⛔ Compte verrouillé " + LoginAttemptService.lockMinutes()
+                + " min. Un email vous a été envoyé.");
+
+        final String ownerName = user.getName();
+        final String ip        = LoginAttemptService.detectLocalIp();
+        Thread t = new Thread(() -> {
+            try {
+                File photo = WebcamCaptureService.capture(email);
+                String[] tokens = SecurityCallbackServer.generateTokens(email);
+                emailService.sendIntruderAlert(email, ownerName, ip, photo, tokens[0], tokens[1]);
+                System.out.println("✓ Security alert sent to " + email);
+            } catch (Exception ex) {
+                System.err.println("⚠ Alert failed: " + ex.getMessage());
+            }
+        });
+        t.setDaemon(true);
+        t.start();
+    }
+
+    // ── Google Login ──────────────────────────────────────────────────────
+
+    @FXML
+    private void handleGoogleLogin() {
+        setGoogleButtonState(true, "Connexion Google…");
+
+        googleAuthHandler.handleGoogleLogin(
+                // Existing user → go straight to their profile
+                user -> {
+                    setGoogleButtonState(false, null);
+                    redirectToProfile(user);
+                },
+                // New user → send to signup to pick role + fill details
+                partialUser -> {
+                    setGoogleButtonState(false, null);
+                    openSignupWithGoogleData(partialUser);
+                },
+                // Error
+                errorMsg -> {
+                    setGoogleButtonState(false, null);
+                    showErrorAlert("Connexion Google échouée", errorMsg);
+                }
+        );
+    }
+
+    //Pre-fills the signup form with Google data -> only pick role
+    private void openSignupWithGoogleData(User googleUser) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/auth/signup/signup.fxml"));
+            Parent root = loader.load();
+            SignupController ctrl = loader.getController();
+            ctrl.prefillFromGoogle(googleUser);
+
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            stage.setScene(new Scene(root, 750, 800));
+            stage.setTitle("Finaliser l'inscription — UniEarn");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            showErrorAlert("Erreur", "Impossible d'ouvrir la page d'inscription.");
+            e.printStackTrace();
+        }
+    }
+
+    private void setGoogleButtonState(boolean loading, String label) {
+        Platform.runLater(() -> {
+            if (googleLoginButton != null) googleLoginButton.setDisable(loading);
+            if (googleStatusLabel != null) {
+                if (label != null) {
+                    googleStatusLabel.setText(label);
+                    googleStatusLabel.setVisible(true);
+                } else {
+                    googleStatusLabel.setVisible(false);
+                }
+            }
+        });
+    }
+
+    // ── Profile routing ───────────────────────────────────────────────────
+
     private void redirectToProfile(User user) {
         try {
             Stage stage = (Stage) loginButton.getScene().getWindow();
-
             switch (user.getRole()) {
-                case CLIENT:
-                    redirectToClientProfile(user, stage);
-                    break;
-
-                case FREELANCER:
-                    redirectToFreelancerProfile(user, stage);
-                    break;
-
-                case ADMIN:
-                    redirectToAdminDashboard(user, stage);
-                    break;
-
-                default:
-                    showErrorAlert("Unknown Role", "Unable to determine user dashboard.");
-                    loginButton.setDisable(false);
+                case CLIENT     -> redirectToClientProfile(user, stage);
+                case FREELANCER -> redirectToFreelancerProfile(user, stage);
+                case ADMIN      -> redirectToAdminDashboard(stage);
+                default -> { showErrorAlert("Rôle inconnu", "Dashboard introuvable."); loginButton.setDisable(false); }
             }
-
         } catch (IOException e) {
-            showErrorAlert("Navigation Error", "Unable to load dashboard: " + e.getMessage());
-            e.printStackTrace();
+            showErrorAlert("Erreur de navigation", e.getMessage());
             loginButton.setDisable(false);
         }
     }
 
     private void redirectToClientProfile(User user, Stage stage) throws IOException {
-        System.out.println("Attempting to load client profile for user ID: " + user.getIdUser());
-
-        Client client = clientService.getClientById(user.getIdUser());
-
-//        Client not found
-        if (client == null) {
-            System.err.println("Client data is null for user ID: " + user.getIdUser());
-            showErrorAlert("Error", "Unable to load client data from database.");
-            loginButton.setDisable(false);
-            return;
-        }
-
-        System.out.println("✓ Client data loaded: " + client.getName());
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/client-profile.fxml"));
-        Parent root = loader.load();
-
-        ClientProfileController controller = loader.getController();
-        controller.setClientData(client);
-
+        Client c = clientService.getClientById(user.getIdUser());
+        if (c == null) { showErrorAlert("Erreur", "Profil client introuvable."); loginButton.setDisable(false); return; }
+        FXMLLoader l = new FXMLLoader(getClass().getResource("/profile/client/client-profile.fxml"));
+        Parent root = l.load();
+        ((ClientProfileController) l.getController()).setClientData(c);
         stage.setScene(new Scene(root, 1200, 800));
-        stage.setTitle("Client Profile - UniEarn");
-        stage.centerOnScreen();
-
-        System.out.println("✓ Redirected to Client Profile successfully");
+        stage.setTitle("Client — UniEarn"); stage.centerOnScreen();
     }
 
     private void redirectToFreelancerProfile(User user, Stage stage) throws IOException {
-        System.out.println("Attempting to load freelancer profile for user ID: " + user.getIdUser());
-
-        Freelancer freelancer = freelancerService.getFreelancerById(user.getIdUser());
-
-//        Freelancer not found
-        if (freelancer == null) {
-            System.err.println("Freelancer data is null for user ID: " + user.getIdUser());
-            showErrorAlert("Error", "Unable to load freelancer profile.");
-            loginButton.setDisable(false);
-            return;
-        }
-
-        System.out.println("✓ Freelancer data loaded: " + freelancer.getName());
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-profile.fxml"));
-        Parent root = loader.load();
-
-        FreelancerProfileController controller = loader.getController();
-        controller.setFreelancerData(freelancer);
-
+        Freelancer f = freelancerService.getFreelancerById(user.getIdUser());
+        if (f == null) { showErrorAlert("Erreur", "Profil freelancer introuvable."); loginButton.setDisable(false); return; }
+        FXMLLoader l = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-profile.fxml"));
+        Parent root = l.load();
+        ((FreelancerProfileController) l.getController()).setFreelancerData(f);
         stage.setScene(new Scene(root, 1200, 800));
-        stage.setTitle("Freelancer Profile - UniEarn");
-        stage.centerOnScreen();
-
-        System.out.println("✓ Redirected to Freelancer Profile successfully");
+        stage.setTitle("Freelancer — UniEarn"); stage.centerOnScreen();
     }
 
-    private void redirectToAdminDashboard(User user, Stage stage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/admin/admin-dashboard.fxml"));
-        Parent root = loader.load();
-
-        stage.setScene(new Scene(root, 1200, 700));
-        stage.setTitle("Admin Dashboard - UniEarn");
-        stage.centerOnScreen();
-
-        System.out.println("✓ Redirected to Admin Dashboard");
+    private void redirectToAdminDashboard(Stage stage) throws IOException {
+        FXMLLoader l = new FXMLLoader(getClass().getResource("/profile/admin/admin-dashboard.fxml"));
+        stage.setScene(new Scene(l.load(), 1200, 700));
+        stage.setTitle("Admin — UniEarn"); stage.centerOnScreen();
     }
 
+    // ── Navigation ────────────────────────────────────────────────────────
 
-    //    ----------------------------------------------------------------------
-//    --- Signup ---
-    @FXML
-    private void handleSignupRedirect() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/signup/signup.fxml"));
-            Parent signupRoot = loader.load();
-
-            Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(new Scene(signupRoot, 750, 800));
-            stage.setTitle("Sign Up - UniEarn");
-            stage.centerOnScreen();
-
-        } catch (IOException e) {
-            System.err.println("Error loading signup page: " + e.getMessage());
-            showErrorAlert("Navigation Error", "Unable to load signup page.");
-        }
-    }
-
-    //    ----------------------------------------------------------------------
-//    --- Forget pass ---
-    @FXML
-    private void handleForgotPassword() {
+    private void openForgotPassword() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/login/forgot-password.fxml"));
-            Parent root = loader.load();
             Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(new Scene(root, 750, 550));
-            stage.setTitle("Forgot Password - UniEarn");
-            stage.centerOnScreen();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            stage.setScene(new Scene(loader.load(), 750, 550));
+            stage.setTitle("Réinitialisation — UniEarn"); stage.centerOnScreen();
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
-    private void showError(Label errorLabel, String message) {
-        errorLabel.setText(message);
-        errorLabel.setVisible(true);
+    @FXML private void handleSignupRedirect() {
+        try {
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            stage.setScene(new Scene(
+                    new FXMLLoader(getClass().getResource("/auth/signup/signup.fxml")).load(), 750, 800));
+            stage.setTitle("Inscription — UniEarn"); stage.centerOnScreen();
+        } catch (IOException e) { showErrorAlert("Erreur", "Impossible d'ouvrir l'inscription."); }
     }
 
-    private void hideError(Label errorLabel) {
-        errorLabel.setVisible(false);
-        errorLabel.setText("");
-    }
+    @FXML private void handleForgotPassword() { openForgotPassword(); }
 
-    private void clearAllErrors() {
-        hideError(emailError);
-        hideError(passwordError);
-    }
+    // ── UI helpers ────────────────────────────────────────────────────────
 
-    private void showErrorAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    private void showError(Label l, String msg)  { l.setText(msg); l.setVisible(true); }
+    private void hideError(Label l)              { l.setText(""); l.setVisible(false); }
+    private void clearAllErrors()                { hideError(emailError); hideError(passwordError); }
+
+    private void showErrorAlert(String title, String msg) {
+        Platform.runLater(() -> {
+            Alert a = new Alert(Alert.AlertType.ERROR);
+            a.setTitle(title); a.setHeaderText(null); a.setContentText(msg); a.showAndWait();
+        });
     }
 }

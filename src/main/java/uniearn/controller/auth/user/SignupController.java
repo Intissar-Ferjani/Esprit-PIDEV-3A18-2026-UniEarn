@@ -15,8 +15,8 @@ import uniearn.controller.auth.freelancer.FreelancerSignupController;
 import uniearn.model.entities.users.User;
 import uniearn.model.entities.users.admin.Admin;
 import uniearn.model.enums.UserRole;
-import uniearn.services.users.AdminService;
 import uniearn.services.users.UserService;
+import uniearn.services.users.admin.AdminService;
 import uniearn.utils.user.PasswordUtil;
 
 import java.io.File;
@@ -48,16 +48,16 @@ public class SignupController {
     @FXML private CheckBox termsCheckbox;
     @FXML private Label termsError;
     @FXML private ImageView profileImageView;
+    @FXML private Button    googleSignupButton;
 
 
     private final UserService userService = new UserService();
     private final AdminService adminService = new AdminService();
+    private final GoogleAuthHandler googleAuthHandler = new GoogleAuthHandler();
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
-
     private boolean isPasswordVisible = false;
     private boolean isConfirmPasswordVisible = false;
-
-    // Stores the selected photo file temporarily until the user is created in DB
+    private boolean isGoogleSignup = false;
     private File selectedProfilePhoto = null;
 
 
@@ -73,10 +73,10 @@ public class SignupController {
             if (!newVal) validateEmail();
         });
         passwordField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) validatePassword();
+            if (!newVal && !isGoogleSignup) validatePassword();
         });
         confirmPasswordField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) validateConfirmPassword();
+            if (!newVal && !isGoogleSignup) validateConfirmPassword();
         });
         roleComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) hideError(roleError);
@@ -114,6 +114,76 @@ public class SignupController {
             }
         });
     }
+
+    // ── Terms & Conditions ────────────────────────────────────────────────
+    @FXML
+    public void handleViewTerms() {
+        try {
+
+            java.net.URL termsUrl = getClass().getResource("/auth/signup/terms-and-conditions.fxml");
+            if (termsUrl == null) {
+                termsUrl = getClass().getResource("/auth/terms-and-conditions.fxml");
+            }
+            if (termsUrl == null) {
+                showErrorAlert("File Not Found",
+                        "Could not locate terms-and-conditions.fxml.\n" +
+                                "Place it at: resources/auth/signup/terms-and-conditions.fxml");
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(termsUrl);
+            Parent root = loader.load();
+
+            TermsController tc = loader.getController();
+            tc.setOpenedFromSignup(true, this);
+
+            tc.setFormSnapshot(
+                    nameField.getText(),
+                    emailField.getText(),
+                    isPasswordVisible ? passwordFieldVisible.getText() : passwordField.getText(),
+                    roleComboBox.getValue(),
+                    selectedProfilePhoto
+            );
+
+            Stage stage = (Stage) signupButton.getScene().getWindow();
+            stage.setScene(new Scene(root, 900, 700));
+            stage.setTitle("Terms & Conditions - UniEarn");
+            stage.centerOnScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Navigation Error", "Unable to open Terms & Conditions.");
+        }
+    }
+
+
+    public void restoreAfterTerms(boolean accepted,
+                                  String name,
+                                  String email,
+                                  String password,
+                                  UserRole role,
+                                  File profilePhoto) {
+        if (name != null)     nameField.setText(name);
+        if (email != null)    emailField.setText(email);
+        if (password != null) {
+            passwordField.setText(password);
+            confirmPasswordField.setText(password);
+            passwordFieldVisible.setText(password);
+            confirmPasswordFieldVisible.setText(password);
+        }
+        if (role != null)     roleComboBox.setValue(role);
+        if (profilePhoto != null) {
+            selectedProfilePhoto = profilePhoto;
+            try {
+                profileImageView.setImage(new Image(profilePhoto.toURI().toString()));
+            } catch (Exception ignored) {}
+        }
+
+        termsCheckbox.setSelected(accepted);
+        if (accepted) hideError(termsError);
+    }
+
+    // ── Password helpers ──────────────────────────────────────────────────
 
     @FXML
     private void handleGeneratePassword() {
@@ -186,6 +256,8 @@ public class SignupController {
         }
     }
 
+    // ── Validation ────────────────────────────────────────────────────────
+
     private boolean validateTerms() {
         if (!termsCheckbox.isSelected()) {
             showError(termsError, "You must accept the terms to continue");
@@ -203,6 +275,73 @@ public class SignupController {
         roleComboBox.setValue(userData.getRole());
         signupButton.setText("Continue");
         termsCheckbox.setSelected(true);
+    }
+
+
+    public void prefillFromGoogle(User googleUser) {
+        isGoogleSignup = true;
+
+        // Fill and lock name + email — from Google
+        nameField.setText(googleUser.getName());
+        nameField.setEditable(false);
+        nameField.setStyle("-fx-background-color: #f1f5f9; -fx-text-fill: #64748b;");
+
+        emailField.setText(googleUser.getEmail());
+        emailField.setEditable(false);
+        emailField.setStyle("-fx-background-color: #f1f5f9; -fx-text-fill: #64748b;");
+
+        //hide password
+        javafx.application.Platform.runLater(() -> {
+            hideNodeById("passwordSection");
+            hideNodeById("confirmPasswordSection");
+        });
+
+        //hide field nodes directly
+        hideNode(passwordField);
+        hideNode(passwordFieldVisible);
+        hideNode(confirmPasswordField);
+        hideNode(confirmPasswordFieldVisible);
+        hideNode(generatePasswordButton);
+        hideNode(togglePasswordButton);
+        hideNode(toggleConfirmPasswordButton);
+
+        // Clear any stale validation errors
+        if (passwordError != null)        { passwordError.setVisible(false); passwordError.setText(""); }
+        if (confirmPasswordError != null) { confirmPasswordError.setVisible(false); confirmPasswordError.setText(""); }
+
+        // Accept terms automatically
+        termsCheckbox.setSelected(true);
+
+        // Show Google avatar if downloaded
+        if (googleUser.getProfilePicturePath() != null) {
+            try {
+                java.io.File avatarFile = new java.io.File(googleUser.getProfilePicturePath());
+                if (avatarFile.exists()) {
+                    profileImageView.setImage(new javafx.scene.image.Image(avatarFile.toURI().toString()));
+                    selectedProfilePhoto = avatarFile;
+                }
+            } catch (Exception e) {
+                System.out.println("⚠ Could not load Google avatar: " + e.getMessage());
+            }
+        }
+
+        // Store the OAuth token + hashed by userService.
+        // Google users log in via OAuth, not this value.
+        passwordField.setText(googleUser.getPassword());
+        confirmPasswordField.setText(googleUser.getPassword());
+
+        signupButton.setText("Continue with Google →");
+        System.out.println("✓ Signup form pre-filled from Google: " + googleUser.getEmail());
+    }
+
+    //hide node
+    private void hideNodeById(String fxId) {
+        if (signupButton == null || signupButton.getScene() == null) return;
+        javafx.scene.Node node = signupButton.getScene().lookup("#" + fxId);
+        if (node != null) { node.setVisible(false); node.setManaged(false); }
+    }
+    private void hideNode(javafx.scene.Node node) {
+        if (node != null) { node.setVisible(false); node.setManaged(false); }
     }
 
     private void setupRoleComboBox() {
@@ -226,8 +365,8 @@ public class SignupController {
     @FXML
     private void handleSignup() {
         clearAllErrors();
-        if (validateName() && validateEmail() && validatePassword() &&
-                validateConfirmPassword() && validateRole()) {
+        boolean passwordOk = isGoogleSignup || (validatePassword() && validateConfirmPassword());
+        if (validateName() && validateEmail() && passwordOk && validateRole()) {
             createUser();
         }
     }
@@ -301,6 +440,8 @@ public class SignupController {
         return true;
     }
 
+    // ── User creation ─────────────────────────────────────────────────────
+
     private void createUser() {
         try {
             signupButton.setDisable(true);
@@ -355,34 +496,21 @@ public class SignupController {
         }
     }
 
-    /**
-     * Builds a base User object from the form fields.
-     * If a profile photo was selected, its absolute path is stored temporarily
-     * so the downstream controller (Client/Freelancer) can copy and save it
-     * after the user row has been inserted into the DB and an ID is available.
-     */
+
     private User buildBaseUser(String password) {
         User user = new User();
         user.setName(nameField.getText().trim());
         user.setEmail(emailField.getText().trim());
         user.setPassword(password);
         user.setRole(roleComboBox.getValue());
-        // Pass the absolute path of the chosen photo (null if none selected).
-        // The receiving controller is responsible for copying the file and
-        // calling userService.updateProfilePicture() once it has a real userId.
+
         if (selectedProfilePhoto != null) {
             user.setProfilePicturePath(selectedProfilePhoto.getAbsolutePath());
         }
         return user;
     }
 
-    /**
-     * Lets the user pick a profile photo during signup.
-     * We only preview the image here — we do NOT copy or save it yet because
-     * the user row doesn't exist in the DB yet (no userId available).
-     * The actual file copy + DB update happens in ClientSignupController /
-     * FreelancerSignupController after the INSERT returns a userId.
-     */
+
     @FXML
     private void handleChangePhoto() {
         FileChooser fileChooser = new FileChooser();
@@ -395,12 +523,14 @@ public class SignupController {
 
         if (selected != null) {
             selectedProfilePhoto = selected;
-            // Preview only — file is NOT copied until after DB insert
+
             Image preview = new Image(selected.toURI().toString());
             profileImageView.setImage(preview);
             System.out.println("✓ Profile photo selected (preview only): " + selected.getAbsolutePath());
         }
     }
+
+    // ── Navigation ────────────────────────────────────────────────────────
 
     private void redirectToClientSignup(User userData) {
         try {
@@ -452,6 +582,46 @@ public class SignupController {
         }
     }
 
+    // ── Google Signup ─────────────────────────────────────────────────────
+
+    @FXML
+    private void handleGoogleSignup() {
+        if (googleSignupButton != null) {
+            googleSignupButton.setDisable(true);
+            googleSignupButton.setText("🔵  Connecting to Google…");
+        }
+
+        googleAuthHandler.handleGoogleLogin(
+                // Existing user → just redirect to their profile (they already have an account)
+                user -> {
+                    if (googleSignupButton != null) {
+                        googleSignupButton.setDisable(false);
+                        googleSignupButton.setText("🔵  Sign up with Google");
+                    }
+                    showSuccessAlert("Existing account",
+                            "You already have a UniEarn account with this Google address.\n"
+                                    + "You will be redirected to your profile.");
+                    // Navigate to login
+                    redirectToLogin();
+                },
+                // New user → pre-fill the current signup form
+                partialUser -> {
+                    if (googleSignupButton != null) {
+                        googleSignupButton.setDisable(false);
+                        googleSignupButton.setText("🔵  Sign up with Google");
+                    }
+                    prefillFromGoogle(partialUser);
+                },
+                errorMsg -> {
+                    if (googleSignupButton != null) {
+                        googleSignupButton.setDisable(false);
+                        googleSignupButton.setText("🔵  Sign up with Google");
+                    }
+                    showErrorAlert("Google connection failed", errorMsg);
+                }
+        );
+    }
+
     @FXML
     private void handleLoginRedirect() { redirectToLogin(); }
 
@@ -471,6 +641,8 @@ public class SignupController {
             ((Stage) signupButton.getScene().getWindow()).close();
         }
     }
+
+    // ── Alert / error helpers ─────────────────────────────────────────────
 
     private void showError(Label errorLabel, String message) {
         errorLabel.setText(message);

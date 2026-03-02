@@ -26,7 +26,7 @@ public class UserService implements IUser<User> {
         ps.setString(1, user.getName());
         ps.setString(2, user.getEmail());
 
-        // HASH PASSWORD BEFORE STORING
+        // hash pass before storing
         String hashedPassword = PasswordUtil.hashPassword(user.getPassword());
         ps.setString(3, hashedPassword);
 
@@ -56,8 +56,7 @@ public class UserService implements IUser<User> {
             ps.setString(1, user.getName());
             ps.setString(2, user.getEmail());
 
-            // HASH PASSWORD ONLY IF IT'S NOT ALREADY HASHED
-            // (When updating profile, password might already be hashed)
+            // if not yet hashed -> hash it
             String password = user.getPassword();
             if (!PasswordUtil.isHashed(password)) {
                 password = PasswordUtil.hashPassword(password);
@@ -81,13 +80,7 @@ public class UserService implements IUser<User> {
         }
     }
 
-    // Update only password (useful for password reset/change)
-    /**
-     * Update user's password (will be automatically hashed)
-     * @param userId The user ID
-     * @param newPassword The new plain text password
-     * @throws SQLException if database error occurs
-     */
+    // Update only password (when reset/change)
     public void updatePassword(int userId, String newPassword) throws SQLException {
         String sql = "UPDATE user SET password=? WHERE idUser=?";
 
@@ -148,7 +141,7 @@ public class UserService implements IUser<User> {
                 u.setIdUser(rs.getInt("idUser"));
                 u.setName(rs.getString("name"));
                 u.setEmail(rs.getString("email"));
-                u.setPassword(rs.getString("password")); // This will be hashed
+                u.setPassword(rs.getString("password"));
                 u.setRole(UserRole.valueOf(rs.getString("role")));
                 u.setProfilePicturePath(rs.getString("profilePicturePath"));
                 u.setActivated(rs.getBoolean("activated"));
@@ -162,11 +155,7 @@ public class UserService implements IUser<User> {
         return null;
     }
 
-    /**
-     * Check if an email address is already registered in the system
-     * @param email The email address to check
-     * @return true if email exists, false otherwise
-     */
+
     public boolean emailExists(String email) {
         String sql = "SELECT COUNT(*) FROM user WHERE email = ?";
 
@@ -197,11 +186,7 @@ public class UserService implements IUser<User> {
         return false;
     }
 
-    /**
-     * Get a user by their email address
-     * @param email The email address to search for
-     * @return User object if found, null otherwise
-     */
+
     public User getUserByEmail(String email) {
         String sql = "SELECT * FROM user WHERE email = ?";
 
@@ -230,6 +215,7 @@ public class UserService implements IUser<User> {
         return null;
     }
 
+    //without admin
     @Override
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
@@ -259,6 +245,7 @@ public class UserService implements IUser<User> {
         return users;
     }
 
+    // with admin
     public List<User> getAllUsersIncludingAdmins() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM user";
@@ -287,6 +274,7 @@ public class UserService implements IUser<User> {
         return users;
     }
 
+    // all active + without admin
     public List<User> getAllActiveUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM user WHERE activated=true AND role != 'ADMIN'";
@@ -315,6 +303,7 @@ public class UserService implements IUser<User> {
         return users;
     }
 
+
     @Override
     public User authenticateUser(String email, String password) {
         String sql = "SELECT * FROM user WHERE email = ? AND activated=true";
@@ -328,13 +317,13 @@ public class UserService implements IUser<User> {
             if (rs.next()) {
                 String storedHashedPassword = rs.getString("password");
 
-                // USE BCRYPT TO VERIFY PASSWORD
+                // using bycrypt to verify password
                 if (PasswordUtil.verifyPassword(password, storedHashedPassword)) {
                     User u = new User();
                     u.setIdUser(rs.getInt("idUser"));
                     u.setName(rs.getString("name"));
                     u.setEmail(rs.getString("email"));
-                    u.setPassword(rs.getString("password")); // Keep hashed password
+                    u.setPassword(rs.getString("password"));
                     u.setRole(UserRole.valueOf(rs.getString("role")));
                     u.setProfilePicturePath(rs.getString("profilePicturePath"));
                     u.setActivated(rs.getBoolean("activated"));
@@ -384,20 +373,21 @@ public class UserService implements IUser<User> {
     }
 
 
-//    Email reset pass
-public String generateResetToken(String email) {
-    // Check user exists
-    User user = getUserByEmail(email);
-    if (user == null) return null;
+    //email reset pass
+    public String generateResetToken(String email) {
 
-    // Generate 6-digit code
-    String token = String.format("%06d", new java.util.Random().nextInt(999999));
-    String expiry = LocalDateTime.now().plusMinutes(15).toString();
+        //check user exists
+        User user = getUserByEmail(email);
+        if (user == null) return null;
 
-    resetTokens.put(email.toLowerCase(), new String[]{token, expiry});
-    System.out.println("✓ Reset token generated for: " + email);
-    return token;
-}
+        // Generate 6-digit code
+        String token = String.format("%06d", new java.util.Random().nextInt(999999));
+        String expiry = LocalDateTime.now().plusMinutes(15).toString();
+
+        resetTokens.put(email.toLowerCase(), new String[]{token, expiry});
+        System.out.println("✓ Reset token generated for: " + email);
+        return token;
+    }
 
     public boolean validateResetToken(String email, String token) {
         String[] data = resetTokens.get(email.toLowerCase());
@@ -416,6 +406,7 @@ public String generateResetToken(String email) {
     }
 
     public void clearResetToken(String email) {
+
         resetTokens.remove(email.toLowerCase());
     }
 }

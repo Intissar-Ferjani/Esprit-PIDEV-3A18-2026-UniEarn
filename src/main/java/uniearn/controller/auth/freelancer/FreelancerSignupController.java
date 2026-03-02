@@ -54,10 +54,10 @@ public class FreelancerSignupController {
     @FXML private Label            experienceError;
     @FXML private Button           uploadCvButton;
     @FXML private Label            cvFileLabel;
-    @FXML private Label            cvError;           // managed=true always in FXML
+    @FXML private Label            cvError;
     @FXML private Button           generateBioButton;
     @FXML private Label            aiStatusLabel;
-    @FXML private Node             bioSpinnerLabel;   // Label (braille) or FontIcon — both work
+    @FXML private Node             bioSpinnerLabel;
 
     private final FreelancerService freelancerService = new FreelancerService();
     private final SkillsApiService  skillsApiService  = new SkillsApiService();
@@ -70,12 +70,8 @@ public class FreelancerSignupController {
     private String savedCvPath;
     private File   stagedPhotoFile = null;
 
-    // Guard against double-submit (double-click / rapid re-click)
     private volatile boolean submitting = false;
 
-    // Braille spinner frames — no external dependency needed for the animation itself
-    private static final String[] SPINNER_FRAMES =
-            {"⠋","⠙","⠹","⠸","⠼","⠴","⠦","⠧","⠇","⠏"};
     private Thread           spinnerThread;
     private volatile boolean spinning = false;
 
@@ -89,7 +85,6 @@ public class FreelancerSignupController {
         if (generateBioButton != null) generateBioButton.setDisable(true);
         if (aiStatusLabel     != null) { aiStatusLabel.setVisible(false); aiStatusLabel.setManaged(false); }
 
-        // cvError must always occupy its layout slot so errors don't cause jarring jumps
         if (cvError != null) { cvError.setVisible(false); cvError.setManaged(true); cvError.setText(""); }
 
         hideBioSpinner();
@@ -198,14 +193,14 @@ public class FreelancerSignupController {
     private void showSuggestions() { skillSuggestionsView.setVisible(true);  skillSuggestionsView.setManaged(true);  }
     private void hideSuggestions()  { skillSuggestionsView.setVisible(false); skillSuggestionsView.setManaged(false); }
 
-    // ─── CV Upload ── PDF + DOC/DOCX ─────────────────────────────────────────
+    // ─── CV Upload ───────────────────────────────────────────
 
     @FXML
     private void handleUploadCv() {
         FileChooser fc = new FileChooser();
         fc.setTitle("Upload Your CV");
         fc.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Document Files", "*.pdf", "*.doc", "*.docx"),
+                new FileChooser.ExtensionFilter("Document Files", "*.pdf"),
                 new FileChooser.ExtensionFilter("All Files", "*.*")
         );
 
@@ -217,8 +212,8 @@ public class FreelancerSignupController {
         }
 
         String fname = selectedCvFile.getName().toLowerCase();
-        if (!fname.endsWith(".pdf") && !fname.endsWith(".doc") && !fname.endsWith(".docx")) {
-            showCvError("Please select a PDF, DOC, or DOCX file."); selectedCvFile = null; return;
+        if (!fname.endsWith(".pdf")) {
+            showCvError("Please select a PDF."); selectedCvFile = null; return;
         }
 
         try {
@@ -243,7 +238,7 @@ public class FreelancerSignupController {
 
         String fname = selectedCvFile.getName().toLowerCase();
         if (fname.endsWith(".doc")) {
-            setAiStatus("⚠ .doc format not supported for AI — please use PDF or DOCX", false);
+            setAiStatus("⚠ .doc format not supported for AI — please use PDF", false);
             return;
         }
 
@@ -304,26 +299,11 @@ public class FreelancerSignupController {
         bioSpinnerLabel.setVisible(true);
         bioSpinnerLabel.setManaged(true);
 
-        if (bioSpinnerLabel instanceof javafx.scene.control.Label lbl) {
-            // Braille text animation — no FontAwesome needed
-            spinnerThread = new Thread(() -> {
-                int i = 0;
-                while (spinning) {
-                    final String frame = SPINNER_FRAMES[i++ % SPINNER_FRAMES.length];
-                    Platform.runLater(() -> lbl.setText(frame));
-                    try { Thread.sleep(100); } catch (InterruptedException e) { break; }
-                }
-            });
-            spinnerThread.setDaemon(true);
-            spinnerThread.start();
-        } else {
-            // FontIcon — use a RotateTransition instead of text frames
-            rotateTransition = new RotateTransition(Duration.millis(800), bioSpinnerLabel);
-            rotateTransition.setByAngle(360);
-            rotateTransition.setCycleCount(javafx.animation.Animation.INDEFINITE);
-            rotateTransition.setInterpolator(javafx.animation.Interpolator.LINEAR);
-            rotateTransition.play();
-        }
+        rotateTransition = new RotateTransition(Duration.millis(800), bioSpinnerLabel);
+        rotateTransition.setByAngle(360);
+        rotateTransition.setCycleCount(javafx.animation.Animation.INDEFINITE);
+        rotateTransition.setInterpolator(javafx.animation.Interpolator.LINEAR);
+        rotateTransition.play();
     }
 
     private void stopBioSpinner() {
@@ -337,7 +317,6 @@ public class FreelancerSignupController {
         if (bioSpinnerLabel == null) return;
         bioSpinnerLabel.setVisible(false);
         bioSpinnerLabel.setManaged(false);
-        // Clear text only if it's a Label (FontIcon has no setText)
         if (bioSpinnerLabel instanceof javafx.scene.control.Label lbl) lbl.setText("");
     }
 
@@ -354,7 +333,7 @@ public class FreelancerSignupController {
         if (cvError == null) return;
         cvError.setText("");
         cvError.setVisible(false);
-        cvError.setManaged(true); // keep managed so layout stays stable
+        cvError.setManaged(true);
     }
 
     private void setAiStatus(String message, boolean positive) {
@@ -385,8 +364,6 @@ public class FreelancerSignupController {
         }
         System.out.println("✓ Freelancer signup step 2 initialized for: " + user.getName());
     }
-
-    public void setStagedPhotoFile(File file) { this.stagedPhotoFile = file; }
 
     public void restoreFreelancerData(String hourlyRate, String skills, String bio, String experience) {
         if (hourlyRate != null && !hourlyRate.isEmpty())  hourlyRateField.setText(hourlyRate);
@@ -434,7 +411,7 @@ public class FreelancerSignupController {
 
     @FXML
     private void handleNext() {
-        // Immediately block any second call — double-click protection
+        // prevents double-click
         if (submitting) return;
         submitting = true;
         nextButton.setDisable(true);

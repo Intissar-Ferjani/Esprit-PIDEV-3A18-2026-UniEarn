@@ -92,7 +92,6 @@ public class ClientSignupController {
 
     public void setUserData(User user) {
         this.basicUserData = user;
-        // If SignupController stored a photo path in the user object, stage it here
         if (user.getProfilePicturePath() != null) {
             File f = new File(user.getProfilePicturePath());
             if (f.exists()) this.stagedPhotoFile = f;
@@ -222,10 +221,8 @@ public class ClientSignupController {
             client.setRating(0.0);
 
             clientService.addClient(client);
-            // idUser is set on the object by addClient → super.addUser()
-            int userId = client.getIdUser();
 
-            // ── Save profile photo now that we have a real userId ──
+            int userId = client.getIdUser();
             if (userId > 0) {
                 saveAndLinkPhoto(userId);
             }
@@ -248,10 +245,7 @@ public class ClientSignupController {
         }
     }
 
-    /**
-     * Copies the pre-selected profile photo to uploads/profiles and updates the DB.
-     * Called only after the user row exists and userId is known.
-     */
+
     private void saveAndLinkPhoto(int userId) {
         if (stagedPhotoFile == null || !stagedPhotoFile.exists()) return;
         try {

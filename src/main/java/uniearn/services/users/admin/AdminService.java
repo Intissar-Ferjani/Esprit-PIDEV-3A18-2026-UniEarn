@@ -1,4 +1,4 @@
-package uniearn.services.admin;
+package uniearn.services.users.admin;
 
 import uniearn.database.MyConnection;
 import uniearn.model.entities.users.admin.Admin;

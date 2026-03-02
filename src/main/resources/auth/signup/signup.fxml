@@ -6,24 +6,20 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="750.0" styleClass="root" stylesheets="@../auth.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.auth.user.SignupController">
+<AnchorPane prefHeight="600.0" prefWidth="750.0" styleClass="root" stylesheets="@../auth.css"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="uniearn.controller.auth.user.SignupController">
 
     <!-- Left Panel - Branding -->
     <VBox alignment="CENTER" prefHeight="600.0" prefWidth="300.0" styleClass="left-panel"
           AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
         <children>
             <Label styleClass="brand-title" text="UniEarn">
-                <font>
-                    <Font name="System Bold" size="48.0" />
-                </font>
+                <font><Font name="System Bold" size="48.0" /></font>
             </Label>
             <Label styleClass="brand-subtitle" text="Join our community today">
-                <font>
-                    <Font size="18.0" />
-                </font>
-                <VBox.margin>
-                    <Insets top="10.0" />
-                </VBox.margin>
+                <font><Font size="18.0" /></font>
+                <VBox.margin><Insets top="10.0" /></VBox.margin>
             </Label>
         </children>
     </VBox>
@@ -31,9 +27,8 @@
     <!-- Right Panel - Scrollable Signup Form -->
     <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
                 style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;"
-                AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"
-                AnchorPane.leftAnchor="300.0">
-
+                AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="300.0">
         <content>
             <VBox alignment="CENTER" prefWidth="450.0" styleClass="form-panel"
                   style="-fx-min-height: 600px;">
@@ -44,125 +39,89 @@
 
                     <!-- Logo -->
                     <ImageView fitHeight="80.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
-                        <image>
-                            <Image url="@../../images/logoUniEarn.png" />
-                        </image>
-                        <VBox.margin>
-                            <Insets bottom="10.0" />
-                        </VBox.margin>
+                        <image><Image url="@../../images/logoUniEarn.png" /></image>
+                        <VBox.margin><Insets bottom="10.0" /></VBox.margin>
                     </ImageView>
 
                     <!-- Form Title -->
                     <Label styleClass="form-title" text="Create Account">
-                        <font>
-                            <Font name="System Bold" size="28.0" />
-                        </font>
-                        <VBox.margin>
-                            <Insets bottom="5.0" />
-                        </VBox.margin>
+                        <font><Font name="System Bold" size="28.0" /></font>
+                        <VBox.margin><Insets bottom="5.0" /></VBox.margin>
                     </Label>
-
                     <Label styleClass="form-subtitle" text="Sign up to get started">
-                        <font>
-                            <Font size="13.0" />
-                        </font>
-                        <VBox.margin>
-                            <Insets bottom="20.0" />
-                        </VBox.margin>
+                        <font><Font size="13.0" /></font>
+                        <VBox.margin><Insets bottom="20.0" /></VBox.margin>
                     </Label>
 
-                    <!-- Optional Profile Picture Upload -->
+                    <!-- Profile Picture Upload -->
                     <VBox alignment="CENTER" spacing="4.0">
                         <children>
                             <StackPane maxWidth="120.0" maxHeight="120.0">
-                                <ImageView fx:id="profileImageView" fitHeight="120.0" fitWidth="120.0" preserveRatio="true">
-                                    <image>
-                                        <Image url="@../../images/default-avatar.jpg" />
-                                    </image>
+                                <ImageView fx:id="profileImageView" fitHeight="120.0" fitWidth="120.0"
+                                           preserveRatio="true">
+                                    <image><Image url="@../../images/default-avatar.jpg" /></image>
                                 </ImageView>
-                                <!-- Camera overlay button -->
                                 <Button fx:id="changePhotoButton" onAction="#handleChangePhoto" text="📷"
                                         style="-fx-background-color: rgba(0,0,0,0.55); -fx-text-fill: white;
                                                -fx-font-size: 14px; -fx-padding: 5 7; -fx-cursor: hand;
                                                -fx-background-radius: 50;"
                                         StackPane.alignment="BOTTOM_RIGHT">
-                                    <tooltip>
-                                        <Tooltip text="Upload profile picture" />
-                                    </tooltip>
-                                    <StackPane.margin>
-                                        <Insets bottom="2.0" right="2.0" />
-                                    </StackPane.margin>
+                                    <tooltip><Tooltip text="Upload profile picture" /></tooltip>
+                                    <StackPane.margin><Insets bottom="2.0" right="2.0" /></StackPane.margin>
                                 </Button>
                             </StackPane>
                             <Label text="Profile photo" styleClass="form-subtitle">
-                                <font>
-                                    <Font size="10.5" />
-                                </font>
+                                <font><Font size="10.5" /></font>
                             </Label>
                         </children>
-                        <VBox.margin>
-                            <Insets bottom="18.0" />
-                        </VBox.margin>
+                        <VBox.margin><Insets bottom="18.0" /></VBox.margin>
                     </VBox>
 
                     <!-- Name Field -->
                     <VBox spacing="6.0">
                         <children>
                             <Label styleClass="field-label" text="Full Name">
-                                <font>
-                                    <Font name="System Bold" size="12.0" />
-                                </font>
+                                <font><Font name="System Bold" size="12.0" /></font>
                             </Label>
-                            <TextField fx:id="nameField" promptText="Enter your full name" styleClass="custom-field">
-                                <font>
-                                    <Font size="13.0" />
-                                </font>
+                            <TextField fx:id="nameField" promptText="Enter your full name"
+                                       styleClass="custom-field">
+                                <font><Font size="13.0" /></font>
                             </TextField>
                             <Label fx:id="nameError" styleClass="error-label" visible="false" />
                         </children>
-                        <VBox.margin>
-                            <Insets bottom="12.0" />
-                        </VBox.margin>
+                        <VBox.margin><Insets bottom="12.0" /></VBox.margin>
                     </VBox>
 
                     <!-- Email Field -->
                     <VBox spacing="6.0">
                         <children>
                             <Label styleClass="field-label" text="Email Address">
-                                <font>
-                                    <Font name="System Bold" size="12.0" />
-                                </font>
+                                <font><Font name="System Bold" size="12.0" /></font>
                             </Label>
-                            <TextField fx:id="emailField" promptText="Enter your email" styleClass="custom-field">
-                                <font>
-                                    <Font size="13.0" />
-                                </font>
+                            <TextField fx:id="emailField" promptText="Enter your email"
+                                       styleClass="custom-field">
+                                <font><Font size="13.0" /></font>
                             </TextField>
                             <Label fx:id="emailError" styleClass="error-label" visible="false" />
                         </children>
-                        <VBox.margin>
-                            <Insets bottom="12.0" />
-                        </VBox.margin>
+                        <VBox.margin><Insets bottom="12.0" /></VBox.margin>
                     </VBox>
 
                     <!-- Password Field with Show/Hide + Generate -->
-                    <VBox spacing="6.0">
+                    <VBox fx:id="passwordSection" spacing="6.0">
                         <children>
                             <HBox alignment="CENTER_LEFT" spacing="8.0">
                                 <children>
                                     <Label styleClass="field-label" text="Password" HBox.hgrow="ALWAYS">
-                                        <font>
-                                            <Font name="System Bold" size="12.0" />
-                                        </font>
+                                        <font><Font name="System Bold" size="12.0" /></font>
                                     </Label>
-                                    <Button fx:id="generatePasswordButton" onAction="#handleGeneratePassword"
+                                    <Button fx:id="generatePasswordButton"
+                                            onAction="#handleGeneratePassword"
                                             text="🎲 Generate"
                                             style="-fx-background-color: #4CAF50; -fx-text-fill: white;
                                                    -fx-font-size: 11px; -fx-padding: 4 10; -fx-cursor: hand;
                                                    -fx-background-radius: 4;">
-                                        <tooltip>
-                                            <Tooltip text="Generate a secure random password" />
-                                        </tooltip>
+                                        <tooltip><Tooltip text="Generate a secure random password" /></tooltip>
                                     </Button>
                                 </children>
                             </HBox>
@@ -170,135 +129,145 @@
                                 <children>
                                     <PasswordField fx:id="passwordField" promptText="Create a password"
                                                    styleClass="custom-field" HBox.hgrow="ALWAYS">
-                                        <font>
-                                            <Font size="13.0" />
-                                        </font>
+                                        <font><Font size="13.0" /></font>
                                     </PasswordField>
-                                    <TextField fx:id="passwordFieldVisible" managed="false" promptText="Create a password"
+                                    <TextField fx:id="passwordFieldVisible" managed="false"
+                                               promptText="Create a password"
                                                styleClass="custom-field" visible="false" HBox.hgrow="ALWAYS">
-                                        <font>
-                                            <Font size="13.0" />
-                                        </font>
+                                        <font><Font size="13.0" /></font>
                                     </TextField>
-                                    <Button fx:id="togglePasswordButton" onAction="#handleTogglePassword" text="👁"
+                                    <Button fx:id="togglePasswordButton" onAction="#handleTogglePassword"
+                                            text="👁"
                                             style="-fx-background-color: #f0f0f0; -fx-font-size: 16px;
                                                    -fx-padding: 8 12; -fx-cursor: hand; -fx-background-radius: 4;">
-                                        <tooltip>
-                                            <Tooltip text="Show/Hide password" />
-                                        </tooltip>
+                                        <tooltip><Tooltip text="Show/Hide password" /></tooltip>
                                     </Button>
                                 </children>
                             </HBox>
                             <Label fx:id="passwordError" styleClass="error-label" visible="false" />
                         </children>
-                        <VBox.margin>
-                            <Insets bottom="12.0" />
-                        </VBox.margin>
+                        <VBox.margin><Insets bottom="12.0" /></VBox.margin>
                     </VBox>
 
                     <!-- Confirm Password Field with Show/Hide -->
-                    <VBox spacing="6.0">
+                    <VBox fx:id="confirmPasswordSection" spacing="6.0">
                         <children>
                             <Label styleClass="field-label" text="Confirm Password">
-                                <font>
-                                    <Font name="System Bold" size="12.0" />
-                                </font>
+                                <font><Font name="System Bold" size="12.0" /></font>
                             </Label>
                             <HBox spacing="4.0">
                                 <children>
-                                    <PasswordField fx:id="confirmPasswordField" promptText="Re-enter your password"
+                                    <PasswordField fx:id="confirmPasswordField"
+                                                   promptText="Re-enter your password"
                                                    styleClass="custom-field" HBox.hgrow="ALWAYS">
-                                        <font>
-                                            <Font size="13.0" />
-                                        </font>
+                                        <font><Font size="13.0" /></font>
                                     </PasswordField>
                                     <TextField fx:id="confirmPasswordFieldVisible" managed="false"
-                                               promptText="Re-enter your password" styleClass="custom-field"
-                                               visible="false" HBox.hgrow="ALWAYS">
-                                        <font>
-                                            <Font size="13.0" />
-                                        </font>
+                                               promptText="Re-enter your password"
+                                               styleClass="custom-field" visible="false" HBox.hgrow="ALWAYS">
+                                        <font><Font size="13.0" /></font>
                                     </TextField>
-                                    <Button fx:id="toggleConfirmPasswordButton" onAction="#handleToggleConfirmPassword"
-                                            text="👁"
+                                    <Button fx:id="toggleConfirmPasswordButton"
+                                            onAction="#handleToggleConfirmPassword" text="👁"
                                             style="-fx-background-color: #f0f0f0; -fx-font-size: 16px;
                                                    -fx-padding: 8 12; -fx-cursor: hand; -fx-background-radius: 4;">
-                                        <tooltip>
-                                            <Tooltip text="Show/Hide confirm password" />
-                                        </tooltip>
+                                        <tooltip><Tooltip text="Show/Hide confirm password" /></tooltip>
                                     </Button>
                                 </children>
                             </HBox>
                             <Label fx:id="confirmPasswordError" styleClass="error-label" visible="false" />
                         </children>
-                        <VBox.margin>
-                            <Insets bottom="12.0" />
-                        </VBox.margin>
+                        <VBox.margin><Insets bottom="12.0" /></VBox.margin>
                     </VBox>
 
                     <!-- Role Selection -->
                     <VBox spacing="6.0">
                         <children>
                             <Label styleClass="field-label" text="I am a">
-                                <font>
-                                    <Font name="System Bold" size="12.0" />
-                                </font>
+                                <font><Font name="System Bold" size="12.0" /></font>
                             </Label>
-                            <ComboBox fx:id="roleComboBox" prefWidth="370.0" promptText="Select your role"
-                                      styleClass="custom-combo" />
+                            <ComboBox fx:id="roleComboBox" prefWidth="370.0"
+                                      promptText="Select your role" styleClass="custom-combo" />
                             <Label fx:id="roleError" styleClass="error-label" visible="false" />
                         </children>
-                        <VBox.margin>
-                            <Insets bottom="12.0" />
-                        </VBox.margin>
+                        <VBox.margin><Insets bottom="12.0" /></VBox.margin>
                     </VBox>
 
                     <!-- Terms Checkbox -->
-                    <HBox spacing="8.0">
+                    <!--
+                        CHANGED: the terms text is now split into a plain label + a Hyperlink.
+                        The Hyperlink fires handleViewTerms() to open the Terms & Conditions page.
+                        The CheckBox still controls whether the user has accepted.
+                    -->
+                    <HBox spacing="8.0" alignment="CENTER_LEFT">
                         <children>
                             <CheckBox fx:id="termsCheckbox" />
-                            <Label styleClass="terms-label"
-                                   text="I agree to the Terms of Service and Privacy Policy"
-                                   wrapText="true">
-                                <font>
-                                    <Font size="12.0" />
-                                </font>
+                            <Label styleClass="terms-label" text="I agree to the">
+                                <font><Font size="12.0" /></font>
                             </Label>
+                            <Hyperlink onAction="#handleViewTerms"
+                                       text="Terms of Service and Privacy Policy"
+                                       styleClass="login-link">
+                                <font><Font name="System Bold" size="12.0" /></font>
+                            </Hyperlink>
                         </children>
-                        <VBox.margin>
-                            <Insets bottom="4.0" />
-                        </VBox.margin>
+                        <VBox.margin><Insets bottom="4.0" /></VBox.margin>
                     </HBox>
                     <Label fx:id="termsError" styleClass="error-label" visible="false">
-                        <VBox.margin>
-                            <Insets bottom="10.0" />
-                        </VBox.margin>
+                        <VBox.margin><Insets bottom="10.0" /></VBox.margin>
                     </Label>
 
                     <!-- Sign Up Button -->
                     <Button fx:id="signupButton" maxWidth="Infinity" onAction="#handleSignup"
                             prefHeight="42.0" styleClass="signup-button" text="Sign Up">
-                        <font>
-                            <Font name="System Bold" size="14.0" />
-                        </font>
-                        <VBox.margin>
-                            <Insets bottom="15.0" />
-                        </VBox.margin>
+                        <font><Font name="System Bold" size="14.0" /></font>
+                        <VBox.margin><Insets bottom="15.0" /></VBox.margin>
+                    </Button>
+
+                    <!-- OR divider -->
+                    <HBox alignment="CENTER" spacing="10.0">
+                        <VBox.margin><Insets top="4.0" bottom="16.0" /></VBox.margin>
+                        <children>
+                            <Separator HBox.hgrow="ALWAYS" />
+                            <Label text="or continue with"
+                                   style="-fx-text-fill:#94a3b8; -fx-font-size:11px;" />
+                            <Separator HBox.hgrow="ALWAYS" />
+                        </children>
+                    </HBox>
+
+                    <!-- Google Signup Button -->
+                    <Button fx:id="googleSignupButton" onAction="#handleGoogleSignup"
+                            maxWidth="Infinity" prefHeight="42.0"
+                            text="Signup with Google"
+                            contentDisplay="LEFT" graphicTextGap="10.0"
+                            style="-fx-background-color: white;
+                                   -fx-border-color: #dadce0;
+                                   -fx-border-width: 1.5px;
+                                   -fx-border-radius: 6px;
+                                   -fx-background-radius: 6px;
+                                   -fx-text-fill: #3c4043;
+                                   -fx-font-size: 13px;
+                                   -fx-font-weight: bold;
+                                   -fx-cursor: hand;">
+                        <graphic>
+                            <ImageView fitHeight="20.0" fitWidth="20.0" preserveRatio="true">
+                                <image>
+                                    <Image url="@../../images/google__logo.png" />
+                                </image>
+                            </ImageView>
+                        </graphic>
+                        <VBox.margin><Insets bottom="4.0" /></VBox.margin>
                     </Button>
 
                     <!-- Login Link -->
                     <HBox alignment="CENTER" spacing="5.0">
                         <children>
                             <Label styleClass="login-label" text="Already have an account?">
-                                <font>
-                                    <Font size="12.0" />
-                                </font>
+                                <font><Font size="12.0" /></font>
                             </Label>
                             <Hyperlink fx:id="loginLink" onAction="#handleLoginRedirect"
                                        styleClass="login-link" text="Log In">
-                                <font>
-                                    <Font name="System Bold" size="12.0" />
-                                </font>
+                                <font><Font name="System Bold" size="12.0" /></font>
                             </Hyperlink>
                         </children>
                     </HBox>

@@ -19,7 +19,7 @@ public class SkillsApiService {
     private final HttpClient httpClient = HttpClient.newHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
 
-    // ✅ Fallback list in case API is unavailable
+    // Fallback list in case API is unavailable
     private static final List<String> FALLBACK_SKILLS = List.of(
             "Java", "Python", "JavaScript", "TypeScript", "C++", "C#",
             "React", "Angular", "Vue.js", "Node.js", "Spring Boot", "Django",
@@ -66,7 +66,7 @@ public class SkillsApiService {
             for (JsonNode item : items) {
                 String name = null;
 
-                // ✅ Try display_name first, fall back to name, skip if both null
+                // Try display_name first, fall back to name, skip if both null
                 if (item.get("display_name") != null && !item.get("display_name").isNull()) {
                     name = item.get("display_name").asText();
                 } else if (item.get("name") != null && !item.get("name").isNull()) {

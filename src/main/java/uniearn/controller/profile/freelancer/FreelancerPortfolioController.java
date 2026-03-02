@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.kordamp.ikonli.javafx.FontIcon;
 import uniearn.model.entities.users.freelancer.Freelancer;
 import uniearn.model.entities.users.freelancer.Portfolio;
 import uniearn.model.entities.users.freelancer.PortfolioItem;
@@ -38,7 +39,6 @@ public class FreelancerPortfolioController {
     private final PortfolioItemService portfolioItemService = new PortfolioItemService();
     private Freelancer currentFreelancer;
     private Portfolio currentPortfolio;
-
     private Stage currentStage;
 
     @FXML
@@ -56,18 +56,17 @@ public class FreelancerPortfolioController {
             portfolioTitleLabel.setText(freelancer.getName() + "'s Portfolio");
         }
 
-        // Populate portfolio info
         if (portfolioInfoTitle != null && portfolio != null) {
             portfolioInfoTitle.setText(portfolio.getTitle());
         }
 
         if (portfolioDescriptionLabel != null && portfolio != null) {
             String desc = portfolio.getDescription();
-            portfolioDescriptionLabel.setText(desc != null && !desc.isEmpty() ? desc : "Showcase your best work to attract clients");
+            portfolioDescriptionLabel.setText(desc != null && !desc.isEmpty()
+                    ? desc : "Showcase your best work to attract clients");
         }
 
         if (portfolioCreatedDate != null && portfolio != null && portfolio.getCreated_At() != null) {
-            // Format date
             java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("MMM dd, yyyy");
             portfolioCreatedDate.setText(sdf.format(portfolio.getCreated_At()));
         }
@@ -76,64 +75,44 @@ public class FreelancerPortfolioController {
     }
 
     private void captureStageReference() {
-        if (currentStage == null) {
-            if (backButton != null && backButton.getScene() != null) {
-                currentStage = (Stage) backButton.getScene().getWindow();
-            } else if (portfolioTitleLabel != null && portfolioTitleLabel.getScene() != null) {
-                currentStage = (Stage) portfolioTitleLabel.getScene().getWindow();
-            } else if (addPortfolioButton != null && addPortfolioButton.getScene() != null) {
-                currentStage = (Stage) addPortfolioButton.getScene().getWindow();
-            }
-        }
+        if (currentStage != null) return;
+        if (backButton != null && backButton.getScene() != null)
+            currentStage = (Stage) backButton.getScene().getWindow();
+        else if (portfolioTitleLabel != null && portfolioTitleLabel.getScene() != null)
+            currentStage = (Stage) portfolioTitleLabel.getScene().getWindow();
+        else if (addPortfolioButton != null && addPortfolioButton.getScene() != null)
+            currentStage = (Stage) addPortfolioButton.getScene().getWindow();
     }
 
     private Stage getStage() {
-        if (currentStage != null) {
-            return currentStage;
-        }
-
-        // Try to get from various UI components
-        if (backButton != null && backButton.getScene() != null) {
-            currentStage = (Stage) backButton.getScene().getWindow();
-            return currentStage;
-        }
-        if (portfolioTitleLabel != null && portfolioTitleLabel.getScene() != null) {
-            currentStage = (Stage) portfolioTitleLabel.getScene().getWindow();
-            return currentStage;
-        }
-        if (addPortfolioButton != null && addPortfolioButton.getScene() != null) {
-            currentStage = (Stage) addPortfolioButton.getScene().getWindow();
-            return currentStage;
-        }
-        if (portfolioItemsContainer != null && portfolioItemsContainer.getScene() != null) {
-            currentStage = (Stage) portfolioItemsContainer.getScene().getWindow();
-            return currentStage;
-        }
-
+        if (currentStage != null) return currentStage;
+        if (backButton != null && backButton.getScene() != null)
+            return currentStage = (Stage) backButton.getScene().getWindow();
+        if (portfolioTitleLabel != null && portfolioTitleLabel.getScene() != null)
+            return currentStage = (Stage) portfolioTitleLabel.getScene().getWindow();
+        if (addPortfolioButton != null && addPortfolioButton.getScene() != null)
+            return currentStage = (Stage) addPortfolioButton.getScene().getWindow();
+        if (portfolioItemsContainer != null && portfolioItemsContainer.getScene() != null)
+            return currentStage = (Stage) portfolioItemsContainer.getScene().getWindow();
         return null;
     }
 
     private void loadPortfolio() {
         if (portfolioItemsContainer == null || currentPortfolio == null) return;
-
         portfolioItemsContainer.getChildren().clear();
 
-        List<PortfolioItem> items = portfolioItemService.getPortfolioItemsByPortfolioId(
-                currentPortfolio.getIdPortfolio()
-        );
+        List<PortfolioItem> items = portfolioItemService
+                .getPortfolioItemsByPortfolioId(currentPortfolio.getIdPortfolio());
 
-        // Update item count
-        if (portfolioItemCount != null) {
+        if (portfolioItemCount != null)
             portfolioItemCount.setText(String.valueOf(items.size()));
-        }
 
         if (items.isEmpty()) {
             showEmptyState();
         } else {
             hideEmptyState();
-            for (PortfolioItem item : items) {
+            for (PortfolioItem item : items)
                 portfolioItemsContainer.getChildren().add(createPortfolioItemCard(item));
-            }
         }
     }
 
@@ -151,144 +130,217 @@ public class FreelancerPortfolioController {
         }
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    //  Portfolio Item Card
+    // ─────────────────────────────────────────────────────────────────────────
     private VBox createPortfolioItemCard(PortfolioItem item) {
-        VBox card = new VBox(15);
+
+        // ── Outer card ───────────────────────────────────────────────────────
+        VBox card = new VBox(0);
         card.setStyle(
-                "-fx-background-color: white; " +
-                        "-fx-border-color: #e0e0e0; " +
-                        "-fx-border-width: 1; " +
-                        "-fx-border-radius: 12; " +
-                        "-fx-background-radius: 12; " +
-                        "-fx-padding: 25; " +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);"
+                "-fx-background-color: white;" +
+                        "-fx-background-radius: 14;" +
+                        "-fx-border-radius: 14;" +
+                        "-fx-border-color: #e8ecf0;" +
+                        "-fx-border-width: 1;" +
+                        "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.06), 10, 0, 0, 3);"
         );
 
-        // Header with title and actions
-        HBox header = new HBox(15);
-        header.setAlignment(Pos.CENTER_LEFT);
+        // ── Blue gradient accent strip ────────────────────────────────────────
+        Pane accentBar = new Pane();
+        accentBar.setPrefHeight(4);
+        accentBar.setStyle(
+                "-fx-background-color: linear-gradient(to right, #1565c0, #42a5f5);" +
+                        "-fx-background-radius: 14 14 0 0;"
+        );
 
-        VBox titleSection = new VBox(5);
-        HBox.setHgrow(titleSection, Priority.ALWAYS);
+        // ── Card body ────────────────────────────────────────────────────────
+        VBox body = new VBox(16);
+        body.setPadding(new Insets(22, 26, 24, 26));
 
-        Label title = new Label(item.getTitle());
-        title.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1a1a1a;");
+        // ── Row 1: icon badge + title + action buttons ────────────────────────
+        HBox headerRow = new HBox(14);
+        headerRow.setAlignment(Pos.CENTER_LEFT);
 
-        titleSection.getChildren().add(title);
+        // Blue rounded icon badge — use setIconColor() NOT setStyle() for color
+        StackPane iconBadge = new StackPane();
+        iconBadge.setMinSize(40, 40);
+        iconBadge.setMaxSize(40, 40);
+        iconBadge.setStyle("-fx-background-color: #e8f0fe; -fx-background-radius: 10;");
+        FontIcon projIcon = new FontIcon("fas-code");
+        projIcon.setIconSize(16);
+        projIcon.setIconColor(javafx.scene.paint.Color.web("#1a73e8"));
+        iconBadge.getChildren().add(projIcon);
 
-        // Action buttons
-        HBox actions = new HBox(10);
-        actions.setAlignment(Pos.CENTER_RIGHT);
+        Label titleLbl = new Label(item.getTitle());
+        titleLbl.setStyle(
+                "-fx-font-size: 17px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-text-fill: #1a202c;"
+        );
+        HBox.setHgrow(titleLbl, Priority.ALWAYS);
 
-        Button editBtn = new Button("✏ Edit");
+        // Edit button — icon color via setIconColor()
+        Button editBtn = new Button();
+        FontIcon editIcon = new FontIcon("fas-pencil-alt");
+        editIcon.setIconSize(12);
+        editIcon.setIconColor(javafx.scene.paint.Color.WHITE);
+        Label editLbl = new Label();
+        editLbl.setStyle("-fx-text-fill: white; -fx-font-size: 12px; -fx-background-color: transparent; -fx-padding: 0;");
+        HBox editBox = new HBox(6, editIcon, editLbl);
+        editBox.setAlignment(Pos.CENTER);
+        editBtn.setGraphic(editBox);
         editBtn.setStyle(
-                "-fx-background-color: #1976d2; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-cursor: hand; " +
-                        "-fx-padding: 8 16; " +
-                        "-fx-background-radius: 6; " +
-                        "-fx-font-size: 13px;"
+                "-fx-background-color: #1a73e8;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-padding: 7 16;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-border-color: transparent;"
         );
         editBtn.setOnAction(e -> handleEditPortfolioItem(item));
 
-        Button deleteBtn = new Button("🗑️");
+        // Delete button
+        Button deleteBtn = new Button();
+        FontIcon deleteIcon = new FontIcon("fas-trash-alt");
+        deleteIcon.setIconSize(13);
+        deleteIcon.setIconColor(javafx.scene.paint.Color.web("#c53030"));
+        deleteBtn.setGraphic(deleteIcon);
         deleteBtn.setStyle(
-                "-fx-background-color: #dc3545; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-cursor: hand; " +
-                        "-fx-padding: 8 12; " +
-                        "-fx-background-radius: 6; " +
-                        "-fx-font-size: 13px;"
+                "-fx-background-color: #fff5f5;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-border-color: #fc8181;" +
+                        "-fx-border-width: 1.5;" +
+                        "-fx-border-radius: 8;" +
+                        "-fx-padding: 7 10;" +
+                        "-fx-cursor: hand;"
         );
         deleteBtn.setOnAction(e -> handleDeletePortfolioItem(item));
 
-        actions.getChildren().addAll(editBtn, deleteBtn);
-        header.getChildren().addAll(titleSection, actions);
+        headerRow.getChildren().addAll(iconBadge, titleLbl, editBtn, deleteBtn);
 
-        // Description
-        Label description = new Label(item.getDescription());
-        description.setWrapText(true);
-        description.setStyle("-fx-text-fill: #555; -fx-font-size: 14px; -fx-line-spacing: 4px;");
+        // ── Row 2: description ───────────────────────────────────────────────
+        Label descLbl = new Label(item.getDescription());
+        descLbl.setWrapText(true);
+        descLbl.setStyle(
+                "-fx-text-fill: #4a5568;" +
+                        "-fx-font-size: 13.5px;" +
+                        "-fx-line-spacing: 3px;"
+        );
 
-        // Technologies
-        VBox techSection = new VBox(10);
+        body.getChildren().addAll(headerRow, descLbl);
+
+        // ── Row 3: technologies ──────────────────────────────────────────────
         if (item.getTechnologies() != null && item.getTechnologies().length > 0) {
-            Label techLabel = new Label("Technologies:");
-            techLabel.setStyle("-fx-font-weight: 600; -fx-font-size: 13px; -fx-text-fill: #333;");
+            VBox techBlock = new VBox(8);
+
+            HBox techHeader = new HBox(6);
+            techHeader.setAlignment(Pos.CENTER_LEFT);
+            FontIcon techIcon = new FontIcon("fas-microchip");
+            techIcon.setIconSize(11);
+            techIcon.setIconColor(javafx.scene.paint.Color.web("#718096"));
+            Label techHeading = new Label("Technologies");
+            techHeading.setStyle("-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #718096;");
+            techHeader.getChildren().addAll(techIcon, techHeading);
 
             FlowPane techFlow = new FlowPane();
-            techFlow.setHgap(8);
-            techFlow.setVgap(8);
+            techFlow.setHgap(7);
+            techFlow.setVgap(7);
 
             for (String tech : item.getTechnologies()) {
-                Label techBadge = new Label(tech);
-                techBadge.setStyle(
-                        "-fx-background-color: #e3f2fd; " +
-                                "-fx-text-fill: #1976d2; " +
-                                "-fx-padding: 6 14; " +
-                                "-fx-background-radius: 16; " +
-                                "-fx-font-size: 12px; " +
-                                "-fx-font-weight: 500;"
+                if (tech == null || tech.trim().isEmpty()) continue;
+                Label badge = new Label(tech.trim());
+                badge.setStyle(
+                        "-fx-background-color: #e8f0fe;" +
+                                "-fx-text-fill: #1a73e8;" +
+                                "-fx-padding: 4 12;" +
+                                "-fx-background-radius: 20;" +
+                                "-fx-font-size: 12px;" +
+                                "-fx-font-weight: bold;"
                 );
-                techFlow.getChildren().add(techBadge);
+                techFlow.getChildren().add(badge);
             }
 
-            techSection.getChildren().addAll(techLabel, techFlow);
+            techBlock.getChildren().addAll(techHeader, techFlow);
+            body.getChildren().add(techBlock);
         }
 
-        // Links
-        HBox linksBox = new HBox(15);
-        linksBox.setAlignment(Pos.CENTER_LEFT);
+        // ── Row 4: link chips ────────────────────────────────────────────────
+        boolean hasProject = item.getProjectUrl() != null && !item.getProjectUrl().isEmpty();
+        boolean hasGithub  = item.getGithubUrl()  != null && !item.getGithubUrl().isEmpty();
 
-        if (item.getProjectUrl() != null && !item.getProjectUrl().isEmpty()) {
-            Hyperlink projectLink = new Hyperlink("🔗 View Project");
-            projectLink.setStyle(
-                    "-fx-text-fill: #1976d2; " +
-                            "-fx-font-size: 13px; " +
-                            "-fx-border-color: transparent; " +
-                            "-fx-underline: false; " +
-                            "-fx-font-weight: 500;"
-            );
-            projectLink.setOnAction(e -> {
-                // Open URL in browser
-                try {
-                    java.awt.Desktop.getDesktop().browse(new java.net.URI(item.getProjectUrl()));
-                } catch (Exception ex) {
-                    showErrorAlert("Error", "Could not open URL: " + ex.getMessage());
-                }
-            });
-            linksBox.getChildren().add(projectLink);
+        if (hasProject || hasGithub) {
+            Separator sep = new Separator();
+            sep.setStyle("-fx-opacity: 0.45;");
+            body.getChildren().add(sep);
+
+            HBox linksRow = new HBox(10);
+            linksRow.setAlignment(Pos.CENTER_LEFT);
+
+            if (hasProject) {
+                HBox chip = makeLinkChip("fas-external-link-alt", "View Project",
+                        javafx.scene.paint.Color.web("#1a73e8"), "#e8f0fe");
+                chip.setOnMouseClicked(e -> openUrl(item.getProjectUrl()));
+                linksRow.getChildren().add(chip);
+            }
+            if (hasGithub) {
+                HBox chip = makeLinkChip("fas-code-branch", "GitHub",
+                        javafx.scene.paint.Color.web("#24292e"), "#f0f0f0");
+                chip.setOnMouseClicked(e -> openUrl(item.getGithubUrl()));
+                linksRow.getChildren().add(chip);
+            }
+
+            body.getChildren().add(linksRow);
         }
 
-        if (item.getGithubUrl() != null && !item.getGithubUrl().isEmpty()) {
-            Hyperlink githubLink = new Hyperlink("💻 GitHub");
-            githubLink.setStyle(
-                    "-fx-text-fill: #1976d2; " +
-                            "-fx-font-size: 13px; " +
-                            "-fx-border-color: transparent; " +
-                            "-fx-underline: false; " +
-                            "-fx-font-weight: 500;"
-            );
-            githubLink.setOnAction(e -> {
-                try {
-                    java.awt.Desktop.getDesktop().browse(new java.net.URI(item.getGithubUrl()));
-                } catch (Exception ex) {
-                    showErrorAlert("Error", "Could not open URL: " + ex.getMessage());
-                }
-            });
-            linksBox.getChildren().add(githubLink);
-        }
-
-        card.getChildren().addAll(header, description);
-        if (techSection.getChildren().size() > 0) {
-            card.getChildren().add(techSection);
-        }
-        if (linksBox.getChildren().size() > 0) {
-            card.getChildren().add(linksBox);
-        }
-
+        card.getChildren().addAll(accentBar, body);
         return card;
     }
 
+    private HBox makeLinkChip(String iconLiteral, String labelText,
+                              javafx.scene.paint.Color iconColor, String bgColor) {
+        HBox chip = new HBox(7);
+        chip.setAlignment(Pos.CENTER_LEFT);
+        chip.setStyle(
+                "-fx-background-color: " + bgColor + ";" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-padding: 6 14;" +
+                        "-fx-cursor: hand;"
+        );
+
+        FontIcon icon = new FontIcon(iconLiteral);
+        icon.setIconSize(13);
+        icon.setIconColor(iconColor);   // ← direct Paint, not CSS string
+
+        // Convert Paint to hex for label text-fill
+        String hex = String.format("#%02x%02x%02x",
+                (int)(iconColor.getRed() * 255),
+                (int)(iconColor.getGreen() * 255),
+                (int)(iconColor.getBlue() * 255));
+
+        Label lbl = new Label(labelText);
+        lbl.setStyle(
+                "-fx-text-fill: " + hex + ";" +
+                        "-fx-font-size: 12px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-color: transparent;" +
+                        "-fx-padding: 0;"
+        );
+
+        chip.getChildren().addAll(icon, lbl);
+        return chip;
+    }
+
+    private void openUrl(String url) {
+        try {
+            java.awt.Desktop.getDesktop().browse(new java.net.URI(url));
+        } catch (Exception ex) {
+            showErrorAlert("Error", "Could not open URL: " + ex.getMessage());
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    //  Dialogs
+    // ─────────────────────────────────────────────────────────────────────────
     @FXML
     private void handleAddPortfolio() {
         showPortfolioItemDialog(null);
@@ -308,21 +360,18 @@ public class FreelancerPortfolioController {
         DialogPane dialogPane = new DialogPane();
         dialogPane.setStyle("-fx-background-color: #f5f5f5;");
 
-        // Header
         VBox header = new VBox(5);
         header.setStyle("-fx-background-color: #1976d2; -fx-padding: 20px;");
         Label headerLabel = new Label(isEdit ? "✏ Edit Portfolio Item" : "+ Add Portfolio Item");
         headerLabel.setStyle("-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;");
         header.getChildren().add(headerLabel);
 
-        // Form
         GridPane grid = new GridPane();
         grid.setHgap(15);
         grid.setVgap(15);
         grid.setPadding(new Insets(25, 25, 25, 25));
         grid.setStyle("-fx-background-color: white; -fx-background-radius: 8;");
 
-        // Fields
         TextField titleField = new TextField(isEdit ? existingItem.getTitle() : "");
         titleField.setPromptText("e.g., E-commerce Website");
         titleField.setStyle("-fx-pref-width: 400px; -fx-font-size: 13px; -fx-padding: 10;");
@@ -334,86 +383,72 @@ public class FreelancerPortfolioController {
         descArea.setStyle("-fx-pref-width: 400px; -fx-font-size: 13px;");
 
         TextField techField = new TextField(
-                isEdit && existingItem.getTechnologies() != null ?
-                        String.join(", ", existingItem.getTechnologies()) : ""
-        );
+                isEdit && existingItem.getTechnologies() != null
+                        ? String.join(", ", existingItem.getTechnologies()) : "");
         techField.setPromptText("e.g., Java, Spring Boot, React, PostgreSQL");
         techField.setStyle("-fx-pref-width: 400px; -fx-font-size: 13px; -fx-padding: 10;");
 
-        TextField projectUrlField = new TextField(isEdit && existingItem.getProjectUrl() != null ? existingItem.getProjectUrl() : "");
+        TextField projectUrlField = new TextField(
+                isEdit && existingItem.getProjectUrl() != null ? existingItem.getProjectUrl() : "");
         projectUrlField.setPromptText("https://example.com");
         projectUrlField.setStyle("-fx-pref-width: 400px; -fx-font-size: 13px; -fx-padding: 10;");
 
-        TextField githubUrlField = new TextField(isEdit && existingItem.getGithubUrl() != null ? existingItem.getGithubUrl() : "");
+        TextField githubUrlField = new TextField(
+                isEdit && existingItem.getGithubUrl() != null ? existingItem.getGithubUrl() : "");
         githubUrlField.setPromptText("https://github.com/username/project");
         githubUrlField.setStyle("-fx-pref-width: 400px; -fx-font-size: 13px; -fx-padding: 10;");
 
-        // Add to grid
         int row = 0;
         grid.add(createFormLabel("Project Title *"), 0, row);
         grid.add(titleField, 1, row++);
-
         grid.add(createFormLabel("Description *"), 0, row);
         GridPane.setValignment(createFormLabel("Description *"), VPos.TOP);
         grid.add(descArea, 1, row++);
-
         grid.add(createFormLabel("Technologies"), 0, row);
         grid.add(techField, 1, row++);
-
         grid.add(createFormLabel("Project URL"), 0, row);
         grid.add(projectUrlField, 1, row++);
-
         grid.add(createFormLabel("GitHub URL"), 0, row);
         grid.add(githubUrlField, 1, row++);
 
-        // Assemble dialog
         VBox content = new VBox(0);
         content.getChildren().addAll(header, grid);
         dialogPane.setContent(content);
 
-        // Buttons
         ButtonType saveButton = new ButtonType(isEdit ? "Update" : "Add", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialogPane.getButtonTypes().addAll(saveButton, cancelButton);
 
-        // Style buttons
         dialog.setDialogPane(dialogPane);
         Button saveBtn = (Button) dialogPane.lookupButton(saveButton);
         saveBtn.setStyle("-fx-background-color: #1976d2; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;");
 
-        // Handle result
         dialog.showAndWait().ifPresent(response -> {
             if (response == saveButton) {
-                String title = titleField.getText().trim();
+                String title       = titleField.getText().trim();
                 String description = descArea.getText().trim();
-                String techString = techField.getText().trim();
-                String projectUrl = projectUrlField.getText().trim();
-                String githubUrl = githubUrlField.getText().trim();
+                String techString  = techField.getText().trim();
+                String projectUrl  = projectUrlField.getText().trim();
+                String githubUrl   = githubUrlField.getText().trim();
 
-                // Validation
                 if (title.isEmpty() || description.isEmpty()) {
                     showErrorAlert("Validation Error", "Title and description are required.");
                     return;
                 }
 
-                // Parse technologies
                 String[] technologies = techString.isEmpty() ? new String[0] : techString.split(",");
-                for (int i = 0; i < technologies.length; i++) {
+                for (int i = 0; i < technologies.length; i++)
                     technologies[i] = technologies[i].trim();
-                }
 
                 if (isEdit) {
-                    // Update existing item
                     existingItem.setTitle(title);
                     existingItem.setDescription(description);
                     existingItem.setTechnologies(technologies);
                     existingItem.setProjectUrl(projectUrl.isEmpty() ? null : projectUrl);
                     existingItem.setGithubUrl(githubUrl.isEmpty() ? null : githubUrl);
-
                     portfolioItemService.updatePortfolioItem(currentPortfolio, existingItem.getIdItem(), existingItem);
                     showSuccessAlert("Success", "Portfolio item updated successfully!");
                 } else {
-                    // Create new item
                     PortfolioItem newItem = new PortfolioItem();
                     newItem.setTitle(title);
                     newItem.setDescription(description);
@@ -423,7 +458,6 @@ public class FreelancerPortfolioController {
                     newItem.setImagesUrl(new String[0]);
                     newItem.setCreated_At(new Timestamp(System.currentTimeMillis()));
                     newItem.setIdPortfolio(currentPortfolio.getIdPortfolio());
-
                     portfolioItemService.addPortfolioItem(currentPortfolio, newItem);
                     showSuccessAlert("Success", "Portfolio item added successfully!");
                 }
@@ -452,12 +486,6 @@ public class FreelancerPortfolioController {
         }
     }
 
-    private Label createFormLabel(String text) {
-        Label label = new Label(text);
-        label.setStyle("-fx-font-weight: 600; -fx-font-size: 13px; -fx-text-fill: #333;");
-        return label;
-    }
-
     @FXML
     private void handleEditPortfolioInfo() {
         Dialog<ButtonType> dialog = new Dialog<>();
@@ -467,21 +495,18 @@ public class FreelancerPortfolioController {
         DialogPane dialogPane = new DialogPane();
         dialogPane.setStyle("-fx-background-color: #f5f5f5;");
 
-        // Header
         VBox header = new VBox(5);
         header.setStyle("-fx-background-color: #1976d2; -fx-padding: 20px;");
         Label headerLabel = new Label("✏ Edit Portfolio Information");
         headerLabel.setStyle("-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;");
         header.getChildren().add(headerLabel);
 
-        // Form
         GridPane grid = new GridPane();
         grid.setHgap(15);
         grid.setVgap(15);
         grid.setPadding(new Insets(25, 25, 25, 25));
         grid.setStyle("-fx-background-color: white; -fx-background-radius: 8;");
 
-        // Fields
         TextField titleField = new TextField(currentPortfolio.getTitle());
         titleField.setPromptText("Portfolio Title");
         titleField.setStyle("-fx-pref-width: 400px; -fx-font-size: 13px; -fx-padding: 10;");
@@ -492,21 +517,17 @@ public class FreelancerPortfolioController {
         descArea.setPrefRowCount(4);
         descArea.setStyle("-fx-pref-width: 400px; -fx-font-size: 13px;");
 
-        // Add to grid
         int row = 0;
         grid.add(createFormLabel("Portfolio Title *"), 0, row);
         grid.add(titleField, 1, row++);
-
         grid.add(createFormLabel("Description"), 0, row);
         GridPane.setValignment(createFormLabel("Description"), VPos.TOP);
         grid.add(descArea, 1, row++);
 
-        // Assemble dialog
         VBox content = new VBox(0);
         content.getChildren().addAll(header, grid);
         dialogPane.setContent(content);
 
-        // Buttons
         ButtonType saveButton = new ButtonType("Save Changes", ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialogPane.getButtonTypes().addAll(saveButton, cancelButton);
@@ -515,10 +536,9 @@ public class FreelancerPortfolioController {
         Button saveBtn = (Button) dialogPane.lookupButton(saveButton);
         saveBtn.setStyle("-fx-background-color: #1976d2; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;");
 
-        // Handle result
         dialog.showAndWait().ifPresent(response -> {
             if (response == saveButton) {
-                String title = titleField.getText().trim();
+                String title       = titleField.getText().trim();
                 String description = descArea.getText().trim();
 
                 if (title.isEmpty()) {
@@ -528,19 +548,15 @@ public class FreelancerPortfolioController {
 
                 currentPortfolio.setTitle(title);
                 currentPortfolio.setDescription(description);
-
                 portfolioService.updatePortfolio(currentPortfolio.getIdPortfolio(), currentPortfolio);
 
-                // Update UI
-                if (portfolioTitleLabel != null) {
+                if (portfolioTitleLabel != null)
                     portfolioTitleLabel.setText(currentFreelancer.getName() + "'s Portfolio");
-                }
-                if (portfolioInfoTitle != null) {
+                if (portfolioInfoTitle != null)
                     portfolioInfoTitle.setText(title);
-                }
-                if (portfolioDescriptionLabel != null) {
-                    portfolioDescriptionLabel.setText(description != null && !description.isEmpty() ? description : "Showcase your best work to attract clients");
-                }
+                if (portfolioDescriptionLabel != null)
+                    portfolioDescriptionLabel.setText(description != null && !description.isEmpty()
+                            ? description : "Showcase your best work to attract clients");
 
                 showSuccessAlert("Success", "Portfolio information updated successfully!");
             }
@@ -570,16 +586,10 @@ public class FreelancerPortfolioController {
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK && "DELETE".equals(confirmField.getText())) {
                 try {
-                    // Delete portfolio (cascade will handle portfolio items automatically)
                     portfolioService.deletePortfolio(currentPortfolio.getIdPortfolio());
-
                     showSuccessAlert("Success", "Portfolio deleted successfully!");
-
-                    // Set current portfolio to null
                     currentPortfolio = null;
-
                     navigateBackToProfile(stage);
-
                 } catch (Exception e) {
                     showErrorAlert("Error", "Failed to delete portfolio: " + e.getMessage());
                     e.printStackTrace();
@@ -610,11 +620,16 @@ public class FreelancerPortfolioController {
 
             stage.setScene(new Scene(root, 1200, 700));
             stage.setTitle("My Profile - UniEarn");
-
         } catch (IOException e) {
             e.printStackTrace();
             showErrorAlert("Error", "Failed to go back: " + e.getMessage());
         }
+    }
+
+    private Label createFormLabel(String text) {
+        Label label = new Label(text);
+        label.setStyle("-fx-font-weight: 600; -fx-font-size: 13px; -fx-text-fill: #333;");
+        return label;
     }
 
     private void showSuccessAlert(String title, String message) {

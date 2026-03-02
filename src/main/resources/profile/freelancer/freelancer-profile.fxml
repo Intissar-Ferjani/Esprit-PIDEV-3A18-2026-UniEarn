@@ -5,13 +5,9 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import org.kordamp.ikonli.javafx.*?>
 
-<BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root"
-            stylesheets="@../../profile/profile.css"
-            xmlns="http://javafx.com/javafx/17.0.12"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="uniearn.controller.profile.freelancer.FreelancerProfileController">
+<BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root" stylesheets="@../../profile/profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.freelancer.FreelancerProfileController">
 
     <!-- ══ Top Navigation Bar ══════════════════════════════════════════ -->
     <top>
@@ -37,59 +33,58 @@
                         <Button prefHeight="42.0" prefWidth="220.0" styleClass="nav-button, active">
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
                                 <FontIcon iconLiteral="fas-home" iconSize="15" />
-                                <Label text="Dashboard" style="-fx-font-size: 14px;" />
+                                <Label style="-fx-font-size: 14px;" text="Dashboard" />
                             </children></HBox></graphic>
                         </Button>
 
-                        <Button prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
-                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
-                                <FontIcon iconLiteral="fas-clipboard-list" iconSize="15" />
-                                <Label text="Projets disponibles" style="-fx-font-size: 14px;" />
-                            </children></HBox></graphic>
+                        <Button onAction="#handleFreelancerProjects" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📋 Projets disponibles">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
                         </Button>
+
 
                         <Button prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
                                 <FontIcon iconLiteral="fas-file-contract" iconSize="15" />
-                                <Label text="Mes contrats" style="-fx-font-size: 14px;" />
+                                <Label style="-fx-font-size: 14px;" text="Mes contrats" />
                             </children></HBox></graphic>
+                        </Button>
+
+                        <Button onAction="#handleTaskBoard" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📝 Mes tâches">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
                         </Button>
 
                         <Button onAction="#handleViewPortfolio" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
                                 <FontIcon iconLiteral="fas-briefcase" iconSize="15" />
-                                <Label text="Portfolio" style="-fx-font-size: 14px;" />
+                                <Label style="-fx-font-size: 14px;" text="Portfolio" />
                             </children></HBox></graphic>
                         </Button>
 
                         <Button prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
                                 <FontIcon iconLiteral="fas-comments" iconSize="15" />
-                                <Label text="Messages" style="-fx-font-size: 14px;" />
+                                <Label style="-fx-font-size: 14px;" text="Messages" />
                             </children></HBox></graphic>
                         </Button>
 
                         <Button prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
                                 <FontIcon iconLiteral="fas-credit-card" iconSize="15" />
-                                <Label text="Paiements" style="-fx-font-size: 14px;" />
+                                <Label style="-fx-font-size: 14px;" text="Paiements" />
                             </children></HBox></graphic>
                         </Button>
 
                         <Region VBox.vgrow="ALWAYS" />
                         <Separator />
 
-                        <Button onAction="#handleSettings" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
-                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
-                                <FontIcon iconLiteral="fas-cog" iconSize="15" />
-                                <Label text="Settings" style="-fx-font-size: 14px;" />
-                            </children></HBox></graphic>
-                        </Button>
-
                         <Button onAction="#handleLogout" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button, logout">
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
                                 <FontIcon iconLiteral="fas-sign-out-alt" iconSize="15" />
-                                <Label text="Logout" style="-fx-font-size: 14px;" />
+                                <Label style="-fx-font-size: 14px;" text="Logout" />
                             </children></HBox></graphic>
                         </Button>
 
@@ -111,26 +106,20 @@
                         <VBox styleClass="profile-header-card">
 
                             <!-- Gradient banner strip -->
-                            <Pane prefHeight="10.0" styleClass="profile-banner" />
+                            <Pane prefHeight="12.0" prefWidth="862.0" styleClass="profile-banner" />
 
                             <!-- Avatar + details row (overlaps banner) -->
                             <HBox alignment="BOTTOM_LEFT" spacing="22.0" styleClass="profile-header-body">
-                                <padding><Insets bottom="20.0" left="28.0" right="28.0" top="20.0" /></padding>
+                                <padding><Insets bottom="20.0" left="28.0" right="28.0" top="0.0" /></padding>
                                 <children>
 
                                     <!-- Avatar lifted above banner line -->
                                     <StackPane styleClass="avatar-stack">
                                         <VBox.margin><Insets top="-38.0" /></VBox.margin>
                                         <children>
-                                            <Pane styleClass="avatar-ring" prefWidth="138.0" prefHeight="138.0" />
-                                            <ImageView fx:id="profileImageView"
-                                                       fitHeight="124.0" fitWidth="124.0"
-                                                       preserveRatio="true"
-                                                       styleClass="profile-avatar"
-                                                       StackPane.alignment="CENTER" />
-                                            <Button onAction="#handleChangePhoto"
-                                                    styleClass="btn-camera-overlay"
-                                                    StackPane.alignment="BOTTOM_RIGHT">
+                                            <Pane prefHeight="138.0" prefWidth="138.0" styleClass="avatar-ring" />
+                                            <ImageView fx:id="profileImageView" fitHeight="124.0" fitWidth="124.0" preserveRatio="true" styleClass="profile-avatar" StackPane.alignment="CENTER" />
+                                            <Button onAction="#handleChangePhoto" styleClass="btn-camera-overlay" StackPane.alignment="BOTTOM_RIGHT">
                                                 <graphic>
                                                     <FontIcon iconLiteral="fas-camera" iconSize="11" styleClass="camera-icon" />
                                                 </graphic>
@@ -141,7 +130,7 @@
                                     </StackPane>
 
                                     <!-- Name / email / pills / skills -->
-                                    <VBox spacing="8.0" alignment="BOTTOM_LEFT" HBox.hgrow="ALWAYS">
+                                    <VBox alignment="BOTTOM_LEFT" spacing="8.0" HBox.hgrow="ALWAYS">
                                         <padding><Insets bottom="2.0" /></padding>
                                         <children>
                                             <Label fx:id="nameLabel" styleClass="profile-name-large" text="Freelancer Name">
@@ -182,26 +171,30 @@
                                                 FlowPane: skills wrap naturally across multiple lines,
                                                 never overflow or clip
                                             -->
-                                            <FlowPane fx:id="skillsContainer"
-                                                      hgap="7.0" vgap="6.0"
-                                                      prefWrapLength="560.0"
-                                                      styleClass="skills-flow" />
+                                            <FlowPane fx:id="skillsContainer" hgap="7.0" prefWrapLength="560.0" styleClass="skills-flow" vgap="6.0" />
                                         </children>
+                              <HBox.margin>
+                                 <Insets />
+                              </HBox.margin>
                                     </VBox>
 
                                     <!-- Edit button top-right -->
                                     <VBox alignment="TOP_RIGHT">
                                         <padding><Insets top="12.0" /></padding>
                                         <children>
-                                            <Button fx:id="editProfileButton" onAction="#handleEditProfile" styleClass="btn-primary">
+                                            <Button fx:id="editProfileButton" onAction="#handleEditProfile" prefHeight="38.0" prefWidth="50.0" styleClass="btn-primary">
                                                 <graphic><HBox alignment="CENTER" spacing="7.0"><children>
-                                                    <FontIcon iconLiteral="fas-pencil-alt" iconSize="12" />
+                                                    <FontIcon iconLiteral="fas-pencil-alt" iconSize="12" wrappingWidth="5.000001907348633" />
+                                                    <Label style="-fx-font-size: 13px;" />
                                                 </children></HBox></graphic>
                                             </Button>
                                         </children>
                                     </VBox>
 
                                 </children>
+                        <VBox.margin>
+                           <Insets top="20.0" />
+                        </VBox.margin>
                             </HBox>
                         </VBox>
 
@@ -213,7 +206,7 @@
                                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                                     <VBox.margin><Insets bottom="14.0" /></VBox.margin>
                                     <children>
-                                        <StackPane styleClass="section-icon-badge" prefWidth="32.0" prefHeight="32.0">
+                                        <StackPane prefHeight="32.0" prefWidth="32.0" styleClass="section-icon-badge">
                                             <children>
                                                 <FontIcon iconLiteral="fas-user" iconSize="14" styleClass="section-badge-icon" />
                                             </children>
@@ -230,14 +223,7 @@
                                     prefRowCount sets the minimum comfortable height;
                                     the VBox grows taller if the bio is longer.
                                 -->
-                                <TextArea fx:id="bioLabel"
-                                          styleClass="bio-text-area"
-                                          text="No bio available"
-                                          wrapText="true"
-                                          editable="false"
-                                          focusTraversable="false"
-                                          prefRowCount="4"
-                                          VBox.vgrow="ALWAYS">
+                                <TextArea fx:id="bioLabel" editable="false" focusTraversable="false" prefRowCount="4" styleClass="bio-text-area" text="No bio available" wrapText="true" VBox.vgrow="ALWAYS">
                                     <font><Font size="14.0" /></font>
                                 </TextArea>
 
@@ -252,9 +238,7 @@
                                     <children>
                                         <VBox alignment="CENTER" spacing="12.0" HBox.hgrow="ALWAYS">
                                             <children>
-                                                <StackPane styleClass="portfolio-icon-badge"
-                                                           prefWidth="66.0" prefHeight="66.0"
-                                                           maxWidth="66.0">
+                                                <StackPane maxWidth="66.0" prefHeight="66.0" prefWidth="66.0" styleClass="portfolio-icon-badge">
                                                     <VBox.margin><Insets bottom="4.0" /></VBox.margin>
                                                     <children>
                                                         <FontIcon iconLiteral="fas-briefcase" iconSize="26" styleClass="portfolio-badge-icon" />
@@ -263,12 +247,11 @@
                                                 <Label styleClass="section-title" text="Showcase Your Work">
                                                     <font><Font name="System Bold" size="18.0" /></font>
                                                 </Label>
-                                                <Label styleClass="section-subtitle-muted"
-                                                       text="Build your portfolio to attract more clients" />
+                                                <Label styleClass="section-subtitle-muted" text="Build your portfolio to attract more clients" />
                                                 <Button onAction="#handleViewPortfolio" styleClass="btn-primary">
                                                     <graphic><HBox alignment="CENTER" spacing="8.0"><children>
                                                         <FontIcon iconLiteral="fas-arrow-right" iconSize="12" />
-                                                        <Label text="View My Portfolio" style="-fx-font-size: 14px;" />
+                                                        <Label style="-fx-font-size: 14px;" text="View My Portfolio" />
                                                     </children></HBox></graphic>
                                                 </Button>
                                             </children>
