@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<VBox prefHeight="700.0" prefWidth="1000.0" spacing="15.0" styleClass="main-content" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.client.ClientPaymentMethodsController">
+    <padding>
+        <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+    </padding>
+
+    <!-- ══ Header Card ════════════════════════════════════ -->
+    <VBox styleClass="card">
+        <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        </padding>
+        <children>
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                <children>
+                    <FontIcon iconLiteral="fas-credit-card" iconSize="32" style="-fx-fill: #2196F3;" />
+                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                        <children>
+                            <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Mes Moyens de Paiement" />
+                            <Label style="-fx-font-size: 12px; -fx-text-fill: #666;" text="Gérez vos comptes bancaires pour les paiements" />
+                        </children>
+                    </VBox>
+                </children>
+            </HBox>
+        </children>
+    </VBox>
+
+    <!-- ══ Add Account Button ═════════════════════════════ -->
+    <HBox spacing="10.0">
+        <children>
+            <Button fx:id="addAccountButton" prefHeight="40.0" style="-fx-padding: 10px 20px; -fx-font-size: 12px; -fx-background-color: #4CAF50; -fx-text-fill: white;" text="+ Ajouter un compte" />
+            <Region HBox.hgrow="ALWAYS" />
+        </children>
+    </HBox>
+
+    <!-- ══ Bank Accounts List ═════════════════════════════ -->
+    <VBox styleClass="card" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+        </padding>
+        <children>
+            <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #333;" text="Comptes bancaires enregistrés:" />
+            <ListView fx:id="accountsListView" prefHeight="300.0" VBox.vgrow="ALWAYS" />
+        </children>
+    </VBox>
+
+    <!-- ══ Info Box ═══════════════════════════════════════ -->
+    <VBox styleClass="card, info-box">
+        <padding>
+            <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+        </padding>
+        <children>
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                <children>
+                    <FontIcon iconLiteral="fas-info-circle" iconSize="20" style="-fx-fill: #2196F3;" />
+                    <Label style="-fx-font-size: 12px; -fx-text-fill: #666;" text="🔒 Vos données bancaires sont sécurisées et chiffrées. Elles ne sont utilisées que pour les virements vers les freelancers." wrapText="true" />
+                </children>
+            </HBox>
+        </children>
+    </VBox>
+
+</VBox>
+

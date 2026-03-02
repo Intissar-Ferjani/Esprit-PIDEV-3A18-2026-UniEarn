@@ -406,6 +406,29 @@ public class FreelancerProfileController {
     }
 
     @FXML
+    private void handleMesContrats() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/Freelancer/freelancer-contracts.fxml"));
+            Parent embeddedView = loader.load();
+
+            FreelancerContractsController controller = loader.getController();
+            controller.setFreelancerData(currentFreelancer);
+
+            // Create a new stage for the contracts view
+            Stage stage = new Stage();
+            stage.setTitle("Mes Contrats - Freelancer");
+            stage.setScene(new Scene(embeddedView, 1000, 700));
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.show();
+
+            System.out.println("✓ Mes Contrats opened in new stage");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load contracts page: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleChangePhoto() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Profile Picture");
@@ -957,6 +980,62 @@ public class FreelancerProfileController {
         } catch (IOException e) {
             e.printStackTrace();
             showErrorAlert("Error", "Failed to load browse freelancers page: " + e.getMessage());
+        }
+    }
+
+
+    @FXML
+    private void handlePayments() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-payments.fxml"));
+            Parent embeddedView = loader.load();
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+            contentArea.getChildren().add(embeddedView);
+            embeddedView.setVisible(true);
+            embeddedView.setManaged(true);
+
+            System.out.println("✅ Payments/Revenues section loaded for freelancer");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load payments page: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handlePaymentMethods() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-payment-methods.fxml"));
+            Parent embeddedView = loader.load();
+
+            FreelancerPaymentMethodsController controller = loader.getController();
+            if (currentFreelancer != null && currentFreelancer.getIdUser() > 0) {
+                controller.setUserID(currentFreelancer.getIdUser());
+            }
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+            contentArea.getChildren().add(embeddedView);
+            embeddedView.setVisible(true);
+            embeddedView.setManaged(true);
+
+            System.out.println("✅ Payment methods section loaded for freelancer");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load payment methods page: " + e.getMessage());
         }
     }
 

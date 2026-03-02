@@ -1,30 +1,38 @@
 package uniearn.controller.auth.user;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.regex.Pattern;
+
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import uniearn.controller.profile.admin.AdminDashboardController;
 import uniearn.controller.profile.client.ClientProfileController;
 import uniearn.controller.profile.freelancer.FreelancerProfileController;
+import uniearn.database.SessionManager;
 import uniearn.model.entities.users.User;
+import uniearn.model.entities.users.admin.Admin;
 import uniearn.model.entities.users.client.Client;
 import uniearn.model.entities.users.freelancer.Freelancer;
 import uniearn.server.security.SecurityCallbackServer;
-import uniearn.services.users.mail.EmailService;
 import uniearn.services.users.UserService;
+import uniearn.services.users.admin.AdminService;
 import uniearn.services.users.client.ClientService;
 import uniearn.services.users.freelancer.FreelancerService;
-import uniearn.database.SessionManager;
+import uniearn.services.users.mail.EmailService;
 import uniearn.services.users.security.LoginAttemptService;
 import uniearn.services.users.security.WebcamCaptureService;
 import uniearn.utils.user.PasswordUtil;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.regex.Pattern;
 
 public class LoginController {
 
@@ -42,6 +50,7 @@ public class LoginController {
     private final FreelancerService freelancerService = new FreelancerService();
     private final EmailService      emailService      = new EmailService();
     private final GoogleAuthHandler googleAuthHandler = new GoogleAuthHandler();
+    private final AdminService adminService = new AdminService();
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
@@ -219,7 +228,7 @@ public class LoginController {
             switch (user.getRole()) {
                 case CLIENT     -> redirectToClientProfile(user, stage);
                 case FREELANCER -> redirectToFreelancerProfile(user, stage);
-                case ADMIN      -> redirectToAdminDashboard(stage);
+                case ADMIN      -> redirectToAdminDashboard(user, stage);
                 default -> { showErrorAlert("Rôle inconnu", "Dashboard introuvable."); loginButton.setDisable(false); }
             }
         } catch (IOException e) {
@@ -248,10 +257,31 @@ public class LoginController {
         stage.setTitle("Freelancer — UniEarn"); stage.centerOnScreen();
     }
 
-    private void redirectToAdminDashboard(Stage stage) throws IOException {
-        FXMLLoader l = new FXMLLoader(getClass().getResource("/profile/admin/admin-dashboard.fxml"));
-        stage.setScene(new Scene(l.load(), 1200, 700));
-        stage.setTitle("Admin — UniEarn"); stage.centerOnScreen();
+    private void redirectToAdminDashboard(User user, Stage stage) throws IOException {
+        System.out.println("Attempting to load admin dashboard for user ID: " + user.getIdUser());
+
+        Admin admin = adminService.getAdminById(user.getIdUser());
+
+        if (admin == null) {
+            System.err.println("Admin data is null for user ID: " + user.getIdUser());
+            showErrorAlert("Error", "Unable to load admin data from database.");
+            loginButton.setDisable(false);
+            return;
+        }
+
+        System.out.println("✓ Admin data loaded: " + admin.getName());
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/admin/admin-dashboard.fxml"));
+        Parent root = loader.load();
+
+        AdminDashboardController controller = loader.getController();
+        controller.setAdminData(admin);
+
+        stage.setScene(new Scene(root, 1200, 700));
+        stage.setTitle("Admin Dashboard - UniEarn");
+        stage.centerOnScreen();
+
+        System.out.println("✓ Redirected to Admin Dashboard successfully");
     }
 
     // ── Navigation ────────────────────────────────────────────────────────

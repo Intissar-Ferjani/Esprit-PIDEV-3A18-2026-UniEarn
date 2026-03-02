@@ -7,8 +7,8 @@ import javafx.stage.Stage;
 import uniearn.model.entities.contracts.Contrat;
 import uniearn.model.entities.contracts.ContractTemplate;
 import uniearn.model.entities.contracts.ContractType;
-import uniearn.model.entities.Payment;
 import uniearn.model.entities.projet.Project;
+import uniearn.model.entities.users.freelancer.Freelancer;
 import uniearn.services.contracts.ContractTemplateService;
 import uniearn.services.contracts.ContractTypeService;
 import uniearn.services.contracts.ContratService;
@@ -16,7 +16,9 @@ import uniearn.services.DataLoaderService;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -34,7 +36,6 @@ public class ClientContractDialogController {
     @FXML private TextField tfAmount;
     @FXML private DatePicker dpStartDate;
     @FXML private DatePicker dpEndDate;
-    @FXML private ComboBox<Payment> cbPayment;
     @FXML private TextArea taTemplatePreview;
     @FXML private Button btnCancel;
     @FXML private Button btnCreate;
@@ -47,6 +48,8 @@ public class ClientContractDialogController {
     private DataLoaderService dataLoaderService;
     private Consumer<Contrat> onContractCreated;
 
+    private final Map<Integer, Integer> freelancerUserToFreelancerId = new HashMap<>();
+
     @FXML
     public void initialize() {
         templateService = new ContractTemplateService();
@@ -57,7 +60,6 @@ public class ClientContractDialogController {
         loadTemplates();
         loadMetiers();
         loadFreelancers();
-        loadPayments();
         // Les projets seront chargés dans setClientID()
     }
 
@@ -160,39 +162,20 @@ public class ClientContractDialogController {
             DataLoaderService loader = new DataLoaderService();
             var freelancers = loader.getAllFreelancers();
 
-            // Afficher le nom du freelancer
             cbFreelancer.setCellFactory(param -> new ListCell<Integer>() {
-                private DataLoaderService loaderService = new DataLoaderService();
-
+                private final DataLoaderService loaderService = new DataLoaderService();
                 @Override
                 protected void updateItem(Integer item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                    } else {
-                        String name = loaderService.getFreelancerName(item);
-                        setText(name + " (ID: " + item + ")");
-                    }
+                    setText(empty || item == null ? null : loaderService.getFreelancerName(item) + " (ID: " + item + ")");
                 }
             });
+            cbFreelancer.setButtonCell(cbFreelancer.getCellFactory().call(null));
 
-            cbFreelancer.setButtonCell(new ListCell<Integer>() {
-                private DataLoaderService loaderService = new DataLoaderService();
-
-                @Override
-                protected void updateItem(Integer item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty || item == null) {
-                        setText(null);
-                    } else {
-                        String name = loaderService.getFreelancerName(item);
-                        setText(name + " (ID: " + item + ")");
-                    }
-                }
-            });
-
+            freelancerUserToFreelancerId.clear();
             var freelancerIds = new ArrayList<Integer>();
-            for (var f : freelancers) {
+            for (Freelancer f : freelancers) {
+                freelancerUserToFreelancerId.put(f.getIdUser(), f.getIdFreelancer());
                 freelancerIds.add(f.getIdUser());
             }
             cbFreelancer.setItems(FXCollections.observableArrayList(freelancerIds));
@@ -210,56 +193,49 @@ public class ClientContractDialogController {
             for (Project p : projects) {
                 System.out.println("  - " + p.getIdproject() + ": " + p.getTitle());
             }
-            cbProject.setItems(FXCollections.observableArrayList((java.util.Collection<? extends Project>) projects));
 
-            // Afficher le titre du projet
+            if (projects.isEmpty()) {
+                System.out.println("WARN: Aucun projet trouvé pour clientID=" + clientID);
+                cbProject.setItems(FXCollections.observableArrayList());
+                cbProject.setPromptText("Aucun projet disponible");
+                return;
+            }
+
+            cbProject.setItems(FXCollections.observableArrayList(projects));
+
+            // Configurer l'affichage des projets dans la dropdown
             cbProject.setCellFactory(param -> new ListCell<Project>() {
                 @Override
                 protected void updateItem(Project item, boolean empty) {
                     super.updateItem(item, empty);
-                    setText(empty || item == null ? null : item.getTitle());
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getTitle() != null ? item.getTitle() : "Projet sans titre");
+                    }
                 }
             });
 
+            // Configurer le bouton (sélection visible)
             cbProject.setButtonCell(new ListCell<Project>() {
                 @Override
                 protected void updateItem(Project item, boolean empty) {
                     super.updateItem(item, empty);
-                    setText(empty || item == null ? null : item.getTitle());
+                    if (empty || item == null) {
+                        setText("Sélectionnez un projet...");
+                    } else {
+                        setText(item.getTitle() != null ? item.getTitle() : "Projet sans titre");
+                    }
                 }
             });
+
+            System.out.println("DEBUG: ComboBox projets remplie avec " + projects.size() + " éléments");
+
         } catch (Exception e) {
             System.err.println("Erreur chargement projets: " + e.getMessage());
             e.printStackTrace();
             cbProject.setItems(FXCollections.observableArrayList());
-        }
-    }
-
-    private void loadPayments() {
-        try {
-            DataLoaderService loader = new DataLoaderService();
-            var payments = loader.getAvailablePayments();
-            cbPayment.setItems(FXCollections.observableArrayList(payments));
-
-            // Afficher le montant du paiement
-            cbPayment.setCellFactory(param -> new ListCell<Payment>() {
-                @Override
-                protected void updateItem(Payment item, boolean empty) {
-                    super.updateItem(item, empty);
-                    setText(empty || item == null ? null : String.format("Paiement #%d - %.2f DA", item.getIdPayment(), item.getAmount()));
-                }
-            });
-
-            cbPayment.setButtonCell(new ListCell<Payment>() {
-                @Override
-                protected void updateItem(Payment item, boolean empty) {
-                    super.updateItem(item, empty);
-                    setText(empty || item == null ? null : String.format("Paiement #%d - %.2f DA", item.getIdPayment(), item.getAmount()));
-                }
-            });
-        } catch (Exception e) {
-            System.err.println("Erreur chargement paiements: " + e.getMessage());
-            cbPayment.setItems(FXCollections.observableArrayList());
+            cbProject.setPromptText("Erreur lors du chargement");
         }
     }
 
@@ -290,11 +266,10 @@ public class ClientContractDialogController {
             return false;
         }
 
-        // Freelancer est optionnel
-        // if (cbFreelancer.getValue() == null) {
-        //     showAlert("Erreur", "Sélectionnez un freelancer", Alert.AlertType.ERROR);
-        //     return false;
-        // }
+        if (cbFreelancer.getValue() == null || cbFreelancer.getValue() == 0) {
+            showAlert("Erreur", "Sélectionnez un freelancer", Alert.AlertType.ERROR);
+            return false;
+        }
 
         if (cbProject.getValue() == null) {
             showAlert("Erreur", "Sélectionnez un projet", Alert.AlertType.ERROR);
@@ -324,14 +299,27 @@ public class ClientContractDialogController {
             contrat.setType(typeName);
             contrat.setTemplateID(cbTemplate.getValue().getIdTemplate());
             contrat.setClientID(clientID);
-            // Ne pas définir le freelancerID - le laisser NULL pour l'instant
-            contrat.setFreelancerID(0);
+
+            // Utiliser directement l'idUser du freelancer (la FK référence user.idUser, pas freelancer.idFreelancer)
+            if (cbFreelancer.getValue() != null && cbFreelancer.getValue() > 0) {
+                Integer selectedUserId = cbFreelancer.getValue();
+                Integer freelancerDbId = freelancerUserToFreelancerId.get(selectedUserId);
+                if (freelancerDbId == null) {
+                    throw new IllegalStateException("Freelancer introuvable pour l'utilisateur " + selectedUserId);
+                }
+                contrat.setFreelancerID(freelancerDbId);
+                System.out.println("DEBUG: Freelancer idFreelancer sélectionné: " + freelancerDbId);
+            } else {
+                System.out.println("WARN: Aucun freelancer sélectionné");
+                contrat.setFreelancerID(0);
+            }
+
             contrat.setProjectID(cbProject.getValue().getIdproject());
             contrat.setAmount(Double.parseDouble(tfAmount.getText()));
             contrat.setStartDate(Timestamp.valueOf(dpStartDate.getValue().atStartOfDay()));
             contrat.setEndDate(Timestamp.valueOf(dpEndDate.getValue().atStartOfDay()));
             contrat.setStatus(0); // Brouillon
-            contrat.setPaymentID(cbPayment.getValue() != null ? cbPayment.getValue().getIdPayment() : 0);
+            contrat.setPaymentID(0);
 
             System.out.println("DEBUG: Contrat à créer: " + contrat);
 
@@ -372,4 +360,3 @@ public class ClientContractDialogController {
         alert.showAndWait();
     }
 }
-

@@ -2,9 +2,11 @@ package uniearn.services;
 
 import uniearn.database.MyConnection;
 import uniearn.model.entities.projet.Project;
-import uniearn.model.entities.users.User;
+import uniearn.model.entities.users.freelancer.Freelancer;
+import uniearn.model.enums.UserRole;
 import uniearn.model.entities.Payment;
 import uniearn.model.entities.contracts.ContractType;
+import uniearn.services.projet.ProjectService;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -29,17 +31,25 @@ public class DataLoaderService {
     /**
      * Charger tous les freelancers
      */
-    public List<User> getAllFreelancers() {
-        List<User> freelancers = new ArrayList<>();
-        String sql = "SELECT * FROM user WHERE role = 'FREELANCER' ORDER BY name";
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+    public List<Freelancer> getAllFreelancers() {
+        List<Freelancer> freelancers = new ArrayList<>();
+        String sql = "SELECT u.idUser, u.name, u.email, u.profilePicturePath, u.role, u.activated, " +
+                "f.idFreelancer FROM freelancer f " +
+                "JOIN user u ON f.idUser = u.idUser " +
+                "ORDER BY u.name";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                User user = new User();
-                user.setIdUser(rs.getInt("idUser"));
-                user.setName(rs.getString("name"));
-                user.setEmail(rs.getString("email"));
-                freelancers.add(user);
+                Freelancer freelancer = new Freelancer();
+                freelancer.setIdUser(rs.getInt("idUser"));
+                freelancer.setName(rs.getString("name"));
+                freelancer.setEmail(rs.getString("email"));
+                freelancer.setProfilePicturePath(rs.getString("profilePicturePath"));
+                freelancer.setRole(UserRole.valueOf(rs.getString("role")));
+                freelancer.setActivated(rs.getBoolean("activated"));
+                freelancer.setIdFreelancer(rs.getInt("idFreelancer"));
+                freelancers.add(freelancer);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,32 +61,20 @@ public class DataLoaderService {
      * Charger les projets d'un client
      */
     public List<Project> getProjectsByClient(int clientID) {
-        List<Project> projects = new ArrayList<>();
-        String sql = "SELECT idProject, title, description, budget, status, clientID, freelancerID FROM project WHERE clientID = ? ORDER BY idProject";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, clientID);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Project project = new Project();
-                    project.setIdproject(rs.getInt("idProject"));
-                    project.setTitle(rs.getString("title"));
-                    project.setDescription(rs.getString("description"));
-                    project.setBudget(rs.getDouble("budget"));
-                    project.setStatus(rs.getInt("status"));
-                    project.setClient_id(rs.getInt("clientID"));
-                    int freelancerID = rs.getInt("freelancerID");
-                    if (!rs.wasNull()) {
-                        project.setFreelancerid(freelancerID);
-                    }
-                    projects.add(project);
-                }
-                System.out.println("DEBUG: Chargé " + projects.size() + " projets pour clientID=" + clientID);
+        try {
+            System.out.println("DEBUG: getProjectsByClient() - clientID = " + clientID);
+            ProjectService projectService = new ProjectService();
+            List<Project> projects = projectService.getProjectsByClientId(clientID);
+            System.out.println("DEBUG: Récupéré " + projects.size() + " projets pour clientID=" + clientID);
+            for (Project p : projects) {
+                System.out.println("  - ID:" + p.getIdproject() + ", Titre:" + p.getTitle());
             }
-        } catch (SQLException e) {
-            System.err.println("Erreur SQL lors du chargement des projets pour clientID=" + clientID + ": " + e.getMessage());
+            return projects;
+        } catch (Exception e) {
+            System.err.println("Erreur lors du chargement des projets pour clientID=" + clientID + ": " + e.getMessage());
             e.printStackTrace();
+            return new ArrayList<>();
         }
-        return projects;
     }
 
     /**
@@ -217,5 +215,24 @@ public class DataLoaderService {
             e.printStackTrace();
         }
         return contractTypes;
+    }
+
+    /**
+     * Récupère l'idFreelancer à partir de l'idUser
+     */
+    public Integer getFreelancerIdByUserId(int idUser) {
+        String sql = "SELECT idFreelancer FROM freelancer WHERE idUser = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, idUser);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("idFreelancer");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("❌ Erreur lors de la récupération du freelancer: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
     }
 }

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<VBox prefHeight="700.0" prefWidth="1000.0" spacing="15.0" styleClass="main-content" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.admin.AdminPaymentsController">
+    <padding>
+        <Insets bottom="20.0" left="30.0" right="30.0" top="20.0" />
+    </padding>
+
+    <!-- ══ Header Card ════════════════════════════════════ -->
+    <VBox styleClass="card">
+        <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        </padding>
+        <children>
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                <children>
+                    <FontIcon iconLiteral="fas-university" iconSize="32" style="-fx-fill: #F57C00;" />
+                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                        <children>
+                            <Label style="-fx-font-size: 24px; -fx-font-weight: bold;" text="Gestion des Paiements en Escrow" />
+                            <Label style="-fx-font-size: 12px; -fx-text-fill: #666;" text="Validez et libérez les montants bloqués chez l'administrateur" />
+                        </children>
+                    </VBox>
+                </children>
+            </HBox>
+        </children>
+    </VBox>
+
+    <!-- ══ Statistics Cards ═══════════════════════════════ -->
+    <HBox spacing="20.0">
+        <children>
+            <!-- Card: Montant Total Bloqué -->
+            <VBox styleClass="card, stat-card" HBox.hgrow="ALWAYS">
+                <padding>
+                    <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                </padding>
+                <children>
+                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                        <children>
+                            <FontIcon iconLiteral="fas-lock" iconSize="24" style="-fx-fill: #F57C00;" />
+                            <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                <children>
+                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #666;" text="Montants Bloqués" />
+                                    <Label fx:id="totalBlockedLabel" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #F57C00;" text="0.00 TND" />
+                                </children>
+                            </VBox>
+                        </children>
+                    </HBox>
+                </children>
+            </VBox>
+
+            <!-- Card: Montant Total Libéré -->
+            <VBox styleClass="card, stat-card" HBox.hgrow="ALWAYS">
+                <padding>
+                    <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+                </padding>
+                <children>
+                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                        <children>
+                            <FontIcon iconLiteral="fas-unlock" iconSize="24" style="-fx-fill: #4CAF50;" />
+                            <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                <children>
+                                    <Label style="-fx-font-size: 12px; -fx-text-fill: #666;" text="Montants Libérés" />
+                                    <Label fx:id="totalReleasedLabel" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #4CAF50;" text="0.00 TND" />
+                                </children>
+                            </VBox>
+                        </children>
+                    </HBox>
+                </children>
+            </VBox>
+        </children>
+    </HBox>
+
+    <!-- ══ Filter & Search ════════════════════════════════ -->
+    <HBox spacing="15.0">
+        <children>
+            <ComboBox fx:id="filterStatus" prefWidth="150.0" promptText="Filtrer par statut" style="-fx-padding: 8px;" />
+            <TextField fx:id="searchField" prefHeight="36.0" promptText="Rechercher par ID contrat, client, freelancer..." style="-fx-padding: 8px;" HBox.hgrow="ALWAYS" />
+        </children>
+    </HBox>
+
+    <!-- ══ Payments Table ═════════════════════════════════ -->
+    <VBox styleClass="card" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+        </padding>
+        <children>
+            <TableView fx:id="paymentsTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colContractId" minWidth="80.0" prefWidth="100.0" text="Contrat" />
+                    <TableColumn fx:id="colClient" minWidth="80.0" prefWidth="100.0" text="Client" />
+                    <TableColumn fx:id="colFreelancer" minWidth="100.0" prefWidth="120.0" text="Freelancer" />
+                    <TableColumn fx:id="colAmount" minWidth="100.0" prefWidth="130.0" text="Montant" />
+                    <TableColumn fx:id="colStatus" minWidth="80.0" prefWidth="120.0" text="Statut" />
+                    <TableColumn fx:id="colDateCreation" minWidth="140.0" prefWidth="170.0" text="Date" />
+                    <TableColumn fx:id="colActions" minWidth="200.0" prefWidth="250.0" text="Actions" />
+                </columns>
+            </TableView>
+        </children>
+    </VBox>
+
+    <!-- ══ Legend ═════════════════════════════════════════ -->
+    <VBox styleClass="card, info-box">
+        <padding>
+            <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+        </padding>
+        <children>
+            <Label style="-fx-font-size: 12px; -fx-font-weight: bold;" text="📋 Légende des statuts:" />
+            <HBox spacing="30.0" style="-fx-padding: 10px; -fx-font-size: 11px;">
+                <children>
+                    <HBox spacing="8.0">
+                        <children>
+                            <Label style="-fx-text-fill: #FF9800; -fx-font-weight: bold;" text="●" />
+                            <Label text="Bloqué: Paiement en attente de validation" />
+                        </children>
+                    </HBox>
+                    <HBox spacing="8.0">
+                        <children>
+                            <Label style="-fx-text-fill: #2196F3; -fx-font-weight: bold;" text="●" />
+                            <Label text="Livré: Projet livré, en attente de libération" />
+                        </children>
+                    </HBox>
+                    <HBox spacing="8.0">
+                        <children>
+                            <Label style="-fx-text-fill: #4CAF50; -fx-font-weight: bold;" text="●" />
+                            <Label text="Libéré: Montant transféré au freelancer" />
+                        </children>
+                    </HBox>
+                    <HBox spacing="8.0">
+                        <children>
+                            <Label style="-fx-text-fill: #F44336; -fx-font-weight: bold;" text="●" />
+                            <Label text="Remboursé: Montant retourné au client" />
+                        </children>
+                    </HBox>
+                </children>
+            </HBox>
+        </children>
+    </VBox>
+
+</VBox>
+

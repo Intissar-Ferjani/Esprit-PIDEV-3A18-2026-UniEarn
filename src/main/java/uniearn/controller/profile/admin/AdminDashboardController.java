@@ -7,6 +7,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.Node;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import uniearn.model.entities.users.User;
 import uniearn.model.entities.users.admin.Admin;
@@ -25,13 +29,17 @@ public class AdminDashboardController {
     @FXML private Label freelancersLabel;
     @FXML private Label activeUsersLabel;
     @FXML private Label activePercentLabel;
+    @FXML private BorderPane rootPane;
+    @FXML private ScrollPane contentScroll;
 
     private final UserService userService = new UserService();
     private Admin currentAdmin;
+    private Node dashboardView;
 
     @FXML
     public void initialize() {
         System.out.println("AdminDashboardController initialized");
+        dashboardView = contentScroll;
         loadStatistics();
     }
 
@@ -99,6 +107,26 @@ public class AdminDashboardController {
     }
 
     @FXML
+    public void handleContractTemplates() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/admin/admin-contract-templates.fxml"));
+            Parent embeddedView = loader.load();
+
+            AdminContractTemplatesController controller = loader.getController();
+            controller.setAdminData(currentAdmin);
+
+            // Trouver le StackPane ou VBox principal pour remplacer la vue
+            Stage stage = (Stage) adminNameLabel.getScene().getWindow();
+            stage.setScene(new Scene(embeddedView, 1200, 700));
+            stage.setTitle("Gestion des Templates - UniEarn");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load contract templates page: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleManageUsers() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/admin/list-users.fxml"));
@@ -119,6 +147,29 @@ public class AdminDashboardController {
         } catch (IOException e) {
             e.printStackTrace();
             showErrorAlert("Navigation Error", "Failed to load user management page: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleShowDashboard() {
+        if (rootPane != null && dashboardView != null) {
+            rootPane.setCenter(dashboardView);
+        }
+    }
+
+    @FXML
+    private void handleManageContracts() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/contracts/admin_contracts.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) adminNameLabel.getScene().getWindow();
+            stage.setScene(new Scene(root, 1400, 800));
+            stage.setTitle("Manage Contracts - UniEarn");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Navigation Error", "Failed to load contracts management page: " + e.getMessage());
         }
     }
 
@@ -144,6 +195,63 @@ public class AdminDashboardController {
         });
     }
 
+    @FXML
+    private void handleManagePayments() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/admin/admin-payments.fxml"));
+            Parent paymentsView = loader.load();
+
+            if (rootPane != null) {
+                ScrollPane wrapper = new ScrollPane(paymentsView);
+                wrapper.getStyleClass().add("content-scroll");
+                wrapper.setFitToHeight(true);
+                wrapper.setFitToWidth(true);
+                rootPane.setCenter(wrapper);
+                System.out.println("✅ Admin payments section embedded in dashboard");
+            } else {
+                Stage stage = new Stage();
+                stage.setTitle("Gestion des Paiements en Escrow");
+                stage.setScene(new Scene(paymentsView, 1200, 800));
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.show();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load payments management page: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handlePaymentMethods() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/admin/admin-payment-methods.fxml"));
+            Parent paymentMethodsView = loader.load();
+
+            AdminPaymentMethodsController controller = loader.getController();
+            if (currentAdmin != null) {
+                controller.setUserID(currentAdmin.getIdUser());
+            }
+
+            if (rootPane != null) {
+                ScrollPane wrapper = new ScrollPane(paymentMethodsView);
+                wrapper.getStyleClass().add("content-scroll");
+                wrapper.setFitToHeight(true);
+                wrapper.setFitToWidth(true);
+                rootPane.setCenter(wrapper);
+                System.out.println("✅ Admin payment methods section embedded in dashboard");
+            } else {
+                Stage stage = new Stage();
+                stage.setTitle("Moyens de Paiement");
+                stage.setScene(new Scene(paymentMethodsView, 1200, 800));
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.show();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load payment methods page: " + e.getMessage());
+        }
+    }
+
     private void redirectToLogin() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/login/login.fxml"));
@@ -167,3 +275,4 @@ public class AdminDashboardController {
         alert.showAndWait();
     }
 }
+
