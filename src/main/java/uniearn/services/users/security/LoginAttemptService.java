@@ -15,8 +15,7 @@ import java.util.Map;
 public class LoginAttemptService {
 
     private static final int MAX_ATTEMPTS = 3;
-//    private static final int LOCK_MINUTES = 15;
-    private static final int LOCK_MINUTES = 1; // for testing
+    private static final int LOCK_MINUTES = 15;
 
     private static final Map<String, AttemptState> states = new HashMap<>();
 

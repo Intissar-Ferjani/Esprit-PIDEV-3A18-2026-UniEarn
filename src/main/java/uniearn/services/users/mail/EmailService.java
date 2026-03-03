@@ -17,7 +17,7 @@ public class EmailService {
     private static final String SENDER_EMAIL = "i.ferjani.26@gmail.com";
     private static final String SENDER_PASSWORD = "vhdc lkos auhr dgns";
 
-    // ── Shared session builder (avoid duplication) ───────────
+    // ── Shared session builder (extracted to avoid duplication) ───────────
 
     private Session buildSession() {
         Properties props = new Properties();
@@ -35,6 +35,7 @@ public class EmailService {
         });
     }
 
+    // ── YOUR ORIGINAL METHOD — untouched ─────────────────────────────────
 
     public void sendPasswordResetEmail(String toEmail, String resetToken) throws MessagingException, UnsupportedEncodingException {
         Session session = buildSession();
@@ -52,6 +53,7 @@ public class EmailService {
         System.out.println("✓ Reset email sent to: " + toEmail);
     }
 
+    // YOUR ORIGINAL BODY BUILDER — untouched
     private String buildEmailBody(String token) {
         return """
             <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 480px; margin: auto; padding: 32px; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0;">
@@ -71,17 +73,27 @@ public class EmailService {
             """.formatted(token);
     }
 
-    // ── Intruder alert with photo + IP + action buttons ──────────────
+    // ── NEW: Intruder alert with photo + IP + action buttons ──────────────
 
+    /**
+     * Sends a security alert to the account owner after 3 failed login attempts.
+     *
+     * @param toEmail       account owner's email address
+     * @param ownerName     account owner's display name
+     * @param ipAddress     IP address detected at login time
+     * @param capturedPhoto webcam snapshot file — may be null if no webcam available
+     * @param confirmToken  one-time token for "Yes it's me" button → /confirm
+     * @param lockToken     one-time token for "No, lock it" button → /lockme
+     */
     public void sendIntruderAlert(String toEmail, String ownerName, String ipAddress,
                                   File capturedPhoto, String confirmToken, String lockToken)
             throws MessagingException, IOException {
 
         String timestamp  = LocalDateTime.now()
                 .format(DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm:ss"));
-        String confirmUrl = "http://localhost:" + SecurityCallbackServer.PORT
+        String confirmUrl = "http://localhost:" + SecurityCallbackServer.getActualPort()
                 + "/confirm?token=" + confirmToken;
-        String lockUrl    = "http://localhost:" + SecurityCallbackServer.PORT
+        String lockUrl    = "http://localhost:" + SecurityCallbackServer.getActualPort()
                 + "/lockme?token="  + lockToken;
 
         Message message = new MimeMessage(buildSession());
@@ -215,7 +227,8 @@ public class EmailService {
                         // important note
                         + "<div style='background:#f1f5f9;border-radius:8px;padding:14px'>"
                         + "<p style='color:#64748b;font-size:12px;margin:0;line-height:1.6'>"
-                        + "⚠ <strong>Important :</strong>"
+                        + "⚠ <strong>Important :</strong> Ces boutons fonctionnent uniquement lorsque "
+                        + "l'application UniEarn est ouverte sur votre ordinateur. "
                         + "Si vous ne reconnaissez pas cette tentative, verrouillez immédiatement "
                         + "et changez votre mot de passe.</p>"
                         + "</div>"
