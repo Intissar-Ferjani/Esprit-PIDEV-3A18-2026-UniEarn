@@ -12,6 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import uniearn.database.SessionManager;
 import uniearn.model.entities.forum.NotificationMsg;
 import uniearn.services.forum.NotificationStore;
 import uniearn.services.forum.WebSocketService;
@@ -43,12 +44,18 @@ public class NotificationsController {
 
         // Subscribe to live notifications so new ones appear in real-time
         if (WebSocketService.getInstance().isConnected()) {
+            String myName = SessionManager.getInstance().getCurrentUserName();
             WebSocketService.getInstance().subscribe("/topic/notifications", NotificationMsg.class, notification -> {
                 Platform.runLater(() -> {
-                    // Remove empty placeholder if present
-                    notificationsContainer.getChildren().removeIf(node ->
-                            node instanceof Label && ((Label) node).getText().equals("No notifications yet"));
-                    addNotificationToUI(notification);
+                    // Only show if meant for the current user
+                    if (notification.getRecipientId() != null
+                            && notification.getRecipientId().equals(myName)) {
+                        // Remove empty placeholder if present
+                        notificationsContainer.getChildren().removeIf(node ->
+                                node instanceof Label && ((Label) node).getText().equals("No notifications yet"));
+                        NotificationStore.getInstance().add(notification);
+                        addNotificationToUI(notification);
+                    }
                 });
             });
         }
@@ -112,7 +119,12 @@ public class NotificationsController {
         msgLabel.setWrapText(true);
         msgLabel.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 12px;");
 
-        contentBox.getChildren().addAll(senderLabel, msgLabel);
+        // Show timestamp
+        String timeText = notification.getTimestamp() != null ? notification.getTimestamp() : "";
+        Label timeLabel = new Label(timeText);
+        timeLabel.setStyle("-fx-text-fill: #95a5a6; -fx-font-size: 11px; -fx-font-style: italic;");
+
+        contentBox.getChildren().addAll(senderLabel, msgLabel, timeLabel);
 
         // Unread dot
         javafx.scene.shape.Circle unreadDot = new javafx.scene.shape.Circle(4, javafx.scene.paint.Color.web(iconBg));

@@ -41,6 +41,7 @@ public class AdminContractController {
     @FXML private Button btnNewContract;
     @FXML private Button btnManageTemplates;
     @FXML private Button btnRefresh;
+    @FXML private Button btnBack;
     @FXML private ComboBox<String> cbFilterStatus;
     @FXML private TextField tfSearch;
     @FXML private Button btnSearch;
@@ -277,6 +278,22 @@ public class AdminContractController {
         alert.setTitle(title);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void handleBack() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/admin/admin-dashboard.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) btnBack.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("Admin Dashboard - UniEarn");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Navigation Error", "Failed to load admin dashboard: " + e.getMessage());
+        }
     }
 
     private String getStatusText(int status) {

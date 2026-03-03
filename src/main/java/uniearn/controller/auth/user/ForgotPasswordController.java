@@ -8,8 +8,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import uniearn.services.users.mail.EmailService;
 import uniearn.services.users.UserService;
+import uniearn.services.users.mail.EmailService;
 
 import java.io.IOException;
 
@@ -79,7 +79,7 @@ public class ForgotPasswordController {
             protected Boolean call() throws Exception {
                 String token = userService.generateResetToken(email);
                 if (token == null)
-                    return false; // Email not found
+                    return false; // email not found
 
                 emailService.sendPasswordResetEmail(email, token);
                 return true;

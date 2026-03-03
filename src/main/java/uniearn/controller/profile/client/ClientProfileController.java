@@ -749,6 +749,35 @@ public class ClientProfileController {
     }
 
     @FXML
+    private void handleMesContrats() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/client-contracts.fxml"));
+            Parent embeddedView = loader.load();
+
+            ClientContractsController controller = loader.getController();
+            controller.setClientData(currentClient);
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+
+            contentArea.getChildren().add(embeddedView);
+            embeddedView.setVisible(true);
+            embeddedView.setManaged(true);
+
+            System.out.println("✓ Embedded Contracts page loaded into contentArea");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load contracts page: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void handleShowDashboard() {
         if (embeddedDashboard != null) {
             embeddedDashboard.setVisible(false);
@@ -758,6 +787,56 @@ public class ClientProfileController {
         dashboardView.setVisible(true);
         dashboardView.setManaged(true);
         System.out.println("✓ Switched back to main profile dashboard");
+    }
+
+    @FXML
+    private void handlePaymentMethods() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/client-payment-methods.fxml"));
+            Parent embeddedView = loader.load();
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+            contentArea.getChildren().add(embeddedView);
+            embeddedView.setVisible(true);
+            embeddedView.setManaged(true);
+
+            System.out.println("✅ Payment Methods section loaded for client");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load payment methods page: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handlePayments() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/client-payments.fxml"));
+            Parent embeddedView = loader.load();
+
+            dashboardView.setVisible(false);
+            dashboardView.setManaged(false);
+            if (embeddedDashboard != null) {
+                embeddedDashboard.setVisible(false);
+                embeddedDashboard.setManaged(false);
+            }
+
+            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+            contentArea.getChildren().add(embeddedView);
+            embeddedView.setVisible(true);
+            embeddedView.setManaged(true);
+
+            System.out.println("✅ Payments section loaded for client");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load payments page: " + e.getMessage());
+        }
     }
 
     private void showSuccessAlert(String title, String message) {

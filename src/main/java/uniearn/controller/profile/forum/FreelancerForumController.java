@@ -33,9 +33,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import uniearn.database.SessionManager;
 import uniearn.model.entities.forum.Comment;
 import uniearn.model.entities.forum.NotificationMsg;
 import uniearn.model.entities.forum.Post;
+import uniearn.model.entities.users.freelancer.Freelancer;
 import uniearn.services.forum.CategoryService;
 import uniearn.services.forum.CommentService;
 import uniearn.services.forum.DefaultFreelancerEnsurer;
@@ -45,6 +47,7 @@ import uniearn.services.forum.NotificationStore;
 import uniearn.services.forum.PostService;
 import uniearn.services.forum.ReactionService;
 import uniearn.services.forum.WebSocketService;
+import uniearn.services.users.freelancer.FreelancerService;
 
 public class FreelancerForumController {
 
@@ -68,6 +71,8 @@ public class FreelancerForumController {
     private ComboBox<String> categoryFilter;
     @FXML
     private ComboBox<String> postCategoryCombo;
+    @FXML
+    private Label sidebarUsernameLabel;
 
     private final PostService postService = new PostService();
     private final CommentService commentService = new CommentService();
@@ -76,8 +81,12 @@ public class FreelancerForumController {
 
     private List<Post> posts = new ArrayList<>();
 
-    // Default user until login is integrated (authorId 0 = "Forum User" from DB)
     private String currentUserName = "Forum User";
+    public void setUsername(String username) {
+        if (username != null && !username.isEmpty()) {
+            this.currentUserName = username;
+        }
+    }
     private int currentUserId = 0;
 
     private int unreadNotificationCount = 0;
@@ -85,6 +94,29 @@ public class FreelancerForumController {
 
     @FXML
     public void initialize() {
+        // Load logged-in user info from session (need freelancer ID, not user ID, for DB)
+        if (SessionManager.getInstance().isLoggedIn()) {
+            currentUserName = SessionManager.getInstance().getCurrentUserName();
+            int userId = SessionManager.getInstance().getCurrentUserId();
+            try {
+                FreelancerService fs = new FreelancerService();
+                Freelancer freelancer = fs.getFreelancerById(userId);
+                if (freelancer != null) {
+                    currentUserId = freelancer.getIdFreelancer();
+                    currentUserName = freelancer.getName();
+                }
+            } catch (Exception e) {
+                System.err.println("Could not load freelancer for forum: " + e.getMessage());
+                currentUserId = userId; // fallback to user ID
+            }
+        }
+        System.out.println("Forum initialized with user: " + currentUserName + " (freelancerId=" + currentUserId + ")");
+
+        // Show username in sidebar
+        if (sidebarUsernameLabel != null) {
+            sidebarUsernameLabel.setText(currentUserName);
+        }
+
         DefaultFreelancerEnsurer.ensureDefaultFreelancerExists();
         reloadPostsFromDb();
 
@@ -107,6 +139,9 @@ public class FreelancerForumController {
 
         displayPosts();
 
+        // Show existing notification count from store
+        updateNotificationBadge();
+
         // Initialize WebSocket connection for real-time notifications (with retry)
         new Thread(() -> {
             // Retry connection up to 5 times (server may still be starting)
@@ -122,8 +157,12 @@ public class FreelancerForumController {
                 System.out.println("✅ WebSocket connected! Subscribing to notifications...");
                 WebSocketService.getInstance().subscribe("/topic/notifications", NotificationMsg.class,
                         notification -> Platform.runLater(() -> {
-                            NotificationStore.getInstance().add(notification);
-                            updateNotificationBadge();
+                            // Only show notification if it's meant for the current user (post author)
+                            if (notification.getRecipientId() != null
+                                    && notification.getRecipientId().equals(currentUserName)) {
+                                NotificationStore.getInstance().add(notification);
+                                updateNotificationBadge();
+                            }
                         }));
             } else {
                 System.err.println("⚠ Could not connect to WebSocket after retries. Notifications disabled.");
@@ -240,7 +279,16 @@ public class FreelancerForumController {
 
         Label authorLabel = new Label(post.getAuthorName());
         authorLabel.setFont(Font.font("System", FontWeight.BOLD, 14));
-        authorLabel.setStyle("-fx-text-fill: #1a56db;");
+        authorLabel.setStyle("-fx-text-fill: #1a56db; -fx-cursor: hand; -fx-underline: false;");
+        // Tooltip on hover
+        authorLabel.setTooltip(new Tooltip("Click to message " + post.getAuthorName()));
+        // Hover underline effect
+        authorLabel.setOnMouseEntered(e -> authorLabel.setStyle("-fx-text-fill: #1a56db; -fx-cursor: hand; -fx-underline: true;"));
+        authorLabel.setOnMouseExited(e -> authorLabel.setStyle("-fx-text-fill: #1a56db; -fx-cursor: hand; -fx-underline: false;"));
+        // Click to open chat with this author (not yourself)
+        if (!post.getAuthorName().equals(currentUserName)) {
+            authorLabel.setOnMouseClicked(e -> openChatWith(post.getAuthorName()));
+        }
 
         Label timeLabel = new Label("• " + (post.getCreatedAt() != null ? formatDateTime(post.getCreatedAt()) : ""));
         timeLabel.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 12px;");
@@ -332,9 +380,15 @@ public class FreelancerForumController {
         Button commentBtn = new Button("💬 " + post.getComments().size() + " Comments");
         commentBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #3498db; " +
                 "-fx-cursor: hand; -fx-font-size: 13px;");
-        commentBtn.setOnAction(e -> toggleComments(card, post));
+        commentBtn.setOnAction(e -> {
+            postService.incrementViews(post.getId());
+            toggleComments(card, post);
+        });
 
-        actions.getChildren().addAll(likeBtn, dislikeBtn, commentBtn);
+        Label viewsLabel = new Label("👁 " + post.getViews());
+        viewsLabel.setStyle("-fx-text-fill: #888; -fx-font-size: 13px;");
+
+        actions.getChildren().addAll(likeBtn, dislikeBtn, commentBtn, viewsLabel);
 
         card.getChildren().add(header);
 
@@ -723,11 +777,23 @@ public class FreelancerForumController {
     @FXML
     private void handleBackToDashboard() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/Freelancer.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-profile.fxml"));
             Parent root = loader.load();
+
+            // Pass freelancer data back to dashboard
+            uniearn.controller.profile.freelancer.FreelancerProfileController controller = loader.getController();
+            if (SessionManager.getInstance().isLoggedIn()) {
+                int userId = SessionManager.getInstance().getCurrentUserId();
+                FreelancerService freelancerService = new FreelancerService();
+                Freelancer freelancer = freelancerService.getFreelancerById(userId);
+                if (freelancer != null) {
+                    controller.setFreelancerData(freelancer);
+                }
+            }
+
             Stage stage = (Stage) postsContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Dashboard");
+            stage.setTitle("Dashboard - UniEarn");
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Could not load Dashboard page!");
@@ -759,6 +825,22 @@ public class FreelancerForumController {
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Could not load Messages page!");
+        }
+    }
+
+    private void openChatWith(String authorName) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/Messages.fxml"));
+            Parent root = loader.load();
+            MessagesController controller = loader.getController();
+            controller.setChatWith(authorName);
+            controller.initialize(); // re-initialize with the chat target set
+            Stage stage = (Stage) postsContainer.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Chat with " + authorName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Could not open chat: " + e.getMessage());
         }
     }
 
@@ -835,9 +917,16 @@ public class FreelancerForumController {
     }
 
     private void updateNotificationBadge() {
-        unreadNotificationCount++;
+        unreadNotificationCount = NotificationStore.getInstance().size();
         if (notificationBadge != null) {
-            notificationBadge.setText(String.valueOf(unreadNotificationCount));
+            if (unreadNotificationCount > 0) {
+                notificationBadge.setText(String.valueOf(unreadNotificationCount));
+                notificationBadge.setVisible(true);
+                notificationBadge.setManaged(true);
+            } else {
+                notificationBadge.setVisible(false);
+                notificationBadge.setManaged(false);
+            }
         }
     }
 

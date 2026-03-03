@@ -423,3 +423,169 @@
 .projects-scroll > .viewport {
     -fx-background-color: transparent;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   Portfolio Page — additional rules
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Back button in top bar ─────────────────────────────────── */
+.btn-back-nav {
+    -fx-background-color: transparent;
+    -fx-border-color: #e0e5eb;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-padding: 7 14;
+}
+
+.btn-back-nav:hover {
+    -fx-background-color: #f0f4f8;
+    -fx-border-color: #1a73e8;
+}
+
+.btn-back-nav .ikonli-font-icon { -fx-icon-color: #5a6472; }
+.btn-back-nav:hover .ikonli-font-icon { -fx-icon-color: #1a73e8; }
+
+.btn-back-nav-icon { -fx-icon-color: #5a6472; }
+
+.btn-back-nav .label {
+    -fx-text-fill: #5a6472;
+    -fx-font-size: 13px;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.btn-back-nav:hover .label { -fx-text-fill: #1a73e8; }
+
+/* ── Portfolio header card body (below the banner) ───────────── */
+.portfolio-header-body {
+    -fx-background-color: white;
+    -fx-background-radius: 0 0 14 14;
+}
+
+/* Large icon badge for portfolio header */
+.portfolio-header-badge {
+    -fx-min-width:  80px;
+    -fx-min-height: 80px;
+    -fx-max-width:  80px;
+    -fx-max-height: 80px;
+}
+
+.portfolio-header-badge-icon { -fx-icon-color: #1a73e8; }
+
+/* ── Portfolio info card stats ───────────────────────────────── */
+.portfolio-stat-cell {
+    -fx-alignment: CENTER_LEFT;
+}
+
+.portfolio-stat-label {
+    -fx-text-fill: #718096;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-transform: uppercase;
+}
+
+.portfolio-stat-value {
+    -fx-text-fill: #1a202c;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.portfolio-stat-count {
+    -fx-text-fill: #1a73e8;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.portfolio-divider {
+    -fx-padding: 0 0 0 0;
+    -fx-opacity: 0.5;
+}
+
+/* ── Danger button ───────────────────────────────────────────── */
+.btn-danger {
+    -fx-background-color: #fff5f5;
+    -fx-border-color: #fc8181;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-padding: 7 14;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #fed7d7;
+    -fx-border-color: #e53935;
+}
+
+.btn-danger .label {
+    -fx-text-fill: #c53030;
+    -fx-font-size: 12px;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.btn-danger-icon { -fx-icon-color: #c53030; }
+
+/* ── Empty state badge ───────────────────────────────────────── */
+.empty-state-badge {
+    -fx-background-color: #e8f0fe;
+    -fx-background-radius: 50%;
+}
+
+.empty-state-icon { -fx-icon-color: #1a73e8; }
+
+/* ═══════════════════════════════════════════════════════════
+   Portfolio Item Cards
+   ═══════════════════════════════════════════════════════════ */
+
+/* Tech badge inside a card */
+.tech-badge {
+    -fx-background-color: #e8f0fe;
+    -fx-text-fill: #1a73e8;
+    -fx-padding: 4 12;
+    -fx-background-radius: 20;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+/* Link chip — View Project */
+.link-chip-blue {
+    -fx-background-color: #e8f0fe;
+    -fx-background-radius: 8;
+    -fx-padding: 6 14;
+    -fx-cursor: hand;
+}
+
+.link-chip-blue:hover {
+    -fx-background-color: #d2e3fc;
+}
+
+.link-chip-blue .label {
+    -fx-text-fill: #1a73e8;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+/* Link chip — GitHub */
+.link-chip-dark {
+    -fx-background-color: #f0f0f0;
+    -fx-background-radius: 8;
+    -fx-padding: 6 14;
+    -fx-cursor: hand;
+}
+
+.link-chip-dark:hover {
+    -fx-background-color: #e0e0e0;
+}
+
+.link-chip-dark .label {
+    -fx-text-fill: #24292e;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}

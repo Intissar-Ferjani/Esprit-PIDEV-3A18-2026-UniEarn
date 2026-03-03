@@ -16,6 +16,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import uniearn.controller.profile.admin.AdminDashboardController;
+import uniearn.controller.profile.forum.MessagesController;
 import uniearn.controller.profile.freelancer.ListFreelancersController;
 import uniearn.database.SessionManager;
 import uniearn.model.entities.projet.Project;
@@ -137,6 +139,9 @@ public class ProjectController {
     private TableColumn<Project, Void> actionColumn;
 
     @FXML
+    private TableColumn<Project, Void> chatColumn;
+
+    @FXML
     public void initialize() {
         if (statusComboBox != null) {
             statusComboBox.getItems().setAll(taskstatusenum.values());
@@ -211,6 +216,31 @@ public class ProjectController {
             };
 
             actionColumn.setCellFactory(cellFactory);
+        }
+
+        // Chat column — open messaging with the freelancer
+        if (chatColumn != null) {
+            chatColumn.setCellFactory(col -> new TableCell<>() {
+                private final Button chatBtn = new Button("💬 Chat");
+                {
+                    chatBtn.setStyle(
+                            "-fx-background-color: #1a56db; -fx-text-fill: white; -fx-cursor: hand; -fx-font-weight: bold; -fx-background-radius: 6;");
+                    chatBtn.setOnAction(event -> {
+                        Project project = getTableView().getItems().get(getIndex());
+                        String freelancerName = project.getFreelancerName();
+                        if (freelancerName == null || freelancerName.equals("Unknown")) {
+                            freelancerName = services.getFreelancerNameById(project.getFreelancerid());
+                        }
+                        openChatWithFreelancer(freelancerName);
+                    });
+                }
+
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setGraphic(empty ? null : chatBtn);
+                }
+            });
         }
 
         // handleRefresh() is now called in setClientData, so it's not needed here
@@ -324,7 +354,7 @@ public class ProjectController {
         String description = descriptionArea.getText();
         double budget = Double.parseDouble(budgetField.getText());
         int status = 2; // Forced default TODO
-        int freelancerIDD = 23; // Default or placeholder freelancer ID
+        int freelancerIDD = 4; // Auto-assign to freelancer "arbi akrem" (idFreelancer=4)
 
         if (currentClient == null) {
             showErrorAlert("Error", "Client data not available. Cannot add project.");
@@ -453,6 +483,22 @@ public class ProjectController {
         } catch (IOException e) {
             e.printStackTrace();
             showErrorAlert("Error", "Failed to load browse freelancers page: " + e.getMessage());
+        }
+    }
+
+    private void openChatWithFreelancer(String freelancerName) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/Messages.fxml"));
+            Parent root = loader.load();
+            MessagesController controller = loader.getController();
+            controller.setChatWith(freelancerName);
+            controller.initialize();
+            Stage stage = (Stage) projectTable.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Chat with " + freelancerName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Could not open chat: " + e.getMessage());
         }
     }
 

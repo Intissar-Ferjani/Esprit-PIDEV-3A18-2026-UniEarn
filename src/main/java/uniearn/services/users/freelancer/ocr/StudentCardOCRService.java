@@ -89,10 +89,8 @@ public class StudentCardOCRService {
 
     // ── Normalizer ─────────────────────────────────────────────────────────────
 
-    /**
-     * Strips accents (É→E, è→e, etc.), uppercases, and collapses whitespace.
-     * This lets all checks work regardless of OCR accent detection.
-     */
+    //Strips accents (É→E, è→e, etc.), uppercases, and collapses whitespace.
+    //This lets all checks work regardless of OCR accent detection.
     private String normalize(String text) {
         if (text == null) return "";
         String decomposed = Normalizer.normalize(text, Normalizer.Form.NFD);
@@ -112,9 +110,6 @@ public class StudentCardOCRService {
             return true;
         }
 
-        // OCR often mangles "CARTE ÉTUDIANT" — the É becomes garbage or is dropped,
-        // leaving only "TE ETUDIANT" or just "ETUDIANT".
-        // We accept "ETUDIANT" alone since year + name are validated separately.
         if (normalizedText.contains("ETUDIANT")) {
             System.out.println("✓ Student card keyword matched (ETUDIANT partial — OCR mangled CARTE)");
             return true;

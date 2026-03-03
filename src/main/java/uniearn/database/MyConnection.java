@@ -4,10 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-/**
- * Singleton class for managing database connection
- * Ensures only ONE database connection exists throughout the application
- */
+
 public class MyConnection {
 
     // Database credentials
@@ -15,16 +12,11 @@ public class MyConnection {
     private final String login = "root";
     private final String pwd = "";
 
-    // Single connection instance
     private Connection cnx;
 
     // Single MyConnection instance (Singleton)
     private static MyConnection instance;
 
-    /**
-     * Private constructor - prevents external instantiation
-     * This is KEY to Singleton pattern
-     */
     private MyConnection() {
         try {
             cnx = DriverManager.getConnection(url, login, pwd);
@@ -35,10 +27,7 @@ public class MyConnection {
         }
     }
 
-    /**
-     * Get the single instance of MyConnection
-     * Thread-safe implementation
-     */
+    //get single instance of MyConnection -> Thread-safe
     public static synchronized MyConnection getInstance() {
         if (instance == null) {
             instance = new MyConnection();
@@ -46,17 +35,11 @@ public class MyConnection {
         return instance;
     }
 
-    /**
-     * Get the database connection
-     * Always returns the same connection
-     */
+    //always returns the same connection
     public Connection getCnx() {
         return cnx;
     }
 
-    /**
-     * Check if connection is still alive
-     */
     public boolean isConnected() {
         try {
             return cnx != null && !cnx.isClosed();
@@ -65,9 +48,7 @@ public class MyConnection {
         }
     }
 
-    /**
-     * Reconnect if connection is lost
-     */
+    // if cnx is lost
     public void reconnect() {
         try {
             if (!isConnected()) {

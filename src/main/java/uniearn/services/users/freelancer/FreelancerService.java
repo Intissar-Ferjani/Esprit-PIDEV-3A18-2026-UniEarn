@@ -25,9 +25,7 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
     @Override
     public void addFreelancer(Freelancer freelancer) throws SQLException {
 
-        // ── Safety check: never insert the same user twice ────────────────────
-        // If a user row with this email already exists (e.g. from a previous
-        // attempt or double-click), reuse that ID instead of creating a new row.
+        // + check if same user is already inserted
         int existingUserId = findUserIdByEmail(freelancer.getEmail());
 
         int generatedUserId;
@@ -37,13 +35,12 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
             System.out.println("⚠ User row already exists for " + freelancer.getEmail()
                     + " (idUser=" + generatedUserId + ") — skipping duplicate insert");
         } else {
-            // Normal path — insert the user row
             generatedUserId = super.addUser(freelancer);
         }
 
         freelancer.setIdUser(generatedUserId);
 
-        // ── Also guard against a duplicate freelancer row ─────────────────────
+        // ── Avoid Duplc ─────────────────────
         if (freelancerRowExists(generatedUserId)) {
             System.out.println("⚠ Freelancer row already exists for idUser=" + generatedUserId
                     + " — skipping duplicate insert");
@@ -64,7 +61,6 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
         ps.setString(5, String.join(",", freelancer.getSkills()));
         ps.setString(6, freelancer.getBio());
 
-        // studentCardPath — always null at this step, set in Step 3
         ps.setNull(7, java.sql.Types.VARCHAR);
 
         if (freelancer.getCvPath() != null) {
@@ -94,7 +90,7 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
         System.out.println("✓ Freelancer profile created successfully (Step 2)");
     }
 
-    // ── Helper: look up an existing user row by email ─────────────────────────
+    // ── Helpers ─────────────────────────
     private int findUserIdByEmail(String email) {
         String sql = "SELECT idUser FROM user WHERE email = ?";
         try {
@@ -109,8 +105,6 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
         return -1;
     }
 
-    // ── Helper: check if a freelancer row already exists for this userId ──────
-    // ── Helper: check if a freelancer row already exists for this userId ──────
     private boolean freelancerRowExists(int userId) {
         String sql = "SELECT COUNT(*) FROM freelancer WHERE idUser = ?";
         try {
@@ -139,7 +133,7 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
         return -1;
     }
 
-    // ── Step 3: Update freelancer with student card verification ──────────────
+    // ── Step 3: Update freelancer + student card verification ──────────────
     public void updateVerificationData(int freelancerId, String studentCardPath, VerifStatus status)
             throws SQLException {
         String sql = "UPDATE freelancer SET studentCardPath = ?, verificationStatus = ? WHERE idUser = ?";

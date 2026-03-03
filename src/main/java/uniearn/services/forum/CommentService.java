@@ -1,11 +1,16 @@
 package uniearn.services.forum;
 
-import uniearn.database.MyConnection;
-import uniearn.model.entities.forum.Comment;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import uniearn.database.MyConnection;
+import uniearn.model.entities.forum.Comment;
 
 public class CommentService {
 
@@ -16,14 +21,13 @@ public class CommentService {
 
     /**
      * Add a comment. Schema: freelancer_forum_comment (comment_id, post_id, freelancer_id, comment_text, created_at).
-     * Uses DEFAULT_FREELANCER_ID (run forum_default_freelancer.sql once to create it).
      */
     public int addComment(Comment comment) throws SQLException {
         if (cn == null) throw new SQLException("Database not connected.");
         String sql = "INSERT INTO freelancer_forum_comment (post_id, freelancer_id, comment_text) VALUES (?, ?, ?)";
         PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
         ps.setInt(1, comment.getPostId());
-        ps.setInt(2, DEFAULT_FREELANCER_ID);
+        ps.setInt(2, comment.getAuthorId() > 0 ? comment.getAuthorId() : DEFAULT_FREELANCER_ID);
         ps.setString(3, comment.getContent());
         ps.executeUpdate();
 
@@ -40,7 +44,12 @@ public class CommentService {
     public List<Comment> getCommentsByPostId(int postId) {
         List<Comment> comments = new ArrayList<>();
         if (cn == null) return comments;
-        String sql = "SELECT c.comment_id, c.post_id, c.comment_text, c.created_at FROM freelancer_forum_comment c WHERE c.post_id = ? ORDER BY c.comment_id ASC";
+        String sql = "SELECT c.comment_id, c.post_id, c.freelancer_id, c.comment_text, c.created_at, "
+                + "u.name AS author_name "
+                + "FROM freelancer_forum_comment c "
+                + "LEFT JOIN freelancer f ON c.freelancer_id = f.idFreelancer "
+                + "LEFT JOIN user u ON f.idUser = u.idUser "
+                + "WHERE c.post_id = ? ORDER BY c.comment_id ASC";
         try {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, postId);
@@ -48,10 +57,11 @@ public class CommentService {
             while (rs.next()) {
                 Comment comment = new Comment();
                 comment.setId(rs.getInt("comment_id"));
-                comment.setAuthorId(0);
+                comment.setAuthorId(rs.getInt("freelancer_id"));
                 comment.setPostId(rs.getInt("post_id"));
                 comment.setContent(rs.getString("comment_text"));
-                comment.setAuthorName("Forum User");
+                String authorName = rs.getString("author_name");
+                comment.setAuthorName(authorName != null ? authorName : "Forum User");
                 Timestamp ts = rs.getTimestamp("created_at");
                 if (ts != null) {
                     comment.setCreatedAt(ts.toLocalDateTime());

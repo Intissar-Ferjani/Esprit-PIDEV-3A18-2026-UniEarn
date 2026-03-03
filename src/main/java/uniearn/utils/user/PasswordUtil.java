@@ -11,6 +11,7 @@ public class PasswordUtil {
         }
 
         // Generate a salt and hash the password in one step
+        // Salt = a random secret string added to the password before hashing.
         // The cost factor (10) determines how computationally expensive the hashing is
         // Higher = more secure but slower. 10-12 is recommended.
         String hashedPassword = BCrypt.hashpw(plainPassword, BCrypt.gensalt(10));
@@ -19,7 +20,7 @@ public class PasswordUtil {
         return hashedPassword;
     }
 
-//    Verify if password is hashed
+    //verify if pass is hashed
     public static boolean verifyPassword(String plainPassword, String hashedPassword) {
         if (plainPassword == null || plainPassword.isEmpty()) {
             System.out.println("⚠ Password verification failed: password is null or empty");
@@ -49,7 +50,7 @@ public class PasswordUtil {
         }
     }
 
-//    Check if a string is already a BCrypt hash
+    //check if it's hashed
     public static boolean isHashed(String password) {
         if (password == null || password.isEmpty()) {
             return false;
@@ -76,6 +77,22 @@ public class PasswordUtil {
 
         return password.toString();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

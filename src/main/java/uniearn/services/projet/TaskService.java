@@ -17,7 +17,6 @@ public class TaskService {
 
     private final Connection cn = MyConnection.getInstance().getCnx();
 
-
     public boolean addTask(Task task) throws SQLException {
         String request = "INSERT INTO task (title,description,deadline,TaskStatus,dateAssign,role,priority,idProject) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -27,10 +26,10 @@ public class TaskService {
             pst.setString(1, task.getTitle());
             pst.setString(2, task.getDescription());
             pst.setObject(3, task.getDeadline());
-            pst.setString(4, task.getTaskstatus().name());   // store name, not ordinal
+            pst.setString(4, task.getTaskstatus().name()); // store name, not ordinal
             pst.setObject(5, task.getDateAssigned());
             pst.setString(6, task.getRole());
-            pst.setString(7, task.getPriority().name());     // store name, not ordinal
+            pst.setString(7, task.getPriority().name()); // store name, not ordinal
             pst.setInt(8, task.getProjectid());
 
             int rows = pst.executeUpdate();
@@ -51,10 +50,10 @@ public class TaskService {
             pst.setString(1, task.getTitle());
             pst.setString(2, task.getDescription());
             pst.setObject(3, task.getDeadline());
-            pst.setString(4, task.getTaskstatus().name());  // store name, not ordinal
+            pst.setString(4, task.getTaskstatus().name()); // store name, not ordinal
             pst.setObject(5, task.getDateAssigned());
             pst.setString(6, task.getRole());
-            pst.setString(7, task.getPriority().name());    // store name, not ordinal
+            pst.setString(7, task.getPriority().name()); // store name, not ordinal
             pst.setInt(8, task.getProjectid());
             pst.setInt(9, task.getIdtask());
 
@@ -67,7 +66,6 @@ public class TaskService {
         }
         return false;
     }
-
 
     public boolean deleteTask(int id) {
         String request = "DELETE FROM task WHERE idTask=?";
@@ -105,7 +103,7 @@ public class TaskService {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-     return tasks;
+        return tasks;
     }
 
     public Task getTaskById(int id) {

@@ -2,6 +2,6 @@ package uniearn.model.enums;
 
 public enum taskpriorityenum {
     High,
-    Meduim,
+    Medium,
     Low
 }

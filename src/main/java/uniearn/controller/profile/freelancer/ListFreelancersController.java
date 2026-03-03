@@ -58,7 +58,7 @@ public class ListFreelancersController {
             sortByCombo.setValue("Rating (High)");
         }
 
-        // Add listeners for real-time filtering
+        // Add listeners -> real-time filtering
         setupFilterListeners();
     }
 
@@ -235,13 +235,12 @@ public class ListFreelancersController {
         avatar.setPreserveRatio(true);
 
         try {
-            // load profile picture
+            // load default profile picture
             avatar.setImage(new Image(getClass().getResourceAsStream("/images/default-avatar.jpg")));
         } catch (Exception e) {
             // Use placeholder
         }
 
-        // Make avatar circular
         avatar.setStyle(
                 "-fx-background-radius: 50%; -fx-border-radius: 50%; -fx-border-color: #e1e8ed; -fx-border-width: 2;");
         avatarBox.getChildren().add(avatar);

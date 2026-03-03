@@ -18,6 +18,7 @@ public class Post {
     private int dislikes;
     private String gifUrl;
     private String category;
+    private int views;
     private Set<Integer> likedBy;   // in-memory UI tracking
     private Set<Integer> dislikedBy;
 
@@ -25,6 +26,7 @@ public class Post {
         this.comments = new ArrayList<>();
         this.likedBy = new HashSet<>();
         this.dislikedBy = new HashSet<>();
+        this.views = 0;
     }
 
     public Post(int id, String title, String content, String authorName, int authorId) {
@@ -102,6 +104,9 @@ public class Post {
     public boolean isDislikedBy(int userId) { return dislikedBy.contains(userId); }
     public Set<Integer> getLikedBySet() { return likedBy; }
     public Set<Integer> getDislikedBySet() { return dislikedBy; }
+
+    public int getViews() { return views; }
+    public void setViews(int views) { this.views = views; }
 
     public String getGifUrl() { return gifUrl; }
     public void setGifUrl(String gifUrl) { this.gifUrl = gifUrl; }

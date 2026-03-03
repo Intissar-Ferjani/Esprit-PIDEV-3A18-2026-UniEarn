@@ -30,7 +30,7 @@
 
 ## 3. Project Structure
 
-```
+***REMOVED***
 UniEarn-Java/
 ├── pom.xml                              # Maven build config
 ├── forum_allow_null_freelancer.sql       # SQL: allow NULL freelancer_id in forum tables
@@ -116,7 +116,7 @@ UniEarn-Java/
 │   └── test/java/
 │       └── test.java                            # Basic JUnit 5 tests
 └── target/                                      # Maven build output
-```
+***REMOVED***
 
 ---
 
@@ -194,7 +194,7 @@ The forum module uses three MySQL tables:
 
 ### 6.1 Freelancer Forum (Core Feature)
 
-```
+***REMOVED***
 ┌──────────────────────┐     STOMP/WS      ┌──────────────────────┐
 │  JavaFX Client (UI)  │ ◄──────────────► │  Spring Boot Server   │
 │                      │   ws://8081/ws    │  (ServerApp)          │
@@ -210,7 +210,7 @@ The forum module uses three MySQL tables:
 │  - freelancer_forum_*│
 │  - user, freelancer  │
 └──────────────────────┘
-```
+***REMOVED***
 
 ### 6.2 Request Flow — Creating a Post
 1. User fills title + content in `Forum.fxml`
@@ -454,25 +454,25 @@ The forum module uses three MySQL tables:
 4. Database `uniearn_db` created
 
 ### Step 1: Set Up Database
-```sql
+***REMOVED***sql
 CREATE DATABASE IF NOT EXISTS uniearn_db;
 USE uniearn_db;
-```
+***REMOVED***
 Then run `forum_default_freelancer.sql` to create the default freelancer and all dependencies.
 
 > **Alternatively**, the `DefaultFreelancerEnsurer` class auto-creates these records at runtime if missing.
 
 ### Step 2: Start the WebSocket Server
-```bash
+***REMOVED***bash
 # From project root
 mvn compile exec:java -Dexec.mainClass="uniearn.server.forum.ServerApp"
-```
+***REMOVED***
 Or run `ServerApp.main()` from your IDE. Server starts on port **8081**.
 
 ### Step 3: Start the JavaFX Client
-```bash
+***REMOVED***bash
 mvn javafx:run
-```
+***REMOVED***
 Or run `uniearn.app.MainApp.main()` from your IDE.
 
 ---
@@ -524,9 +524,9 @@ Or run `uniearn.app.MainApp.main()` from your IDE.
 - No integration or database tests currently
 
 ### Running Tests
-```bash
+***REMOVED***bash
 mvn test
-```
+***REMOVED***
 
 ---
 
@@ -548,12 +548,12 @@ mvn test
 ## 14. Build & Dependencies
 
 ### Maven Build Commands
-```bash
+***REMOVED***bash
 mvn clean compile        # Compile the project
 mvn javafx:run           # Run the JavaFX client
 mvn test                 # Run tests
 mvn package              # Build JAR
-```
+***REMOVED***
 
 ### Key Maven Plugins
 - `javafx-maven-plugin` (0.0.8) — configured with `mainClass: uniearn.app.MainApp`
