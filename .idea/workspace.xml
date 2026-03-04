@@ -4,149 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/GUIDE_UTILISATION_CONTRATS.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/INTEGRATION_MOYENS_PAIEMENT.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/INTEGRATION_PAIEMENTS_ESCROW.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_bank_account_table.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_contract_tables.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_forum_messages_table.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/create_payment_escrow_table.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fix_freelancer_fk.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fix_payment_escrow_nullable.sql" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/GoogleAuthHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/GoogleOAuthService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/TermsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminContractTemplatesController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminPaymentMethodsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminPaymentsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientContractsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientPaymentMethodsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientPaymentsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerContractsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerPaymentMethodsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerPaymentsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/BankAccount.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/PaymentEscrow.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/server/security/SecurityCallbackServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/BankAccountService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/PrivateMessageService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/payment/BankAccountService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/payment/EscrowPaymentService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/users/security/LoginAttemptService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/users/security/WebcamCaptureService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/auth/signup/terms-and-conditions.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/google__logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-contracts.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-payment-methods.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-payments.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/admin/admin-contract-templates.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/admin/admin-payment-methods.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/admin/admin-payments.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/client/client-contracts.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/client/client-payment-methods.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/client/client-payments.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/projet_taches/project-styles.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/cv/1772314579881_anaghim_fr-1.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/cv/1772315320403_anaghim_fr-1.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/cv/1772315761408_anaghim_fr-1.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/cv/1772327208628_dsreviision.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/cv/1772328318597_anaghim_fr-1.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/cv/1772328492026_anaghim_fr-1.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/cv/1772329649318_anaghim_fr-1.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/cv/1772390152703_CV Professionnel akrem arbi.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/cv/1772400072116_Intissar Ferjani -eng.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/cv/1772403667775_Intissar Ferjani -eng.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/cv/1772417535802_Intissar Ferjani -eng.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/cv/1772421514748_Intissar Ferjani -eng.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/cv/1772424679063_CV Professionnel akrem arbi.pdf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/intrusion/1772404495424_i.ferjani.26@gmail.com.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/intrusion/1772404530096_i.ferjani.26@gmail.com.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/intrusion/1772404658595_i.ferjani.26@gmail.com.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/intrusion/1772426346561_akremarbi123@gmail.com.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/intrusion/1772427906478_akremarbi123@gmail.com.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/profiles/4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/profiles/client_99.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/profiles/freelancer_100.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/profiles/freelancer_101.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/profiles/freelancer_102.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/profiles/freelancer_103.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/profiles/freelancer_14.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/profiles/google_akremarbi123_gmail_com.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/profiles/google_ferjani2003_gmail_com.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/profiles/google_i_ferjani_26_gmail_com.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/student_cards/100_1772400139794_carte_etudiant_intissar_2025_2026.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/student_cards/101_1772403715295_carte_etudiant_intissar_2025_2026.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/student_cards/102_1772417718536_carte_etudiant_intissar_2025_2026.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/student_cards/103_1772421552022_carte_etudiant_intissar_2025_2026.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/student_cards/14_1772424746034_carteetudakrem.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/student_cards/14_1772424763579_carteetudiant.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/student_cards/14_1772424787567_caetaaakrem.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/student_cards/3_1772329505428_carteetudiant.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/student_cards/4_1772329700054_carteetudiant.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/student_cards/5_1772390200247_carteetudakrem.jpeg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/student_cards/5_1772390942993_caetaaakrem.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/uploads/student_cards/70_1772316002489_637447497_1361579129072259_3196197241371800681_n.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="INTEGRATION AVEC GESTION USER PAIEMENT ET CONTRAT ET MESSAGE">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PROJECT_INSTRUCTIONS.md" beforeDir="false" afterPath="$PROJECT_DIR$/PROJECT_INSTRUCTIONS.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/app/MainApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/app/MainApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/client/ClientSignupController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/client/ClientSignupController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/freelancer/FreelancerSignupController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/freelancer/FreelancerSignupController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/ForgotPasswordController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/ForgotPasswordController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/LoginController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/SignupController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/SignupController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/admin/AdminContractController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/admin/AdminContractController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/client/ClientContractDialogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/client/ClientContractDialogController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/contrat/ContractSignatureController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/contracts/contrat/ContractSignatureController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/AdminDashboardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/ListUsersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/admin/ListUsersController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/forum/FreelancerForumController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/forum/FreelancerForumController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/forum/MessagesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/forum/MessagesController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/forum/NotificationsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/forum/NotificationsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerPortfolioController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerPortfolioController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/ListFreelancersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/ListFreelancersController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/ProjectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/ProjectController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/database/MyConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/database/MyConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/forum/ChatMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/forum/ChatMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/forum/NotificationMsg.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/forum/NotificationMsg.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/forum/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/forum/Post.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/projet/Project.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/projet/Project.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/enums/taskpriorityenum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/enums/taskpriorityenum.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/server/forum/ChatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/server/forum/ChatController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/DataLoaderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/DataLoaderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/contracts/ContratService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/contracts/ContratService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/CommentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/CommentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/PostService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/WebSocketService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/forum/WebSocketService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/projet/ProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/projet/ProjectService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/projet/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/projet/TaskService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/users/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/users/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/users/admin/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/users/admin/AdminService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/users/freelancer/FreelancerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/users/freelancer/FreelancerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/users/freelancer/SkillsApiService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/users/freelancer/SkillsApiService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/users/freelancer/ocr/StudentCardOCRService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/users/freelancer/ocr/StudentCardOCRService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/users/mail/EmailService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/users/mail/EmailService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/utils/user/PasswordUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/utils/user/PasswordUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/auth/login/login.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/auth/login/login.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/auth/signup/signup.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/auth/signup/signup.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/contracts/admin_contracts.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/contracts/admin_contracts.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/contracts/client_contract_dialog.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/contracts/client_contract_dialog.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-portfolio.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-portfolio.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-projects.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-projects.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/admin/admin-dashboard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/admin/admin-dashboard.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/client/Projet.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/client/Projet.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/client/client-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/client/client-profile.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/forum/profile.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/forum/profile.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/Forum.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/Forum.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/Messages.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/Messages.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-profile.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/list-freelancers.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/profile.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/profile.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -228,7 +88,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "Merging Gestion__Candidature__Et__Feedback",
+    "git-widget-placeholder": "Gestion__Candidature__Et__Feedback",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/MSI/Desktop/uniearn_java",
@@ -275,12 +135,25 @@
       <workItem from="1772293907370" duration="572000" />
       <workItem from="1772294592326" duration="3948000" />
       <workItem from="1772393102879" duration="8572000" />
-      <workItem from="1772572493312" duration="2513000" />
+      <workItem from="1772572493312" duration="4405000" />
     </task>
+    <task id="LOCAL-00001" summary="INTEGRATION AVEC GESTION USER PAIEMENT ET CONTRAT ET MESSAGE">
+      <option name="closed" value="true" />
+      <created>1772575592288</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1772575592288</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="INTEGRATION AVEC GESTION USER PAIEMENT ET CONTRAT ET MESSAGE" />
+    <option name="LAST_COMMIT_MESSAGE" value="INTEGRATION AVEC GESTION USER PAIEMENT ET CONTRAT ET MESSAGE" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
