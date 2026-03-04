@@ -14,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import uniearn.controller.profile.freelancer.ListFreelancersController;
@@ -35,6 +36,8 @@ public class ProjectController {
     private Integer selectedProjectId = null;
 
     private Client currentClient;
+
+    private Parent embeddedDashboard;
 
     private ObservableList<Project> projectList = FXCollections.observableArrayList();
 
@@ -69,6 +72,9 @@ public class ProjectController {
 
     @FXML
     private Button editProfileButton;
+
+    @FXML
+    private ScrollPane dashboardView;
 
     @FXML
     private TextField budgetField;
@@ -132,6 +138,9 @@ public class ProjectController {
 
     @FXML
     private Button updateButton;
+
+    @FXML
+    private StackPane contentArea;
 
     @FXML
     private TableColumn<Project, Void> actionColumn;
@@ -323,7 +332,7 @@ public class ProjectController {
         String title = titleField.getText();
         String description = descriptionArea.getText();
         double budget = Double.parseDouble(budgetField.getText());
-        int status = 2; // Forced default TODO
+        int status = 0; // Forced default TODO
         int freelancerIDD = 23; // Default or placeholder freelancer ID
 
         if (currentClient == null) {
@@ -440,14 +449,14 @@ public class ProjectController {
     @FXML
     private void handleBrowseFreelancers() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/list-freelancers.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/Freelancer/list-freelancers.fxml"));
             Parent root = loader.load();
 
             ListFreelancersController controller = loader.getController();
             controller.setClientData(currentClient);
 
             Stage stage = (Stage) projectTable.getScene().getWindow();
-            stage.setScene(new Scene(root, 1200, 800));
+            stage.setScene(new Scene(root, 1200, 700));
             stage.setTitle("Browse Freelancers - UniEarn");
             stage.centerOnScreen();
         } catch (IOException e) {
@@ -594,12 +603,35 @@ public class ProjectController {
     }
 
     @FXML
-    private void handleSettings() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Settings");
-        alert.setHeaderText("Account Settings");
-        alert.setContentText(
-                "Settings page coming soon!\n\nFeatures:\n• Notification preferences\n• Privacy settings\n• Language selection");
-        alert.showAndWait();
+    private void handleShowDashboard() {
+        if (embeddedDashboard != null) {
+            embeddedDashboard.setVisible(false);
+            embeddedDashboard.setManaged(false);
+        }
+
+        dashboardView.setVisible(true);
+        dashboardView.setManaged(true);
+        System.out.println("✓ Switched back to main profile dashboard");
     }
+
+    @FXML
+    private void handleApplications() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/ClientDashboardView.fxml"));
+            Parent root = loader.load();
+
+            // ClientDashboardController controller = loader.getController();
+
+            Stage stage = (Stage) projectTable.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("Applications & Reviews - UniEarn");
+            stage.centerOnScreen();
+
+            System.out.println("✓ Switched to Applications Dashboard scene");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load applications page: " + e.getMessage());
+        }
+    }
+
 }

@@ -22,34 +22,41 @@ import java.util.regex.Pattern;
 
 public class LoginController {
 
-    @FXML private TextField emailField;
-    @FXML private PasswordField passwordField;
-    @FXML private Button loginButton;
-    @FXML private Hyperlink forgotPasswordLink;
-    @FXML private Label emailError;
-    @FXML private Label passwordError;
+    @FXML
+    private TextField emailField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private Button loginButton;
+    @FXML
+    private Hyperlink forgotPasswordLink;
+    @FXML
+    private Label emailError;
+    @FXML
+    private Label passwordError;
 
     private final UserService userService = new UserService();
     private final ClientService clientService = new ClientService();
     private final FreelancerService freelancerService = new FreelancerService();
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
-    );
+            "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
     @FXML
     public void initialize() {
         emailField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) validateEmail();
+            if (!newVal)
+                validateEmail();
         });
 
         passwordField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) validatePassword();
+            if (!newVal)
+                validatePassword();
         });
     }
 
-    //    ----------------------------------------------------------------------
-//    --- Login ---
+    // ----------------------------------------------------------------------
+    // --- Login ---
     private boolean validateEmail() {
         String email = emailField.getText().trim();
 
@@ -100,14 +107,14 @@ public class LoginController {
                     .findFirst()
                     .orElse(null);
 
-//            User not found
+            // User not found
             if (foundUser == null) {
                 showError(emailError, "No account found with this email");
                 loginButton.setDisable(false);
                 return;
             }
 
-//            Account not activated
+            // Account not activated
             if (!foundUser.isActivated()) {
                 showErrorAlert("Account Deactivated",
                         "Your account has been deactivated.\n\n" +
@@ -116,14 +123,14 @@ public class LoginController {
                 return;
             }
 
-//          verify password using BCrypt
+            // verify password using BCrypt
             if (!PasswordUtil.verifyPassword(password, foundUser.getPassword())) {
                 showError(passwordError, "Incorrect password");
                 loginButton.setDisable(false);
                 return;
             }
 
-//            Store user in session if user found
+            // Store user in session if user found
             SessionManager.getInstance().setCurrentUser(foundUser);
 
             System.out.println("✓ Login successful: " + foundUser.getName() + " (" + foundUser.getRole() + ")");
@@ -170,7 +177,7 @@ public class LoginController {
 
         Client client = clientService.getClientById(user.getIdUser());
 
-//        Client not found
+        // Client not found
         if (client == null) {
             System.err.println("Client data is null for user ID: " + user.getIdUser());
             showErrorAlert("Error", "Unable to load client data from database.");
@@ -198,7 +205,7 @@ public class LoginController {
 
         Freelancer freelancer = freelancerService.getFreelancerById(user.getIdUser());
 
-//        Freelancer not found
+        // Freelancer not found
         if (freelancer == null) {
             System.err.println("Freelancer data is null for user ID: " + user.getIdUser());
             showErrorAlert("Error", "Unable to load freelancer profile.");
@@ -232,9 +239,8 @@ public class LoginController {
         System.out.println("✓ Redirected to Admin Dashboard");
     }
 
-
-    //    ----------------------------------------------------------------------
-//    --- Signup ---
+    // ----------------------------------------------------------------------
+    // --- Signup ---
     @FXML
     private void handleSignupRedirect() {
         try {
@@ -252,8 +258,8 @@ public class LoginController {
         }
     }
 
-    //    ----------------------------------------------------------------------
-//    --- Forget pass ---
+    // ----------------------------------------------------------------------
+    // --- Forget pass ---
     @FXML
     private void handleForgotPassword() {
         try {

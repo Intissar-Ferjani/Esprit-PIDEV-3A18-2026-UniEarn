@@ -775,21 +775,15 @@ public class FreelancerProfileController {
     @FXML
     public void handleApplications() {
         try {
-            if (embeddedDashboard == null) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/FreelancerDashboardView.fxml"));
-                embeddedDashboard = loader.load();
-            }
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/FreelancerDashboardView.fxml"));
+            Parent root = loader.load();
 
-            dashboardView.setVisible(false);
-            dashboardView.setManaged(false);
+            Stage stage = (Stage) nameLabel.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("My Applications - UniEarn");
+            stage.centerOnScreen();
 
-            if (!contentArea.getChildren().contains(embeddedDashboard)) {
-                contentArea.getChildren().add(embeddedDashboard);
-            }
-            embeddedDashboard.setVisible(true);
-            embeddedDashboard.setManaged(true);
-
-            System.out.println("✓ Embedded Freelancer Dashboard loaded into contentArea");
+            System.out.println("✓ Switched to Freelancer Applications Dashboard scene");
         } catch (Exception e) {
             e.printStackTrace();
             showErrorAlert("Erreur de navigation", "Impossible d'ouvrir la page des candidatures: " + e.getMessage());
@@ -878,7 +872,8 @@ public class FreelancerProfileController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/TaskBoard.fxml"));
             Parent root = loader.load();
 
-            // *** KEY FIX: pass the current freelancer so the board loads the right tasks/projects ***
+            // *** KEY FIX: pass the current freelancer so the board loads the right
+            // tasks/projects ***
             TaskBoardController controller = loader.getController();
             controller.setFreelancerData(currentFreelancer);
 
@@ -900,7 +895,8 @@ public class FreelancerProfileController {
             content.setVisible(true);
             content.setManaged(true);
 
-            System.out.println("✓ Embedded Task Board loaded for freelancer ID: " + currentFreelancer.getIdFreelancer());
+            System.out
+                    .println("✓ Embedded Task Board loaded for freelancer ID: " + currentFreelancer.getIdFreelancer());
         } catch (IOException e) {
             e.printStackTrace();
             showErrorAlert("Error", "Failed to load Task Board: " + e.getMessage());

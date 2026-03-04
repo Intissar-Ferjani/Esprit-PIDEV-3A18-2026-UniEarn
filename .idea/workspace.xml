@@ -6,23 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/ForgotPasswordController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/ForgotPasswordController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/SignupController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/SignupController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerDashboardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerDashboardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerEvaluationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerEvaluationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/app/MainApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/app/MainApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/LoginController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/auth/user/LoginController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientProfileController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/FreelancerProjectsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/FreelancerProjectsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/ListFreelancersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/ListFreelancersController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/ProjectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/ProjectController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/TaskBoardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/TaskBoardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/TaskFormController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/TaskFormController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/candidature/application/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/candidature/application/Application.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/ContratServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/ContratServiceTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/projet/ProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/projet/ProjectService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/projet/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/projet/TaskService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/users/admin/AdminService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/users/admin/AdminService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application/FreelancerDashboardView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application/FreelancerDashboardView.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application/FreelancerEvaluationView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application/FreelancerEvaluationView.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-profile.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/client/Projet.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/client/Projet.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/client/client-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/client/client-profile.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,6 +27,7 @@
       <entry key="_C:/Users/MSI/Desktop/uniearn" value="3AH3tI7E0M8Za79ICgaKJYHKcPR" />
       <entry key="_C:/Users/MSI/Desktop/uniearn2" value="3AHNW31UKqGSq1OOTfcadoHkZ4m" />
       <entry key="_C:/Users/MSI/Desktop/uniearn_java" value="3AIyuGBFDGmrvsZ7dmnHM8Qez9G" />
+      <entry key="_C:/Users/bysco/OneDrive/Desktop/proj/gestion candidature" value="3ASCeKqe2LL7mXE9Oyhlfvpc9Rt" />
       <entry key="_C:/Users/pc/Documents/PiDev/test" value="3AKNIE9k7mofE07idG6verN3i3A" />
     </persistenceIdMap>
   </component>
@@ -67,8 +61,24 @@
   }
 }</component>
   <component name="McpProjectServerCommands">
-    <commands />
-    <urls />
+    <McpServerCommand sourceId="UserConfigurationSource">
+      <option name="allowedToolsNames" />
+      <option name="enabled" value="true" />
+      <option name="name" value="" />
+      <option name="programPath" value="" />
+      <option name="arguments" value="" />
+      <option name="workingDirectory" value="" />
+      <envs />
+    </McpServerCommand>
+    <McpServerCommand sourceId="UserConfigurationSource">
+      <option name="allowedToolsNames" />
+      <option name="enabled" value="true" />
+      <option name="name" value="" />
+      <option name="programPath" value="" />
+      <option name="arguments" value="" />
+      <option name="workingDirectory" value="" />
+      <envs />
+    </McpServerCommand>
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
@@ -102,9 +112,11 @@
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "Gestion__Candidature__Et__Feedback",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "Gestion-de-projet-et-taches",
+    "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/MSI/Desktop/uniearn_java",
+    "last_opened_file_path": "C:/Users/bysco/OneDrive/Desktop/proj/gestion candidature",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -114,6 +126,7 @@
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "preferences.pluginManager",
+    "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -127,8 +140,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
-        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.28539.33" />
+        <option value="bundled-js-predefined-d6986cc7102b-a71380e98a7c-JavaScript-IU-252.28539.33" />
       </set>
     </attachedChunks>
   </component>
@@ -150,6 +163,7 @@
       <workItem from="1772337191277" duration="4068000" />
       <workItem from="1772404239198" duration="350000" />
       <workItem from="1772404682239" duration="8967000" />
+      <workItem from="1772576680732" duration="5541000" />
     </task>
     <servers />
   </component>

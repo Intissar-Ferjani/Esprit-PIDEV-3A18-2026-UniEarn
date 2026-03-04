@@ -619,28 +619,18 @@ public class ClientProfileController {
     @FXML
     private void handleBrowseFreelancers() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/list-freelancers.fxml"));
-            Parent embeddedView = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/Freelancer/list-freelancers.fxml"));
+            Parent root = loader.load();
 
             ListFreelancersController controller = loader.getController();
             controller.setClientData(currentClient);
 
-            dashboardView.setVisible(false);
-            dashboardView.setManaged(false);
-            if (embeddedDashboard != null) {
-                embeddedDashboard.setVisible(false);
-                embeddedDashboard.setManaged(false);
-            }
+            Stage stage = (Stage) contentArea.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("Browse Freelancers - UniEarn");
+            stage.centerOnScreen();
 
-            // Remove previous embedded views if any (excluding the main dashboard which is
-            // just hidden)
-            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
-
-            contentArea.getChildren().add(embeddedView);
-            embeddedView.setVisible(true);
-            embeddedView.setManaged(true);
-
-            System.out.println("✓ Embedded Browse Freelancers loaded into contentArea");
+            System.out.println("✓ Switched to Browse Freelancers scene");
         } catch (IOException e) {
             e.printStackTrace();
             showErrorAlert("Error", "Failed to load browse freelancers page: " + e.getMessage());
@@ -651,25 +641,17 @@ public class ClientProfileController {
     private void handleMesProjets() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/Projet.fxml"));
-            Parent embeddedView = loader.load();
+            Parent root = loader.load();
 
             uniearn.controller.projet.ProjectController controller = loader.getController();
             controller.setClientData(currentClient);
 
-            dashboardView.setVisible(false);
-            dashboardView.setManaged(false);
-            if (embeddedDashboard != null) {
-                embeddedDashboard.setVisible(false);
-                embeddedDashboard.setManaged(false);
-            }
+            Stage stage = (Stage) contentArea.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("Mes Projets - UniEarn");
+            stage.centerOnScreen();
 
-            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
-
-            contentArea.getChildren().add(embeddedView);
-            embeddedView.setVisible(true);
-            embeddedView.setManaged(true);
-
-            System.out.println("✓ Embedded Mes Projets loaded into contentArea");
+            System.out.println("✓ Switched to Mes Projets scene");
         } catch (IOException e) {
             e.printStackTrace();
             showErrorAlert("Error", "Failed to load projects page: " + e.getMessage());
@@ -726,21 +708,19 @@ public class ClientProfileController {
     @FXML
     private void handleApplications() {
         try {
-            if (embeddedDashboard == null) {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/ClientDashboardView.fxml"));
-                embeddedDashboard = loader.load();
-            }
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/ClientDashboardView.fxml"));
+            Parent root = loader.load();
 
-            dashboardView.setVisible(false);
-            dashboardView.setManaged(false);
+            // The ClientDashboardController seems to use SessionManager for userId,
+            // but we might need to pass data if it's expected.
+            // ClientDashboardController controller = loader.getController();
 
-            if (!contentArea.getChildren().contains(embeddedDashboard)) {
-                contentArea.getChildren().add(embeddedDashboard);
-            }
-            embeddedDashboard.setVisible(true);
-            embeddedDashboard.setManaged(true);
+            Stage stage = (Stage) contentArea.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("Applications & Reviews - UniEarn");
+            stage.centerOnScreen();
 
-            System.out.println("✓ Embedded Applications Dashboard loaded into contentArea");
+            System.out.println("✓ Switched to Applications Dashboard scene");
         } catch (IOException e) {
             e.printStackTrace();
             showErrorAlert("Error", "Failed to load applications page: " + e.getMessage());

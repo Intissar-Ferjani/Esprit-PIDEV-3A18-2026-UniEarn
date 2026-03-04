@@ -84,12 +84,7 @@
                         <Region VBox.vgrow="ALWAYS" />
                         <Separator />
 
-                        <Button onAction="#handleSettings" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
-                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
-                                <FontIcon iconLiteral="fas-cog" iconSize="15" />
-                                <Label style="-fx-font-size: 14px;" text="Settings" />
-                            </children></HBox></graphic>
-                        </Button>
+
 
                         <Button onAction="#handleLogout" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button, logout">
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
