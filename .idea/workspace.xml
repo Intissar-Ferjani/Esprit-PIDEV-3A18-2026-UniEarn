@@ -5,33 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="INTEGRATION AVEC GESTION USER PAIEMENT ET CONTRAT ET MESSAGE">
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/application/LoadingController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/projet/PDFService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/projet/TaskAIService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/users/AdminService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/users/EmailService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application/LoadingView.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/images/uniearn_loading.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/Forum.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/Messages.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/Notifications.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PROJECT_INSTRUCTIONS.md" beforeDir="false" afterPath="$PROJECT_DIR$/PROJECT_INSTRUCTIONS.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/app/MainApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/app/MainApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/ListFreelancersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/ListFreelancersController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientProfileController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerProfileController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/ProjectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/ProjectController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/TaskFormController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/TaskFormController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/projet/Task.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/projet/Task.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/users/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/users/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/enums/taskstatusenum.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/enums/taskstatusenum.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/TaskBoardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/TaskBoardController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/projet/ProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/projet/ProjectService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/projet/TaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/projet/TaskService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-portfolio.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-portfolio.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/client/Projet.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/client/Projet.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/client/TaskBoard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/client/TaskBoard.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/client/client-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/client/client-profile.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/Messages.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/Messages.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-profile.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/list-freelancers.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/profile.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/profile.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -113,7 +98,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "Merging Gestion__Candidature__Et__Feedback",
+    "git-widget-placeholder": "Gestion__Candidature__Et__Feedback",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/MSI/Desktop/uniearn_java",

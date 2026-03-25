@@ -31,18 +31,40 @@ public class ProjectService implements IProject<Project> {
             ResultSet rsOld = cn.getMetaData().getColumns(null, null, "project", "freelancerIDD");
             boolean hasOld = rsOld.next();
 
+            // Safety: if we can't find it with exact case, try case-insensitive or common variants
+            if (!hasOld) {
+                ResultSet rsOldAlt = cn.getMetaData().getColumns(null, null, "project", "FREELANCERIDD");
+                hasOld = rsOldAlt.next();
+            }
+
             if (hasOld && !hasNew) {
                 // If only freelancerIDD exists, rename it to freelancerID
+                try {
+                    cn.createStatement().executeUpdate("ALTER TABLE project DROP FOREIGN KEY project_ibfk_2");
+                } catch (Exception e) {
+                }
                 cn.createStatement().executeUpdate(
                         "ALTER TABLE project CHANGE COLUMN freelancerIDD freelancerID INT DEFAULT NULL");
                 System.out.println("Renamed 'freelancerIDD' to 'freelancerID' in project table");
             } else if (hasOld && hasNew) {
                 // If both exist, migrate any data and drop the old one to avoid errors
-                cn.createStatement().executeUpdate(
-                        "UPDATE project SET freelancerID = freelancerIDD WHERE freelancerID IS NULL AND freelancerIDD IS NOT NULL");
-                cn.createStatement().executeUpdate(
-                        "ALTER TABLE project DROP COLUMN freelancerIDD");
-                System.out.println("Migrated data and dropped redundant 'freelancerIDD' from project table");
+                // CRITICAL: First make it nullable to avoid "no default value" errors if drop fails
+                try {
+                    cn.createStatement().executeUpdate("ALTER TABLE project MODIFY COLUMN freelancerIDD INT DEFAULT NULL");
+                } catch (Exception e) {
+                    System.out.println("Failed to modify freelancerIDD to NULL: " + e.getMessage());
+                }
+                try {
+                    cn.createStatement().executeUpdate(
+                            "UPDATE project SET freelancerID = freelancerIDD WHERE freelancerID IS NULL AND freelancerIDD IS NOT NULL");
+                } catch (Exception e) {
+                }
+                try {
+                    cn.createStatement().executeUpdate("ALTER TABLE project DROP COLUMN freelancerIDD");
+                    System.out.println("Migrated data and dropped redundant 'freelancerIDD' from project table");
+                } catch (Exception e) {
+                    System.out.println("Could not drop freelancerIDD, but made it nullable. " + e.getMessage());
+                }
             } else if (!hasNew) {
                 // If neither exists, just add freelancerID
                 cn.createStatement().executeUpdate(
@@ -76,7 +98,7 @@ public class ProjectService implements IProject<Project> {
 
     @Override
     public void updateProject(int id, Project Project) {
-        String request = "UPDATE project SET title=?, description=?, budget=?, status=?, ClientID=?, freelancerIDD=? WHERE idproject=?";
+        String request = "UPDATE project SET title=?, description=?, budget=?, status=?, ClientID=?, freelancerID=? WHERE idproject=?";
         try {
 
             PreparedStatement pst = cn.prepareStatement(request);
@@ -138,7 +160,7 @@ public class ProjectService implements IProject<Project> {
                 project.setBudget(rs.getDouble("budget"));
                 project.setStatus(rs.getInt("status"));
                 project.setClient_id(rs.getInt("ClientID"));
-                project.setFreelancerid(rs.getInt("freelancerIDD"));
+                project.setFreelancerid(rs.getInt("freelancerID"));
                 return project;
             } else {
                 System.out.println("No project found with the given ID.");
@@ -169,7 +191,6 @@ public class ProjectService implements IProject<Project> {
                 project.setFreelancerid(rs.getInt("freelancerID"));
                 String fname = rs.getString("freelancer_name");
                 project.setFreelancerName(fname != null ? fname : "Unknown");
-                project.setFreelancerid(rs.getInt("freelancerIDD"));
                 projects.add(project);
             }
         } catch (SQLException e) {
@@ -201,7 +222,6 @@ public class ProjectService implements IProject<Project> {
                 project.setFreelancerid(rs.getInt("freelancerID"));
                 String fname = rs.getString("freelancer_name");
                 project.setFreelancerName(fname != null ? fname : "Unknown");
-                project.setFreelancerid(rs.getInt("freelancerIDD"));
                 projects.add(project);
             }
         } catch (SQLException e) {

@@ -11,6 +11,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
+import javafx.scene.input.MouseEvent;
+import org.kordamp.ikonli.javafx.FontIcon;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -61,6 +63,13 @@ public class ClientProfileController {
     private StackPane contentArea;
     @FXML
     private ScrollPane dashboardView;
+    @FXML
+    private HBox topBar;
+    @FXML
+    private Button btnMaximize;
+
+    private double xOffset = 0;
+    private double yOffset = 0;
 
     private Parent embeddedDashboard;
 
@@ -632,10 +641,7 @@ public class ClientProfileController {
                 embeddedDashboard.setManaged(false);
             }
 
-            // Remove previous embedded views if any (excluding the main dashboard which is
-            // just hidden)
-            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
-
+            cleanupContentArea();
             contentArea.getChildren().add(embeddedView);
             embeddedView.setVisible(true);
             embeddedView.setManaged(true);
@@ -656,15 +662,7 @@ public class ClientProfileController {
             uniearn.controller.projet.ProjectController controller = loader.getController();
             controller.setClientData(currentClient);
 
-            dashboardView.setVisible(false);
-            dashboardView.setManaged(false);
-            if (embeddedDashboard != null) {
-                embeddedDashboard.setVisible(false);
-                embeddedDashboard.setManaged(false);
-            }
-
-            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
-
+            cleanupContentArea();
             contentArea.getChildren().add(embeddedView);
             embeddedView.setVisible(true);
             embeddedView.setManaged(true);
@@ -732,9 +730,7 @@ public class ClientProfileController {
                 embeddedDashboard = loader.load();
             }
 
-            dashboardView.setVisible(false);
-            dashboardView.setManaged(false);
-
+            cleanupContentArea();
             if (!contentArea.getChildren().contains(embeddedDashboard)) {
                 contentArea.getChildren().add(embeddedDashboard);
             }
@@ -764,8 +760,7 @@ public class ClientProfileController {
                 embeddedDashboard.setManaged(false);
             }
 
-            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
-
+            cleanupContentArea();
             contentArea.getChildren().add(embeddedView);
             embeddedView.setVisible(true);
             embeddedView.setManaged(true);
@@ -779,14 +774,24 @@ public class ClientProfileController {
 
     @FXML
     private void handleShowDashboard() {
+        cleanupContentArea();
+        dashboardView.setVisible(true);
+        dashboardView.setManaged(true);
+        System.out.println("✓ Switched back to main profile dashboard");
+    }
+
+    private void cleanupContentArea() {
+        // Hide and unmanage the main dashboard and the applications dashboard
+        dashboardView.setVisible(false);
+        dashboardView.setManaged(false);
+
         if (embeddedDashboard != null) {
             embeddedDashboard.setVisible(false);
             embeddedDashboard.setManaged(false);
         }
 
-        dashboardView.setVisible(true);
-        dashboardView.setManaged(true);
-        System.out.println("✓ Switched back to main profile dashboard");
+        // Remove any other dynamic views added to the contentArea
+        contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
     }
 
     @FXML
@@ -802,7 +807,7 @@ public class ClientProfileController {
                 embeddedDashboard.setManaged(false);
             }
 
-            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+            cleanupContentArea();
             contentArea.getChildren().add(embeddedView);
             embeddedView.setVisible(true);
             embeddedView.setManaged(true);
@@ -827,7 +832,7 @@ public class ClientProfileController {
                 embeddedDashboard.setManaged(false);
             }
 
-            contentArea.getChildren().removeIf(node -> node != dashboardView && node != embeddedDashboard);
+            cleanupContentArea();
             contentArea.getChildren().add(embeddedView);
             embeddedView.setVisible(true);
             embeddedView.setManaged(true);
@@ -853,5 +858,52 @@ public class ClientProfileController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    // ═══════════════════════════════════════════════════════ WINDOW CONTROLS
+
+    @FXML
+    private void handleMinimize() {
+        Stage stage = (Stage) topBar.getScene().getWindow();
+        stage.setIconified(true);
+    }
+
+    @FXML
+    private void handleMaximize() {
+        Stage stage = (Stage) topBar.getScene().getWindow();
+        if (stage.isMaximized()) {
+            stage.setMaximized(false);
+            // Change to maximize icon
+            if (btnMaximize.getGraphic() instanceof FontIcon) {
+                ((FontIcon) btnMaximize.getGraphic()).setIconLiteral("fas-expand-arrows-alt");
+            }
+        } else {
+            stage.setMaximized(true);
+            // Change to restore icon
+            if (btnMaximize.getGraphic() instanceof FontIcon) {
+                ((FontIcon) btnMaximize.getGraphic()).setIconLiteral("fas-compress-arrows-alt");
+            }
+        }
+    }
+
+    @FXML
+    private void handleClose() {
+        Stage stage = (Stage) topBar.getScene().getWindow();
+        stage.close();
+    }
+
+    @FXML
+    private void handleMousePressed(MouseEvent event) {
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
+    }
+
+    @FXML
+    private void handleMouseDragged(MouseEvent event) {
+        Stage stage = (Stage) topBar.getScene().getWindow();
+        if (!stage.isMaximized()) {
+            stage.setX(event.getScreenX() - xOffset);
+            stage.setY(event.getScreenY() - yOffset);
+        }
     }
 }

@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -32,6 +33,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -52,21 +54,9 @@ import uniearn.model.entities.users.freelancer.Portfolio;
 import uniearn.services.users.UserService;
 import uniearn.services.users.freelancer.FreelancerService;
 import uniearn.services.users.freelancer.PortfolioService;
-import uniearn.services.users.UserService;
-import uniearn.database.SessionManager;
 import uniearn.utils.user.PasswordUtil;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.FlowPane;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.List;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 public class FreelancerProfileController {
 
@@ -104,6 +94,13 @@ public class FreelancerProfileController {
     private StackPane contentArea;
     @FXML
     private ScrollPane dashboardView;
+    @FXML
+    private HBox topBar;
+    @FXML
+    private Button btnMaximize;
+
+    private double xOffset = 0;
+    private double yOffset = 0;
 
     private Parent embeddedDashboard;
 
@@ -1088,5 +1085,48 @@ public class FreelancerProfileController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void handleMinimize(ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setIconified(true);
+    }
+
+    @FXML
+    private void handleMaximize(ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        if (stage.isMaximized()) {
+            stage.setMaximized(false);
+            FontIcon icon = new FontIcon("fas-expand-arrows-alt");
+            icon.setIconSize(12);
+            btnMaximize.setGraphic(icon);
+        } else {
+            stage.setMaximized(true);
+            FontIcon icon = new FontIcon("fas-compress-arrows-alt");
+            icon.setIconSize(12);
+            btnMaximize.setGraphic(icon);
+        }
+    }
+
+    @FXML
+    private void handleClose(ActionEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.close();
+    }
+
+    @FXML
+    private void handleMousePressed(MouseEvent event) {
+        xOffset = event.getSceneX();
+        yOffset = event.getSceneY();
+    }
+
+    @FXML
+    private void handleMouseDragged(MouseEvent event) {
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        if (!stage.isMaximized()) {
+            stage.setX(event.getScreenX() - xOffset);
+            stage.setY(event.getScreenY() - yOffset);
+        }
     }
 }

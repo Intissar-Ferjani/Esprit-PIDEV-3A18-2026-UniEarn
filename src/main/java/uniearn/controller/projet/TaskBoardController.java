@@ -155,11 +155,11 @@ public class TaskBoardController {
     }
 
     private void renderByStatus(List<Task> tasks) {
-        // Define Columns: To Do, In Progress, Done, Blocked
+        // Define Columns: To Do, In Progress, In Review, Done
         Map<String, VBox> columns = new HashMap<>();
-        String[] statuses = { "A_FAIRE", "EN_COURS", "TERMINEE", "BLOCKED" };
-        String[] labels = { "To Do", "In Progress", "Done", "Blocked" };
-        String[] borders = { "#a89b8c", "#7db8e8", "#7ec8a4", "#e07d7d" };
+        String[] statuses = { "TODO", "InProgress", "Review", "Done" };
+        String[] labels = { "To Do", "In Progress", "In Review", "Done" };
+        String[] borders = { "#a89b8c", "#7db8e8", "#f39c12", "#7ec8a4" };
 
         for (int i = 0; i < statuses.length; i++) {
             VBox col = createColumn(labels[i], borders[i]);
@@ -170,17 +170,7 @@ public class TaskBoardController {
         int delayCounter = 0;
         for (Task task : tasks) {
             String statusKey = task.getTaskstatus().name();
-            // Map our enum to the 4 columns
             VBox targetCol = columns.get(statusKey);
-            // Default mappings if enum doesn't exact match
-            if (targetCol == null) {
-                if (statusKey.contains("FAIRE"))
-                    targetCol = columns.get("A_FAIRE");
-                else if (statusKey.contains("COURS"))
-                    targetCol = columns.get("EN_COURS");
-                else
-                    targetCol = columns.get("TERMINEE");
-            }
 
             if (targetCol != null) {
                 Node card = createCardNode(task, delayCounter++);
@@ -410,14 +400,36 @@ public class TaskBoardController {
     private void handleLogout() {
         SessionManager.getInstance().logout();
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/user/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/login/login.fxml"));
             Parent root = loader.load();
             Stage stage = (Stage) boardContainer.getScene().getWindow();
             stage.setScene(new Scene(root));
+            stage.setMaximized(true);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
+            showErrorAlert("Error", "Failed to load login page: " + e.getMessage());
         }
+    }
+
+    @FXML
+    private void handleAISuggestions(ActionEvent event) {
+        // Placeholder for AI feature
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("AI Suggestions");
+        alert.setHeaderText("Smart Task Optimization");
+        alert.setContentText("This feature is coming soon! Our AI will analyze your tasks to suggest better deadlines and priorities.");
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void handleExportPDF(ActionEvent event) {
+        // Placeholder for PDF export
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Export PDF");
+        alert.setHeaderText("PDF Generation");
+        alert.setContentText("Export to PDF functionality is being implemented. You will soon be able to download your Task Board as a professional report.");
+        alert.showAndWait();
     }
 
     private void checkPortfolioStatus() {

@@ -17,7 +17,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import uniearn.controller.profile.admin.AdminDashboardController;
 import uniearn.controller.profile.forum.MessagesController;
 import uniearn.controller.profile.freelancer.ListFreelancersController;
 import uniearn.database.SessionManager;
@@ -28,7 +27,6 @@ import uniearn.services.projet.ProjectService;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 
 public class ProjectController {
@@ -363,7 +361,7 @@ public class ProjectController {
         String description = descriptionArea.getText();
         double budget = Double.parseDouble(budgetField.getText());
         int status = 0; // Forced default TODO
-        int freelancerIDD = 23; // Default or placeholder freelancer ID
+        int freelancerID = 23; // Default or placeholder freelancer ID
 
         if (currentClient == null) {
             showErrorAlert("Error", "Client data not available. Cannot add project.");
@@ -372,7 +370,7 @@ public class ProjectController {
         int clientId = currentClient.getIdClient();
 
         // Create a new Project object
-        Project newProject = new Project(title, description, budget, status, clientId, freelancerIDD);
+        Project newProject = new Project(title, description, budget, status, clientId, freelancerID);
 
         // Add the project to the database
         try {
