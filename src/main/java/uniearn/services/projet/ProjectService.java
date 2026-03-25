@@ -76,7 +76,7 @@ public class ProjectService implements IProject<Project> {
 
     @Override
     public void updateProject(int id, Project Project) {
-        String request = "UPDATE project SET title=?, description=?, budget=?, status=?, ClientID=?, freelancerID=? WHERE idproject=?";
+        String request = "UPDATE project SET title=?, description=?, budget=?, status=?, ClientID=?, freelancerIDD=? WHERE idproject=?";
         try {
 
             PreparedStatement pst = cn.prepareStatement(request);
@@ -138,7 +138,7 @@ public class ProjectService implements IProject<Project> {
                 project.setBudget(rs.getDouble("budget"));
                 project.setStatus(rs.getInt("status"));
                 project.setClient_id(rs.getInt("ClientID"));
-                project.setFreelancerid(rs.getInt("freelancerID"));
+                project.setFreelancerid(rs.getInt("freelancerIDD"));
                 return project;
             } else {
                 System.out.println("No project found with the given ID.");
@@ -169,6 +169,7 @@ public class ProjectService implements IProject<Project> {
                 project.setFreelancerid(rs.getInt("freelancerID"));
                 String fname = rs.getString("freelancer_name");
                 project.setFreelancerName(fname != null ? fname : "Unknown");
+                project.setFreelancerid(rs.getInt("freelancerIDD"));
                 projects.add(project);
             }
         } catch (SQLException e) {
@@ -200,6 +201,7 @@ public class ProjectService implements IProject<Project> {
                 project.setFreelancerid(rs.getInt("freelancerID"));
                 String fname = rs.getString("freelancer_name");
                 project.setFreelancerName(fname != null ? fname : "Unknown");
+                project.setFreelancerid(rs.getInt("freelancerIDD"));
                 projects.add(project);
             }
         } catch (SQLException e) {

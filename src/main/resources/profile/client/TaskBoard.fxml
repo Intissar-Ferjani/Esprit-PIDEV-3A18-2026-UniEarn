@@ -125,6 +125,21 @@
                                    style="-fx-background-color: white; -fx-border-color: #e1e8ed; -fx-text-fill: #14171a; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 8; -fx-font-size: 13;">
                         </TextField>
 
+                        <!-- Project Selector -->
+                        <ComboBox fx:id="projectSelector" promptText="Sélectionner un projet" prefWidth="200.0"
+                                  style="-fx-background-color: white; -fx-border-color: #e1e8ed; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 5; -fx-font-size: 13;">
+                        </ComboBox>
+
+                        <!-- AI Suggestions Button -->
+                        <Button onAction="#handleAISuggestions" text="✨ AI Suggestions" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8 15; -fx-cursor: hand;">
+                            <font><Font size="13.0"/></font>
+                        </Button>
+
+                        <!-- Export PDF Button -->
+                        <Button onAction="#handleExportPDF" text="📄 Export PDF" style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8 15; -fx-cursor: hand;">
+                            <font><Font size="13.0"/></font>
+                        </Button>
+
                         <!-- New Task Button -->
                         <Button onAction="#handleNewTask" text="➕ New Task" style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8 15; -fx-cursor: hand;">
                             <font><Font size="13.0"/></font>

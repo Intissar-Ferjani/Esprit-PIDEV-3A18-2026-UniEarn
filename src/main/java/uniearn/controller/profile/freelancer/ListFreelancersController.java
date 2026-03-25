@@ -477,7 +477,7 @@ public class ListFreelancersController {
             controller.setClientData(currentClient);
 
             Stage stage = (Stage) freelancersContainer.getScene().getWindow();
-            stage.setScene(new Scene(root, 1200, 800));
+            stage.setScene(new Scene(root, 1200, 700));
             stage.setTitle("Mes Projets - UniEarn");
             stage.centerOnScreen();
         } catch (IOException e) {

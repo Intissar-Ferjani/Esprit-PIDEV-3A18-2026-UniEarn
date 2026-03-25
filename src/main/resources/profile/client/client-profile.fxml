@@ -9,6 +9,7 @@
 <?import javafx.scene.text.*?>
 <?import org.kordamp.ikonli.javafx.*?>
 
+<BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root" stylesheets="@../../profile/profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.client.ClientProfileController">
 <BorderPane styleClass="root" stylesheets="@../../profile/profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.client.ClientProfileController">
 
     <!-- ══ Top Navigation Bar ══════════════════════════════════════════ -->
@@ -91,12 +92,7 @@
                         <Region VBox.vgrow="ALWAYS" />
                         <Separator />
 
-                        <Button onAction="#handleSettings" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
-                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
-                                <FontIcon iconLiteral="fas-cog" iconSize="15" />
-                                <Label style="-fx-font-size: 14px;" text="Settings" />
-                            </children></HBox></graphic>
-                        </Button>
+
 
                         <Button onAction="#handleLogout" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button, logout">
                             <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
@@ -104,6 +100,7 @@
                                 <Label style="-fx-font-size: 14px;" text="Logout" />
                             </children></HBox></graphic>
                         </Button>
+
 
                     </children>
                 </VBox>
@@ -279,7 +276,7 @@
                                 </Separator>
 
                                 <!-- Projects list -->
-                                <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="projects-scroll">
+                                <ScrollPane fitToWidth="true" prefHeight="340.0" styleClass="projects-scroll">
                                     <content>
                                         <VBox fx:id="postedProjectsContainer" spacing="12.0">
                                             <padding><Insets top="4.0" /></padding>

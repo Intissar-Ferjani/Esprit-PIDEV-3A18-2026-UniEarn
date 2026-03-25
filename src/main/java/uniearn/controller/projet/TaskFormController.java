@@ -12,7 +12,6 @@ import uniearn.model.enums.taskpriorityenum;
 import uniearn.model.enums.taskstatusenum;
 import uniearn.services.projet.TaskService;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -60,11 +59,9 @@ public class TaskFormController {
         this.clientProjects = projects;
         this.onSaveCallback = onSaveCallback;
 
-        // Initialize ComboBoxes
+        projectComboBox.setItems(FXCollections.observableArrayList(projects));
         priorityComboBox.setItems(FXCollections.observableArrayList(taskpriorityenum.values()));
         statusComboBox.setItems(FXCollections.observableArrayList(taskstatusenum.values()));
-
-        projectComboBox.setItems(FXCollections.observableArrayList(projects));
         projectComboBox.setConverter(new StringConverter<Project>() {
             @Override
             public String toString(Project p) {
