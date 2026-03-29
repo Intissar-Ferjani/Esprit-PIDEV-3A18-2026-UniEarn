@@ -158,8 +158,18 @@ public class FreelancerForumController {
                 WebSocketService.getInstance().subscribe("/topic/notifications", NotificationMsg.class,
                         notification -> Platform.runLater(() -> {
                             // Only show notification if it's meant for the current user (post author)
+                            // Use currentUserName for filtering
                             if (notification.getRecipientId() != null
                                     && notification.getRecipientId().equals(currentUserName)) {
+                                
+                                // Show real-time Toast popup
+                                if (postsContainer != null && postsContainer.getScene() != null) {
+                                    Stage stage = (Stage) postsContainer.getScene().getWindow();
+                                    uniearn.utils.forum.ToastService.showToast(stage, 
+                                        notification.getFromUser() + " " + notification.getMessage(), 
+                                        notification.getType());
+                                }
+
                                 NotificationStore.getInstance().add(notification);
                                 updateNotificationBadge();
                             }
@@ -350,7 +360,7 @@ public class FreelancerForumController {
                 NotificationMsg msg = new NotificationMsg();
                 msg.setFromUser(currentUserName);
                 msg.setTitle("New Reaction");
-                msg.setMessage("liked your post: " + post.getTitle());
+                msg.setMessage("liked your post: " + (post.getTitle().length() > 20 ? post.getTitle().substring(0, 17) + "..." : post.getTitle()));
                 msg.setRecipientId(post.getAuthorName());
                 msg.setType("REACTION");
                 WebSocketService.getInstance().send("/app/notification", msg);
@@ -370,7 +380,7 @@ public class FreelancerForumController {
                 NotificationMsg msg = new NotificationMsg();
                 msg.setFromUser(currentUserName);
                 msg.setTitle("New Reaction");
-                msg.setMessage("disliked your post: " + post.getTitle());
+                msg.setMessage("disliked your post: " + (post.getTitle().length() > 20 ? post.getTitle().substring(0, 17) + "..." : post.getTitle()));
                 msg.setRecipientId(post.getAuthorName());
                 msg.setType("REACTION");
                 WebSocketService.getInstance().send("/app/notification", msg);
@@ -548,7 +558,7 @@ public class FreelancerForumController {
                         NotificationMsg msg = new NotificationMsg();
                         msg.setFromUser(currentUserName);
                         msg.setTitle("New Comment");
-                        msg.setMessage("commented on your post: " + post.getTitle());
+                        msg.setMessage("commented on your post: " + (post.getTitle().length() > 20 ? post.getTitle().substring(0, 17) + "..." : post.getTitle()));
                         msg.setRecipientId(post.getAuthorName());
                         msg.setType("COMMENT");
                         WebSocketService.getInstance().send("/app/notification", msg);

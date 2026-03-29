@@ -165,4 +165,27 @@ public class PrivateMessageService {
         }
         return contacts;
     }
+
+    /**
+     * Get all freelancer usernames (excluding the current user).
+     * This allows freelancers to discover and message other freelancers.
+     */
+    public List<String> getAllFreelancerNames(String currentUserName) {
+        List<String> names = new ArrayList<>();
+        if (cn == null) return names;
+        String sql = "SELECT DISTINCT u.name FROM user u " +
+                     "JOIN freelancer f ON u.idUser = f.idUser " +
+                     "WHERE u.name != ?";
+        try {
+            PreparedStatement ps = cn.prepareStatement(sql);
+            ps.setString(1, currentUserName);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                names.add(rs.getString("name"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error loading freelancer names: " + e.getMessage());
+        }
+        return names;
+    }
 }

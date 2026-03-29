@@ -74,20 +74,39 @@ public class WebSocketService {
                 System.out.println("Already subscribed to " + topic + ", skipping duplicate.");
                 return;
             }
-            subscribedTopics.add(topic);
-            session.subscribe(topic, new StompFrameHandler() {
-
-                @Override
-                public Type getPayloadType(StompHeaders headers) {
-                    return payloadType;
-                }
-
-                @Override
-                public void handleFrame(StompHeaders headers, Object payload) {
-                    callback.accept(payloadType.cast(payload));
-                }
-            });
+            doSubscribe(topic, payloadType, callback);
         }
+    }
+
+    /**
+     * Force re-subscribe to a topic, replacing any existing subscription.
+     * Use this when navigating back to a page that needs a fresh callback.
+     */
+    public <T> void forceSubscribe(String topic, Class<T> payloadType, Consumer<T> callback) {
+        if (isConnected()) {
+            subscribedTopics.remove(topic);
+            doSubscribe(topic, payloadType, callback);
+        }
+    }
+
+    private <T> void doSubscribe(String topic, Class<T> payloadType, Consumer<T> callback) {
+        subscribedTopics.add(topic);
+        session.subscribe(topic, new StompFrameHandler() {
+
+            @Override
+            public Type getPayloadType(StompHeaders headers) {
+                return payloadType;
+            }
+
+            @Override
+            public void handleFrame(StompHeaders headers, Object payload) {
+                callback.accept(payloadType.cast(payload));
+            }
+        });
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public void send(String destination, Object payload) {

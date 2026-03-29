@@ -46,127 +46,7 @@
                 <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
                     style="-fx-background-color: transparent; -fx-background: transparent;">
                     <VBox fx:id="conversationList" spacing="0">
-
-                        <!-- Conversation 1 - Unread -->
-                        <HBox spacing="12" alignment="CENTER_LEFT"
-                            style="-fx-background-color: #eaf6ff; -fx-padding: 15; -fx-cursor: hand;
-                                     -fx-border-color: #e8e8e8; -fx-border-width: 0 0 1 0;">
-                            <StackPane>
-                                <Label text="A"
-                                    style="-fx-background-color: #3498db; -fx-text-fill: white;
-                                       -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 10 14 10 14;
-                                       -fx-background-radius: 50;" />
-                            </StackPane>
-                            <VBox spacing="3" HBox.hgrow="ALWAYS">
-                                <HBox spacing="5" alignment="CENTER_LEFT">
-                                    <Label text="Alice Smith"
-                                        style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
-                                    <Region HBox.hgrow="ALWAYS" />
-                                    <Label text="2:30 PM"
-                                        style="-fx-font-size: 10px; -fx-text-fill: #3498db; -fx-font-weight: bold;" />
-                                </HBox>
-                                <Label text="I'd love to work on your project! 😊"
-                                    style="-fx-font-size: 12px; -fx-text-fill: #555; -fx-font-weight: bold;"
-                                    wrapText="true" maxWidth="200" />
-                            </VBox>
-                        </HBox>
-
-                        <!-- Conversation 2 - Unread -->
-                        <HBox spacing="12" alignment="CENTER_LEFT"
-                            style="-fx-background-color: #eaf6ff; -fx-padding: 15; -fx-cursor: hand;
-                                     -fx-border-color: #e8e8e8; -fx-border-width: 0 0 1 0;">
-                            <StackPane>
-                                <Label text="B"
-                                    style="-fx-background-color: #e74c3c; -fx-text-fill: white;
-                                       -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 10 14 10 14;
-                                       -fx-background-radius: 50;" />
-                            </StackPane>
-                            <VBox spacing="3" HBox.hgrow="ALWAYS">
-                                <HBox spacing="5" alignment="CENTER_LEFT">
-                                    <Label text="Bob Johnson"
-                                        style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
-                                    <Region HBox.hgrow="ALWAYS" />
-                                    <Label text="1:15 PM"
-                                        style="-fx-font-size: 10px; -fx-text-fill: #3498db; -fx-font-weight: bold;" />
-                                </HBox>
-                                <Label text="Can you send me the project files?"
-                                    style="-fx-font-size: 12px; -fx-text-fill: #555; -fx-font-weight: bold;"
-                                    wrapText="true" maxWidth="200" />
-                            </VBox>
-                        </HBox>
-
-                        <!-- Conversation 3 - Read -->
-                        <HBox spacing="12" alignment="CENTER_LEFT"
-                            style="-fx-background-color: white; -fx-padding: 15; -fx-cursor: hand;
-                                     -fx-border-color: #e8e8e8; -fx-border-width: 0 0 1 0;">
-                            <StackPane>
-                                <Label text="S"
-                                    style="-fx-background-color: #2ecc71; -fx-text-fill: white;
-                                       -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 10 14 10 14;
-                                       -fx-background-radius: 50;" />
-                            </StackPane>
-                            <VBox spacing="3" HBox.hgrow="ALWAYS">
-                                <HBox spacing="5" alignment="CENTER_LEFT">
-                                    <Label text="Sarah Lee"
-                                        style="-fx-font-size: 14px; -fx-text-fill: #2c3e50;" />
-                                    <Region HBox.hgrow="ALWAYS" />
-                                    <Label text="Yesterday"
-                                        style="-fx-font-size: 10px; -fx-text-fill: #95a5a6;" />
-                                </HBox>
-                                <Label text="Thanks for the feedback!"
-                                    style="-fx-font-size: 12px; -fx-text-fill: #95a5a6;"
-                                    wrapText="true" maxWidth="200" />
-                            </VBox>
-                        </HBox>
-
-                        <!-- Conversation 4 - Read -->
-                        <HBox spacing="12" alignment="CENTER_LEFT"
-                            style="-fx-background-color: white; -fx-padding: 15; -fx-cursor: hand;
-                                     -fx-border-color: #e8e8e8; -fx-border-width: 0 0 1 0;">
-                            <StackPane>
-                                <Label text="D"
-                                    style="-fx-background-color: #9b59b6; -fx-text-fill: white;
-                                       -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 10 14 10 14;
-                                       -fx-background-radius: 50;" />
-                            </StackPane>
-                            <VBox spacing="3" HBox.hgrow="ALWAYS">
-                                <HBox spacing="5" alignment="CENTER_LEFT">
-                                    <Label text="Diana Prince"
-                                        style="-fx-font-size: 14px; -fx-text-fill: #2c3e50;" />
-                                    <Region HBox.hgrow="ALWAYS" />
-                                    <Label text="Mon"
-                                        style="-fx-font-size: 10px; -fx-text-fill: #95a5a6;" />
-                                </HBox>
-                                <Label text="Let me know if you need anything else"
-                                    style="-fx-font-size: 12px; -fx-text-fill: #95a5a6;"
-                                    wrapText="true" maxWidth="200" />
-                            </VBox>
-                        </HBox>
-
-                        <!-- Conversation 5 - Read -->
-                        <HBox spacing="12" alignment="CENTER_LEFT"
-                            style="-fx-background-color: white; -fx-padding: 15; -fx-cursor: hand;
-                                     -fx-border-color: #e8e8e8; -fx-border-width: 0 0 1 0;">
-                            <StackPane>
-                                <Label text="M"
-                                    style="-fx-background-color: #f39c12; -fx-text-fill: white;
-                                       -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 10 14 10 14;
-                                       -fx-background-radius: 50;" />
-                            </StackPane>
-                            <VBox spacing="3" HBox.hgrow="ALWAYS">
-                                <HBox spacing="5" alignment="CENTER_LEFT">
-                                    <Label text="Mark Thompson"
-                                        style="-fx-font-size: 14px; -fx-text-fill: #2c3e50;" />
-                                    <Region HBox.hgrow="ALWAYS" />
-                                    <Label text="Feb 10"
-                                        style="-fx-font-size: 10px; -fx-text-fill: #95a5a6;" />
-                                </HBox>
-                                <Label text="Great working with you! 🎉"
-                                    style="-fx-font-size: 12px; -fx-text-fill: #95a5a6;"
-                                    wrapText="true" maxWidth="200" />
-                            </VBox>
-                        </HBox>
-
+                        <!-- Dynamically populated by MessagesController -->
                     </VBox>
                 </ScrollPane>
             </VBox>
@@ -178,14 +58,14 @@
                 <HBox spacing="12" alignment="CENTER_LEFT"
                     style="-fx-background-color: white; -fx-padding: 15;
                              -fx-border-color: #e0e0e0; -fx-border-width: 0 0 1 0;">
-                    <Label text="A"
+                    <Label fx:id="chatHeaderInitial" text=""
                         style="-fx-background-color: #3498db; -fx-text-fill: white;
                            -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 8 12 8 12;
                            -fx-background-radius: 50;" />
                     <VBox spacing="2">
-                        <Label text="Alice Smith"
+                        <Label fx:id="chatHeaderName" text="Select a conversation"
                             style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
-                        <Label text="● Online" style="-fx-font-size: 11px; -fx-text-fill: #2ecc71;" />
+                        <Label fx:id="chatHeaderStatus" text="" style="-fx-font-size: 11px; -fx-text-fill: #2ecc71;" />
                     </VBox>
                 </HBox>
 
@@ -193,74 +73,7 @@
                 <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
                     style="-fx-background-color: transparent; -fx-background: transparent;">
                     <VBox fx:id="chatMessages" spacing="12" style="-fx-padding: 20;">
-
-                        <!-- Received message -->
-                        <HBox alignment="CENTER_LEFT">
-                            <VBox maxWidth="400"
-                                style="-fx-background-color: white; -fx-padding: 12 16 12 16;
-                                                        -fx-background-radius: 15 15 15 3;">
-                                <Label
-                                    text="Hey! I saw your post about the UI/UX project. I'd love to help!"
-                                    wrapText="true"
-                                    style="-fx-font-size: 13px; -fx-text-fill: #333;" />
-                                <Label text="2:25 PM"
-                                    style="-fx-font-size: 10px; -fx-text-fill: #95a5a6;" />
-                            </VBox>
-                        </HBox>
-
-                        <!-- Sent message -->
-                        <HBox alignment="CENTER_RIGHT">
-                            <VBox maxWidth="400"
-                                style="-fx-background-color: #3498db; -fx-padding: 12 16 12 16;
-                                                        -fx-background-radius: 15 15 3 15;">
-                                <Label text="That's great! Can you share your portfolio?"
-                                    wrapText="true"
-                                    style="-fx-font-size: 13px; -fx-text-fill: white;" />
-                                <Label text="2:27 PM"
-                                    style="-fx-font-size: 10px; -fx-text-fill: #bde0ff;" />
-                            </VBox>
-                        </HBox>
-
-                        <!-- Received message -->
-                        <HBox alignment="CENTER_LEFT">
-                            <VBox maxWidth="400"
-                                style="-fx-background-color: white; -fx-padding: 12 16 12 16;
-                                                        -fx-background-radius: 15 15 15 3;">
-                                <Label
-                                    text="Sure! Here's my portfolio link: portfolio.alicesmith.com. I've worked on 20+ mobile app designs."
-                                    wrapText="true"
-                                    style="-fx-font-size: 13px; -fx-text-fill: #333;" />
-                                <Label text="2:28 PM"
-                                    style="-fx-font-size: 10px; -fx-text-fill: #95a5a6;" />
-                            </VBox>
-                        </HBox>
-
-                        <!-- Sent message -->
-                        <HBox alignment="CENTER_RIGHT">
-                            <VBox maxWidth="400"
-                                style="-fx-background-color: #3498db; -fx-padding: 12 16 12 16;
-                                                        -fx-background-radius: 15 15 3 15;">
-                                <Label
-                                    text="Looks impressive! Let's schedule a call to discuss the details."
-                                    wrapText="true"
-                                    style="-fx-font-size: 13px; -fx-text-fill: white;" />
-                                <Label text="2:29 PM"
-                                    style="-fx-font-size: 10px; -fx-text-fill: #bde0ff;" />
-                            </VBox>
-                        </HBox>
-
-                        <!-- Received message -->
-                        <HBox alignment="CENTER_LEFT">
-                            <VBox maxWidth="400"
-                                style="-fx-background-color: white; -fx-padding: 12 16 12 16;
-                                                        -fx-background-radius: 15 15 15 3;">
-                                <Label text="I'd love to work on your project! 😊" wrapText="true"
-                                    style="-fx-font-size: 13px; -fx-text-fill: #333;" />
-                                <Label text="2:30 PM"
-                                    style="-fx-font-size: 10px; -fx-text-fill: #95a5a6;" />
-                            </VBox>
-                        </HBox>
-
+                        <!-- Dynamically populated by MessagesController -->
                     </VBox>
                 </ScrollPane>
 

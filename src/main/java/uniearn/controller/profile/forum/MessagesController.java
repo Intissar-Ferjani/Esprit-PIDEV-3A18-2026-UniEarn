@@ -16,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -24,12 +25,8 @@ import javafx.stage.Stage;
 import uniearn.database.SessionManager;
 import uniearn.model.entities.forum.ChatMessage;
 import uniearn.model.entities.forum.NotificationMsg;
-import uniearn.model.entities.users.User;
-import uniearn.model.entities.users.client.Client;
-import uniearn.model.enums.UserRole;
 import uniearn.services.forum.PrivateMessageService;
 import uniearn.services.forum.WebSocketService;
-import uniearn.services.users.client.ClientService;
 
 public class MessagesController {
 
@@ -68,20 +65,46 @@ public class MessagesController {
             showNoChatSelected();
         }
 
-        // Subscribe to private messages via WebSocket for real-time delivery
-        if (WebSocketService.getInstance().isConnected()) {
-            String topic = "/user/" + encodeUser(currentUserName) + "/queue/messages";
-            WebSocketService.getInstance().subscribe(topic, ChatMessage.class, message ->
-                Platform.runLater(() -> {
-                    if (activeChatUser != null &&
-                        (message.getSender().equals(activeChatUser) || message.getRecipient().equals(activeChatUser))) {
-                        // Only add if not from ourselves (we already added locally)
-                        if (!message.getSender().equals(currentUserName)) {
-                            addMessageBubble(message.getContent(), message.getSender(), false, message.getTimestamp());
+        // Connect to WebSocket (with retry) and subscribe for real-time messages
+        new Thread(() -> {
+            // Ensure WebSocket is connected (retry up to 5 times)
+            for (int attempt = 1; attempt <= 5; attempt++) {
+                if (WebSocketService.getInstance().isConnected()) break;
+                System.out.println("Messages: WebSocket connect attempt " + attempt + "...");
+                WebSocketService.getInstance().connect(currentUserName);
+                if (WebSocketService.getInstance().isConnected()) break;
+                try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
+            }
+
+            if (WebSocketService.getInstance().isConnected()) {
+                System.out.println("✅ Messages: WebSocket connected! Subscribing to private messages...");
+                String topic = "/user/" + encodeUser(currentUserName) + "/queue/messages";
+                // Use forceSubscribe to replace any stale callback from previous page visits
+                WebSocketService.getInstance().forceSubscribe(topic, ChatMessage.class, message ->
+                    Platform.runLater(() -> {
+                        // If we're chatting with the sender, add the bubble immediately
+                        if (activeChatUser != null &&
+                            (message.getSender().equals(activeChatUser) || message.getRecipient().equals(activeChatUser))) {
+                            if (!message.getSender().equals(currentUserName)) {
+                                addMessageBubble(message.getContent(), message.getSender(), false, message.getTimestamp());
+                                scrollChatToBottom();
+                            }
                         }
-                    }
-                    loadConversationList();
-                }));
+                        // Always refresh the conversation list so new messages show up
+                        loadConversationList();
+                    }));
+            } else {
+                System.err.println("⚠ Messages: Could not connect to WebSocket. Real-time delivery disabled.");
+            }
+        }).start();
+    }
+
+    /** Scroll the chat messages area to the bottom to show the latest message. */
+    private void scrollChatToBottom() {
+        if (chatMessages != null && chatMessages.getParent() instanceof ScrollPane) {
+            ScrollPane scrollPane = (ScrollPane) chatMessages.getParent();
+            // Use runLater to ensure layout is done before scrolling
+            Platform.runLater(() -> scrollPane.setVvalue(1.0));
         }
     }
 
@@ -110,6 +133,30 @@ public class MessagesController {
             String lastMsg = entry.getValue();
             boolean isActive = otherUser.equals(activeChatUser);
             conversationList.getChildren().add(createConversationItem(otherUser, lastMsg, isActive));
+        }
+
+        // Add all other freelancers as available contacts
+        java.util.List<String> freelancerNames = messageService.getAllFreelancerNames(currentUserName);
+        java.util.List<String> newFreelancers = new java.util.ArrayList<>();
+        for (String name : freelancerNames) {
+            if (!conversations.containsKey(name) &&
+                (activeChatUser == null || !activeChatUser.equals(name))) {
+                newFreelancers.add(name);
+            }
+        }
+        if (!newFreelancers.isEmpty()) {
+            // Section header
+            Label header = new Label("💼 Other Freelancers");
+            header.setStyle("-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #7f8c8d; " +
+                "-fx-padding: 10 15 5 15; -fx-background-color: #f8f9fa;");
+            header.setMaxWidth(Double.MAX_VALUE);
+            conversationList.getChildren().add(header);
+
+            for (String name : newFreelancers) {
+                boolean isActive = name.equals(activeChatUser);
+                conversationList.getChildren().add(
+                    createConversationItem(name, "💬 Freelancer — tap to chat", isActive));
+            }
         }
     }
 
@@ -168,6 +215,7 @@ public class MessagesController {
         for (ChatMessage msg : history) {
             addMessageBubble(msg.getContent(), msg.getSender(), msg.getSender().equals(currentUserName), msg.getTimestamp());
         }
+        scrollChatToBottom();
     }
 
     private void showNoChatSelected() {
@@ -208,6 +256,7 @@ public class MessagesController {
         }
 
         messageInput.clear();
+        scrollChatToBottom();
         loadConversationList();
     }
 
@@ -245,33 +294,41 @@ public class MessagesController {
     @FXML
     private void goBack() {
         try {
-            User currentUser = SessionManager.getInstance().getCurrentUser();
-            if (currentUser != null && currentUser.getRole() == UserRole.CLIENT) {
+            uniearn.model.entities.users.User currentUser = SessionManager.getInstance().getCurrentUser();
+            Parent root;
+            if (currentUser != null && currentUser.getRole() == uniearn.model.enums.UserRole.CLIENT) {
                 // Client user — go back to client profile
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/client-profile.fxml"));
-                Parent root = loader.load();
-                ClientService cs = new ClientService();
-                Client client = cs.getClientById(currentUser.getIdUser());
+                root = loader.load();
+                uniearn.services.users.client.ClientService cs = new uniearn.services.users.client.ClientService();
+                uniearn.model.entities.users.client.Client client = cs.getClientById(currentUser.getIdUser());
                 if (client != null) {
                     uniearn.controller.profile.client.ClientProfileController ctrl = loader.getController();
                     ctrl.setClientData(client);
                 }
-                Stage stage = (Stage) backButton.getScene().getWindow();
-                stage.setScene(new Scene(root, 1200, 800));
-                stage.setTitle("Client Profile - UniEarn");
-                stage.centerOnScreen();
             } else {
                 // Freelancer user — go back to freelancer profile
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/freelancer-profile.fxml"));
-                Parent root = loader.load();
-                Stage stage = (Stage) backButton.getScene().getWindow();
-                stage.setScene(new Scene(root, 1200, 800));
-                stage.setTitle("Freelancer Profile - UniEarn");
-                stage.centerOnScreen();
+                root = loader.load();
+
+                // Pass freelancer data back to dashboard
+                uniearn.controller.profile.freelancer.FreelancerProfileController controller = loader.getController();
+                if (SessionManager.getInstance().isLoggedIn()) {
+                    int userId = SessionManager.getInstance().getCurrentUserId();
+                    uniearn.services.users.freelancer.FreelancerService freelancerService = new uniearn.services.users.freelancer.FreelancerService();
+                    uniearn.model.entities.users.freelancer.Freelancer freelancer = freelancerService.getFreelancerById(userId);
+                    if (freelancer != null) {
+                        controller.setFreelancerData(freelancer);
+                    }
+                }
             }
+
+            Stage stage = (Stage) backButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Dashboard - UniEarn");
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Error", "Could not navigate back!");
+            showAlert("Error", "Could not load Dashboard page!");
         }
     }
 

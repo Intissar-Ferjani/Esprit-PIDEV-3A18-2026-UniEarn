@@ -24,7 +24,10 @@ public class GiphyService {
     private static final String API_KEY = System.getProperty("giphy.api.key", "TmJf0bOAQsNAe80HbonqlIRZV3FyL1RR");
     private static final String SEARCH_URL = "https://api.giphy.com/v1/gifs/search?api_key=%s&q=%s&limit=12";
 
-    /** Shared HttpClient that follows redirects — used for both API calls and image downloads */
+    /**
+     * Shared HttpClient that follows redirects — used for both API calls and image
+     * downloads
+     */
     private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
             .followRedirects(Redirect.ALWAYS)
             .connectTimeout(Duration.ofSeconds(10))
@@ -42,6 +45,15 @@ public class GiphyService {
                     .build();
             HttpResponse<String> response = HTTP_CLIENT
                     .send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != 200) {
+                System.err.println("❌ Giphy API Error: Received response code " + response.statusCode());
+                if (response.statusCode() == 403) {
+                    System.err.println("👉 Hint: Your Giphy API Key might be invalid or rate-limited.");
+                }
+                return urls;
+            }
+
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(response.body());
             JsonNode data = root.get("data");
@@ -52,8 +64,10 @@ public class GiphyService {
                         JsonNode fixedHeight = images.get("fixed_height");
                         if (fixedHeight != null) {
                             String url = fixedHeight.has("url") ? fixedHeight.get("url").asText() : null;
-                            if (url == null && fixedHeight.has("webp")) url = fixedHeight.get("webp").asText();
-                            if (url != null) urls.add(url);
+                            if (url == null && fixedHeight.has("webp"))
+                                url = fixedHeight.get("webp").asText();
+                            if (url != null)
+                                urls.add(url);
                         } else if (images.has("downsized")) {
                             urls.add(images.get("downsized").get("url").asText());
                         }
@@ -72,14 +86,18 @@ public class GiphyService {
     }
 
     /**
-     * Download an image from a URL using HttpClient (handles redirects, TLS, User-Agent).
-     * Giphy's CDN rejects requests without a browser-like User-Agent and needs proper
-     * redirect handling, which JavaFX's built-in Image(url) loader does not provide.
+     * Download an image from a URL using HttpClient (handles redirects, TLS,
+     * User-Agent).
+     * Giphy's CDN rejects requests without a browser-like User-Agent and needs
+     * proper
+     * redirect handling, which JavaFX's built-in Image(url) loader does not
+     * provide.
      *
      * @return a JavaFX Image, or null if the download fails
      */
     public static Image loadImage(String url) {
-        if (url == null || url.isEmpty()) return null;
+        if (url == null || url.isEmpty())
+            return null;
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url))

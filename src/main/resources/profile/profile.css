@@ -618,3 +618,28 @@
     -fx-background-color: transparent;
     -fx-padding: 0;
 }
+
+/* ── Notifications & Toasts ──────────────────────────────────── */
+.notification-badge-small {
+    -fx-background-color: #e81123;
+    -fx-text-fill: white;
+    -fx-padding: 1 4;
+    -fx-background-radius: 8;
+    -fx-font-size: 9px;
+    -fx-font-weight: bold;
+}
+
+.icon-bell {
+    -fx-icon-color: #5f6368;
+}
+
+.btn-window-control:hover .icon-bell {
+    -fx-icon-color: #1a73e8;
+}
+
+/* Toast styling (used programmatically in ToastService) */
+.toast-notification {
+    -fx-background-radius: 25;
+    -fx-padding: 10 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 4);
+}

@@ -25,6 +25,18 @@
                 
                 <Region HBox.hgrow="ALWAYS" />
                 
+                <!-- Notification Button -->
+                <Button onAction="#handleNotifications" styleClass="btn-window-control">
+                    <graphic>
+                        <StackPane>
+                            <FontIcon iconLiteral="fas-bell" iconSize="18" styleClass="icon-bell" />
+                            <Label fx:id="notificationBadge" styleClass="notification-badge-small" text="0" visible="false" managed="false" StackPane.alignment="TOP_RIGHT">
+                                <StackPane.margin><Insets top="-5" right="-5" /></StackPane.margin>
+                            </Label>
+                        </StackPane>
+                    </graphic>
+                </Button>
+
                 <!-- Window Controls on the right -->
                 <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="window-controls">
                     <children>

@@ -18,7 +18,6 @@ import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
@@ -34,7 +33,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -45,7 +44,6 @@ import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import uniearn.controller.profile.freelancer.FreelancerPortfolioController;
 import uniearn.controller.projet.TaskBoardController;
 import uniearn.database.SessionManager;
 import uniearn.model.entities.users.User;
@@ -57,6 +55,11 @@ import uniearn.services.users.freelancer.PortfolioService;
 import uniearn.utils.user.PasswordUtil;
 
 import org.kordamp.ikonli.javafx.FontIcon;
+import uniearn.model.entities.forum.NotificationMsg;
+import uniearn.services.forum.NotificationStore;
+import uniearn.services.forum.WebSocketService;
+import javafx.application.Platform;
+import uniearn.utils.forum.ToastService;
 
 public class FreelancerProfileController {
 
@@ -98,6 +101,8 @@ public class FreelancerProfileController {
     private HBox topBar;
     @FXML
     private Button btnMaximize;
+    @FXML
+    private Label notificationBadge;
 
     private double xOffset = 0;
     private double yOffset = 0;
@@ -152,13 +157,58 @@ public class FreelancerProfileController {
 
     public void setFreelancerData(Freelancer freelancer) {
         this.currentFreelancer = freelancer;
-
-        if (freelancer != null) {
+        if (currentFreelancer != null) {
             populateProfileData();
             loadStatistics();
             checkPortfolioStatus();
+            setupNotifications();
         } else {
             showErrorAlert("Error", "Unable to load freelancer profile data.");
+        }
+    }
+
+    private void setupNotifications() {
+        if (currentFreelancer == null) return;
+        
+        String myName = currentFreelancer.getName();
+        WebSocketService.getInstance().subscribe("/topic/notifications", NotificationMsg.class, notification -> {
+            if (notification.getRecipientId() != null && notification.getRecipientId().equals(myName)) {
+                Platform.runLater(() -> {
+                    NotificationStore.getInstance().add(notification);
+                    updateNotificationBadge();
+                    
+                    if (profileImageView != null && profileImageView.getScene() != null) {
+                        Stage stage = (Stage) profileImageView.getScene().getWindow();
+                        ToastService.showToast(stage, 
+                            notification.getFromUser() + " " + notification.getMessage(), 
+                            notification.getType());
+                    }
+                });
+            }
+        });
+        updateNotificationBadge();
+    }
+
+    private void updateNotificationBadge() {
+        int count = NotificationStore.getInstance().size();
+        if (notificationBadge != null) {
+            notificationBadge.setText(String.valueOf(count));
+            notificationBadge.setVisible(count > 0);
+            notificationBadge.setManaged(count > 0);
+        }
+    }
+
+    @FXML
+    private void handleNotifications() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/Notifications.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) profileImageView.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("Notifications - UniEarn");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
