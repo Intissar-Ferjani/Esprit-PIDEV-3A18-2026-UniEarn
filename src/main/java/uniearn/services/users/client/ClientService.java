@@ -35,8 +35,8 @@ public class ClientService extends UserService implements IClient<Client, User> 
         client.setIdUser(generatedUserId);
         System.out.println("✓ User created with ID: " + generatedUserId);
 
-        // Step 2: Insert into client table using correct column name 'userID'
-        String sql = "INSERT INTO client (amount, rating, company, industry, userID) VALUES (?, ?, ?, ?, ?)";
+        // Step 2: Insert into client table using correct column name 'user_id'
+        String sql = "INSERT INTO client (amount, rating, company, industry, user_id) VALUES (?, ?, ?, ?, ?)";
 
         try {
             PreparedStatement ps = cn.prepareStatement(sql);
@@ -88,7 +88,7 @@ public class ClientService extends UserService implements IClient<Client, User> 
         }
 
         // Update client-specific fields
-        String clientSql = "UPDATE client SET amount=?, rating=?, company=?, industry=? WHERE userID=?";
+        String clientSql = "UPDATE client SET amount=?, rating=?, company=?, industry=? WHERE user_id=?";
         try {
             PreparedStatement ps = cn.prepareStatement(clientSql);
             ps.setDouble(1, client.getAmount());
@@ -105,7 +105,7 @@ public class ClientService extends UserService implements IClient<Client, User> 
 
     @Override
     public void deleteClient(int idUser) {
-        String sql = "DELETE FROM client WHERE userID=?";
+        String sql = "DELETE FROM client WHERE user_id=?";
 
         try {
             PreparedStatement ps = cn.prepareStatement(sql);
@@ -123,9 +123,9 @@ public class ClientService extends UserService implements IClient<Client, User> 
 
     @Override
     public Client getClientById(int idUser) {
-        System.out.println("=== Looking up client with userID: " + idUser + " ===");
+        System.out.println("=== Looking up client with user_id: " + idUser + " ===");
 
-        String sql = "SELECT * FROM client WHERE userID=?";
+        String sql = "SELECT * FROM client WHERE user_id=?";
 
         try {
             PreparedStatement ps = cn.prepareStatement(sql);
@@ -160,7 +160,7 @@ public class ClientService extends UserService implements IClient<Client, User> 
                 return client;
 
             } else {
-                System.err.println("❌ No client record found in client table for userID: " + idUser);
+                System.err.println("❌ No client record found in client table for user_id: " + idUser);
 
                 // Debug - check if user exists
                 User user = super.getUserById(idUser);
@@ -192,11 +192,11 @@ public class ClientService extends UserService implements IClient<Client, User> 
             ResultSet rs = st.executeQuery(sql);
 
             while (rs.next()) {
-                int userID = rs.getInt("userID");
+                int userID = rs.getInt("user_id");
                 User user = super.getUserById(userID);
 
                 if (user == null) {
-                    System.err.println("⚠ Skipping client - user not found for userID: " + userID);
+                    System.err.println("⚠ Skipping client - user not found for user_id: " + userID);
                     continue;
                 }
 
@@ -298,7 +298,7 @@ public class ClientService extends UserService implements IClient<Client, User> 
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                int userID = rs.getInt("userID");
+                int userID = rs.getInt("user_id");
                 User user = super.getUserById(userID);
 
                 if (user == null) {

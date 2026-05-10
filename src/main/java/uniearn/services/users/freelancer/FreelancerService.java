@@ -48,7 +48,7 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
         }
 
         String sql = "INSERT INTO freelancer " +
-                "(idUser, pricePerHour, amount, rating, skills, bio, studentCardPath, cvPath, verificationStatus, status, idTask) " +
+                "(user_id, pricePerHour, amount, rating, skills, bio, studentCardPath, cvPath, verificationStatus, status, idTask) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -104,7 +104,7 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
     }
 
     private boolean freelancerRowExists(int userId) {
-        String sql = "SELECT COUNT(*) FROM freelancer WHERE idUser = ?";
+        String sql = "SELECT COUNT(*) FROM freelancer WHERE user_id = ?";
         try {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, userId);
@@ -118,7 +118,7 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
 
     // ── Step 3: Update freelancer + student card verification ──────────────
     public void updateVerificationData(int freelancerId, String studentCardPath, VerifStatus status) throws SQLException {
-        String sql = "UPDATE freelancer SET studentCardPath = ?, verificationStatus = ? WHERE idUser = ?";
+        String sql = "UPDATE freelancer SET studentCardPath = ?, verificationStatus = ? WHERE user_id = ?";
         PreparedStatement ps = cn.prepareStatement(sql);
         ps.setString(1, studentCardPath);
         ps.setString(2, status.name());
@@ -135,7 +135,7 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
 
         try {
             String sql = "UPDATE freelancer SET pricePerHour=?, amount=?, rating=?, skills=?, bio=?, " +
-                    "studentCardPath=?, verificationStatus=?, status=?, idTask=? WHERE idUser=?";
+                    "studentCardPath=?, verificationStatus=?, status=?, idTask=? WHERE user_id=?";
             PreparedStatement ps = cn.prepareStatement(sql);
 
             ps.setDouble(1, freelancer.getPricePerHour());
@@ -171,7 +171,7 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
     @Override
     public void deleteFreelancer(int id) {
         try {
-            String sql = "DELETE FROM freelancer WHERE idUser=?";
+            String sql = "DELETE FROM freelancer WHERE user_id=?";
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, id);
             ps.executeUpdate();
@@ -188,7 +188,7 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
         User baseUser = super.getUserById(id);
         if (baseUser == null) return null;
 
-        String sql = "SELECT * FROM freelancer WHERE idUser=?";
+        String sql = "SELECT * FROM freelancer WHERE user_id=?";
         try {
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, id);
