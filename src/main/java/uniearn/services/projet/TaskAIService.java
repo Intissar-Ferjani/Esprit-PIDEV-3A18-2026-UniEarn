@@ -10,7 +10,7 @@ import java.util.List;
 
 public class TaskAIService {
 
-    private static final String OPENROUTER_API_KEY = "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";
+    private static final String OPENROUTER_API_KEY = System.getenv("OPENROUTER_API_KEY");
     private static final String CHAT_URL = "https://openrouter.ai/api/v1/chat/completions";
     private static final String MODELS_URL = "https://openrouter.ai/api/v1/models";
     private static final String[] EMERGENCY_FALLBACKS = {
