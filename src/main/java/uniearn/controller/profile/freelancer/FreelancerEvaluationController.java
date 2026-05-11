@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import uniearn.model.entities.candidature.evaluation.Evaluation;
 import uniearn.model.enums.EvaluationType;
+import uniearn.services.candidature.ApplicationService;
 import uniearn.services.candidature.EvaluationService;
 import uniearn.utils.candidature.ApiManager;
 
@@ -86,6 +87,7 @@ public class FreelancerEvaluationController {
     private Label lblEvalSentiment;
 
     private EvaluationService evaluationService;
+    private ApplicationService applicationService;
     private ObservableList<Evaluation> evaluationsList;
     private Evaluation currentEvaluation;
 
@@ -94,6 +96,7 @@ public class FreelancerEvaluationController {
 
     public FreelancerEvaluationController() {
         this.evaluationService = new EvaluationService();
+        this.applicationService = new ApplicationService();
         this.evaluationsList = FXCollections.observableArrayList();
     }
 
@@ -173,7 +176,8 @@ public class FreelancerEvaluationController {
         ratingLbl.setStyle("-fx-font-weight: bold; -fx-text-fill: #F59E0B; -fx-font-size: 13px; -fx-min-width: 25px;");
 
         VBox content = new VBox(4);
-        Label lblHeader = new Label("To: Client #" + ev.getEvaluatedId());
+        String clientDisplayName = applicationService.getUserName(ev.getEvaluatedId());
+        Label lblHeader = new Label("To: " + clientDisplayName);
         lblHeader.setStyle("-fx-font-weight: bold; -fx-text-fill: #1E293B; -fx-font-size: 13px;");
 
         String snippet = ev.getComment().length() > 25 ? ev.getComment().substring(0, 25) + "..." : ev.getComment();
@@ -212,16 +216,19 @@ public class FreelancerEvaluationController {
 
         lblDetailRating.setText("★".repeat(ev.getRating()));
 
+        String clientName = applicationService.getUserName(ev.getEvaluatedId());
+        lblDetailEvaluatedId.setText(clientName);
+
         if (ev.getProjectId() != null && ev.getProjectId() > 0) {
-            lblDetailDate.setText("Project #" + ev.getProjectId());
-            lblDetailProjectId.setText("Project: #" + ev.getProjectId());
+            String projectTitle = applicationService.getProjectTitle(ev.getProjectId());
+            lblDetailDate.setText(projectTitle);
+            lblDetailProjectId.setText(projectTitle);
             lblDetailProjectId.setVisible(true);
         } else {
-            lblDetailDate.setText("Generic Review");
+            lblDetailDate.setText("Évaluation générale");
             lblDetailProjectId.setVisible(false);
         }
 
-        lblDetailEvaluatedId.setText("Client ID: " + ev.getEvaluatedId());
         txtDetailComment.setText(ev.getComment());
         lblDetailType.setText(ev.getType() != null ? ev.getType().getDisplayName() : "Unknown");
 
@@ -449,7 +456,10 @@ public class FreelancerEvaluationController {
 
         List<Evaluation> filtered = evaluationsList.stream()
                 .filter(ev -> rate == null || ev.getRating() == rate)
-                .filter(ev -> term.isEmpty() || String.valueOf(ev.getEvaluatedId()).contains(term))
+                .filter(ev -> term.isEmpty() ||
+                        applicationService.getUserName(ev.getEvaluatedId()).toLowerCase().contains(term) ||
+                        (ev.getProjectId() != null && applicationService.getProjectTitle(ev.getProjectId()).toLowerCase().contains(term)) ||
+                        ev.getComment().toLowerCase().contains(term))
                 .collect(Collectors.toList());
 
         renderSidebarList(filtered);

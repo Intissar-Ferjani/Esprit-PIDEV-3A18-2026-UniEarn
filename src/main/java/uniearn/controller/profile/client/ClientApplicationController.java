@@ -157,10 +157,12 @@ public class ClientApplicationController {
                         + getStatusColor(app.getStatus()) + ";");
 
         // Header
-        Label lblProject = new Label("Projet #" + app.getProjectId());
+        String projectTitle = applicationService.getProjectTitle(app.getProjectId());
+        Label lblProject = new Label(projectTitle);
         lblProject.setStyle("-fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-font-size: 15px;");
 
-        Label lblFreelancer = new Label("Freelancer #" + app.getFreelancerId());
+        String freelancerName = applicationService.getFreelancerName(app.getFreelancerId());
+        Label lblFreelancer = new Label(freelancerName);
         lblFreelancer.setStyle("-fx-text-fill: #64748b; -fx-font-size: 12px;");
 
         // Budget info
@@ -237,15 +239,17 @@ public class ClientApplicationController {
         this.currentApplication = app;
 
         lblDetailId.setText("Candidature #" + app.getIdApplication());
-        lblDetailDate.setText("Projet #" + app.getProjectId());
+        String detailProjectTitle = applicationService.getProjectTitle(app.getProjectId());
+        lblDetailDate.setText(detailProjectTitle);
         lblDetailStatus.setText(app.getStatus().name());
         lblDetailStatus
                 .setStyle("-fx-padding: 5 14; -fx-background-radius: 20; -fx-font-weight: bold; -fx-font-size: 11px; " +
                         "-fx-background-color: " + getStatusBgColor(app.getStatus()) + "; -fx-text-fill: "
                         + getStatusColor(app.getStatus()) + ";");
 
-        lblDetailFreelancerId.setText("Freelancer ID: " + app.getFreelancerId());
-        lblDetailProjectId.setText("Projet ID: " + app.getProjectId());
+        String detailFreelancerName = applicationService.getFreelancerName(app.getFreelancerId());
+        lblDetailFreelancerId.setText(detailFreelancerName);
+        lblDetailProjectId.setText(detailProjectTitle);
         lblDetailBudget.setText(String.format("%.2f DT", app.getProposedBudget()));
         lblDetailDuration.setText(app.getEstimatedDuration() + " Jours");
         txtDetailCoverLetter.setText(app.getCoverLetter());
@@ -359,7 +363,8 @@ public class ClientApplicationController {
     private void handleMessageFreelancer() {
         if (currentApplication == null)
             return;
-        showToast("Ouverture de la messagerie avec Freelancer #" + currentApplication.getFreelancerId(), false);
+        String freelancerName = applicationService.getFreelancerName(currentApplication.getFreelancerId());
+        showToast("Ouverture de la messagerie avec " + freelancerName, false);
     }
 
     @FXML
@@ -390,8 +395,8 @@ public class ClientApplicationController {
         List<Application> filtered = applicationsList.stream()
                 .filter(app -> status == null || app.getStatus() == status)
                 .filter(app -> term.isEmpty() ||
-                        String.valueOf(app.getProjectId()).contains(term) ||
-                        String.valueOf(app.getFreelancerId()).contains(term) ||
+                        applicationService.getProjectTitle(app.getProjectId()).toLowerCase().contains(term) ||
+                        applicationService.getFreelancerName(app.getFreelancerId()).toLowerCase().contains(term) ||
                         app.getCoverLetter().toLowerCase().contains(term))
                 .collect(Collectors.toList());
 

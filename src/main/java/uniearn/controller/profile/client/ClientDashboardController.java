@@ -295,11 +295,15 @@ public class ClientDashboardController {
 
         Circle statusDot = new Circle(4, Color.web(getStatusColor(app.getStatus())));
         VBox info = new VBox(4);
-        Label lblFreelancer = new Label("Freelancer #" + app.getFreelancerId());
+        String freelancerName = applicationService.getFreelancerName(app.getFreelancerId());
+        String projectName = applicationService.getProjectTitle(app.getProjectId());
+        Label lblFreelancer = new Label(freelancerName);
         lblFreelancer.setStyle("-fx-font-weight: bold; -fx-text-fill: #001e00;");
+        Label lblProject = new Label("📁 " + projectName);
+        lblProject.setStyle("-fx-text-fill: #3b82f6; -fx-font-size: 12px; -fx-font-weight: bold;");
         Label lblPrice = new Label("Budget: " + app.getProposedBudget() + " DT");
         lblPrice.setStyle("-fx-text-fill: #5e6d55; -fx-font-size: 12px;");
-        info.getChildren().addAll(lblFreelancer, lblPrice);
+        info.getChildren().addAll(lblFreelancer, lblProject, lblPrice);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -729,7 +733,10 @@ public class ClientDashboardController {
         if (currentMode.equals("PROPOSALS")) {
             List<Application> filtered = proposalsList.stream()
                     .filter(a -> filter == null || filter.equals("ALL") || a.getStatus().name().equals(filter))
-                    .filter(a -> term.isEmpty() || String.valueOf(a.getFreelancerId()).contains(term))
+                    .filter(a -> term.isEmpty()
+                            || applicationService.getFreelancerName(a.getFreelancerId()).toLowerCase().contains(term)
+                            || applicationService.getProjectTitle(a.getProjectId()).toLowerCase().contains(term)
+                            || a.getCoverLetter().toLowerCase().contains(term))
                     .collect(Collectors.toList());
             renderCustomSidebar(filtered, null);
         } else {

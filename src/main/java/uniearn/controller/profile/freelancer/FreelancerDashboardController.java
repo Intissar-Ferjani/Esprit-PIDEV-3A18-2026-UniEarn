@@ -414,7 +414,7 @@ public class FreelancerDashboardController {
 
         Circle statusDot = new Circle(4, Color.web(getStatusColor(app.getStatus())));
         VBox info = new VBox(4);
-        Label lblProj = new Label("Project #" + app.getProjectId());
+        Label lblProj = new Label(applicationService.getProjectTitle(app.getProjectId()));
         lblProj.setStyle("-fx-font-weight: bold; -fx-text-fill: #001e00;");
         Label lblPrice = new Label(app.getProposedBudget() + " DT");
         lblPrice.setStyle("-fx-text-fill: #5e6d55; -fx-font-size: 12px;");
@@ -452,7 +452,7 @@ public class FreelancerDashboardController {
         lblRating.setStyle("-fx-font-weight: bold; -fx-text-fill: #ffa000;");
 
         VBox info = new VBox(4);
-        Label lblFrom = new Label("Utilisateur #" + eval.getEvaluatorId());
+        Label lblFrom = new Label(applicationService.getUserName(eval.getEvaluatorId()));
         lblFrom.setStyle("-fx-font-weight: bold; -fx-text-fill: #001e00;");
 
         String snippet = eval.getComment().length() > 20 ? eval.getComment().substring(0, 20) + "..."
@@ -568,7 +568,7 @@ public class FreelancerDashboardController {
 
     private void showAppDetails(Application app) {
         this.currentApplication = app;
-        lblAppProjId.setText("Project #" + app.getProjectId());
+        lblAppProjId.setText(applicationService.getProjectTitle(app.getProjectId()));
         lblAppStatus.setText(app.getStatus().name());
         lblAppStatus.setStyle("-fx-text-fill: " + getStatusColor(app.getStatus()) + "; -fx-font-weight: bold;");
         lblAppBudget.setText(app.getProposedBudget() + " DT");
@@ -597,7 +597,7 @@ public class FreelancerDashboardController {
 
     private void showEvalDetails(Evaluation eval) {
         this.currentEvaluation = eval;
-        lblEvalTarget.setText("From User #" + eval.getEvaluatorId());
+        lblEvalTarget.setText("From: " + applicationService.getUserName(eval.getEvaluatorId()));
         lblEvalRating.setText("★".repeat(Math.max(1, eval.getRating())));
         lblEvalType.setText(eval.getType().getDisplayName());
         txtDetailEvalComment.setText(eval.getComment());
