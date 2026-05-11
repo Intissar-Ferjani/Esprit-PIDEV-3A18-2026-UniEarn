@@ -25,7 +25,7 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
     @Override
     public void addFreelancer(Freelancer freelancer) throws SQLException {
 
-        //+ check if same user is already inserted
+        // + check if same user is already inserted
         int existingUserId = findUserIdByEmail(freelancer.getEmail());
 
         int generatedUserId;
@@ -48,7 +48,12 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
         }
 
         String sql = "INSERT INTO freelancer " +
+<<<<<<< HEAD
                 "(user_id, pricePerHour, amount, rating, skills, bio, studentCardPath, cvPath, verificationStatus, status, idTask) " +
+=======
+                "(idUser, pricePerHour, amount, rating, skills, bio, studentCardPath, cvPath, verificationStatus, status, idTask) "
+                +
+>>>>>>> b3914dda8101150b70e536030bc2eafc2f5a95fa
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -96,7 +101,8 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setString(1, email.toLowerCase().trim());
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt("idUser");
+            if (rs.next())
+                return rs.getInt("idUser");
         } catch (SQLException e) {
             System.err.println("Error checking existing user by email: " + e.getMessage());
         }
@@ -109,16 +115,37 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
             PreparedStatement ps = cn.prepareStatement(sql);
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) return rs.getInt(1) > 0;
+            if (rs.next())
+                return rs.getInt(1) > 0;
         } catch (SQLException e) {
             System.err.println("Error checking existing freelancer row: " + e.getMessage());
         }
         return false;
     }
 
+    public int getUserIdByFreelancerId(int freelancerId) {
+        String sql = "SELECT idUser FROM freelancer WHERE idFreelancer = ?";
+        try {
+            PreparedStatement ps = cn.prepareStatement(sql);
+            ps.setInt(1, freelancerId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next())
+                return rs.getInt("idUser");
+        } catch (SQLException e) {
+            System.err.println("Error resolving userId from freelancerId: " + e.getMessage());
+        }
+        return -1;
+    }
+
     // ── Step 3: Update freelancer + student card verification ──────────────
+<<<<<<< HEAD
     public void updateVerificationData(int freelancerId, String studentCardPath, VerifStatus status) throws SQLException {
         String sql = "UPDATE freelancer SET studentCardPath = ?, verificationStatus = ? WHERE user_id = ?";
+=======
+    public void updateVerificationData(int freelancerId, String studentCardPath, VerifStatus status)
+            throws SQLException {
+        String sql = "UPDATE freelancer SET studentCardPath = ?, verificationStatus = ? WHERE idUser = ?";
+>>>>>>> b3914dda8101150b70e536030bc2eafc2f5a95fa
         PreparedStatement ps = cn.prepareStatement(sql);
         ps.setString(1, studentCardPath);
         ps.setString(2, status.name());
@@ -186,7 +213,8 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
     @Override
     public Freelancer getFreelancerById(int id) {
         User baseUser = super.getUserById(id);
-        if (baseUser == null) return null;
+        if (baseUser == null)
+            return null;
 
         String sql = "SELECT * FROM freelancer WHERE user_id=?";
         try {
@@ -238,7 +266,8 @@ public class FreelancerService extends UserService implements IFreelancer<Freela
         for (User u : users) {
             if (u.getRole() == UserRole.FREELANCER) {
                 Freelancer f = getFreelancerById(u.getIdUser());
-                if (f != null) freelancers.add(f);
+                if (f != null)
+                    freelancers.add(f);
             }
         }
         return freelancers;

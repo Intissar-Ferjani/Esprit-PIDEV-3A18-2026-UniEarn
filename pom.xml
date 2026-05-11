@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>uniearn_java</artifactId>
+    <artifactId>UniEarn-Java</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -29,6 +29,16 @@
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
             <version>17.0.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-media</artifactId>
+            <version>17.0.12</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.2.1</version>
         </dependency>
 
         <!-- Spring Boot WebSocket Starter (for Server) -->
@@ -104,13 +114,6 @@
             <version>0.4</version>
         </dependency>
 
-        <!-- API for skills -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.15.2</version>
-        </dependency>
-
         <!-- API for Email sending -->
         <dependency>
             <groupId>com.sun.mail</groupId>
@@ -125,13 +128,6 @@
             <version>5.7.0</version>
         </dependency>
 
-        <!-- webcam -->
-        <dependency>
-            <groupId>com.github.sarxos</groupId>
-            <artifactId>webcam-capture</artifactId>
-            <version>0.3.12</version>
-        </dependency>
-
         <!-- JSON Parsing -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -143,6 +139,12 @@
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
             <version>6.20.6</version>
+        </dependency>
+        <!-- webcam -->
+        <dependency>
+            <groupId>com.github.sarxos</groupId>
+            <artifactId>webcam-capture</artifactId>
+            <version>0.3.12</version>
         </dependency>
     </dependencies>
 

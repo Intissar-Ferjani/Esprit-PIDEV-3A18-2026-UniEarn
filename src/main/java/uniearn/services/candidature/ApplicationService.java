@@ -51,7 +51,7 @@ public class ApplicationService implements IApplication {
 
     @Override
     public Application read(int idApplication) throws SQLException {
-        String query = "SELECT * FROM application WHERE idApplication=?";
+        String query = "SELECT * FROM application WHERE id=?";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setInt(1, idApplication);
         ResultSet rs = stmt.executeQuery();
@@ -76,7 +76,7 @@ public class ApplicationService implements IApplication {
         String query = """
                 UPDATE application SET
                 freelancer_id=?, project_id=?, status=?, cover_letter=?, proposed_budget=?, estimated_duration=?, updated_at=?
-                WHERE idApplication=?
+                WHERE id=?
                 """;
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setInt(1, application.getFreelancerId());
@@ -92,7 +92,7 @@ public class ApplicationService implements IApplication {
 
     @Override
     public void delete(int idApplication) throws SQLException {
-        String query = "DELETE FROM application WHERE idApplication=?";
+        String query = "DELETE FROM application WHERE id=?";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setInt(1, idApplication);
         stmt.executeUpdate();
@@ -138,7 +138,7 @@ public class ApplicationService implements IApplication {
     // ================== Business Logic ==================
     @Override
     public void updateStatus(int idApplication, ApplicationStatus newStatus) throws SQLException {
-        String query = "UPDATE application SET status=?, updated_at=? WHERE idApplication=?";
+        String query = "UPDATE application SET status=?, updated_at=? WHERE id=?";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, newStatus.name());
         stmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
@@ -270,10 +270,58 @@ public class ApplicationService implements IApplication {
         return 0;
     }
 
+    /** Returns the project title for a given project ID, or a fallback string. */
+    public String getProjectTitle(int projectId) {
+        String query = "SELECT title FROM project WHERE idproject = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, projectId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                String title = rs.getString("title");
+                return title != null ? title : "Projet #" + projectId;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "Projet #" + projectId;
+    }
+
+    /** Returns the full name of a freelancer (via freelancer_id -> user.name). */
+    public String getFreelancerName(int freelancerId) {
+        String query = "SELECT u.name FROM freelancer f JOIN user u ON f.idUser = u.idUser WHERE f.idFreelancer = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, freelancerId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                String name = rs.getString("name");
+                return name != null ? name : "Freelancer #" + freelancerId;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "Freelancer #" + freelancerId;
+    }
+
+    /** Returns the full name of a user (client) by their user ID. */
+    public String getUserName(int userId) {
+        String query = "SELECT name FROM user WHERE idUser = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                String name = rs.getString("name");
+                return name != null ? name : "User #" + userId;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "User #" + userId;
+    }
+
     // ================== Helper ==================
     private Application extractApplication(ResultSet rs) throws SQLException {
         return new Application(
-                rs.getInt("idApplication"),
+                rs.getInt("id"),
                 rs.getInt("freelancer_id"),
                 rs.getInt("project_id"),
                 ApplicationStatus.valueOf(rs.getString("status")),

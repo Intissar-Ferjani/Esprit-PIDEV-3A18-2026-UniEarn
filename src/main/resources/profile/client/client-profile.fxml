@@ -13,88 +13,113 @@
 
     <!-- ══ Top Navigation Bar ══════════════════════════════════════════ -->
     <top>
-        <HBox alignment="CENTER_LEFT" prefHeight="68.0" spacing="20.0" styleClass="top-bar">
-            <padding><Insets left="30.0" right="30.0" /></padding>
+        <HBox fx:id="topBar" alignment="CENTER_LEFT" onMouseDragged="#handleMouseDragged" onMousePressed="#handleMousePressed" prefHeight="68.0" spacing="20.0" styleClass="top-bar">
+            <padding><Insets left="30.0" right="15.0" /></padding>
             <children>
-                <Region HBox.hgrow="ALWAYS" />
-                <ImageView fitHeight="260.0" fitWidth="185.0" pickOnBounds="true" preserveRatio="true">
+                <!-- Logo on the left -->
+                <ImageView fitHeight="55.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true">
                     <image><Image url="@../../images/UniEarn_full_logo.png" /></image>
                 </ImageView>
+                
+                <Region HBox.hgrow="ALWAYS" />
+                
+                <!-- Window Controls on the right -->
+                <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="window-controls">
+                    <children>
+                        <Button onAction="#handleMinimize" styleClass="btn-window-control, btn-minimize">
+                            <graphic><FontIcon iconLiteral="fas-minus" iconSize="12" /></graphic>
+                        </Button>
+                        <Button fx:id="btnMaximize" onAction="#handleMaximize" styleClass="btn-window-control, btn-maximize">
+                            <graphic><FontIcon iconLiteral="fas-expand-arrows-alt" iconSize="12" /></graphic>
+                        </Button>
+                        <Button onAction="#handleClose" styleClass="btn-window-control, btn-close">
+                            <graphic><FontIcon iconLiteral="fas-times" iconSize="12" /></graphic>
+                        </Button>
+                    </children>
+                </HBox>
             </children>
         </HBox>
     </top>
 
     <!-- ══ Left Sidebar ════════════════════════════════════════════════ -->
     <left>
-        <VBox prefWidth="248.0" styleClass="sidebar">
-            <children>
-                <VBox spacing="4.0" VBox.vgrow="ALWAYS">
-                    <padding><Insets bottom="15.0" left="14.0" right="14.0" top="22.0" /></padding>
+        <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;" vbarPolicy="AS_NEEDED">
+            <content>
+                <VBox prefWidth="248.0" styleClass="sidebar">
                     <children>
-
-                        <Button onAction="#handleShowDashboard" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button, active">
-                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
-                                <FontIcon iconLiteral="fas-home" iconSize="15" />
-                                <Label style="-fx-font-size: 14px;" text="Dashboard" />
-                            </children></HBox></graphic>
-                        </Button>
-
-                        <Button onAction="#handleBrowseFreelancers" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
-                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
-                                <FontIcon iconLiteral="fas-users" iconSize="15" />
-                                <Label style="-fx-font-size: 14px;" text="Browse Freelancers" />
-                            </children></HBox></graphic>
-                        </Button>
-
-                        <Button onAction="#handleMesProjets" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
-                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
-                                <FontIcon iconLiteral="fas-clipboard-list" iconSize="15" />
-                                <Label style="-fx-font-size: 14px;" text="Mes projets" />
-                            </children></HBox></graphic>
-                        </Button>
-
-                        <Button prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
-                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
-                                <FontIcon iconLiteral="fas-file-contract" iconSize="15" />
-                                <Label style="-fx-font-size: 14px;" text="Mes contrats" />
-                            </children></HBox></graphic>
-                        </Button>
-
-                        <Button onAction="#handleApplications" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
-                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
-                                <FontIcon iconLiteral="fas-star" iconSize="15" />
-                                <Label style="-fx-font-size: 14px;" text="Avis &amp; Propositions" />
-                            </children></HBox></graphic>
-                        </Button>
-
-                        <Button prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
-                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
-                                <FontIcon iconLiteral="fas-comments" iconSize="15" />
-                                <Label style="-fx-font-size: 14px;" text="Messages" />
-                            </children></HBox></graphic>
-                        </Button>
-
-                        <Button prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
-                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
-                                <FontIcon iconLiteral="fas-credit-card" iconSize="15" />
-                                <Label style="-fx-font-size: 14px;" text="Paiements" />
-                            </children></HBox></graphic>
-                        </Button>
-
-                        <Region VBox.vgrow="ALWAYS" />
-                        <Separator />
-
-                        <Button onAction="#handleLogout" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button, logout">
-                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
-                                <FontIcon iconLiteral="fas-sign-out-alt" iconSize="15" />
-                                <Label style="-fx-font-size: 14px;" text="Logout" />
-                            </children></HBox></graphic>
-                        </Button>
-
+                        <VBox spacing="4.0" VBox.vgrow="ALWAYS">
+                            <padding><Insets bottom="15.0" left="14.0" right="14.0" top="22.0" /></padding>
+                            <children>
+        
+                                <Button onAction="#handleShowDashboard" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button, active">
+                                    <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                        <FontIcon iconLiteral="fas-home" iconSize="15" />
+                                        <Label style="-fx-font-size: 14px;" text="Dashboard" />
+                                    </children></HBox></graphic>
+                                </Button>
+        
+                                <Button onAction="#handleBrowseFreelancers" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
+                                    <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                        <FontIcon iconLiteral="fas-users" iconSize="15" />
+                                        <Label style="-fx-font-size: 14px;" text="Browse Freelancers" />
+                                    </children></HBox></graphic>
+                                </Button>
+        
+                                <Button onAction="#handleMesProjets" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
+                                    <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                        <FontIcon iconLiteral="fas-clipboard-list" iconSize="15" />
+                                        <Label style="-fx-font-size: 14px;" text="Mes projets" />
+                                    </children></HBox></graphic>
+                                </Button>
+        
+                                <Button onAction="#handleMesContrats" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
+                                    <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                        <FontIcon iconLiteral="fas-file-contract" iconSize="15" />
+                                        <Label style="-fx-font-size: 14px;" text="Mes contrats" />
+                                    </children></HBox></graphic>
+                                </Button>
+        
+                                <Button onAction="#handleApplications" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
+                                    <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                        <FontIcon iconLiteral="fas-star" iconSize="15" />
+                                        <Label style="-fx-font-size: 14px;" text="Avis &amp; Propositions" />
+                                    </children></HBox></graphic>
+                                </Button>
+        
+        
+                                <Button fx:id="btnPaymentMethods" onAction="#handlePaymentMethods" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
+                                    <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                        <FontIcon iconLiteral="fas-university" iconSize="15" />
+                                        <Label style="-fx-font-size: 14px;" text="Moyens de Paiement" />
+                                    </children></HBox></graphic>
+                                </Button>
+        
+                                <Button fx:id="btnPayments" onAction="#handlePayments" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button">
+                                    <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                        <FontIcon iconLiteral="fas-credit-card" iconSize="15" />
+                                        <Label style="-fx-font-size: 14px;" text="Paiements" />
+                                    </children></HBox></graphic>
+                                </Button>
+        
+                                <Region VBox.vgrow="ALWAYS" />
+                                <Separator />
+        
+        
+        
+                                <Button onAction="#handleLogout" prefHeight="42.0" prefWidth="220.0" styleClass="nav-button, logout">
+                                    <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                        <FontIcon iconLiteral="fas-sign-out-alt" iconSize="15" />
+                                        <Label style="-fx-font-size: 14px;" text="Logout" />
+                                    </children></HBox></graphic>
+                                </Button>
+        
+        
+                            </children>
+                        </VBox>
                     </children>
                 </VBox>
-            </children>
-        </VBox>
+            </content>
+        </ScrollPane>
     </left>
 
     <!-- ══ Main Content ════════════════════════════════════════════════ -->
@@ -111,7 +136,7 @@
                         <VBox styleClass="profile-header-card">
 
                             <!-- Gradient banner strip -->
-                            <Pane prefHeight="10.0" prefWidth="862.0" styleClass="profile-banner">
+                            <Pane maxHeight="24.0" minHeight="24.0" styleClass="profile-banner">
                         <VBox.margin>
                            <Insets bottom="20.0" />
                         </VBox.margin></Pane>
@@ -125,7 +150,7 @@
                                     <StackPane styleClass="avatar-stack">
                                         <VBox.margin><Insets top="-38.0" /></VBox.margin>
                                         <children>
-                                            <Pane prefHeight="165.0" prefWidth="153.0" styleClass="avatar-ring" />
+                                            <Pane prefHeight="138.0" prefWidth="138.0" styleClass="avatar-ring" />
                                             <ImageView fx:id="profileImageView" fitHeight="124.0" fitWidth="124.0" preserveRatio="true" styleClass="profile-avatar" StackPane.alignment="CENTER">
                                                 <image><Image url="@../../images/default-avatar.jpg" /></image>
                                             </ImageView>
@@ -193,7 +218,20 @@
                         </VBox>
 
                         <!-- ── Statistics Cards ────────────────────────── -->
-                        <HBox spacing="16.0" />
+                        <HBox spacing="16.0">
+                            <children>
+
+                                <VBox spacing="10.0" styleClass="stat-card-new stat-card-yellow" HBox.hgrow="ALWAYS">
+                                    <padding><Insets bottom="20.0" left="22.0" right="22.0" top="20.0" /></padding>
+                                    <children>
+                                        <Label fx:id="completedProjectsLabel" styleClass="stat-value">
+                                            <font><Font name="System Bold" size="24.0" /></font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+
+                            </children>
+                        </HBox>
 
                         <!-- ── Posted Projects Section ─────────────────── -->
                         <VBox styleClass="content-section" VBox.vgrow="ALWAYS">
@@ -237,7 +275,7 @@
                                                     <padding><Insets bottom="0" left="10" right="10" top="0" /></padding>
                                                     <children>
                                                         <FontIcon iconLiteral="fas-search" iconSize="13" styleClass="search-icon" />
-                                                        <TextField fx:id="searchField" prefWidth="175.0" promptText="Search projects..." styleClass="search-field-inner">
+                                                        <TextField fx:id="searchField" promptText="Search projects..." styleClass="search-field-inner">
                                                             <font><Font size="13.0" /></font>
                                                         </TextField>
                                                     </children>
@@ -261,9 +299,6 @@
                                 </ScrollPane>
 
                             </children>
-                           <VBox.margin>
-                              <Insets top="20.0" />
-                           </VBox.margin>
                         </VBox>
 
                     </children>

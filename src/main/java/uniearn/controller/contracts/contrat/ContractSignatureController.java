@@ -49,6 +49,7 @@ public class ContractSignatureController {
     private ContractPDFService pdfService;
     private Runnable onSignatureComplete;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    private String userType = "CLIENT"; // CLIENT ou FREELANCER
 
     private boolean isDrawingClient = false;
     private boolean isDrawingFreelancer = false;
@@ -78,6 +79,7 @@ public class ContractSignatureController {
         btnClearFreelancerSignature.setOnAction(e -> clearCanvas(canvasFreelancerSignature));
 
         btnSignClient.setOnAction(e -> {
+            System.out.println("DEBUG: btnSignClient clicked");
             if (isCanvasEmpty(canvasClientSignature)) {
                 showAlert("Erreur", "Veuillez dessiner votre signature", Alert.AlertType.WARNING);
             } else {
@@ -86,6 +88,7 @@ public class ContractSignatureController {
         });
 
         btnSignFreelancer.setOnAction(e -> {
+            System.out.println("DEBUG: btnSignFreelancer clicked");
             if (isCanvasEmpty(canvasFreelancerSignature)) {
                 showAlert("Erreur", "Veuillez dessiner votre signature", Alert.AlertType.WARNING);
             } else {
@@ -112,6 +115,11 @@ public class ContractSignatureController {
 
     public void setOnSignatureComplete(Runnable callback) {
         this.onSignatureComplete = callback;
+    }
+
+    public void setUserType(String type) {
+        this.userType = type != null ? type.toUpperCase() : "CLIENT";
+        updateSignatureControls();
     }
 
     private void displayContractInfo() {
@@ -184,9 +192,12 @@ public class ContractSignatureController {
             btnSignFreelancer.setDisable(true);
             btnClearFreelancerSignature.setDisable(true);
         }
+
+        updateSignatureControls();
     }
 
     private void startDrawingClient(MouseEvent e) {
+        System.out.println("DEBUG startDrawingClient: clientSigned=" + clientSigned + ", canvasDisabled=" + canvasClientSignature.isDisabled() + ", mouseTransparent=" + canvasClientSignature.isMouseTransparent());
         if (!clientSigned) {
             isDrawingClient = true;
         }
@@ -194,6 +205,7 @@ public class ContractSignatureController {
 
     private void drawOnClientCanvas(MouseEvent e) {
         if (isDrawingClient && !clientSigned) {
+            System.out.println("DEBUG drawOnClientCanvas: Drawing at (" + e.getX() + ", " + e.getY() + ")");
             GraphicsContext gc = canvasClientSignature.getGraphicsContext2D();
             gc.setStroke(Color.BLACK);
             gc.setLineWidth(2);
@@ -203,6 +215,7 @@ public class ContractSignatureController {
     }
 
     private void startDrawingFreelancer(MouseEvent e) {
+        System.out.println("DEBUG startDrawingFreelancer: freelancerSigned=" + freelancerSigned + ", canvasDisabled=" + canvasFreelancerSignature.isDisabled() + ", mouseTransparent=" + canvasFreelancerSignature.isMouseTransparent());
         if (!freelancerSigned) {
             isDrawingFreelancer = true;
         }
@@ -210,6 +223,7 @@ public class ContractSignatureController {
 
     private void drawOnFreelancerCanvas(MouseEvent e) {
         if (isDrawingFreelancer && !freelancerSigned) {
+            System.out.println("DEBUG drawOnFreelancerCanvas: Drawing at (" + e.getX() + ", " + e.getY() + ")");
             GraphicsContext gc = canvasFreelancerSignature.getGraphicsContext2D();
             gc.setStroke(Color.BLACK);
             gc.setLineWidth(2);
@@ -224,10 +238,9 @@ public class ContractSignatureController {
     }
 
     private boolean isCanvasEmpty(Canvas canvas) {
-        // Simple check: si le canvas a une hauteur spécifiée et le contexte graphique peut dessiner
-        // Pour une vérification plus simple, on peut utiliser un flag
-        // Sinon, faire une vérification basique
-        return false; // Pour maintenant, on suppose qu'il y a du contenu si l'utilisateur clique sur "Signer"
+        // Pour maintenant, on suppose qu'il y a du contenu si l'utilisateur clique sur "Signer"
+        // La vérification réelle se fera lors de la capture de l'image
+        return false;
     }
 
     private void signByClient() {
@@ -262,9 +275,21 @@ public class ContractSignatureController {
             if (result) {
                 clientSigned = true;
                 contract.setClientSignatureImage(signatureImage);
+                contract.setClientSignatureDate(new java.sql.Timestamp(System.currentTimeMillis()));
                 lblClientSignatureDate.setText("Signé le: " + dateFormat.format(new Date()));
                 btnSignClient.setDisable(true);
                 btnClearClientSignature.setDisable(true);
+
+                // Mettre à jour le statut: si freelancer a déjà signé, le contrat devient "Actif" (3)
+                // Sinon, le contrat passe à "Client Signed" (1)
+                if (contract.getFreelancerSignatureDate() != null) {
+                    contract.setStatus(3); // Active
+                    contratService.updateContractStatus(contract.getIdContract(), 3);
+                } else {
+                    contract.setStatus(1); // Client Signed
+                    contratService.updateContractStatus(contract.getIdContract(), 1);
+                }
+
                 showAlert("Succès", "Contrat signé par le client avec signature enregistrée", Alert.AlertType.INFORMATION);
 
                 if (onSignatureComplete != null) {
@@ -314,9 +339,21 @@ public class ContractSignatureController {
             if (result) {
                 freelancerSigned = true;
                 contract.setFreelancerSignatureImage(signatureImage);
+                contract.setFreelancerSignatureDate(new java.sql.Timestamp(System.currentTimeMillis()));
                 lblFreelancerSignatureDate.setText("Signé le: " + dateFormat.format(new Date()));
                 btnSignFreelancer.setDisable(true);
                 btnClearFreelancerSignature.setDisable(true);
+
+                // Mettre à jour le statut: si client a déjà signé, le contrat devient "Actif" (3)
+                // Sinon, le contrat passe à "Freelancer Signed" (2)
+                if (contract.getClientSignatureDate() != null) {
+                    contract.setStatus(3); // Active
+                    contratService.updateContractStatus(contract.getIdContract(), 3);
+                } else {
+                    contract.setStatus(2); // Freelancer Signed
+                    contratService.updateContractStatus(contract.getIdContract(), 2);
+                }
+
                 showAlert("Succès", "Contrat signé par le freelancer avec signature enregistrée", Alert.AlertType.INFORMATION);
 
                 // Vérifier si les deux ont signé
@@ -390,5 +427,45 @@ public class ContractSignatureController {
         alert.setContentText(content);
         alert.showAndWait();
     }
-}
 
+    private void updateSignatureControls() {
+        if (canvasClientSignature == null || canvasFreelancerSignature == null) {
+            return;
+        }
+
+        System.out.println("DEBUG updateSignatureControls: userType=" + userType +
+            ", clientSigned=" + clientSigned + ", freelancerSigned=" + freelancerSigned);
+
+        if ("CLIENT".equals(userType)) {
+            canvasFreelancerSignature.setDisable(true);
+            btnSignFreelancer.setDisable(true);
+            btnClearFreelancerSignature.setDisable(true);
+
+            if (!clientSigned) {
+                canvasClientSignature.setDisable(false);
+                canvasClientSignature.setMouseTransparent(false);
+                btnSignClient.setDisable(false);
+                btnClearClientSignature.setDisable(false);
+                canvasClientSignature.setOnMousePressed(this::startDrawingClient);
+                canvasClientSignature.setOnMouseDragged(this::drawOnClientCanvas);
+                canvasClientSignature.setOnMouseReleased(e -> isDrawingClient = false);
+                System.out.println("DEBUG: CLIENT mode - Canvas client réactivé");
+            }
+        } else if ("FREELANCER".equals(userType)) {
+            canvasClientSignature.setDisable(true);
+            btnSignClient.setDisable(true);
+            btnClearClientSignature.setDisable(true);
+
+            if (!freelancerSigned) {
+                canvasFreelancerSignature.setDisable(false);
+                canvasFreelancerSignature.setMouseTransparent(false);
+                btnSignFreelancer.setDisable(false);
+                btnClearFreelancerSignature.setDisable(false);
+                canvasFreelancerSignature.setOnMousePressed(this::startDrawingFreelancer);
+                canvasFreelancerSignature.setOnMouseDragged(this::drawOnFreelancerCanvas);
+                canvasFreelancerSignature.setOnMouseReleased(e -> isDrawingFreelancer = false);
+                System.out.println("DEBUG: FREELANCER mode - Canvas freelancer réactivé");
+            }
+        }
+    }
+}

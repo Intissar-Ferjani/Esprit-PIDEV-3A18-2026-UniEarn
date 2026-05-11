@@ -468,6 +468,52 @@ public class ListFreelancersController {
     }
 
     @FXML
+    private void handleShowDashboard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/client-profile.fxml"));
+            Parent root = loader.load();
+            uniearn.controller.profile.client.ClientProfileController controller = loader.getController();
+            controller.setClientData(currentClient);
+            Stage stage = (Stage) freelancersContainer.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            showErrorAlert("Error", "Failed to load dashboard: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleMesContrats() {
+        // Placeholder or navigation to contracts
+        showErrorAlert("Information", "Mes contrats logic goes here.");
+    }
+
+    @FXML
+    private void handleApplications() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/ClientEvaluationView.fxml"));
+            Parent root = loader.load();
+            // Assuming we might need to set client data if the controller supports it
+            Stage stage = (Stage) freelancersContainer.getScene().getWindow();
+            stage.setScene(new Scene(root, 1100, 700));
+            stage.setTitle("Mes Évaluations - UniEarn");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            showErrorAlert("Error", "Failed to load applications/evaluations: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handlePaymentMethods() {
+        showErrorAlert("Information", "Moyens de Paiement logic goes here.");
+    }
+
+    @FXML
+    private void handlePayments() {
+        showErrorAlert("Information", "Paiements logic goes here.");
+    }
+
+    @FXML
     private void handleproject() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/client/Projet.fxml"));
@@ -477,7 +523,7 @@ public class ListFreelancersController {
             controller.setClientData(currentClient);
 
             Stage stage = (Stage) freelancersContainer.getScene().getWindow();
-            stage.setScene(new Scene(root, 1200, 800));
+            stage.setScene(new Scene(root, 1200, 700));
             stage.setTitle("Mes Projets - UniEarn");
             stage.centerOnScreen();
         } catch (IOException e) {

@@ -14,8 +14,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import uniearn.controller.profile.forum.MessagesController;
 import uniearn.controller.profile.freelancer.ListFreelancersController;
 import uniearn.database.SessionManager;
 import uniearn.model.entities.projet.Project;
@@ -25,7 +27,6 @@ import uniearn.services.projet.ProjectService;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Optional;
 
 public class ProjectController {
@@ -36,7 +37,24 @@ public class ProjectController {
 
     private Client currentClient;
 
+    private Parent embeddedDashboard;
+
     private ObservableList<Project> projectList = FXCollections.observableArrayList();
+
+    private boolean isFreelancerMode = false;
+
+    public void setFreelancerMode(boolean isFreelancer) {
+        this.isFreelancerMode = isFreelancer;
+        if (isFreelancer) {
+            if (addButton != null)
+                addButton.setVisible(false);
+            if (updateButton != null)
+                updateButton.setVisible(false);
+            if (clearButton != null)
+                clearButton.setVisible(false);
+        }
+        handleRefresh();
+    }
 
     public void setClientData(Client client) {
         this.currentClient = client;
@@ -54,6 +72,9 @@ public class ProjectController {
 
     @FXML
     private Button editProfileButton;
+
+    @FXML
+    private ScrollPane dashboardView;
 
     @FXML
     private TextField budgetField;
@@ -119,7 +140,13 @@ public class ProjectController {
     private Button updateButton;
 
     @FXML
+    private StackPane contentArea;
+
+    @FXML
     private TableColumn<Project, Void> actionColumn;
+
+    @FXML
+    private TableColumn<Project, Void> chatColumn;
 
     @FXML
     public void initialize() {
@@ -133,16 +160,7 @@ public class ProjectController {
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         budgetColumn.setCellValueFactory(new PropertyValueFactory<>("budget"));
         // map integer status to readable enum name
-        statusColumn.setCellValueFactory(cellData -> {
-            int s = cellData.getValue().getStatus();
-            String text = "";
-            try {
-                text = taskstatusenum.values()[s].name();
-            } catch (Exception e) {
-                text = "UNKNOWN";
-            }
-            return new ReadOnlyStringWrapper(text);
-        });
+        statusColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getStatus()));
         clientIdColumn.setCellValueFactory(new PropertyValueFactory<>("client_id"));
 
         projectTable.setItems(projectList); // Initialize table with the observable list
@@ -198,6 +216,31 @@ public class ProjectController {
             actionColumn.setCellFactory(cellFactory);
         }
 
+        // Chat column — open messaging with the freelancer
+        if (chatColumn != null) {
+            chatColumn.setCellFactory(col -> new TableCell<>() {
+                private final Button chatBtn = new Button("💬 Chat");
+                {
+                    chatBtn.setStyle(
+                            "-fx-background-color: #1a56db; -fx-text-fill: white; -fx-cursor: hand; -fx-font-weight: bold; -fx-background-radius: 6;");
+                    chatBtn.setOnAction(event -> {
+                        Project project = getTableView().getItems().get(getIndex());
+                        String freelancerName = project.getFreelancerName();
+                        if (freelancerName == null || freelancerName.equals("Unknown")) {
+                            freelancerName = services.getFreelancerNameById(project.getFreelancerid());
+                        }
+                        openChatWithFreelancer(freelancerName);
+                    });
+                }
+
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setGraphic(empty ? null : chatBtn);
+                }
+            });
+        }
+
         // handleRefresh() is now called in setClientData, so it's not needed here
         // unless currentClient is guaranteed to be set before initialize
         // For safety, we can keep it, but it might refresh twice if setClientData is
@@ -219,7 +262,9 @@ public class ProjectController {
         // clientIdField
         // select status by index if valid
         try {
-            statusComboBox.getSelectionModel().select(project.getStatus());
+            if (project.getStatus() != null) {
+                statusComboBox.getSelectionModel().select(taskstatusenum.valueOf(project.getStatus()));
+            }
         } catch (Exception e) {
             statusComboBox.getSelectionModel().clearSelection();
         }
@@ -308,8 +353,8 @@ public class ProjectController {
         String title = titleField.getText();
         String description = descriptionArea.getText();
         double budget = Double.parseDouble(budgetField.getText());
-        int status = 2; // Forced default TODO
-        int freelancerIDD = 23; // Default or placeholder freelancer ID
+        String status = "TODO"; // Default status
+        int freelancerID = 23; // Default or placeholder freelancer ID
 
         if (currentClient == null) {
             showErrorAlert("Error", "Client data not available. Cannot add project.");
@@ -318,7 +363,7 @@ public class ProjectController {
         int clientId = currentClient.getIdClient();
 
         // Create a new Project object
-        Project newProject = new Project(title, description, budget, status, clientId, freelancerIDD);
+        Project newProject = new Project(title, description, budget, status, clientId, freelancerID);
 
         // Add the project to the database
         try {
@@ -379,7 +424,10 @@ public class ProjectController {
 
     @FXML
     void handleRefresh() {
-        if (currentClient != null) {
+        if (isFreelancerMode) {
+            projectList.setAll(services.getAllProjects());
+            setupFiltering();
+        } else if (currentClient != null) {
             projectList.setAll(services.getProjectsByClientId(currentClient.getIdClient()));
             setupFiltering();
         } else {
@@ -422,19 +470,35 @@ public class ProjectController {
     @FXML
     private void handleBrowseFreelancers() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/list-freelancers.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/Freelancer/list-freelancers.fxml"));
             Parent root = loader.load();
 
             ListFreelancersController controller = loader.getController();
             controller.setClientData(currentClient);
 
             Stage stage = (Stage) projectTable.getScene().getWindow();
-            stage.setScene(new Scene(root, 1200, 800));
+            stage.setScene(new Scene(root, 1200, 700));
             stage.setTitle("Browse Freelancers - UniEarn");
             stage.centerOnScreen();
         } catch (IOException e) {
             e.printStackTrace();
             showErrorAlert("Error", "Failed to load browse freelancers page: " + e.getMessage());
+        }
+    }
+
+    private void openChatWithFreelancer(String freelancerName) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/profile/freelancer/Messages.fxml"));
+            Parent root = loader.load();
+            MessagesController controller = loader.getController();
+            controller.setChatWith(freelancerName);
+            controller.initialize();
+            Stage stage = (Stage) projectTable.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Chat with " + freelancerName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Could not open chat: " + e.getMessage());
         }
     }
 
@@ -456,7 +520,8 @@ public class ProjectController {
             budget = Double.parseDouble(budgetField.getText());
         } catch (NumberFormatException e) {
         }
-        int status = statusComboBox.getSelectionModel().getSelectedIndex();
+        String status = statusComboBox.getSelectionModel().getSelectedItem() != null ? 
+                statusComboBox.getSelectionModel().getSelectedItem().name() : "TODO";
         int clientId = currentClient != null ? currentClient.getIdClient() : 0;
 
         Project updated = new Project(title, description, budget, status, clientId, 23);
@@ -574,13 +639,37 @@ public class ProjectController {
             e.printStackTrace();
         }
     }
+
     @FXML
-    private void handleSettings() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Settings");
-        alert.setHeaderText("Account Settings");
-        alert.setContentText(
-                "Settings page coming soon!\n\nFeatures:\n• Notification preferences\n• Privacy settings\n• Language selection");
-        alert.showAndWait();
+    private void handleShowDashboard() {
+        if (embeddedDashboard != null) {
+            embeddedDashboard.setVisible(false);
+            embeddedDashboard.setManaged(false);
+        }
+
+        dashboardView.setVisible(true);
+        dashboardView.setManaged(true);
+        System.out.println("✓ Switched back to main profile dashboard");
     }
+
+    @FXML
+    private void handleApplications() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/ClientDashboardView.fxml"));
+            Parent root = loader.load();
+
+            // ClientDashboardController controller = loader.getController();
+
+            Stage stage = (Stage) projectTable.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 700));
+            stage.setTitle("Applications & Reviews - UniEarn");
+            stage.centerOnScreen();
+
+            System.out.println("✓ Switched to Applications Dashboard scene");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Failed to load applications page: " + e.getMessage());
+        }
+    }
+
 }

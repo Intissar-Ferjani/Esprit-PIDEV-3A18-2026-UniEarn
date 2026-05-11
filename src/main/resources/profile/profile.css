@@ -14,6 +14,35 @@
     -fx-border-color: #e1e8ed;
     -fx-border-width: 0 0 1 0;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.06), 5, 0, 0, 2);
+    -fx-cursor: default; /* Ensure cursor is default for title bar area */
+}
+
+/* ── Window Controls ───────────────────────────────────────── */
+.window-controls {
+    -fx-padding: 0 5 0 0;
+}
+
+.btn-window-control {
+    -fx-background-color: transparent;
+    -fx-background-radius: 4;
+    -fx-padding: 6 10;
+    -fx-cursor: hand;
+}
+
+.btn-window-control:hover {
+    -fx-background-color: #f0f2f5;
+}
+
+.btn-window-control .ikonli-font-icon {
+    -fx-icon-color: #5f6368;
+}
+
+.btn-close:hover {
+    -fx-background-color: #e81123;
+}
+
+.btn-close:hover .ikonli-font-icon {
+    -fx-icon-color: white;
 }
 
 /* ── Sidebar ───────────────────────────────────────────────── */

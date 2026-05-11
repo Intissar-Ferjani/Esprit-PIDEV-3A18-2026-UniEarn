@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root" stylesheets="@../../profile/profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.admin.AdminDashboardController">
+<BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root" stylesheets="@../../profile/profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.admin.AdminDashboardController" fx:id="rootPane">
 
     <!-- Top Navigation Bar -->
     <top>
@@ -44,7 +44,7 @@
                         <Insets bottom="15.0" left="15.0" right="15.0" top="20.0" />
                     </padding>
                     <children>
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button, active" text="🏠 Dashboard">
+                        <Button onAction="#handleShowDashboard" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button, active" text="🏠 Dashboard">
                             <font>
                                 <Font size="14.0" />
                             </font>
@@ -56,7 +56,25 @@
                             </font>
                         </Button>
 
-                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📝 Manage Contracts">
+                        <Button onAction="#handleManageContracts" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📝 Manage Contracts">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button onAction="#handleManagePayments" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="💳 Gestion Paiements">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button onAction="#handlePaymentMethods" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="🏦 Moyens de Paiement">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
+
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="📊 Reports">
                             <font>
                                 <Font size="14.0" />
                             </font>
@@ -65,6 +83,12 @@
                         <Region VBox.vgrow="ALWAYS" />
 
                         <Separator />
+
+                        <Button prefHeight="40.0" prefWidth="220.0" styleClass="nav-button" text="⚙ Settings">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </Button>
 
                         <Button onAction="#handleLogout" prefHeight="40.0" prefWidth="220.0" styleClass="nav-button, logout" text="🚪 Logout">
                             <font>
@@ -79,7 +103,7 @@
 
     <!-- Main Content -->
     <center>
-        <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="content-scroll">
+        <ScrollPane fx:id="contentScroll" fitToHeight="true" fitToWidth="true" styleClass="content-scroll">
             <content>
                 <VBox spacing="25.0" styleClass="main-content">
                     <padding>
@@ -174,6 +198,44 @@
                                     <Label fx:id="activePercentLabel" styleClass="stat-label" text="0% of total">
                                         <font>
                                             <Font size="12.0" />
+                                        </font>
+                                    </Label>
+                                </children>
+                            </VBox>
+
+                            <!-- Total Projects Card -->
+                            <VBox spacing="12.0" styleClass="stat-card, stat-yellow" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                <padding>
+                                    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                                </padding>
+                                <children>
+                                    <Label styleClass="stat-label" text="📋 Total Projects">
+                                        <font>
+                                            <Font size="14.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="totalProjectsLabel" styleClass="stat-value" text="Coming Soon">
+                                        <font>
+                                            <Font name="System Bold" size="28.0" />
+                                        </font>
+                                    </Label>
+                                </children>
+                            </VBox>
+
+                            <!-- Total Revenue Card -->
+                            <VBox spacing="12.0" styleClass="stat-card, stat-green" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <padding>
+                                    <Insets bottom="25.0" left="25.0" right="25.0" top="25.0" />
+                                </padding>
+                                <children>
+                                    <Label styleClass="stat-label" text="💰 Platform Revenue">
+                                        <font>
+                                            <Font size="14.0" />
+                                        </font>
+                                    </Label>
+                                    <Label fx:id="totalRevenueLabel" styleClass="stat-value" text="Coming Soon">
+                                        <font>
+                                            <Font name="System Bold" size="28.0" />
                                         </font>
                                     </Label>
                                 </children>

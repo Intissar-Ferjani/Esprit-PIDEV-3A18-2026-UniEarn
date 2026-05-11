@@ -1,18 +1,29 @@
 package uniearn.controller.profile.freelancer;
 
-import uniearn.model.entities.candidature.evaluation.Evaluation;
-import uniearn.model.enums.EvaluationType;
-import uniearn.services.candidature.EvaluationService;
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import uniearn.model.entities.candidature.evaluation.Evaluation;
+import uniearn.model.enums.EvaluationType;
+import uniearn.services.candidature.ApplicationService;
+import uniearn.services.candidature.EvaluationService;
+import uniearn.utils.candidature.ApiManager;
+
+import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +32,9 @@ public class FreelancerEvaluationController {
 
     // --- FXML Fields: Sidebar ---
     @FXML
-    private VBox sidebarListContainer;
+    private VBox viewListRoot;
+    @FXML
+    private FlowPane sidebarListContainer;
     @FXML
     private TextField txtSearchTerm;
     @FXML
@@ -30,8 +43,6 @@ public class FreelancerEvaluationController {
     // --- FXML Fields: Main Content Area ---
     @FXML
     private StackPane contentArea;
-    @FXML
-    private VBox viewEmpty;
     @FXML
     private VBox viewDetails;
     @FXML
@@ -71,7 +82,12 @@ public class FreelancerEvaluationController {
     @FXML
     private Label lblMessage;
 
+    private final ApiManager apiManager = new ApiManager();
+    @FXML
+    private Label lblEvalSentiment;
+
     private EvaluationService evaluationService;
+    private ApplicationService applicationService;
     private ObservableList<Evaluation> evaluationsList;
     private Evaluation currentEvaluation;
 
@@ -80,11 +96,16 @@ public class FreelancerEvaluationController {
 
     public FreelancerEvaluationController() {
         this.evaluationService = new EvaluationService();
+        this.applicationService = new ApplicationService();
         this.evaluationsList = FXCollections.observableArrayList();
     }
 
     @FXML
     public void initialize() {
+        if (uniearn.database.SessionManager.getInstance().isLoggedIn()) {
+            this.currentUserId = uniearn.database.SessionManager.getInstance().getCurrentUserId();
+        }
+
         // Setup Filter
         cmbRatingFilter.setItems(FXCollections.observableArrayList(1, 2, 3, 4, 5));
         cmbRatingFilter.setOnAction(e -> applyFilters());
@@ -106,7 +127,7 @@ public class FreelancerEvaluationController {
 
         // Initial Load
         loadFreelancerEvaluations();
-        showView(viewEmpty);
+        showView(viewListRoot);
     }
 
     public void setCurrentUserId(int userId) {
@@ -155,7 +176,8 @@ public class FreelancerEvaluationController {
         ratingLbl.setStyle("-fx-font-weight: bold; -fx-text-fill: #F59E0B; -fx-font-size: 13px; -fx-min-width: 25px;");
 
         VBox content = new VBox(4);
-        Label lblHeader = new Label("To: Client #" + ev.getEvaluatedId());
+        String clientDisplayName = applicationService.getUserName(ev.getEvaluatedId());
+        Label lblHeader = new Label("To: " + clientDisplayName);
         lblHeader.setStyle("-fx-font-weight: bold; -fx-text-fill: #1E293B; -fx-font-size: 13px;");
 
         String snippet = ev.getComment().length() > 25 ? ev.getComment().substring(0, 25) + "..." : ev.getComment();
@@ -177,11 +199,16 @@ public class FreelancerEvaluationController {
         return card;
     }
 
-    private void showView(VBox view) {
-        viewEmpty.setVisible(false);
-        viewDetails.setVisible(false);
-        viewForm.setVisible(false);
-        view.setVisible(true);
+    private void showView(Region view) {
+        if (viewListRoot != null)
+            viewListRoot.setVisible(false);
+        if (viewDetails != null)
+            viewDetails.setVisible(false);
+        if (viewForm != null)
+            viewForm.setVisible(false);
+
+        if (view != null)
+            view.setVisible(true);
     }
 
     private void showDetails(Evaluation ev) {
@@ -189,20 +216,71 @@ public class FreelancerEvaluationController {
 
         lblDetailRating.setText("★".repeat(ev.getRating()));
 
+        String clientName = applicationService.getUserName(ev.getEvaluatedId());
+        lblDetailEvaluatedId.setText(clientName);
+
         if (ev.getProjectId() != null && ev.getProjectId() > 0) {
-            lblDetailDate.setText("Project #" + ev.getProjectId());
-            lblDetailProjectId.setText("Project: #" + ev.getProjectId());
+            String projectTitle = applicationService.getProjectTitle(ev.getProjectId());
+            lblDetailDate.setText(projectTitle);
+            lblDetailProjectId.setText(projectTitle);
             lblDetailProjectId.setVisible(true);
         } else {
-            lblDetailDate.setText("Generic Review");
+            lblDetailDate.setText("Évaluation générale");
             lblDetailProjectId.setVisible(false);
         }
 
-        lblDetailEvaluatedId.setText("Client ID: " + ev.getEvaluatedId());
         txtDetailComment.setText(ev.getComment());
         lblDetailType.setText(ev.getType() != null ? ev.getType().getDisplayName() : "Unknown");
 
+        if (lblEvalSentiment != null) {
+            lblEvalSentiment.setText("Analyze");
+            lblEvalSentiment.setStyle(
+                    "-fx-padding: 3 10; -fx-background-color: #e8f0fe; -fx-text-fill: #1967d2; -fx-background-radius: 10; -fx-font-size: 11px; -fx-font-weight: bold;");
+        }
+
         showView(viewDetails);
+    }
+
+    @FXML
+    private void handleBack() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/FreelancerDashboardView.fxml"));
+            Parent root = loader.load();
+
+            // Re-fetch stage and set new scene
+            Stage stage = (Stage) contentArea.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 740));
+            stage.setTitle("Freelancer Dashboard - UniEarn");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showToast("Navigation failed: " + e.getMessage(), true);
+        }
+    }
+
+    @FXML
+    private void handleAnalyzeSentiment() {
+        if (currentEvaluation == null)
+            return;
+
+        lblEvalSentiment.setText("Analyzing...");
+        apiManager.analyzeSentiment(currentEvaluation.getComment()).thenAccept(label -> {
+            javafx.application.Platform.runLater(() -> {
+                String color = switch (label) {
+                    case "pos" -> "#10B981";
+                    case "neg" -> "#EF4444";
+                    default -> "#F59E0B";
+                };
+                String text = switch (label) {
+                    case "pos" -> "Positive";
+                    case "neg" -> "Negative";
+                    default -> "Neutral";
+                };
+                lblEvalSentiment.setText(text);
+                lblEvalSentiment.setStyle("-fx-padding: 3 10; -fx-background-color: " + color + "22; -fx-text-fill: "
+                        + color + "; -fx-background-radius: 10; -fx-font-size: 11px; -fx-font-weight: bold;");
+            });
+        });
     }
 
     // ================== ACTIONS ==================
@@ -240,7 +318,7 @@ public class FreelancerEvaluationController {
         if (currentEvaluation != null)
             showView(viewDetails);
         else
-            showView(viewEmpty);
+            showView(viewListRoot);
     }
 
     @FXML
@@ -249,14 +327,33 @@ public class FreelancerEvaluationController {
             return;
 
         try {
-            int evaluatedId = Integer.parseInt(txtFormEvaluatedId.getText());
+            int targetId = Integer.parseInt(txtFormEvaluatedId.getText());
+            int evaluatedId = targetId;
+            // Resolve if clientId was entered
+            int resolvedUid = getUserIdByClientId(targetId);
+            if (resolvedUid != -1) {
+                evaluatedId = resolvedUid;
+            }
+
+            if (evaluatedId <= 0) {
+                showToast("ID Client invalide", true);
+                return;
+            }
+
             int rating = (int) sliderRating.getValue();
             String comment = txtFormComment.getText();
 
             Integer projectId = null;
             if (chkIsProjectRelated != null && chkIsProjectRelated.isSelected()
                     && !txtFormProjectId.getText().isEmpty()) {
-                projectId = Integer.parseInt(txtFormProjectId.getText());
+                try {
+                    int p = Integer.parseInt(txtFormProjectId.getText());
+                    if (p > 0) {
+                        projectId = p;
+                    }
+                } catch (NumberFormatException e) {
+                    // Treat as null
+                }
             }
 
             EvaluationType type = EvaluationType.FREELANCER_TO_CLIENT;
@@ -272,10 +369,10 @@ public class FreelancerEvaluationController {
                         if (currentEvaluation != null) {
                             showDetails(currentEvaluation);
                         } else {
-                            showView(viewEmpty);
+                            showView(viewListRoot);
                         }
                     } catch (Exception e) {
-                        showView(viewEmpty);
+                        showView(viewListRoot);
                     }
                 } else {
                     showToast("Update failed", true);
@@ -283,17 +380,16 @@ public class FreelancerEvaluationController {
             } else {
                 // Create
                 Evaluation newEval = new Evaluation(currentUserId, evaluatedId, projectId, rating, comment, type);
-                if (evaluationService.createEvaluation(newEval)) {
-                    showToast("Posted successfully", false);
-                    loadFreelancerEvaluations();
-                    showView(viewEmpty);
-                } else {
-                    showToast("Failed: Already reviewed?", true);
-                }
+                evaluationService.createEvaluation(newEval);
+                showToast("Posted successfully", false);
+                loadFreelancerEvaluations();
+                showView(viewListRoot);
             }
 
         } catch (NumberFormatException e) {
             showToast("Invalid Numbers", true);
+        } catch (SQLException e) {
+            showToast(e.getMessage(), true);
         } catch (Exception e) {
             showToast("Error: " + e.getMessage(), true);
             e.printStackTrace();
@@ -312,7 +408,7 @@ public class FreelancerEvaluationController {
                     showToast("Deleted", false);
                     currentEvaluation = null;
                     loadFreelancerEvaluations();
-                    showView(viewEmpty);
+                    showView(viewListRoot);
                 } else {
                     showToast("Delete failed", true);
                 }
@@ -360,7 +456,10 @@ public class FreelancerEvaluationController {
 
         List<Evaluation> filtered = evaluationsList.stream()
                 .filter(ev -> rate == null || ev.getRating() == rate)
-                .filter(ev -> term.isEmpty() || String.valueOf(ev.getEvaluatedId()).contains(term))
+                .filter(ev -> term.isEmpty() ||
+                        applicationService.getUserName(ev.getEvaluatedId()).toLowerCase().contains(term) ||
+                        (ev.getProjectId() != null && applicationService.getProjectTitle(ev.getProjectId()).toLowerCase().contains(term)) ||
+                        ev.getComment().toLowerCase().contains(term))
                 .collect(Collectors.toList());
 
         renderSidebarList(filtered);
@@ -382,5 +481,19 @@ public class FreelancerEvaluationController {
             messageContainer.setManaged(false);
         });
         delay.play();
+    }
+
+    private int getUserIdByClientId(int idClient) {
+        String sql = "SELECT userID FROM client WHERE idClient = ?";
+        try (PreparedStatement ps = uniearn.database.MyConnection.getInstance().getCnx().prepareStatement(sql)) {
+            ps.setInt(1, idClient);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next())
+                    return rs.getInt("userID");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error resolving userID from idClient: " + e.getMessage());
+        }
+        return -1;
     }
 }

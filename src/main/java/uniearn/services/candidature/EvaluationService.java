@@ -54,7 +54,7 @@ public class EvaluationService implements IEvaluation {
 
     @Override
     public Evaluation read(int idEvaluation) throws SQLException {
-        String query = "SELECT * FROM evaluation WHERE idEvaluation=?";
+        String query = "SELECT * FROM evaluation WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, idEvaluation);
             ResultSet rs = stmt.executeQuery();
@@ -78,7 +78,7 @@ public class EvaluationService implements IEvaluation {
 
     @Override
     public void update(Evaluation evaluation) throws SQLException {
-        String query = "UPDATE evaluation SET rating=?, comment=?, type=?, updated_at=? WHERE idEvaluation=?";
+        String query = "UPDATE evaluation SET rating=?, comment=?, type=?, updated_at=? WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, evaluation.getRating());
             stmt.setString(2, evaluation.getComment());
@@ -91,7 +91,7 @@ public class EvaluationService implements IEvaluation {
 
     @Override
     public void delete(int idEvaluation) throws SQLException {
-        String query = "DELETE FROM evaluation WHERE idEvaluation=?";
+        String query = "DELETE FROM evaluation WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, idEvaluation);
             stmt.executeUpdate();
@@ -241,20 +241,43 @@ public class EvaluationService implements IEvaluation {
         }
     }
 
-    public boolean createEvaluation(Evaluation evaluation) {
-        try {
-            if (!evaluation.isValid())
-                return false;
+    public void createEvaluation(Evaluation evaluation) throws SQLException {
+        if (!evaluation.isValid()) {
+            throw new SQLException(
+                    "L'évaluation n'est pas valide. Vérifiez le commentaire (min 15 car.) et les informations liées.");
+        }
 
-            int pId = evaluation.getProjectId() != null ? evaluation.getProjectId() : 0;
-            if (evaluationExists(evaluation.getEvaluatorId(), evaluation.getEvaluatedId(), pId))
-                return false;
+        // SANITIZATION: Treat 0 as null for project foreign key
+        if (evaluation.getProjectId() != null && evaluation.getProjectId() == 0) {
+            evaluation.setProjectId(null);
+        }
+
+        // WORK RELATIONSHIP VALIDATION
+        if (evaluation.getType() == EvaluationType.FREELANCER_TO_CLIENT) {
+            List<Integer> validClients = getEvaluatableClients(evaluation.getEvaluatorId());
+            if (!validClients.contains(evaluation.getEvaluatedId())) {
+                throw new SQLException(
+                        "Vous ne pouvez évaluer que les clients avec qui vous avez travaillé (candidature acceptée).");
+            }
+        }
+
+        Integer pId = evaluation.getProjectId();
+        if (evaluationExists(evaluation.getEvaluatorId(), evaluation.getEvaluatedId(), pId != null ? pId : 0)) {
+            throw new SQLException("Une évaluation existe déjà pour ce projet et ce freelancer.");
+        }
+
+        try {
+            System.out.println("[DEBUG] Creating Evaluation: Evaluator=" + evaluation.getEvaluatorId() +
+                    ", Evaluated=" + evaluation.getEvaluatedId() +
+                    ", Project=" + evaluation.getProjectId());
 
             create(evaluation);
-            return true;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            if (e.getErrorCode() == 1452) { // MySQL FK failure
+                throw new SQLException(
+                        "Erreur de lien : Le projet ou l'utilisateur spécifié n'existe pas (ID invalide).");
+            }
+            throw e;
         }
     }
 
@@ -312,6 +335,30 @@ public class EvaluationService implements IEvaluation {
         }
     }
 
+    /**
+     * Advanced Logic: Gets a list of unique Client IDs that this freelancer is
+     * eligible to evaluate.
+     * An eligible client is one who owns a project where the freelancer has an
+     * ACCEPTED application.
+     */
+    public List<Integer> getEvaluatableClients(int freelancerId) throws SQLException {
+        List<Integer> clientIds = new ArrayList<>();
+        String query = """
+                SELECT DISTINCT p.ClientID
+                FROM project p
+                JOIN application a ON p.idProject = a.project_id
+                WHERE a.freelancer_id = ? AND a.status = 'ACCEPTED'
+                """;
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, freelancerId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                clientIds.add(rs.getInt("ClientID"));
+            }
+        }
+        return clientIds;
+    }
+
     // ------------------ Helper ------------------
 
     private Evaluation extractEvaluationFromResultSet(ResultSet rs) throws SQLException {
@@ -319,7 +366,7 @@ public class EvaluationService implements IEvaluation {
         Integer projectId = rs.wasNull() ? null : pId;
 
         return new Evaluation(
-                rs.getInt("idEvaluation"),
+                rs.getInt("id"),
                 rs.getInt("evaluator_id"),
                 rs.getInt("evaluated_id"),
                 projectId,

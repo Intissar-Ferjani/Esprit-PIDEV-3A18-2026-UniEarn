@@ -4,6 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
@@ -11,6 +12,17 @@
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-profile.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/list-freelancers.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/uniearn_symfony" beforeDir="false" />
+=======
+    <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="fixed some issues">
+      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask2agent.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/ListFreelancersController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/ListFreelancersController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-portfolio.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-portfolio.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" afterDir="false" />
+>>>>>>> b3914dda8101150b70e536030bc2eafc2f5a95fa
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,7 +34,7 @@
       <entry key="_C:/Users/MSI/Desktop/uniearn" value="3AH3tI7E0M8Za79ICgaKJYHKcPR" />
       <entry key="_C:/Users/MSI/Desktop/uniearn2" value="3AHNW31UKqGSq1OOTfcadoHkZ4m" />
       <entry key="_C:/Users/MSI/Desktop/uniearn_java" value="3AIyuGBFDGmrvsZ7dmnHM8Qez9G" />
-      <entry key="_C:/Users/Siam Info/IdeaProjects/uniearn_java" value="3AM7HLcw2pDS7PrmxBO3NjDdZEr" />
+      <entry key="_C:/Users/pc/Documents/PiDev/test" value="3AS4KfrpQNp9IYvkjWfjbessQYF" />
     </persistenceIdMap>
   </component>
   <component name="CopilotUserSelectedModel">
@@ -34,9 +46,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="JavaFXApplication" />
         <option value="FxmlFile" />
-        <option value="Class" />
+        <option value="JavaFXApplication" />
       </list>
     </option>
   </component>
@@ -52,7 +63,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/Intissar-Ferjani/UniEarn-Java.git&quot;,
-    &quot;accountId&quot;: &quot;3ce0974e-fcd6-4439-844a-ead706256448&quot;
+    &quot;accountId&quot;: &quot;a41c944c-08d1-4091-8ffd-845c6e4b47cf&quot;
   }
 }</component>
   <component name="McpProjectServerCommands">
@@ -73,6 +84,7 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< HEAD
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
@@ -107,18 +119,53 @@
     "run.code.analysis.last.selected.profile": "pProject Default",
     "settings.editor.selected.configurable": "build.tools",
     "vue.rearranger.settings.migration": "true"
+=======
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.ClientContractApp.executor&quot;: &quot;Run&quot;,
+    &quot;Application.MainApp.executor&quot;: &quot;Run&quot;,
+    &quot;Batch.build_and_run.executor&quot;: &quot;Run&quot;,
+    &quot;Batch.build_compile.executor&quot;: &quot;Run&quot;,
+    &quot;Batch.install_maven.executor&quot;: &quot;Run&quot;,
+    &quot;Batch.run_app_mvn.executor&quot;: &quot;Run&quot;,
+    &quot;Maven. [org.apache.maven.plugins:maven-archetype-plugin:RELEASE:generate].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.UniEarn-Java [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.uniearn_java [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.uniearn_java [org.apache.maven.plugins:maven-install-plugin:3.1.2:install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.uniearn_java [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Gestion__Candidature__Et__Feedback&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/MSI/Desktop/uniearn_java&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+>>>>>>> b3914dda8101150b70e536030bc2eafc2f5a95fa
   }
 }]]></component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Siam Info\IdeaProjects\uniearn_java\src\main\resources\images" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Siam Info\IdeaProjects\uniearn_java\src\main\resources\contracts\styles" />
       <recent name="C:\Users\MSI\Desktop\uniearn_java\src\main\resources\contracts" />
       <recent name="C:\Users\MSI\Desktop\uniearn_java\src\main\java\uniearn\interfaces\contracts" />
     </key>
   </component>
+<<<<<<< HEAD
   <component name="RunManager">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="uniearn_java" />
@@ -131,6 +178,15 @@
       <option name="filePath" />
       <method v="2" />
     </configuration>
+=======
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+        <option value="bundled-js-predefined-d6986cc7102b-b598e85cdad2-JavaScript-IU-252.25557.131" />
+      </set>
+    </attachedChunks>
+>>>>>>> b3914dda8101150b70e536030bc2eafc2f5a95fa
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -147,25 +203,47 @@
       <workItem from="1772292566492" duration="1310000" />
       <workItem from="1772293907370" duration="572000" />
       <workItem from="1772294592326" duration="3948000" />
+      <workItem from="1772393102879" duration="8572000" />
+      <workItem from="1772572493312" duration="4405000" />
+      <workItem from="1775500166522" duration="32000" />
+      <workItem from="1778440900406" duration="2414000" />
+      <workItem from="1778446430157" duration="1932000" />
+      <workItem from="1778500829345" duration="2411000" />
     </task>
+    <task id="LOCAL-00001" summary="INTEGRATION AVEC GESTION USER PAIEMENT ET CONTRAT ET MESSAGE">
+      <option name="closed" value="true" />
+      <created>1772575592288</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1772575592288</updated>
+    </task>
+    <task id="LOCAL-00002" summary="fixed some issues">
+      <option name="closed" value="true" />
+      <created>1778500445507</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1778500445507</updated>
+    </task>
+    <task id="LOCAL-00003" summary="fixed some issues">
+      <option name="closed" value="true" />
+      <created>1778503003259</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1778503003259</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="UnknownFeatures">
-    <option featureType="com.intellij.fileTypeFactory" implementationName=".env" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="INTEGRATION AVEC GESTION USER PAIEMENT ET CONTRAT ET MESSAGE" />
+    <MESSAGE value="fixed some issues" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed some issues" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

@@ -14,6 +14,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import uniearn.controller.profile.freelancer.FreelancerDashboardController;
 import uniearn.controller.profile.freelancer.FreelancerProfileController;
 import uniearn.model.entities.projet.Project;
 import uniearn.model.entities.users.freelancer.Freelancer;
@@ -46,7 +47,7 @@ public class FreelancerProjectsController {
     public void initialize() {
         // Populate status filter options
         statusFilter.setItems(FXCollections.observableArrayList(
-                "Tous les statuts", "Ouvert", "Terminé (2)"));
+                "Tous les statuts", "Ouvert", "Terminé"));
         statusFilter.setValue("Tous les statuts");
 
         // Live search listener
@@ -82,9 +83,9 @@ public class FreelancerProjectsController {
                     boolean matchStatus = true;
                     if (statusVal != null && !statusVal.startsWith("Tous")) {
                         if (statusVal.equals("Ouvert"))
-                            matchStatus = (p.getStatus() != 2);
-                        else if (statusVal.contains("(2)"))
-                            matchStatus = (p.getStatus() == 2);
+                            matchStatus = "TODO".equals(p.getStatus()); // "TODO"
+                        else if (statusVal.contains("Terminé"))
+                            matchStatus = "Done".equals(p.getStatus()); // "Done"
                     }
                     return matchSearch && matchStatus;
                 })
@@ -146,14 +147,18 @@ public class FreelancerProjectsController {
         String statusText;
         String statusColor;
         String statusBg;
-        if (project.getStatus() == 2) {
+        if ("Done".equals(project.getStatus())) {
             statusText = "✅ Terminé";
             statusColor = "#2e7d32";
             statusBg = "#e8f5e9";
-        } else {
+        } else if ("TODO".equals(project.getStatus())) {
             statusText = "🟢 Ouvert";
-            statusColor = "#388e3c";
-            statusBg = "#e8f5e9";
+            statusColor = "#1976d2";
+            statusBg = "#e3f2fd";
+        } else {
+            statusText = "🕒 En cours";
+            statusColor = "#ffa000";
+            statusBg = "#fff3e0";
         }
 
         HBox headerRow = new HBox();
@@ -206,34 +211,69 @@ public class FreelancerProjectsController {
         Button postulerBtn = new Button("Postuler →");
         postulerBtn.setMaxWidth(Double.MAX_VALUE);
         postulerBtn.setStyle(
-                "-fx-background-color: linear-gradient(to right, #1976d2, #42a5f5);" +
+                "-fx-background-color: linear-gradient(to right, #1976d2, #4facfe);" +
                         "-fx-text-fill: white;" +
                         "-fx-font-weight: bold;" +
-                        "-fx-font-size: 13px;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 11 0;" +
-                        "-fx-cursor: hand;");
-        postulerBtn.setOnMouseEntered(e -> postulerBtn.setStyle(
-                "-fx-background-color: linear-gradient(to right, #1565c0, #1976d2);" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-font-size: 13px;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 11 0;" +
-                        "-fx-cursor: hand;"));
-        postulerBtn.setOnMouseExited(e -> postulerBtn.setStyle(
-                "-fx-background-color: linear-gradient(to right, #1976d2, #42a5f5);" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-font-size: 13px;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-padding: 11 0;" +
-                        "-fx-cursor: hand;"));
+                        "-fx-font-size: 14px;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-padding: 12 0;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-effect: dropshadow(three-pass-box, rgba(25,118,210,0.3), 8, 0, 0, 2);");
+
+        postulerBtn.setOnMouseEntered(e -> {
+            postulerBtn.setStyle(
+                    "-fx-background-color: linear-gradient(to right, #1565c0, #00c6ff);" +
+                            "-fx-text-fill: white;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-font-size: 14px;" +
+                            "-fx-background-radius: 10;" +
+                            "-fx-padding: 12 0;" +
+                            "-fx-cursor: hand;" +
+                            "-fx-effect: dropshadow(three-pass-box, rgba(25,118,210,0.5), 12, 0, 0, 4);");
+            postulerBtn.setScaleX(1.02);
+            postulerBtn.setScaleY(1.02);
+        });
+
+        postulerBtn.setOnMouseExited(e -> {
+            postulerBtn.setStyle(
+                    "-fx-background-color: linear-gradient(to right, #1976d2, #4facfe);" +
+                            "-fx-text-fill: white;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-font-size: 14px;" +
+                            "-fx-background-radius: 10;" +
+                            "-fx-padding: 12 0;" +
+                            "-fx-cursor: hand;" +
+                            "-fx-effect: dropshadow(three-pass-box, rgba(25,118,210,0.3), 8, 0, 0, 2);");
+            postulerBtn.setScaleX(1.0);
+            postulerBtn.setScaleY(1.0);
+        });
         postulerBtn.setOnAction(e -> handlePostuler(project));
 
-        if (project.getStatus() == 2) {
+        boolean alreadyApplied = false;
+        try {
+            uniearn.services.candidature.ApplicationService applicationService = new uniearn.services.candidature.ApplicationService();
+            alreadyApplied = applicationService.alreadyApplied(currentFreelancer.getIdFreelancer(),
+                    project.getIdproject());
+        } catch (Exception e) {
+            // Ignore or log error
+        }
+
+        String status = project.getStatus();
+        boolean isDone = "Done".equals(status);
+
+        if (isDone || alreadyApplied) {
             postulerBtn.setVisible(false);
             postulerBtn.setManaged(false);
+
+            if (alreadyApplied) {
+                Label appliedLabel = new Label("✓ Déjà postulé");
+                appliedLabel.setStyle("-fx-text-fill: #1976d2; -fx-font-weight: bold; -fx-font-size: 13px;");
+                card.getChildren().add(appliedLabel);
+            } else if (isDone) {
+                Label doneLabel = new Label("☒ Projet terminé");
+                doneLabel.setStyle("-fx-text-fill: #657786; -fx-font-weight: bold; -fx-font-size: 13px;");
+                card.getChildren().add(doneLabel);
+            }
         }
 
         card.getChildren().addAll(headerRow, titleLabel, descLabel, sep, budgetRow, postulerBtn);
@@ -250,12 +290,29 @@ public class FreelancerProjectsController {
     }
 
     private void handlePostuler(Project project) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Postuler");
-        alert.setHeaderText("Candidature envoyée !");
-        alert.setContentText("Votre candidature pour le projet \"" + project.getTitle()
-                + "\" a été envoyée avec succès.\n\nBudget: " + String.format("%.2f TND", project.getBudget()));
-        alert.showAndWait();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/FreelancerDashboardView.fxml"));
+            Parent root = loader.load();
+
+            FreelancerDashboardController controller = loader.getController();
+            controller.switchToApplicationForm(project.getIdproject());
+
+            Stage stage = (Stage) projectsContainer.getScene().getWindow();
+            stage.setScene(new Scene(root, 1200, 800));
+            stage.setTitle("Dashboard Freelancer - UniEarn");
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Erreur de navigation", "Impossible d'ouvrir la page de candidature.");
+        }
+    }
+
+    private void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.show();
     }
 
     @FXML

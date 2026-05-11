@@ -36,17 +36,26 @@ public class ContratService implements IContrat {
             stmt.setDouble(6, contrat.getAmount());
             stmt.setInt(7, contrat.getProjectID());
             stmt.setInt(8, contrat.getClientID());
-            // Mettre le freelancerID à NULL car la table freelancer a une structure différente
+            // Récupérer l'ID utilisateur associé au freelancer
             if (contrat.getFreelancerID() > 0) {
-                stmt.setInt(9, contrat.getFreelancerID());
+                Integer freelancerUserId = getFreelancerUserID(contrat.getFreelancerID());
+                if (freelancerUserId != null && freelancerUserId > 0) {
+                    stmt.setInt(9, freelancerUserId);
+                } else {
+                    stmt.setNull(9, java.sql.Types.INTEGER);
+                }
             } else {
                 stmt.setNull(9, java.sql.Types.INTEGER);
             }
-            if (contrat.getPaymentID() > 0) {
-                stmt.setInt(10, contrat.getPaymentID());
-            } else {
-                stmt.setNull(10, java.sql.Types.INTEGER);
+            int paymentId = contrat.getPaymentID();
+            if (paymentId <= 0) {
+                paymentId = createPlaceholderPayment(contrat.getAmount(), contrat.getClientID());
+                if (paymentId <= 0) {
+                    throw new SQLException("Impossible de générer un paiement placeholder pour le contrat");
+                }
+                contrat.setPaymentID(paymentId);
             }
+            stmt.setInt(10, paymentId);
 
             System.out.println("DEBUG createContrat:");
             System.out.println("  Type: " + contrat.getType());
@@ -464,6 +473,22 @@ public class ContratService implements IContrat {
     }
 
     /**
+     * Mettre à jour le statut d'un contrat
+     */
+    public boolean updateContractStatus(int contractID, int status) {
+        String sql = "UPDATE contract SET status = ? WHERE idContract = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, status);
+            stmt.setInt(2, contractID);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("ERREUR lors de la mise à jour du statut du contrat: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * Vérifier si un contrat est complètement signé
      */
     public boolean isFullySigned(int contractID) {
@@ -479,5 +504,65 @@ public class ContratService implements IContrat {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private int createPlaceholderPayment(double amount, int clientId) {
+        Integer userId = getUserIdByClientId(clientId);
+        if (userId == null || userId <= 0) {
+            System.err.println("Impossible de trouver l'utilisateur associé au client " + clientId + " pour créer un paiement placeholder");
+            return 0;
+        }
+
+        String sql = "INSERT INTO payment (amount, paymentStatus, taskID, userID) VALUES (?, 'PENDING', NULL, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setDouble(1, amount);
+            stmt.setInt(2, userId);
+            if (stmt.executeUpdate() == 0) {
+                return 0;
+            }
+            try (ResultSet rs = stmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    int id = rs.getInt(1);
+                    System.out.println("DEBUG: Payment placeholder créé avec id=" + id + ", amount=" + amount);
+                    return id;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la création d'un paiement placeholder: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    private Integer getUserIdByClientId(int clientId) {
+        String sql = "SELECT userID FROM client WHERE idClient = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, clientId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("userID");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération du userID pour client " + clientId + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Integer getFreelancerUserID(int freelancerId) {
+        String sql = "SELECT idUser FROM freelancer WHERE idFreelancer = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, freelancerId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("idUser");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erreur lors de la récupération du userID pour freelancer " + freelancerId + ": " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
     }
 }

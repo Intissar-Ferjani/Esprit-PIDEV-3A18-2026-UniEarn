@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.collections.*?>
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox spacing="25.0" styleClass="main-content" stylesheets="@../../profile/profile.css" 
-      xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" 
-      fx:controller="uniearn.controller.projet.ProjectController">
-    <padding>
-        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
-    </padding>
-    <children>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root" stylesheets="@../../profile/profile.css"
+            xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="uniearn.controller.projet.ProjectController">
+
+
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="content-scroll">
+            <content>
+                <VBox spacing="25.0" styleClass="main-content">
+                    <padding>
+                        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+                    </padding>
+                    <!-- ══ Content Table ════════════════════════════════════════════════ -->
+
+                    <children>
+
 
         <!-- Page heading row -->
         <HBox alignment="CENTER_LEFT" spacing="15.0">
@@ -193,6 +205,10 @@
             </children>
         </VBox>
 
-    </children>
-</VBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>
 

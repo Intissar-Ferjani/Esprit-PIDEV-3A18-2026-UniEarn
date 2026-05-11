@@ -28,6 +28,7 @@ public class ClientService extends UserService implements IClient<Client, User> 
 
         // Step 1: Insert into user table (password will be hashed by UserService)
         int generatedUserId = super.addUser(client);
+
         if (generatedUserId <= 0) {
             throw new SQLException("Failed to create user record - no ID generated");
         }

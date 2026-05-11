@@ -2,8 +2,10 @@ package uniearn.model.entities.forum;
 
 public class ChatMessage {
     private String sender;
+    private String recipient;
     private String content;
     private MessageType type;
+    private String timestamp;
 
     public enum MessageType {
         CHAT,
@@ -43,4 +45,10 @@ public class ChatMessage {
     public void setType(MessageType type) {
         this.type = type;
     }
+
+    public String getRecipient() { return recipient; }
+    public void setRecipient(String recipient) { this.recipient = recipient; }
+
+    public String getTimestamp() { return timestamp; }
+    public void setTimestamp(String timestamp) { this.timestamp = timestamp; }
 }

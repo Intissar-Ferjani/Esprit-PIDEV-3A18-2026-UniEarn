@@ -24,32 +24,50 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.regex.Pattern;
 
-
 // - Step 1 : Basic User Signup
 
 public class SignupController {
 
-    @FXML private TextField nameField;
-    @FXML private TextField emailField;
-    @FXML private PasswordField passwordField;
-    @FXML private TextField passwordFieldVisible;
-    @FXML private PasswordField confirmPasswordField;
-    @FXML private TextField confirmPasswordFieldVisible;
-    @FXML private ComboBox<UserRole> roleComboBox;
-    @FXML private Button signupButton;
-    @FXML private Button generatePasswordButton;
-    @FXML private Button togglePasswordButton;
-    @FXML private Button toggleConfirmPasswordButton;
-    @FXML private Label nameError;
-    @FXML private Label emailError;
-    @FXML private Label passwordError;
-    @FXML private Label confirmPasswordError;
-    @FXML private Label roleError;
-    @FXML private CheckBox termsCheckbox;
-    @FXML private Label termsError;
-    @FXML private ImageView profileImageView;
-    @FXML private Button    googleSignupButton;
-
+    @FXML
+    private TextField nameField;
+    @FXML
+    private TextField emailField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private TextField passwordFieldVisible;
+    @FXML
+    private PasswordField confirmPasswordField;
+    @FXML
+    private TextField confirmPasswordFieldVisible;
+    @FXML
+    private ComboBox<UserRole> roleComboBox;
+    @FXML
+    private Button signupButton;
+    @FXML
+    private Button generatePasswordButton;
+    @FXML
+    private Button togglePasswordButton;
+    @FXML
+    private Button toggleConfirmPasswordButton;
+    @FXML
+    private Label nameError;
+    @FXML
+    private Label emailError;
+    @FXML
+    private Label passwordError;
+    @FXML
+    private Label confirmPasswordError;
+    @FXML
+    private Label roleError;
+    @FXML
+    private CheckBox termsCheckbox;
+    @FXML
+    private Label termsError;
+    @FXML
+    private ImageView profileImageView;
+    @FXML
+    private Button googleSignupButton;
 
     private final UserService userService = new UserService();
     private final AdminService adminService = new AdminService();
@@ -60,29 +78,34 @@ public class SignupController {
     private boolean isGoogleSignup = false;
     private File selectedProfilePhoto = null;
 
-
     @FXML
     public void initialize() {
         setupRoleComboBox();
         setupPasswordFieldSync();
 
         nameField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) validateName();
+            if (!newVal)
+                validateName();
         });
         emailField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal) validateEmail();
+            if (!newVal)
+                validateEmail();
         });
         passwordField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal && !isGoogleSignup) validatePassword();
+            if (!newVal && !isGoogleSignup)
+                validatePassword();
         });
         confirmPasswordField.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal && !isGoogleSignup) validateConfirmPassword();
+            if (!newVal && !isGoogleSignup)
+                validateConfirmPassword();
         });
         roleComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) hideError(roleError);
+            if (newVal != null)
+                hideError(roleError);
         });
         termsCheckbox.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal) hideError(termsError);
+            if (newVal)
+                hideError(termsError);
         });
 
         passwordFieldVisible.setVisible(false);
@@ -142,8 +165,7 @@ public class SignupController {
                     emailField.getText(),
                     isPasswordVisible ? passwordFieldVisible.getText() : passwordField.getText(),
                     roleComboBox.getValue(),
-                    selectedProfilePhoto
-            );
+                    selectedProfilePhoto);
 
             Stage stage = (Stage) signupButton.getScene().getWindow();
             stage.setScene(new Scene(root, 900, 700));
@@ -156,31 +178,35 @@ public class SignupController {
         }
     }
 
-
     public void restoreAfterTerms(boolean accepted,
-                                  String name,
-                                  String email,
-                                  String password,
-                                  UserRole role,
-                                  File profilePhoto) {
-        if (name != null)     nameField.setText(name);
-        if (email != null)    emailField.setText(email);
+            String name,
+            String email,
+            String password,
+            UserRole role,
+            File profilePhoto) {
+        if (name != null)
+            nameField.setText(name);
+        if (email != null)
+            emailField.setText(email);
         if (password != null) {
             passwordField.setText(password);
             confirmPasswordField.setText(password);
             passwordFieldVisible.setText(password);
             confirmPasswordFieldVisible.setText(password);
         }
-        if (role != null)     roleComboBox.setValue(role);
+        if (role != null)
+            roleComboBox.setValue(role);
         if (profilePhoto != null) {
             selectedProfilePhoto = profilePhoto;
             try {
                 profileImageView.setImage(new Image(profilePhoto.toURI().toString()));
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
 
         termsCheckbox.setSelected(accepted);
-        if (accepted) hideError(termsError);
+        if (accepted)
+            hideError(termsError);
     }
 
     // ── Password helpers ──────────────────────────────────────────────────
@@ -277,7 +303,6 @@ public class SignupController {
         termsCheckbox.setSelected(true);
     }
 
-
     public void prefillFromGoogle(User googleUser) {
         isGoogleSignup = true;
 
@@ -290,13 +315,13 @@ public class SignupController {
         emailField.setEditable(false);
         emailField.setStyle("-fx-background-color: #f1f5f9; -fx-text-fill: #64748b;");
 
-        //hide password
+        // hide password
         javafx.application.Platform.runLater(() -> {
             hideNodeById("passwordSection");
             hideNodeById("confirmPasswordSection");
         });
 
-        //hide field nodes directly
+        // hide field nodes directly
         hideNode(passwordField);
         hideNode(passwordFieldVisible);
         hideNode(confirmPasswordField);
@@ -306,8 +331,14 @@ public class SignupController {
         hideNode(toggleConfirmPasswordButton);
 
         // Clear any stale validation errors
-        if (passwordError != null)        { passwordError.setVisible(false); passwordError.setText(""); }
-        if (confirmPasswordError != null) { confirmPasswordError.setVisible(false); confirmPasswordError.setText(""); }
+        if (passwordError != null) {
+            passwordError.setVisible(false);
+            passwordError.setText("");
+        }
+        if (confirmPasswordError != null) {
+            confirmPasswordError.setVisible(false);
+            confirmPasswordError.setText("");
+        }
 
         // Accept terms automatically
         termsCheckbox.setSelected(true);
@@ -334,14 +365,22 @@ public class SignupController {
         System.out.println("✓ Signup form pre-filled from Google: " + googleUser.getEmail());
     }
 
-    //hide node
+    // hide node
     private void hideNodeById(String fxId) {
-        if (signupButton == null || signupButton.getScene() == null) return;
+        if (signupButton == null || signupButton.getScene() == null)
+            return;
         javafx.scene.Node node = signupButton.getScene().lookup("#" + fxId);
-        if (node != null) { node.setVisible(false); node.setManaged(false); }
+        if (node != null) {
+            node.setVisible(false);
+            node.setManaged(false);
+        }
     }
+
     private void hideNode(javafx.scene.Node node) {
-        if (node != null) { node.setVisible(false); node.setManaged(false); }
+        if (node != null) {
+            node.setVisible(false);
+            node.setManaged(false);
+        }
     }
 
     private void setupRoleComboBox() {
@@ -349,16 +388,24 @@ public class SignupController {
         roleComboBox.setConverter(new StringConverter<UserRole>() {
             @Override
             public String toString(UserRole role) {
-                if (role == null) return "";
+                if (role == null)
+                    return "";
                 switch (role) {
-                    case ADMIN: return "Administrator";
-                    case CLIENT: return "Client";
-                    case FREELANCER: return "Freelancer";
-                    default: return role.name();
+                    case ADMIN:
+                        return "Administrator";
+                    case CLIENT:
+                        return "Client";
+                    case FREELANCER:
+                        return "Freelancer";
+                    default:
+                        return role.name();
                 }
             }
+
             @Override
-            public UserRole fromString(String string) { return null; }
+            public UserRole fromString(String string) {
+                return null;
+            }
         });
     }
 
@@ -373,10 +420,22 @@ public class SignupController {
 
     private boolean validateName() {
         String name = nameField.getText().trim();
-        if (name.isEmpty()) { showError(nameError, "Name is required"); return false; }
-        if (name.length() < 2) { showError(nameError, "Name must be at least 2 characters"); return false; }
-        if (name.length() > 50) { showError(nameError, "Name must not exceed 50 characters"); return false; }
-        if (!name.matches("^[a-zA-Z\\s]+$")) { showError(nameError, "Name can only contain letters and spaces"); return false; }
+        if (name.isEmpty()) {
+            showError(nameError, "Name is required");
+            return false;
+        }
+        if (name.length() < 2) {
+            showError(nameError, "Name must be at least 2 characters");
+            return false;
+        }
+        if (name.length() > 50) {
+            showError(nameError, "Name must not exceed 50 characters");
+            return false;
+        }
+        if (!name.matches("^[a-zA-Z\\s]+$")) {
+            showError(nameError, "Name can only contain letters and spaces");
+            return false;
+        }
         hideError(nameError);
         return true;
     }
@@ -410,32 +469,54 @@ public class SignupController {
     }
 
     private boolean validatePassword() {
-        String password = isPasswordVisible ?
-                passwordFieldVisible.getText() : passwordField.getText();
+        String password = isPasswordVisible ? passwordFieldVisible.getText() : passwordField.getText();
 
-        if (password.isEmpty()) { showError(passwordError, "Password is required"); return false; }
-        if (password.length() < 8) { showError(passwordError, "Password must be at least 8 characters"); return false; }
-        if (!password.matches(".*[A-Z].*")) { showError(passwordError, "Password must contain at least one uppercase letter"); return false; }
-        if (!password.matches(".*[a-z].*")) { showError(passwordError, "Password must contain at least one lowercase letter"); return false; }
-        if (!password.matches(".*\\d.*")) { showError(passwordError, "Password must contain at least one number"); return false; }
+        if (password.isEmpty()) {
+            showError(passwordError, "Password is required");
+            return false;
+        }
+        if (password.length() < 8) {
+            showError(passwordError, "Password must be at least 8 characters");
+            return false;
+        }
+        if (!password.matches(".*[A-Z].*")) {
+            showError(passwordError, "Password must contain at least one uppercase letter");
+            return false;
+        }
+        if (!password.matches(".*[a-z].*")) {
+            showError(passwordError, "Password must contain at least one lowercase letter");
+            return false;
+        }
+        if (!password.matches(".*\\d.*")) {
+            showError(passwordError, "Password must contain at least one number");
+            return false;
+        }
         hideError(passwordError);
         return true;
     }
 
     private boolean validateConfirmPassword() {
-        String password = isPasswordVisible ?
-                passwordFieldVisible.getText() : passwordField.getText();
-        String confirmPassword = isConfirmPasswordVisible ?
-                confirmPasswordFieldVisible.getText() : confirmPasswordField.getText();
+        String password = isPasswordVisible ? passwordFieldVisible.getText() : passwordField.getText();
+        String confirmPassword = isConfirmPasswordVisible ? confirmPasswordFieldVisible.getText()
+                : confirmPasswordField.getText();
 
-        if (confirmPassword.isEmpty()) { showError(confirmPasswordError, "Please confirm your password"); return false; }
-        if (!password.equals(confirmPassword)) { showError(confirmPasswordError, "Passwords do not match"); return false; }
+        if (confirmPassword.isEmpty()) {
+            showError(confirmPasswordError, "Please confirm your password");
+            return false;
+        }
+        if (!password.equals(confirmPassword)) {
+            showError(confirmPasswordError, "Passwords do not match");
+            return false;
+        }
         hideError(confirmPasswordError);
         return true;
     }
 
     private boolean validateRole() {
-        if (roleComboBox.getValue() == null) { showError(roleError, "Please select a role"); return false; }
+        if (roleComboBox.getValue() == null) {
+            showError(roleError, "Please select a role");
+            return false;
+        }
         hideError(roleError);
         return true;
     }
@@ -446,8 +527,7 @@ public class SignupController {
         try {
             signupButton.setDisable(true);
 
-            String password = isPasswordVisible ?
-                    passwordFieldVisible.getText() : passwordField.getText();
+            String password = isPasswordVisible ? passwordFieldVisible.getText() : passwordField.getText();
 
             UserRole selectedRole = roleComboBox.getValue();
 
@@ -496,7 +576,6 @@ public class SignupController {
         }
     }
 
-
     private User buildBaseUser(String password) {
         User user = new User();
         user.setName(nameField.getText().trim());
@@ -510,14 +589,12 @@ public class SignupController {
         return user;
     }
 
-
     @FXML
     private void handleChangePhoto() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Profile Picture");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
-        );
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg"));
 
         File selected = fileChooser.showOpenDialog(profileImageView.getScene().getWindow());
 
@@ -564,7 +641,8 @@ public class SignupController {
                 return;
             }
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/auth/signup/freelancer/freelancer-information.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/auth/signup/freelancer/freelancer-information.fxml"));
             Parent root = loader.load();
 
             FreelancerSignupController controller = loader.getController();
@@ -618,12 +696,13 @@ public class SignupController {
                         googleSignupButton.setText("🔵  Sign up with Google");
                     }
                     showErrorAlert("Google connection failed", errorMsg);
-                }
-        );
+                });
     }
 
     @FXML
-    private void handleLoginRedirect() { redirectToLogin(); }
+    private void handleLoginRedirect() {
+        redirectToLogin();
+    }
 
     private void redirectToLogin() {
         try {
