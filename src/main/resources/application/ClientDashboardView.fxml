@@ -19,6 +19,10 @@
         <children>
             <Region HBox.hgrow="ALWAYS"/>
             <!-- Tab Toggle Pill -->
+                        <Button fx:id="btnChatbot" onAction="#handleToggleChatbot" text="🤖  UniBuddy"
+                                        style="-fx-background-color: #0f172a; -fx-text-fill: white; -fx-font-weight: bold;
+                                                     -fx-font-size: 12px; -fx-background-radius: 10; -fx-cursor: hand; -fx-padding: 7 16;
+                                                     -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.25), 6, 0, 0, 2);"/>
             <HBox spacing="4.0" alignment="CENTER"
                   style="-fx-background-color: #f0f4f8; -fx-background-radius: 10; -fx-padding: 4;">
                 <Button fx:id="btnToggleProposals" onAction="#handleShowProposals" text="📋  Propositions"
@@ -29,6 +33,7 @@
                         style="-fx-background-color: transparent; -fx-text-fill: #64748b;
                                -fx-font-size: 12px; -fx-background-radius: 7; -fx-cursor: hand; -fx-padding: 7 18;"/>
             </HBox>
+
             <Region HBox.hgrow="ALWAYS"/>
         </children>
     </HBox>
@@ -426,6 +431,10 @@
                                   -fx-background-radius: 20; -fx-font-weight: bold;
                                   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);"/>
                 </VBox>
+
+            <fx:include fx:id="chatbotWidget" source="/application/ChatbotWidget.fxml" StackPane.alignment="BOTTOM_RIGHT">
+                <StackPane.margin><Insets bottom="22.0" right="22.0"/></StackPane.margin>
+            </fx:include>
 
             </children>
         </StackPane>

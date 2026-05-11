@@ -1,22 +1,41 @@
 package uniearn.controller.profile.freelancer;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import uniearn.controller.shared.ChatbotWidgetController;
+import uniearn.database.SessionManager;
 import uniearn.model.entities.candidature.application.Application;
 import uniearn.model.entities.candidature.evaluation.Evaluation;
 import uniearn.model.entities.projet.Project;
@@ -26,12 +45,6 @@ import uniearn.services.candidature.ApplicationService;
 import uniearn.services.candidature.EvaluationService;
 import uniearn.utils.candidature.ApiManager;
 import uniearn.utils.candidature.PdfExporter;
-import uniearn.database.SessionManager;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class FreelancerDashboardController {
 
@@ -113,6 +126,10 @@ public class FreelancerDashboardController {
     private VBox messageContainer;
     @FXML
     private Label lblMessage;
+    @FXML
+    private VBox chatbotWidget;
+    @FXML
+    private ChatbotWidgetController chatbotWidgetController;
 
     // Services
     private final ApplicationService applicationService = new ApplicationService();
@@ -170,6 +187,11 @@ public class FreelancerDashboardController {
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("Initialization Error: " + e.getMessage());
+        }
+
+        if (chatbotWidget != null) {
+            chatbotWidget.setVisible(false);
+            chatbotWidget.setManaged(false);
         }
 
         // Evaluation Form Logic
@@ -1104,6 +1126,20 @@ public class FreelancerDashboardController {
         } catch (Exception e) {
             e.printStackTrace();
             showToast("Failed to return to profile: " + e.getMessage(), true);
+        }
+    }
+
+    @FXML
+    private void handleToggleChatbot() {
+        if (chatbotWidget == null) {
+            return;
+        }
+
+        boolean shouldShow = !chatbotWidget.isVisible();
+        chatbotWidget.setVisible(shouldShow);
+        chatbotWidget.setManaged(shouldShow);
+        if (shouldShow && chatbotWidgetController != null) {
+            chatbotWidgetController.focusInput();
         }
     }
 }

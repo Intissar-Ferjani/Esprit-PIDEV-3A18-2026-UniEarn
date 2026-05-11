@@ -1,5 +1,9 @@
 package uniearn.controller.profile.client;
 
+import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,22 +35,19 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import uniearn.controller.shared.ChatbotWidgetController;
 import uniearn.database.SessionManager;
 import uniearn.model.entities.candidature.application.Application;
 import uniearn.model.entities.candidature.evaluation.Evaluation;
+import uniearn.model.entities.projet.Project;
+import uniearn.model.entities.users.User;
 import uniearn.model.enums.ApplicationStatus;
 import uniearn.model.enums.EvaluationType;
 import uniearn.services.candidature.ApplicationService;
 import uniearn.services.candidature.EvaluationService;
-
 import uniearn.services.projet.ProjectService;
 import uniearn.services.users.UserService;
 import uniearn.services.users.freelancer.FreelancerService;
-import uniearn.model.entities.projet.Project;
-import uniearn.model.entities.users.User;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ClientDashboardController {
 
@@ -93,6 +94,10 @@ public class ClientDashboardController {
     private VBox messageContainer;
     @FXML
     private Label lblMessage;
+    @FXML
+    private VBox chatbotWidget;
+    @FXML
+    private ChatbotWidgetController chatbotWidgetController;
 
     // --- Stats Labels ---
     @FXML
@@ -154,6 +159,11 @@ public class ClientDashboardController {
             if (cmbFormType.getValue() == null) {
                 cmbFormType.setValue(EvaluationType.CLIENT_TO_FREELANCER);
             }
+        }
+
+        if (chatbotWidget != null) {
+            chatbotWidget.setVisible(false);
+            chatbotWidget.setManaged(false);
         }
     }
 
@@ -843,6 +853,20 @@ public class ClientDashboardController {
             stage.centerOnScreen();
         } catch (Exception e) {
             showToast("Failed to return to profile: " + e.getMessage(), true);
+        }
+    }
+
+    @FXML
+    private void handleToggleChatbot() {
+        if (chatbotWidget == null) {
+            return;
+        }
+
+        boolean shouldShow = !chatbotWidget.isVisible();
+        chatbotWidget.setVisible(shouldShow);
+        chatbotWidget.setManaged(shouldShow);
+        if (shouldShow && chatbotWidgetController != null) {
+            chatbotWidgetController.focusInput();
         }
     }
 }
