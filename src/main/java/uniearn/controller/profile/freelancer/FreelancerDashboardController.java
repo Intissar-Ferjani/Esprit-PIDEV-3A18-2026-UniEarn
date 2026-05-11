@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.text.Text;
+import uniearn.controller.shared.ChatbotWidgetController;
 import javafx.util.Duration;
 import uniearn.model.entities.candidature.application.Application;
 import uniearn.model.entities.candidature.evaluation.Evaluation;
@@ -113,6 +114,9 @@ public class FreelancerDashboardController {
     private VBox messageContainer;
     @FXML
     private Label lblMessage;
+
+    @FXML
+    private VBox chatbotWidget;
 
     // Services
     private final ApplicationService applicationService = new ApplicationService();
@@ -1104,6 +1108,15 @@ public class FreelancerDashboardController {
         } catch (Exception e) {
             e.printStackTrace();
             showToast("Failed to return to profile: " + e.getMessage(), true);
+        }
+    }
+
+    @FXML
+    private void handleToggleChatbot() {
+        if (chatbotWidget != null) {
+            boolean isVisible = chatbotWidget.isVisible();
+            chatbotWidget.setVisible(!isVisible);
+            chatbotWidget.setManaged(!isVisible);
         }
     }
 }

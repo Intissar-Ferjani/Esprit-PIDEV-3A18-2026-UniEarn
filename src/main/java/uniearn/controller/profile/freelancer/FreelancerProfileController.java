@@ -56,6 +56,7 @@ import uniearn.services.users.freelancer.FreelancerService;
 import uniearn.services.users.freelancer.PortfolioService;
 import uniearn.utils.user.PasswordUtil;
 
+import uniearn.controller.shared.ChatbotWidgetController;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 public class FreelancerProfileController {
@@ -98,6 +99,9 @@ public class FreelancerProfileController {
     private HBox topBar;
     @FXML
     private Button btnMaximize;
+
+    @FXML
+    private VBox chatbotWidget;
 
     private double xOffset = 0;
     private double yOffset = 0;
@@ -1127,6 +1131,15 @@ public class FreelancerProfileController {
         if (!stage.isMaximized()) {
             stage.setX(event.getScreenX() - xOffset);
             stage.setY(event.getScreenY() - yOffset);
+        }
+    }
+
+    @FXML
+    private void handleToggleChatbot() {
+        if (chatbotWidget != null) {
+            boolean isVisible = chatbotWidget.isVisible();
+            chatbotWidget.setVisible(!isVisible);
+            chatbotWidget.setManaged(!isVisible);
         }
     }
 }

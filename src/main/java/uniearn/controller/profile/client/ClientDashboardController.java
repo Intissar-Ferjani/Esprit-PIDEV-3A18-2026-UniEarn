@@ -44,6 +44,7 @@ import uniearn.services.users.UserService;
 import uniearn.services.users.freelancer.FreelancerService;
 import uniearn.model.entities.projet.Project;
 import uniearn.model.entities.users.User;
+import uniearn.controller.shared.ChatbotWidgetController;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -115,6 +116,9 @@ public class ClientDashboardController {
     private Label lblPropProjectName;
     @FXML
     private Label lblEvalProjectNameDetail;
+
+    @FXML
+    private VBox chatbotWidget;
 
     private final ApplicationService applicationService = new ApplicationService();
     private final EvaluationService evaluationService = new EvaluationService();
@@ -850,6 +854,14 @@ public class ClientDashboardController {
             stage.centerOnScreen();
         } catch (Exception e) {
             showToast("Failed to return to profile: " + e.getMessage(), true);
+        }
+    }
+    @FXML
+    private void handleToggleChatbot() {
+        if (chatbotWidget != null) {
+            boolean isVisible = chatbotWidget.isVisible();
+            chatbotWidget.setVisible(!isVisible);
+            chatbotWidget.setManaged(!isVisible);
         }
     }
 }
