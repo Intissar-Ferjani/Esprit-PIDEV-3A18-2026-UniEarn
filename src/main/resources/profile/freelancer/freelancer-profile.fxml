@@ -305,8 +305,20 @@
                         </VBox>
                     </content>
                 </ScrollPane>
+
+                <!-- Floating Chatbot Button -->
+                <Button onAction="#handleToggleChatbot" prefHeight="55.0" prefWidth="55.0"
+                        style="-fx-background-color: #0d6efd; -fx-background-radius: 30; -fx-text-fill: white;
+                               -fx-font-size: 24px; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 4);"
+                        text="💬" StackPane.alignment="BOTTOM_RIGHT">
+                    <StackPane.margin><Insets bottom="25.0" right="25.0"/></StackPane.margin>
+                </Button>
+
+                <fx:include fx:id="chatbotWidget" source="/application/ChatbotWidget.fxml"
+                            StackPane.alignment="BOTTOM_RIGHT" visible="false">
+                    <StackPane.margin><Insets bottom="85.0" right="25.0"/></StackPane.margin>
+                </fx:include>
             </children>
         </StackPane>
     </center>
-
 </BorderPane>
