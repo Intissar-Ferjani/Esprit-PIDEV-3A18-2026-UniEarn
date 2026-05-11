@@ -6,17 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="INTEGRATION AVEC GESTION USER PAIEMENT ET CONTRAT ET MESSAGE">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/client/ClientProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/profile/freelancer/FreelancerProfileController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/FreelancerProjectsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/FreelancerProjectsController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/ProjectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/ProjectController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/TaskBoardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/controller/projet/TaskBoardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/projet/Project.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/model/entities/projet/Project.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/candidature/ApplicationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/candidature/ApplicationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/candidature/EvaluationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/candidature/EvaluationService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/projet/ProjectService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/projet/ProjectService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-portfolio.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-portfolio.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/client/Projet.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/client/Projet.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/client/client-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/client/client-profile.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-profile.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/list-freelancers.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/profile.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/profile.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,6 +109,7 @@
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
     "to.speed.mode.migration.done": "true",
     "vue.rearranger.settings.migration": "true"
   }
@@ -146,6 +146,9 @@
       <workItem from="1772294592326" duration="3948000" />
       <workItem from="1772393102879" duration="8572000" />
       <workItem from="1772572493312" duration="4405000" />
+      <workItem from="1775500166522" duration="32000" />
+      <workItem from="1778440900406" duration="2414000" />
+      <workItem from="1778446430157" duration="1785000" />
     </task>
     <task id="LOCAL-00001" summary="INTEGRATION AVEC GESTION USER PAIEMENT ET CONTRAT ET MESSAGE">
       <option name="closed" value="true" />

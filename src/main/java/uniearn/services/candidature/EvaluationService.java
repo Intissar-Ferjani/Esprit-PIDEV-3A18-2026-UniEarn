@@ -54,7 +54,7 @@ public class EvaluationService implements IEvaluation {
 
     @Override
     public Evaluation read(int idEvaluation) throws SQLException {
-        String query = "SELECT * FROM evaluation WHERE idEvaluation=?";
+        String query = "SELECT * FROM evaluation WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, idEvaluation);
             ResultSet rs = stmt.executeQuery();
@@ -78,7 +78,7 @@ public class EvaluationService implements IEvaluation {
 
     @Override
     public void update(Evaluation evaluation) throws SQLException {
-        String query = "UPDATE evaluation SET rating=?, comment=?, type=?, updated_at=? WHERE idEvaluation=?";
+        String query = "UPDATE evaluation SET rating=?, comment=?, type=?, updated_at=? WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, evaluation.getRating());
             stmt.setString(2, evaluation.getComment());
@@ -91,7 +91,7 @@ public class EvaluationService implements IEvaluation {
 
     @Override
     public void delete(int idEvaluation) throws SQLException {
-        String query = "DELETE FROM evaluation WHERE idEvaluation=?";
+        String query = "DELETE FROM evaluation WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, idEvaluation);
             stmt.executeUpdate();
@@ -346,7 +346,7 @@ public class EvaluationService implements IEvaluation {
         String query = """
                 SELECT DISTINCT p.ClientID
                 FROM project p
-                JOIN application a ON p.idproject = a.project_id
+                JOIN application a ON p.idProject = a.project_id
                 WHERE a.freelancer_id = ? AND a.status = 'ACCEPTED'
                 """;
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -366,7 +366,7 @@ public class EvaluationService implements IEvaluation {
         Integer projectId = rs.wasNull() ? null : pId;
 
         return new Evaluation(
-                rs.getInt("idEvaluation"),
+                rs.getInt("id"),
                 rs.getInt("evaluator_id"),
                 rs.getInt("evaluated_id"),
                 projectId,

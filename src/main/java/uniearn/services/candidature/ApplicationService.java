@@ -51,7 +51,7 @@ public class ApplicationService implements IApplication {
 
     @Override
     public Application read(int idApplication) throws SQLException {
-        String query = "SELECT * FROM application WHERE idApplication=?";
+        String query = "SELECT * FROM application WHERE id=?";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setInt(1, idApplication);
         ResultSet rs = stmt.executeQuery();
@@ -76,7 +76,7 @@ public class ApplicationService implements IApplication {
         String query = """
                 UPDATE application SET
                 freelancer_id=?, project_id=?, status=?, cover_letter=?, proposed_budget=?, estimated_duration=?, updated_at=?
-                WHERE idApplication=?
+                WHERE id=?
                 """;
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setInt(1, application.getFreelancerId());
@@ -92,7 +92,7 @@ public class ApplicationService implements IApplication {
 
     @Override
     public void delete(int idApplication) throws SQLException {
-        String query = "DELETE FROM application WHERE idApplication=?";
+        String query = "DELETE FROM application WHERE id=?";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setInt(1, idApplication);
         stmt.executeUpdate();
@@ -138,7 +138,7 @@ public class ApplicationService implements IApplication {
     // ================== Business Logic ==================
     @Override
     public void updateStatus(int idApplication, ApplicationStatus newStatus) throws SQLException {
-        String query = "UPDATE application SET status=?, updated_at=? WHERE idApplication=?";
+        String query = "UPDATE application SET status=?, updated_at=? WHERE id=?";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setString(1, newStatus.name());
         stmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
@@ -273,7 +273,7 @@ public class ApplicationService implements IApplication {
     // ================== Helper ==================
     private Application extractApplication(ResultSet rs) throws SQLException {
         return new Application(
-                rs.getInt("idApplication"),
+                rs.getInt("id"),
                 rs.getInt("freelancer_id"),
                 rs.getInt("project_id"),
                 ApplicationStatus.valueOf(rs.getString("status")),

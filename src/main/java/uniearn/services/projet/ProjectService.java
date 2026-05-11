@@ -89,7 +89,7 @@ public class ProjectService implements IProject<Project> {
         pst.setString(1, Project.getTitle());
         pst.setString(2, Project.getDescription());
         pst.setDouble(3, Project.getBudget());
-        pst.setInt(4, Project.getStatus());
+        pst.setString(4, Project.getStatus());
         pst.setInt(5, Project.getClient_id());
         pst.setInt(6, Project.getFreelancerid());
 
@@ -106,7 +106,7 @@ public class ProjectService implements IProject<Project> {
             pst.setString(1, Project.getTitle());
             pst.setString(2, Project.getDescription());
             pst.setDouble(3, Project.getBudget());
-            pst.setInt(4, Project.getStatus());
+            pst.setString(4, Project.getStatus());
             pst.setInt(5, Project.getClient_id());
             pst.setInt(6, Project.getFreelancerid());
             pst.setInt(7, id);
@@ -158,7 +158,7 @@ public class ProjectService implements IProject<Project> {
                 project.setTitle(rs.getString("title"));
                 project.setDescription(rs.getString("description"));
                 project.setBudget(rs.getDouble("budget"));
-                project.setStatus(rs.getInt("status"));
+                project.setStatus(rs.getString("status"));
                 project.setClient_id(rs.getInt("ClientID"));
                 project.setFreelancerid(rs.getInt("freelancerID"));
                 return project;
@@ -186,7 +186,7 @@ public class ProjectService implements IProject<Project> {
                 project.setTitle(rs.getString("title"));
                 project.setDescription(rs.getString("description"));
                 project.setBudget(rs.getDouble("budget"));
-                project.setStatus(rs.getInt("status"));
+                project.setStatus(rs.getString("status"));
                 project.setClient_id(rs.getInt("ClientID"));
                 project.setFreelancerid(rs.getInt("freelancerID"));
                 String fname = rs.getString("freelancer_name");
@@ -217,7 +217,7 @@ public class ProjectService implements IProject<Project> {
                 project.setTitle(rs.getString("title"));
                 project.setDescription(rs.getString("description"));
                 project.setBudget(rs.getDouble("budget"));
-                project.setStatus(rs.getInt("status"));
+                project.setStatus(rs.getString("status"));
                 project.setClient_id(rs.getInt("ClientID"));
                 project.setFreelancerid(rs.getInt("freelancerID"));
                 String fname = rs.getString("freelancer_name");

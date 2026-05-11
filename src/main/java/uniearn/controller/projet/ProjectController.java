@@ -160,16 +160,7 @@ public class ProjectController {
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         budgetColumn.setCellValueFactory(new PropertyValueFactory<>("budget"));
         // map integer status to readable enum name
-        statusColumn.setCellValueFactory(cellData -> {
-            int s = cellData.getValue().getStatus();
-            String text = "";
-            try {
-                text = taskstatusenum.values()[s].name();
-            } catch (Exception e) {
-                text = "UNKNOWN";
-            }
-            return new ReadOnlyStringWrapper(text);
-        });
+        statusColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getStatus()));
         clientIdColumn.setCellValueFactory(new PropertyValueFactory<>("client_id"));
 
         projectTable.setItems(projectList); // Initialize table with the observable list
@@ -271,7 +262,9 @@ public class ProjectController {
         // clientIdField
         // select status by index if valid
         try {
-            statusComboBox.getSelectionModel().select(project.getStatus());
+            if (project.getStatus() != null) {
+                statusComboBox.getSelectionModel().select(taskstatusenum.valueOf(project.getStatus()));
+            }
         } catch (Exception e) {
             statusComboBox.getSelectionModel().clearSelection();
         }
@@ -360,7 +353,7 @@ public class ProjectController {
         String title = titleField.getText();
         String description = descriptionArea.getText();
         double budget = Double.parseDouble(budgetField.getText());
-        int status = 0; // Forced default TODO
+        String status = "TODO"; // Default status
         int freelancerID = 23; // Default or placeholder freelancer ID
 
         if (currentClient == null) {
@@ -527,7 +520,8 @@ public class ProjectController {
             budget = Double.parseDouble(budgetField.getText());
         } catch (NumberFormatException e) {
         }
-        int status = statusComboBox.getSelectionModel().getSelectedIndex();
+        String status = statusComboBox.getSelectionModel().getSelectedItem() != null ? 
+                statusComboBox.getSelectionModel().getSelectedItem().name() : "TODO";
         int clientId = currentClient != null ? currentClient.getIdClient() : 0;
 
         Project updated = new Project(title, description, budget, status, clientId, 23);

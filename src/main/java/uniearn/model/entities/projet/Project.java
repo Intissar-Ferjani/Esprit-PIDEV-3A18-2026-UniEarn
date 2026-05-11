@@ -5,14 +5,14 @@ public class Project {
     private String title;
     private String description;
     private double budget;
-    private int status;
+    private String status;
     private int clientid;
     private int freelancerid;
     private String freelancerName;
 
     public Project() {};
 
-    public Project(String title, String description, double budget, int status, int clientid ,int freelancerid) {
+    public Project(String title, String description, double budget, String status, int clientid ,int freelancerid) {
         this.title = title;
         this.description = description;
         this.budget = budget;
@@ -56,11 +56,11 @@ public class Project {
         this.budget = budget;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

@@ -83,9 +83,9 @@ public class FreelancerProjectsController {
                     boolean matchStatus = true;
                     if (statusVal != null && !statusVal.startsWith("Tous")) {
                         if (statusVal.equals("Ouvert"))
-                            matchStatus = (p.getStatus() == 2); // 2 = TODO
+                            matchStatus = "TODO".equals(p.getStatus()); // "TODO"
                         else if (statusVal.contains("Terminé"))
-                            matchStatus = (p.getStatus() == 1); // 1 = Done
+                            matchStatus = "Done".equals(p.getStatus()); // "Done"
                     }
                     return matchSearch && matchStatus;
                 })
@@ -147,11 +147,11 @@ public class FreelancerProjectsController {
         String statusText;
         String statusColor;
         String statusBg;
-        if (project.getStatus() == 1) { // 1 = Done
+        if ("Done".equals(project.getStatus())) {
             statusText = "✅ Terminé";
             statusColor = "#2e7d32";
             statusBg = "#e8f5e9";
-        } else if (project.getStatus() == 2) { // 2 = TODO
+        } else if ("TODO".equals(project.getStatus())) {
             statusText = "🟢 Ouvert";
             statusColor = "#1976d2";
             statusBg = "#e3f2fd";
@@ -258,8 +258,8 @@ public class FreelancerProjectsController {
             // Ignore or log error
         }
 
-        int status = project.getStatus();
-        boolean isDone = (status == 1); // 1 = Done in taskstatusenum
+        String status = project.getStatus();
+        boolean isDone = "Done".equals(status);
 
         if (isDone || alreadyApplied) {
             postulerBtn.setVisible(false);

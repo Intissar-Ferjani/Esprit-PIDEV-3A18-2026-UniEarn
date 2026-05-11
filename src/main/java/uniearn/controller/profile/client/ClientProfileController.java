@@ -262,21 +262,18 @@ public class ClientProfileController {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        int s = project.getStatus();
-        String statusText;
+        String s = project.getStatus();
+        String statusText = s != null ? s : "TODO";
         String statusColor;
-        try {
-            statusText = uniearn.model.enums.taskstatusenum.values()[s].name();
-            if (s == 0)
-                statusColor = "#3182ce"; // TODO
-            else if (s == 1)
-                statusColor = "#d69e2e"; // DOING
-            else
-                statusColor = "#38a169"; // DONE
-        } catch (Exception e) {
-            statusText = "UNKNOWN";
-            statusColor = "#718096";
-        }
+        
+        if ("TODO".equals(s))
+            statusColor = "#3182ce"; // Blue
+        else if ("InProgress".equals(s) || "Review".equals(s))
+            statusColor = "#d69e2e"; // Yellow
+        else if ("Done".equals(s))
+            statusColor = "#38a169"; // Green
+        else
+            statusColor = "#718096"; // Gray
 
         Label statusBadge = new Label(statusText);
         statusBadge.setStyle("-fx-background-color: " + statusColor + "20; -fx-text-fill: " + statusColor
