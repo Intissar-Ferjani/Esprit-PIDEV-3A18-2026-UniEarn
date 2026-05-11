@@ -5,23 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ad9ab9ee-cb90-4480-bc48-fa4496cf6693" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask2agent.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/users/client/ClientService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/users/client/ClientService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/uniearn/services/users/freelancer/FreelancerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/uniearn/services/users/freelancer/FreelancerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/auth/signup/freelancer/freelancer-information.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/auth/signup/freelancer/freelancer-information.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-portfolio.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-portfolio.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/freelancer-profile.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/Freelancer/list-freelancers.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uniearn_symfony/src/Controller/contract/client/ClientContractController.php" beforeDir="false" afterPath="$PROJECT_DIR$/uniearn_symfony/src/Controller/contract/client/ClientContractController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uniearn_symfony/src/Controller/profile/freelancer/FreelancerForumController.php" beforeDir="false" afterPath="$PROJECT_DIR$/uniearn_symfony/src/Controller/profile/freelancer/FreelancerForumController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/uniearn_symfony/templates/frontOffice/user/profile/_sidebar.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/uniearn_symfony/templates/frontOffice/user/profile/_sidebar.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-portfolio.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-portfolio.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/freelancer-profile.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/profile/freelancer/list-freelancers.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/profile/freelancer/list-freelancers.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/uniearn_symfony" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +60,7 @@
     <urls />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="ProjectErrors" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
@@ -112,10 +101,11 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Problems",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "build.tools",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -128,6 +118,19 @@
       <recent name="C:\Users\MSI\Desktop\uniearn_java\src\main\resources\contracts" />
       <recent name="C:\Users\MSI\Desktop\uniearn_java\src\main\java\uniearn\interfaces\contracts" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="uniearn_java" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="uniearn_java" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
