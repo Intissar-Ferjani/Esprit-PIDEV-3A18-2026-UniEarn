@@ -10,10 +10,101 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root" stylesheets="@../../profile/profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.freelancer.ListFreelancersController">
+    <!-- ══ Top Navigation Bar ══════════════════════════════════════════ -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="68.0" spacing="20.0" styleClass="top-bar">
+            <padding><Insets left="30.0" right="30.0" /></padding>
+            <children>
+                <Button onAction="#handleBackToProfile" styleClass="btn-secondary" text="← Dashboard">
+                    <font><Font size="13.0" /></font>
+                </Button>
+                <Region HBox.hgrow="ALWAYS" />
+                <ImageView fitHeight="260.0" fitWidth="185.0" pickOnBounds="true" preserveRatio="true">
+                    <image><Image url="@../../images/UniEarn_full_logo.png" /></image>
+                </ImageView>
+            </children>
+        </HBox>
+    </top>
 
+    <!-- ══ Left Sidebar ════════════════════════════════════════════════ -->
+    <left>
+        <VBox prefWidth="248.0" styleClass="sidebar">
+            <children>
+                <VBox spacing="4.0" VBox.vgrow="ALWAYS">
+                    <padding><Insets bottom="15.0" left="14.0" right="14.0" top="22.0" /></padding>
+                    <children>
 
+                        <Button onAction="#handleBackToProfile" prefHeight="42.0" prefWidth="240.0" styleClass="nav-button">
+                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                <FontIcon iconLiteral="fas-arrow-left" iconSize="15" />
+                                <Label style="-fx-font-size: 14px;" text="Back to Profile" />
+                            </children></HBox></graphic>
+                        </Button>
 
+                        <Button onAction="#handleShowDashboard" prefHeight="42.0" prefWidth="240.0" styleClass="nav-button">
+                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                <FontIcon iconLiteral="fas-home" iconSize="15" />
+                                <Label style="-fx-font-size: 14px;" text="Dashboard" />
+                            </children></HBox></graphic>
+                        </Button>
 
+                        <Button prefHeight="42.0" prefWidth="240.0" styleClass="nav-button, active">
+                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                <FontIcon iconLiteral="fas-users" iconSize="15" />
+                                <Label style="-fx-font-size: 14px;" text="Browse Freelancers" />
+                            </children></HBox></graphic>
+                        </Button>
+
+                        <Button onAction="#handleproject" prefHeight="42.0" prefWidth="240.0" styleClass="nav-button">
+                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                <FontIcon iconLiteral="fas-clipboard-list" iconSize="15" />
+                                <Label style="-fx-font-size: 14px;" text="Mes projets" />
+                            </children></HBox></graphic>
+                        </Button>
+
+                        <Button onAction="#handleMesContrats" prefHeight="42.0" prefWidth="240.0" styleClass="nav-button">
+                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                <FontIcon iconLiteral="fas-file-contract" iconSize="15" />
+                                <Label style="-fx-font-size: 14px;" text="Mes contrats" />
+                            </children></HBox></graphic>
+                        </Button>
+
+                        <Button onAction="#handleApplications" prefHeight="42.0" prefWidth="240.0" styleClass="nav-button">
+                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                <FontIcon iconLiteral="fas-star" iconSize="15" />
+                                <Label style="-fx-font-size: 14px;" text="Avis &amp; Propositions" />
+                            </children></HBox></graphic>
+                        </Button>
+
+                        <Button onAction="#handlePaymentMethods" prefHeight="42.0" prefWidth="240.0" styleClass="nav-button">
+                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                <FontIcon iconLiteral="fas-university" iconSize="15" />
+                                <Label style="-fx-font-size: 14px;" text="Moyens de Paiement" />
+                            </children></HBox></graphic>
+                        </Button>
+
+                        <Button onAction="#handlePayments" prefHeight="42.0" prefWidth="240.0" styleClass="nav-button">
+                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                <FontIcon iconLiteral="fas-credit-card" iconSize="15" />
+                                <Label style="-fx-font-size: 14px;" text="Paiements" />
+                            </children></HBox></graphic>
+                        </Button>
+
+                        <Region VBox.vgrow="ALWAYS" />
+                        <Separator />
+
+                        <Button onAction="#handleLogout" prefHeight="42.0" prefWidth="240.0" styleClass="nav-button, logout">
+                            <graphic><HBox alignment="CENTER_LEFT" spacing="12.0"><children>
+                                <FontIcon iconLiteral="fas-sign-out-alt" iconSize="15" />
+                                <Label style="-fx-font-size: 14px;" text="Logout" />
+                            </children></HBox></graphic>
+                        </Button>
+
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </left>
 
     <center>
         <ScrollPane fitToHeight="true" fitToWidth="true" styleClass="content-scroll">
