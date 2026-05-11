@@ -14,7 +14,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import uniearn.model.entities.users.client.Client;
 import uniearn.model.entities.users.freelancer.Freelancer;
+import uniearn.model.entities.projet.Project;
 import uniearn.model.enums.VerifStatus;
+import uniearn.services.projet.ProjectService;
+import uniearn.services.users.freelancer.ai.GeminiRecommendationService;
 import uniearn.services.users.freelancer.FreelancerService;
 
 import java.io.IOException;
@@ -38,7 +41,20 @@ public class ListFreelancersController {
     @FXML
     private Label resultsCountLabel;
 
+    // AI Tab elements
+    @FXML private Tab aiTab;
+    @FXML private ProgressIndicator aiLoadingIndicator;
+    @FXML private Label aiErrorLabel;
+    @FXML private VBox aiRecommendationsContainer;
+
+    @FXML private ComboBox<String> aiTargetProjectCombo;
+    @FXML private ComboBox<String> aiMinRatingCombo;
+    @FXML private ComboBox<String> aiMaxPriceCombo;
+
     private final FreelancerService freelancerService = new FreelancerService();
+    private final ProjectService projectService = new ProjectService();
+    private final GeminiRecommendationService aiService = new GeminiRecommendationService();
+    private boolean aiLoaded = false;
     private Client currentClient;
     private List<Freelancer> allFreelancers;
     private List<Freelancer> filteredFreelancers;
@@ -60,11 +76,51 @@ public class ListFreelancersController {
 
         // Add listeners -> real-time filtering
         setupFilterListeners();
+
+        // AI Tab listener
+        if (aiTab != null) {
+            aiTab.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+                if (isSelected && !aiLoaded) {
+                    loadAiRecommendations();
+                }
+            });
+        }
+
+        // Initialize AI filters
+        if (aiMinRatingCombo != null) aiMinRatingCombo.setValue("Any");
+        if (aiMaxPriceCombo != null) aiMaxPriceCombo.setValue("Any");
+        
+        // AI filter listeners
+        if (aiTargetProjectCombo != null) aiTargetProjectCombo.setOnAction(e -> { if (aiLoaded) loadAiRecommendations(); });
+        if (aiMinRatingCombo != null) aiMinRatingCombo.setOnAction(e -> { if (aiLoaded) loadAiRecommendations(); });
+        if (aiMaxPriceCombo != null) aiMaxPriceCombo.setOnAction(e -> { if (aiLoaded) loadAiRecommendations(); });
     }
 
     public void setClientData(Client client) {
         this.currentClient = client;
+        loadClientProjects();
         loadFreelancers();
+    }
+
+    private void loadClientProjects() {
+        if (currentClient == null) return;
+        try {
+            List<Project> clientProjects = projectService.getProjectsByClientId(currentClient.getIdClient());
+            List<Project> activeProjects = clientProjects.stream()
+                    .filter(p -> p.getStatus() != 2) // 2 = completed
+                    .collect(Collectors.toList());
+            
+            if (aiTargetProjectCombo != null) {
+                aiTargetProjectCombo.getItems().clear();
+                aiTargetProjectCombo.getItems().add("All Active Projects");
+                for (Project p : activeProjects) {
+                    aiTargetProjectCombo.getItems().add(p.getTitle());
+                }
+                aiTargetProjectCombo.setValue("All Active Projects");
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading client projects for AI tab: " + e.getMessage());
+        }
     }
 
     private void setupFilterListeners() {
@@ -211,6 +267,119 @@ public class ListFreelancersController {
 
         emptyState.getChildren().addAll(icon, message, hint);
         freelancersContainer.getChildren().add(emptyState);
+    }
+
+    private void loadAiRecommendations() {
+        if (currentClient == null) return;
+
+        aiLoadingIndicator.setVisible(true);
+        aiErrorLabel.setVisible(false);
+        aiErrorLabel.setManaged(false);
+        aiRecommendationsContainer.getChildren().clear();
+
+        final String selectedProjectTitle = aiTargetProjectCombo != null ? aiTargetProjectCombo.getValue() : "All Active Projects";
+        final String minRatingStr = aiMinRatingCombo != null ? aiMinRatingCombo.getValue() : "Any";
+        final String maxPriceStr = aiMaxPriceCombo != null ? aiMaxPriceCombo.getValue() : "Any";
+
+        Thread thread = new Thread(() -> {
+            try {
+                // Get active projects
+                System.out.println("[AI] Loading projects for clientId=" + currentClient.getIdClient());
+                List<Project> clientProjects = projectService.getProjectsByClientId(currentClient.getIdClient());
+                System.out.println("[AI] Total client projects found: " + clientProjects.size());
+                List<Project> activeProjects = clientProjects.stream()
+                        .filter(p -> p.getStatus() != 2) // 2 = completed
+                        .collect(Collectors.toList());
+                
+                if (selectedProjectTitle != null && !"All Active Projects".equals(selectedProjectTitle)) {
+                    activeProjects = activeProjects.stream()
+                            .filter(p -> p.getTitle().equals(selectedProjectTitle))
+                            .collect(Collectors.toList());
+                }
+                System.out.println("[AI] Active (non-completed) projects to match: " + activeProjects.size());
+
+                // Get available freelancers and filter
+                List<Freelancer> available = allFreelancers != null ? new ArrayList<>(allFreelancers) : new ArrayList<>();
+                
+                if (minRatingStr != null && !"Any".equals(minRatingStr)) {
+                    double minR = Double.parseDouble(minRatingStr.replace("+", ""));
+                    available = available.stream().filter(f -> f.getRating() >= minR).collect(Collectors.toList());
+                }
+
+                if (maxPriceStr != null && !"Any".equals(maxPriceStr)) {
+                    double maxP = Double.parseDouble(maxPriceStr);
+                    available = available.stream().filter(f -> f.getPricePerHour() <= maxP).collect(Collectors.toList());
+                }
+
+                System.out.println("[AI] Available freelancers after filter: " + available.size());
+
+                List<GeminiRecommendationService.Recommendation> recommendations =
+                        aiService.getRecommendations(activeProjects, available);
+
+                javafx.application.Platform.runLater(() -> {
+                    aiLoadingIndicator.setVisible(false);
+                    if (recommendations.isEmpty()) {
+                        showAiError("No strong matches found at this time.");
+                    } else {
+                        for (var rec : recommendations) {
+                            aiRecommendationsContainer.getChildren().add(createAiRecommendationCard(rec));
+                        }
+                        aiLoaded = true;
+                    }
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                javafx.application.Platform.runLater(() -> {
+                    aiLoadingIndicator.setVisible(false);
+                    showAiError(e.getMessage());
+                });
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private void showAiError(String message) {
+        aiErrorLabel.setText("⚠ " + message);
+        aiErrorLabel.setVisible(true);
+        aiErrorLabel.setManaged(true);
+    }
+
+    private VBox createAiRecommendationCard(GeminiRecommendationService.Recommendation rec) {
+        VBox card = new VBox(10);
+        card.setStyle(
+                "-fx-background-color: #f8f9fa; " +
+                        "-fx-border-color: #1976d2; " +
+                        "-fx-border-width: 1; " +
+                        "-fx-border-radius: 12; " +
+                        "-fx-background-radius: 12; " +
+                        "-fx-padding: 15; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(25,118,210,0.1), 10, 0, 0, 2);");
+
+        Label projectLabel = new Label("🎯 Best fit for: " + rec.projectTitle);
+        projectLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #1976d2; -fx-font-size: 14px;");
+
+        Label roleLabel = new Label("Suggested Role: " + rec.role);
+        roleLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #2c3e50; -fx-font-size: 13px;");
+
+        Label reasonLabel = new Label("💡 AI Insight: " + rec.reason);
+        reasonLabel.setStyle("-fx-text-fill: #34495e; -fx-font-style: italic; -fx-font-size: 13px;");
+        reasonLabel.setWrapText(true);
+
+        // Add the standard freelancer card inside the AI card
+        HBox freelancerCard = createFreelancerCard(rec.freelancer);
+        // remove drop shadow from inner card to avoid double shadow
+        freelancerCard.setStyle(
+                "-fx-background-color: white; " +
+                        "-fx-border-color: #e1e8ed; " +
+                        "-fx-border-width: 1; " +
+                        "-fx-border-radius: 12; " +
+                        "-fx-background-radius: 12; " +
+                        "-fx-padding: 15;");
+
+        card.getChildren().addAll(projectLabel, roleLabel, reasonLabel, freelancerCard);
+        return card;
     }
 
     private HBox createFreelancerCard(Freelancer freelancer) {
@@ -477,7 +646,7 @@ public class ListFreelancersController {
             controller.setClientData(currentClient);
 
             Stage stage = (Stage) freelancersContainer.getScene().getWindow();
-            stage.setScene(new Scene(root, 1200, 700));
+            stage.setScene(new Scene(root, 1200, 800));
             stage.setTitle("Mes Projets - UniEarn");
             stage.centerOnScreen();
         } catch (IOException e) {

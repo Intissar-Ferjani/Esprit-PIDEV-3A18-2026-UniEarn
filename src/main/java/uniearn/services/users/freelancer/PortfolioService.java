@@ -15,7 +15,7 @@ public class PortfolioService implements IPortfolio<Portfolio> {
     @Override
     public void addPortfolio(Portfolio portfolio) {
 
-        String sql = "INSERT INTO portfolio (title, description, created_At, freelancerId) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO portfolio (title, description, created_At, freelancer_id) VALUES (?, ?, ?, ?)";
 
         try {
             PreparedStatement ps = cn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -70,7 +70,7 @@ public class PortfolioService implements IPortfolio<Portfolio> {
     @Override
     public void deletePortfolio(int id) {
         // First, delete all portfolio items (if cascade is not set up in database)
-        String deleteItemsSql = "DELETE FROM portfolioitem WHERE idPortfolio=?";
+        String deleteItemsSql = "DELETE FROM portfolioitem WHERE portfolio_id=?";
         String deletePortfolioSql = "DELETE FROM portfolio WHERE idPortfolio=?";
 
         try {
@@ -131,7 +131,7 @@ public class PortfolioService implements IPortfolio<Portfolio> {
                 p.setTitle(rs.getString("title"));
                 p.setDescription(rs.getString("description"));
                 p.setCreated_At(rs.getTimestamp("created_At"));
-                p.setFreelancerId(rs.getInt("freelancerId"));
+                p.setFreelancerId(rs.getInt("freelancer_id"));
 
                 return p;
             }
@@ -161,7 +161,7 @@ public class PortfolioService implements IPortfolio<Portfolio> {
                 p.setTitle(rs.getString("title"));
                 p.setDescription(rs.getString("description"));
                 p.setCreated_At(rs.getTimestamp("created_At"));
-                p.setFreelancerId(rs.getInt("freelancerId"));
+                p.setFreelancerId(rs.getInt("freelancer_id"));
 
                 portfolios.add(p);
             }

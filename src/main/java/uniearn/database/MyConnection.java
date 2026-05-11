@@ -8,7 +8,7 @@ import java.sql.SQLException;
 public class MyConnection {
 
     // Database credentials
-    private final String url = "jdbc:mysql://localhost:3306/uniearn_db";
+    private final String url = "jdbc:mysql://localhost:3306/uniearn_db?connectTimeout=2000";
     private final String login = "root";
     private final String pwd = "";
 

@@ -49,7 +49,7 @@ public class PortfolioItemService implements IPortfolioItem<Portfolio, Portfolio
     public void addPortfolioItem(Portfolio portfolio, PortfolioItem item) {
 
         String sql = "INSERT INTO portfolioitem " +
-                "(title, description, technologies, imageUrl, projectUrl, githubUrl, idPortfolio) " +
+                "(title, description, technologies, imageUrl, projectUrl, githubUrl, portfolio_id) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
@@ -131,7 +131,7 @@ public class PortfolioItemService implements IPortfolioItem<Portfolio, Portfolio
                 item.setProjectUrl(rs.getString("projectUrl"));
                 item.setGithubUrl(rs.getString("githubUrl"));
                 item.setCreated_At(rs.getTimestamp("created_At"));
-                item.setIdPortfolio(rs.getInt("idPortfolio"));
+                item.setIdPortfolio(rs.getInt("portfolio_id"));
             }
 
         } catch (SQLException e) {
@@ -161,7 +161,7 @@ public class PortfolioItemService implements IPortfolioItem<Portfolio, Portfolio
                 item.setProjectUrl(rs.getString("projectUrl"));
                 item.setGithubUrl(rs.getString("githubUrl"));
                 item.setCreated_At(rs.getTimestamp("created_At"));
-                item.setIdPortfolio(rs.getInt("idPortfolio"));
+                item.setIdPortfolio(rs.getInt("portfolio_id"));
 
                 list.add(item);
             }
@@ -178,7 +178,7 @@ public class PortfolioItemService implements IPortfolioItem<Portfolio, Portfolio
     public List<PortfolioItem> getPortfolioItemsByPortfolioId(int portfolioId) {
 
         List<PortfolioItem> list = new ArrayList<>();
-        String sql = "SELECT * FROM portfolioitem WHERE idPortfolio=?";
+        String sql = "SELECT * FROM portfolioitem WHERE portfolio_id=?";
 
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setInt(1, portfolioId);
@@ -194,7 +194,7 @@ public class PortfolioItemService implements IPortfolioItem<Portfolio, Portfolio
                 item.setProjectUrl(rs.getString("projectUrl"));
                 item.setGithubUrl(rs.getString("githubUrl"));
                 item.setCreated_At(rs.getTimestamp("created_At"));
-                item.setIdPortfolio(rs.getInt("idPortfolio"));
+                item.setIdPortfolio(rs.getInt("portfolio_id"));
 
                 list.add(item);
             }
