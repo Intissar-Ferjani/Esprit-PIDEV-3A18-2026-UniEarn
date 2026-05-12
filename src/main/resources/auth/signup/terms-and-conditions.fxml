@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="700.0" prefWidth="900.0"
+            styleClass="root"
+            stylesheets="@../auth.css"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="uniearn.controller.auth.user.TermsController">
+
+    <!-- ── Top Bar ─────────────────────────────────────────────────────── -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="64.0" spacing="16.0"
+              style="-fx-background-color: white;
+                     -fx-border-color: #e1e8ed;
+                     -fx-border-width: 0 0 1 0;
+                     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.06), 5, 0, 0, 2);">
+            <padding><Insets left="30.0" right="30.0" /></padding>
+            <children>
+
+                <!-- Back button — no FontIcon, just text arrow -->
+                <Button onAction="#handleBack" styleClass="back-button"
+                        style="-fx-background-color: transparent;
+                               -fx-border-color: #e0e5eb;
+                               -fx-border-width: 1.5;
+                               -fx-border-radius: 8;
+                               -fx-background-radius: 8;
+                               -fx-cursor: hand;
+                               -fx-padding: 7 16;
+                               -fx-font-size: 13px;
+                               -fx-text-fill: #5a6472;"
+                        text="← Back" />
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <ImageView fitHeight="220.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true">
+                    <image><Image url="@../../images/UniEarn_full_logo.png" /></image>
+                </ImageView>
+
+            </children>
+        </HBox>
+    </top>
+
+    <!-- ── Main Content ────────────────────────────────────────────────── -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="form-scroll"
+                    style="-fx-background: #f0f2f5; -fx-background-color: #f0f2f5;">
+            <content>
+                <VBox alignment="TOP_CENTER"
+                      style="-fx-background-color: #f0f2f5;">
+                    <children>
+
+                        <!-- ── Hero banner ──────────────────────────────── -->
+                        <VBox alignment="CENTER" spacing="12.0"
+                              style="-fx-background-color: linear-gradient(to right, #1565c0, #2563EB, #42a5f5);
+                                     -fx-padding: 50 60 50 60;">
+                            <children>
+                                <!-- Icon badge using emoji — no Ikonli needed -->
+                                <StackPane maxWidth="70.0" prefWidth="70.0" prefHeight="70.0"
+                                           style="-fx-background-color: rgba(255,255,255,0.2);
+                                                  -fx-background-radius: 50%;">
+                                    <Label text="📋"
+                                           style="-fx-font-size: 28px;
+                                                  -fx-background-color: transparent;" />
+                                </StackPane>
+
+                                <Label text="Terms &amp; Conditions"
+                                       style="-fx-font-size: 30px; -fx-font-weight: bold;
+                                              -fx-text-fill: white;">
+                                    <font><Font name="System Bold" size="30.0" /></font>
+                                </Label>
+                                <Label text="Please read these terms carefully before using UniEarn."
+                                       style="-fx-font-size: 14px; -fx-text-fill: rgba(255,255,255,0.85);" />
+                                <Label text="Last updated: March 2025"
+                                       style="-fx-font-size: 12px; -fx-text-fill: rgba(255,255,255,0.65);" />
+                            </children>
+                        </VBox>
+
+                        <!-- ── Content card ─────────────────────────────── -->
+                        <VBox spacing="28.0" maxWidth="780.0"
+                              style="-fx-background-color: white;
+                                     -fx-background-radius: 0 0 14 14;
+                                     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.07), 10, 0, 0, 3);">
+                            <padding><Insets bottom="48.0" left="56.0" right="56.0" top="44.0" /></padding>
+                            <children>
+
+                                <!-- ── Section 1 ──────────────────────────── -->
+                                <VBox spacing="10.0">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <children>
+                                                <StackPane prefWidth="32.0" prefHeight="32.0"
+                                                           style="-fx-background-color: #e8f0fe;
+                                                                  -fx-background-radius: 50%;">
+                                                    <Label text="1"
+                                                           style="-fx-font-size: 13px; -fx-font-weight: bold;
+                                                                  -fx-text-fill: #2563EB;
+                                                                  -fx-background-color: transparent;" />
+                                                </StackPane>
+                                                <Label text="Acceptance of Terms"
+                                                       style="-fx-font-size: 17px; -fx-font-weight: bold;
+                                                              -fx-text-fill: #1a202c;">
+                                                    <font><Font name="System Bold" size="17.0" /></font>
+                                                </Label>
+                                            </children>
+                                        </HBox>
+                                        <Label wrapText="true"
+                                               style="-fx-font-size: 13.5px; -fx-text-fill: #4a5568; -fx-line-spacing: 4px;"
+                                               text="By registering for or using the UniEarn platform, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, you may not use our services. UniEarn reserves the right to update these terms at any time, and continued use of the platform constitutes your acceptance of the revised terms." />
+                                    </children>
+                                </VBox>
+
+                                <Separator style="-fx-opacity: 0.4;" />
+
+                                <!-- ── Section 2 ──────────────────────────── -->
+                                <VBox spacing="10.0">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <children>
+                                                <StackPane prefWidth="32.0" prefHeight="32.0"
+                                                           style="-fx-background-color: #e8f0fe; -fx-background-radius: 50%;">
+                                                    <Label text="2" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2563EB; -fx-background-color: transparent;" />
+                                                </StackPane>
+                                                <Label text="Platform Description" style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #1a202c;">
+                                                    <font><Font name="System Bold" size="17.0" /></font>
+                                                </Label>
+                                            </children>
+                                        </HBox>
+                                        <Label wrapText="true" style="-fx-font-size: 13.5px; -fx-text-fill: #4a5568; -fx-line-spacing: 4px;"
+                                               text="UniEarn is a student freelancing platform designed to connect university students offering professional services with clients seeking skilled talent. We provide tools for project posting, bidding, contract management, and secure payments. UniEarn acts as an intermediary and is not a party to any contract formed between clients and freelancers." />
+                                    </children>
+                                </VBox>
+
+                                <Separator style="-fx-opacity: 0.4;" />
+
+                                <!-- ── Section 3 ──────────────────────────── -->
+                                <VBox spacing="10.0">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <children>
+                                                <StackPane prefWidth="32.0" prefHeight="32.0"
+                                                           style="-fx-background-color: #e8f0fe; -fx-background-radius: 50%;">
+                                                    <Label text="3" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2563EB; -fx-background-color: transparent;" />
+                                                </StackPane>
+                                                <Label text="Eligibility" style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #1a202c;">
+                                                    <font><Font name="System Bold" size="17.0" /></font>
+                                                </Label>
+                                            </children>
+                                        </HBox>
+                                        <Label wrapText="true" style="-fx-font-size: 13.5px; -fx-text-fill: #4a5568; -fx-line-spacing: 4px;"
+                                               text="You must be at least 18 years old to use UniEarn. Freelancer accounts are intended for currently enrolled university students. By creating a freelancer account, you confirm that you are an active student at a recognised institution. Client accounts may be created by individuals or businesses seeking to hire student talent. All users must provide accurate and truthful registration information." />
+                                    </children>
+                                </VBox>
+
+                                <Separator style="-fx-opacity: 0.4;" />
+
+                                <!-- ── Section 4 ──────────────────────────── -->
+                                <VBox spacing="10.0">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <children>
+                                                <StackPane prefWidth="32.0" prefHeight="32.0"
+                                                           style="-fx-background-color: #e8f0fe; -fx-background-radius: 50%;">
+                                                    <Label text="4" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2563EB; -fx-background-color: transparent;" />
+                                                </StackPane>
+                                                <Label text="Account Responsibilities" style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #1a202c;">
+                                                    <font><Font name="System Bold" size="17.0" /></font>
+                                                </Label>
+                                            </children>
+                                        </HBox>
+                                        <Label wrapText="true" style="-fx-font-size: 13.5px; -fx-text-fill: #4a5568; -fx-line-spacing: 4px;"
+                                               text="You are responsible for maintaining the confidentiality of your login credentials and for all activity that occurs under your account. You agree not to share your credentials with third parties, impersonate another user, or create multiple accounts for deceptive purposes. You must notify UniEarn immediately if you suspect any unauthorized use of your account." />
+                                    </children>
+                                </VBox>
+
+                                <Separator style="-fx-opacity: 0.4;" />
+
+                                <!-- ── Section 5 ──────────────────────────── -->
+                                <VBox spacing="10.0">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <children>
+                                                <StackPane prefWidth="32.0" prefHeight="32.0"
+                                                           style="-fx-background-color: #e8f0fe; -fx-background-radius: 50%;">
+                                                    <Label text="5" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2563EB; -fx-background-color: transparent;" />
+                                                </StackPane>
+                                                <Label text="Payments &amp; Fees" style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #1a202c;">
+                                                    <font><Font name="System Bold" size="17.0" /></font>
+                                                </Label>
+                                            </children>
+                                        </HBox>
+                                        <Label wrapText="true" style="-fx-font-size: 13.5px; -fx-text-fill: #4a5568; -fx-line-spacing: 4px;"
+                                               text="UniEarn charges a service fee on completed transactions. The current fee structure is communicated within the platform and may be updated with prior notice. All payments are processed securely through our payment system in Tunisian Dinar (TND). Payments are only released to freelancers upon satisfactory completion of work as agreed in the contract. Disputes regarding payments must be raised within 14 days of project completion." />
+                                    </children>
+                                </VBox>
+
+                                <Separator style="-fx-opacity: 0.4;" />
+
+                                <!-- ── Section 6 ──────────────────────────── -->
+                                <VBox spacing="10.0">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <children>
+                                                <StackPane prefWidth="32.0" prefHeight="32.0"
+                                                           style="-fx-background-color: #fff8e1; -fx-background-radius: 50%;">
+                                                    <Label text="6" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #f59f00; -fx-background-color: transparent;" />
+                                                </StackPane>
+                                                <Label text="Prohibited Conduct" style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #1a202c;">
+                                                    <font><Font name="System Bold" size="17.0" /></font>
+                                                </Label>
+                                            </children>
+                                        </HBox>
+                                        <Label wrapText="true" style="-fx-font-size: 13.5px; -fx-text-fill: #4a5568; -fx-line-spacing: 4px;"
+                                               text="Users must not engage in fraudulent activity, post misleading project descriptions, submit plagiarised work, harass or discriminate against other users, attempt to circumvent the platform's payment system, or use UniEarn for any illegal purpose. Violations may result in immediate account suspension or permanent ban without prior notice." />
+                                    </children>
+                                </VBox>
+
+                                <Separator style="-fx-opacity: 0.4;" />
+
+                                <!-- ── Section 7 ──────────────────────────── -->
+                                <VBox spacing="10.0">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <children>
+                                                <StackPane prefWidth="32.0" prefHeight="32.0"
+                                                           style="-fx-background-color: #e8f0fe; -fx-background-radius: 50%;">
+                                                    <Label text="7" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2563EB; -fx-background-color: transparent;" />
+                                                </StackPane>
+                                                <Label text="Intellectual Property" style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #1a202c;">
+                                                    <font><Font name="System Bold" size="17.0" /></font>
+                                                </Label>
+                                            </children>
+                                        </HBox>
+                                        <Label wrapText="true" style="-fx-font-size: 13.5px; -fx-text-fill: #4a5568; -fx-line-spacing: 4px;"
+                                               text="Unless agreed otherwise in a contract, all work produced by a freelancer for a client project becomes the client's intellectual property upon full payment. Freelancers retain the right to showcase completed work in their portfolio unless explicitly restricted by the client. The UniEarn platform, logo, and branding are the sole property of UniEarn and may not be reproduced without permission." />
+                                    </children>
+                                </VBox>
+
+                                <Separator style="-fx-opacity: 0.4;" />
+
+                                <!-- ── Section 8 ──────────────────────────── -->
+                                <VBox spacing="10.0">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <children>
+                                                <StackPane prefWidth="32.0" prefHeight="32.0"
+                                                           style="-fx-background-color: #e6f4ea; -fx-background-radius: 50%;">
+                                                    <Label text="8" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #2e7d32; -fx-background-color: transparent;" />
+                                                </StackPane>
+                                                <Label text="Privacy &amp; Data" style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #1a202c;">
+                                                    <font><Font name="System Bold" size="17.0" /></font>
+                                                </Label>
+                                            </children>
+                                        </HBox>
+                                        <Label wrapText="true" style="-fx-font-size: 13.5px; -fx-text-fill: #4a5568; -fx-line-spacing: 4px;"
+                                               text="UniEarn collects and processes personal data in accordance with applicable data protection laws. We collect only the information necessary to operate the platform — including your name, email, and professional details. Your data is never sold to third parties. You may request deletion of your account and associated data at any time by contacting our support team." />
+                                    </children>
+                                </VBox>
+
+                                <Separator style="-fx-opacity: 0.4;" />
+
+                                <!-- ── Section 9 ──────────────────────────── -->
+                                <VBox spacing="10.0">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <children>
+                                                <StackPane prefWidth="32.0" prefHeight="32.0"
+                                                           style="-fx-background-color: #fff5f5; -fx-background-radius: 50%;">
+                                                    <Label text="9" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #c53030; -fx-background-color: transparent;" />
+                                                </StackPane>
+                                                <Label text="Termination" style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #1a202c;">
+                                                    <font><Font name="System Bold" size="17.0" /></font>
+                                                </Label>
+                                            </children>
+                                        </HBox>
+                                        <Label wrapText="true" style="-fx-font-size: 13.5px; -fx-text-fill: #4a5568; -fx-line-spacing: 4px;"
+                                               text="UniEarn reserves the right to suspend or terminate any account that violates these terms, engages in fraudulent activity, or poses a risk to other users or the platform's integrity. Users may deactivate their own accounts at any time from their profile settings. Upon termination, pending payments due to freelancers for completed work will still be processed." />
+                                    </children>
+                                </VBox>
+
+                                <Separator style="-fx-opacity: 0.4;" />
+
+                                <!-- ── Section 10 ─────────────────────────── -->
+                                <VBox spacing="10.0">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                            <children>
+                                                <StackPane prefWidth="32.0" prefHeight="32.0"
+                                                           style="-fx-background-color: #e8f0fe; -fx-background-radius: 50%;">
+                                                    <Label text="10" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #2563EB; -fx-background-color: transparent;" />
+                                                </StackPane>
+                                                <Label text="Contact Us" style="-fx-font-size: 17px; -fx-font-weight: bold; -fx-text-fill: #1a202c;">
+                                                    <font><Font name="System Bold" size="17.0" /></font>
+                                                </Label>
+                                            </children>
+                                        </HBox>
+                                        <Label wrapText="true" style="-fx-font-size: 13.5px; -fx-text-fill: #4a5568; -fx-line-spacing: 4px;"
+                                               text="If you have questions about these Terms and Conditions, please contact our support team at support@uniearn.tn or through the Help section within the app. We aim to respond to all queries within 2 business days." />
+                                    </children>
+                                </VBox>
+
+                                <!-- ── Accept / Decline ───────────────────── -->
+                                <VBox spacing="10.0">
+                                    <VBox.margin><Insets top="12.0" /></VBox.margin>
+                                    <children>
+                                        <Separator style="-fx-opacity: 0.4;" />
+
+                                        <HBox alignment="CENTER" spacing="14.0">
+                                            <VBox.margin><Insets top="14.0" /></VBox.margin>
+                                            <children>
+
+                                                <!-- Accept — uses signup-button style from auth.css -->
+                                                <Button fx:id="acceptButton"
+                                                        onAction="#handleAccept"
+                                                        prefWidth="190.0" prefHeight="44.0"
+                                                        styleClass="signup-button"
+                                                        text="✔  I Accept">
+                                                    <font><Font name="System Bold" size="14.0" /></font>
+                                                </Button>
+
+                                                <!-- Decline — uses back-button style from auth.css -->
+                                                <Button fx:id="declineButton"
+                                                        onAction="#handleDecline"
+                                                        prefWidth="190.0" prefHeight="44.0"
+                                                        styleClass="back-button"
+                                                        text="✖  Decline">
+                                                    <font><Font size="14.0" /></font>
+                                                </Button>
+
+                                            </children>
+                                        </HBox>
+
+                                        <Label text="By clicking 'I Accept' you confirm you have read and agree to all the terms above."
+                                               wrapText="true"
+                                               style="-fx-font-size: 11px; -fx-text-fill: #9aa5b4;
+                                                      -fx-alignment: CENTER; -fx-text-alignment: center;" />
+                                    </children>
+                                </VBox>
+
+                            </children>
+                        </VBox>
+
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

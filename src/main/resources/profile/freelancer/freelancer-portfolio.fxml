@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<BorderPane prefHeight="700.0" prefWidth="1200.0" styleClass="root" stylesheets="@../../profile/profile.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.freelancer.FreelancerPortfolioController">
+
+    <!-- ══ Top Navigation Bar ══════════════════════════════════════════ -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="68.0" spacing="20.0" styleClass="top-bar">
+            <padding><Insets left="30.0" right="30.0" /></padding>
+            <children>
+                <!-- Back button with icon -->
+                <Button onAction="#handleBack" styleClass="btn-back-nav">
+                    <graphic>
+                        <HBox alignment="CENTER_LEFT" spacing="8.0">
+                            <children>
+                                <FontIcon iconLiteral="fas-arrow-left" iconSize="13" styleClass="btn-back-nav-icon" />
+                                <Label style="-fx-font-size: 13px;" text="Back to Profile" />
+                            </children>
+                        </HBox>
+                    </graphic>
+                </Button>
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <ImageView fitHeight="260.0" fitWidth="185.0" pickOnBounds="true" preserveRatio="true">
+                    <image><Image url="@../../images/UniEarn_full_logo.png" /></image>
+                </ImageView>
+            </children>
+        </HBox>
+    </top>
+
+    <!-- ══ Main Content ════════════════════════════════════════════════ -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="content-scroll">
+            <content>
+                <VBox spacing="22.0" styleClass="main-content">
+                    <padding><Insets bottom="50.0" left="50.0" right="50.0" top="30.0" /></padding>
+                    <children>
+
+                        <!-- ── Portfolio Header Card (banner + title row) ── -->
+                        <VBox styleClass="profile-header-card">
+
+                            <!-- Gradient banner -->
+                            <Pane prefHeight="10.0" prefWidth="1094.0" styleClass="profile-banner" />
+
+                            <!-- Title + action row overlapping the banner -->
+                            <HBox alignment="CENTER_LEFT" spacing="18.0" styleClass="portfolio-header-body">
+                                <padding><Insets bottom="22.0" left="30.0" right="30.0" top="18.0" /></padding>
+                                <children>
+
+                                    <!-- Portfolio icon badge -->
+                                    <StackPane styleClass="portfolio-header-badge">
+                                        <VBox.margin><Insets top="-44.0" /></VBox.margin>
+                                        <children>
+                                            <Pane prefHeight="80.0" prefWidth="80.0" styleClass="avatar-ring" />
+                                            <FontIcon iconLiteral="fas-briefcase" iconSize="30" styleClass="portfolio-header-badge-icon" StackPane.alignment="CENTER" />
+                                        </children>
+                                    </StackPane>
+
+                                    <!-- Title + description -->
+                                    <VBox alignment="BOTTOM_LEFT" spacing="5.0" HBox.hgrow="ALWAYS">
+                                        <padding><Insets bottom="2.0" /></padding>
+                                        <children>
+                                            <Label fx:id="portfolioTitleLabel" styleClass="profile-name-large" text="My Portfolio">
+                                                <font><Font name="System Bold" size="24.0" /></font>
+                                            </Label>
+                                            <Label fx:id="portfolioDescriptionLabel" styleClass="profile-email-large" text="Showcase your best work to attract clients" wrapText="true">
+                                                <font><Font size="13.0" /></font>
+                                            </Label>
+                                        </children>
+                                    </VBox>
+
+                                    <!-- Action buttons -->
+                                    <VBox alignment="TOP_RIGHT" spacing="8.0">
+                                        <padding><Insets top="8.0" /></padding>
+                                        <children>
+                                            <Button fx:id="addPortfolioButton" onAction="#handleAddPortfolio" styleClass="btn-primary">
+                                                <graphic>
+                                                    <HBox alignment="CENTER" spacing="7.0"><children>
+                                                        <FontIcon iconLiteral="fas-plus" iconSize="12" />
+                                                        <Label style="-fx-font-size: 13px;" text="Add Project" />
+                                                    </children></HBox>
+                                                </graphic>
+                                            </Button>
+                                        </children>
+                                    </VBox>
+
+                                </children>
+                            </HBox>
+                        </VBox>
+
+                        <!-- ── Portfolio Info Card ────────────────────────── -->
+                        <VBox styleClass="content-section">
+                            <padding><Insets bottom="20.0" left="26.0" right="26.0" top="20.0" /></padding>
+                            <children>
+                                <HBox alignment="CENTER_LEFT" spacing="0.0">
+                                    <children>
+
+                                        <!-- 3 stat pills -->
+                                        <HBox alignment="CENTER_LEFT" prefHeight="67.0" prefWidth="902.0" spacing="0.0" HBox.hgrow="ALWAYS">
+                                            <children>
+
+                                                <!-- Title stat -->
+                                                <VBox prefHeight="67.0" prefWidth="522.0" spacing="3.0" styleClass="portfolio-stat-cell">
+                                                    <padding><Insets bottom="0" left="0" right="30" top="0" /></padding>
+                                                    <children>
+                                                        <HBox alignment="CENTER_LEFT" spacing="6.0">
+                                                            <children>
+                                                                <StackPane prefHeight="24.0" prefWidth="24.0" styleClass="section-icon-badge">
+                                                                    <children>
+                                                                        <FontIcon iconLiteral="fas-folder" iconSize="11" styleClass="section-badge-icon" />
+                                                                    </children>
+                                                                </StackPane>
+                                                                <Label styleClass="portfolio-stat-label" text="Title" />
+                                                            </children>
+                                                        </HBox>
+                                                        <Label fx:id="portfolioInfoTitle" prefHeight="15.0" prefWidth="347.0" styleClass="portfolio-stat-value" text="Portfolio Title">
+                                                            <VBox.margin>
+                                                                <Insets top="5.0" />
+                                                            </VBox.margin></Label>
+                                                    </children>
+                                                    <HBox.margin>
+                                                        <Insets right="10.0" />
+                                                    </HBox.margin>
+                                                </VBox>
+
+                                                <Separator orientation="VERTICAL" styleClass="portfolio-divider">
+                                                    <VBox.margin><Insets right="30" /></VBox.margin>
+                                                </Separator>
+
+                                                <!-- Created stat -->
+                                                <VBox prefHeight="67.0" prefWidth="122.0" spacing="3.0" styleClass="portfolio-stat-cell">
+                                                    <padding><Insets bottom="0" left="0" right="30" top="0" /></padding>
+                                                    <children>
+                                                        <HBox alignment="CENTER_LEFT" spacing="6.0">
+                                                            <children>
+                                                                <StackPane prefHeight="24.0" prefWidth="24.0" styleClass="section-icon-badge">
+                                                                    <children>
+                                                                        <FontIcon iconLiteral="fas-calendar-alt" iconSize="11" styleClass="section-badge-icon" />
+                                                                    </children>
+                                                                </StackPane>
+                                                                <Label styleClass="portfolio-stat-label" text="Created" />
+                                                            </children>
+                                                        </HBox>
+                                                        <Label fx:id="portfolioCreatedDate" styleClass="portfolio-stat-value" text="Jan 1, 2024">
+                                                            <VBox.margin>
+                                                                <Insets top="5.0" />
+                                                            </VBox.margin></Label>
+                                                    </children>
+                                                    <HBox.margin>
+                                                        <Insets left="10.0" right="10.0" />
+                                                    </HBox.margin>
+                                                </VBox>
+
+                                                <Separator orientation="VERTICAL" styleClass="portfolio-divider">
+                                                    <VBox.margin><Insets right="30" /></VBox.margin>
+                                                </Separator>
+
+                                                <!-- Count stat -->
+                                                <VBox prefHeight="67.0" prefWidth="129.0" spacing="3.0" styleClass="portfolio-stat-cell">
+                                                    <children>
+                                                        <HBox alignment="CENTER_LEFT" spacing="6.0">
+                                                            <children>
+                                                                <StackPane prefHeight="24.0" prefWidth="24.0" styleClass="section-icon-badge">
+                                                                    <children>
+                                                                        <FontIcon iconLiteral="fas-layer-group" iconSize="11" styleClass="section-badge-icon" />
+                                                                    </children>
+                                                                </StackPane>
+                                                                <Label styleClass="portfolio-stat-label" text="Total Projects" />
+                                                            </children>
+                                                        </HBox>
+                                                        <Label fx:id="portfolioItemCount" styleClass="portfolio-stat-count" text="0">
+                                                            <VBox.margin>
+                                                                <Insets left="50.0" top="10.0" />
+                                                            </VBox.margin>
+                                                            <font>
+                                                                <Font size="14.0" />
+                                                            </font></Label>
+                                                    </children>
+                                                    <HBox.margin>
+                                                        <Insets left="10.0" right="10.0" />
+                                                    </HBox.margin>
+                                                </VBox>
+
+                                            </children>
+                                        </HBox>
+
+                                        <!-- Edit / Delete buttons -->
+                                        <VBox alignment="CENTER_RIGHT" spacing="8.0">
+                                            <children>
+                                                <Button onAction="#handleEditPortfolioInfo" prefHeight="35.0" prefWidth="36.0" styleClass="btn-secondary">
+                                                    <graphic>
+                                                        <HBox alignment="CENTER" spacing="6.0"><children>
+                                                            <FontIcon iconLiteral="fas-pencil-alt" iconSize="11" wrappingWidth="8.000000953674316" />
+                                                            <Label style="-fx-font-size: 12px;" />
+                                                        </children></HBox>
+                                                    </graphic>
+                                                </Button>
+                                                <Button onAction="#handleDeletePortfolio" prefHeight="34.0" prefWidth="57.0" styleClass="btn-danger">
+                                                    <graphic>
+                                                        <HBox alignment="CENTER" spacing="6.0"><children>
+                                                            <FontIcon iconLiteral="fas-trash-alt" iconSize="11" styleClass="btn-danger-icon" wrappingWidth="5.625" />
+                                                            <Label style="-fx-font-size: 12px;" />
+                                                        </children></HBox>
+                                                    </graphic>
+                                                </Button>
+                                            </children>
+                                        </VBox>
+
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+
+                        <!-- ── Empty State ────────────────────────────────── -->
+                        <VBox fx:id="emptyStateContainer" alignment="CENTER" managed="false" spacing="16.0" styleClass="content-section" visible="false">
+                            <padding><Insets bottom="60.0" left="40.0" right="40.0" top="60.0" /></padding>
+                            <children>
+                                <StackPane maxWidth="80.0" prefHeight="80.0" prefWidth="80.0" styleClass="empty-state-badge">
+                                    <children>
+                                        <FontIcon iconLiteral="fas-briefcase" iconSize="32" styleClass="empty-state-icon" />
+                                    </children>
+                                </StackPane>
+                                <Label style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a202c;" text="No Portfolio Items Yet" />
+                                <Label style="-fx-text-fill: #718096; -fx-font-size: 14px;" text="Start showcasing your work by adding your first project" />
+                                <Button onAction="#handleAddPortfolio" styleClass="btn-primary">
+                                    <graphic>
+                                        <HBox alignment="CENTER" spacing="8.0"><children>
+                                            <FontIcon iconLiteral="fas-plus" iconSize="13" />
+                                            <Label style="-fx-font-size: 14px;" text="Add Your First Project" />
+                                        </children></HBox>
+                                    </graphic>
+                                </Button>
+                            </children>
+                        </VBox>
+
+                        <!-- ── Portfolio Items Grid (populated dynamically) ─ -->
+                        <VBox fx:id="portfolioItemsContainer" spacing="18.0" />
+
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

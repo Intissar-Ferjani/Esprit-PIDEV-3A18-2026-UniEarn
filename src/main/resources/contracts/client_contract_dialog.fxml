@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="800.0" prefWidth="800.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.contracts.client.ClientContractDialogController">
+   <children>
+      <VBox spacing="0.0" style="-fx-background-color: white; -fx-background-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 20, 0, 0, 10);" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+         <children>
+            <!-- Header -->
+            <VBox spacing="5.0" style="-fx-background-color: #2962ff; -fx-background-radius: 20 20 0 0; -fx-padding: 25;">
+               <children>
+                  <HBox spacing="10.0" alignment="CENTER_LEFT">
+                     <children>
+                        <Label text="📝" style="-fx-font-size: 24;" />
+                        <Label fx:id="lblTitle" text="New Contract" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <Label fx:id="lblSubtitle" text="Creating from template: Business Contract" textFill="#e0e0e0">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Label>
+               </children>
+            </VBox>
+
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
+               <content>
+                  <VBox spacing="20.0" style="-fx-padding: 30;">
+                     <children>
+                        <!-- Contract Title -->
+                        <VBox spacing="8.0">
+                           <children>
+                              <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label text="🏷️" />
+                                    <Label text="Contract Title" style="-fx-font-weight: bold; -fx-text-fill: #3c4043;" />
+                                 </children>
+                              </HBox>
+                              <TextField fx:id="tfTitle" prefHeight="45.0" promptText="Enter contract title" style="-fx-background-color: #f1f3f4; -fx-background-radius: 8; -fx-border-color: #dadce0; -fx-border-radius: 8; -fx-padding: 0 15;" />
+                              <Label text="Between 3 and 255 characters" style="-fx-text-fill: #9aa0a6; -fx-font-size: 11;" />
+                           </children>
+                        </VBox>
+
+                        <!-- Freelancer -->
+                        <VBox spacing="8.0">
+                           <children>
+                              <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label text="👤" />
+                                    <Label text="Freelancer" style="-fx-font-weight: bold; -fx-text-fill: #3c4043;" />
+                                 </children>
+                              </HBox>
+                              <ComboBox fx:id="cbFreelancer" maxWidth="Infinity" prefHeight="45.0" promptText="Select a freelancer" style="-fx-background-color: #f1f3f4; -fx-background-radius: 8; -fx-border-color: #dadce0; -fx-border-radius: 8;" />
+                              <Label text="Select the freelancer you want to work with" style="-fx-text-fill: #9aa0a6; -fx-font-size: 11;" />
+                           </children>
+                        </VBox>
+
+                        <!-- Dates -->
+                        <HBox spacing="20.0">
+                           <children>
+                              <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="📅" />
+                                          <Label text="Start Date" style="-fx-font-weight: bold; -fx-text-fill: #3c4043;" />
+                                       </children>
+                                    </HBox>
+                                    <DatePicker fx:id="dpStartDate" maxWidth="Infinity" prefHeight="45.0" promptText="jj/mm/aaaa" style="-fx-background-color: #f1f3f4;" />
+                                 </children>
+                              </VBox>
+                              <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="🏁" />
+                                          <Label text="End Date" style="-fx-font-weight: bold; -fx-text-fill: #3c4043;" />
+                                       </children>
+                                    </HBox>
+                                    <DatePicker fx:id="dpEndDate" maxWidth="Infinity" prefHeight="45.0" promptText="jj/mm/aaaa" style="-fx-background-color: #f1f3f4;" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+
+                        <!-- Amount -->
+                        <VBox spacing="8.0">
+                           <children>
+                              <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label text="💰" />
+                                    <Label text="Amount (USD)" style="-fx-font-weight: bold; -fx-text-fill: #3c4043;" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                 <children>
+                                    <Label text="\$" style="-fx-font-size: 16; -fx-font-weight: bold;" />
+                                    <TextField fx:id="tfAmount" prefHeight="45.0" promptText="0.00" style="-fx-background-color: #f1f3f4; -fx-background-radius: 8; -fx-border-color: #dadce0; -fx-border-radius: 8; -fx-padding: 0 15;" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                              <Label text="Must be a positive value" style="-fx-text-fill: #9aa0a6; -fx-font-size: 11;" />
+                           </children>
+                        </VBox>
+
+                        <!-- Content -->
+                        <VBox spacing="8.0">
+                           <children>
+                              <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label text="📄" />
+                                    <Label text="Contract Content" style="-fx-font-weight: bold; -fx-text-fill: #3c4043;" />
+                                 </children>
+                              </HBox>
+                              <TextArea fx:id="taTemplatePreview" prefHeight="200.0" style="-fx-background-color: #f1f3f4; -fx-control-inner-background: #f1f3f4; -fx-background-radius: 8; -fx-border-color: #dadce0; -fx-border-radius: 8;" wrapText="true" />
+                           </children>
+                        </VBox>
+                        
+                        <!-- Hidden fields to maintain compatibility with controller -->
+                        <ComboBox fx:id="cbTemplate" visible="false" managed="false" />
+                        <ComboBox fx:id="cbMetier" visible="false" managed="false" />
+                        <ComboBox fx:id="cbContractType" visible="false" managed="false" />
+                        <ComboBox fx:id="cbProject" visible="false" managed="false" />
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+
+            <!-- Footer Buttons -->
+            <HBox spacing="15.0" alignment="CENTER_RIGHT" style="-fx-padding: 20; -fx-border-color: #dadce0; -fx-border-width: 1 0 0 0;">
+               <children>
+                  <Button fx:id="btnCancel" mnemonicParsing="false" prefHeight="45.0" prefWidth="120.0" style="-fx-background-color: white; -fx-border-color: #dadce0; -fx-border-radius: 8; -fx-cursor: hand;" text="Cancel" />
+                  <Button fx:id="btnCreate" mnemonicParsing="false" prefHeight="45.0" prefWidth="180.0" style="-fx-background-color: #2962ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" text="✅ Create Contract" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

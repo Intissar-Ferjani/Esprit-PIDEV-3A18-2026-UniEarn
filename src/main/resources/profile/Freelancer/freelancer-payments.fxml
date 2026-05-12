@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<ScrollPane fitToWidth="true" style="-fx-background-color: #f0f2f5;" stylesheets="@../profile.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.profile.freelancer.FreelancerPaymentsController">
+    <content>
+        <VBox spacing="25.0" style="-fx-background-color: #f0f2f5;">
+            <padding>
+                <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+            </padding>
+
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                <children>
+                    <FontIcon iconLiteral="fas-chart-line" iconSize="24" iconColor="#2d3748" />
+                    <Label style="-fx-text-fill: #1a202c; -fx-font-weight: bold; -fx-font-size: 20px;" text="Suivi de mes Revenus" />
+                </children>
+            </HBox>
+
+            <!-- Stats Cards Row -->
+            <HBox spacing="15.0">
+                <children>
+                    <!-- Card 1: Montants Bloqués -->
+                    <VBox spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 2); -fx-border-color: #f59e0b; -fx-border-width: 0 0 0 5; -fx-border-radius: 8 0 0 8;" HBox.hgrow="ALWAYS">
+                        <children>
+                            <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                <children>
+                                    <FontIcon iconLiteral="fas-lock" iconSize="12" iconColor="#f59e0b" />
+                                    <Label style="-fx-text-fill: #718096; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-transform: uppercase;" text="Montants Bloqués" />
+                                </children>
+                            </HBox>
+                            <Label fx:id="statTotalBlocked" style="-fx-text-fill: #2d3748; -fx-font-weight: bold; -fx-font-size: 22px;" text="0.00 DT" />
+                        </children>
+                    </VBox>
+
+                    <!-- Card 2: Montants Reçus -->
+                    <VBox spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 2); -fx-border-color: #10b981; -fx-border-width: 0 0 0 5; -fx-border-radius: 8 0 0 8;" HBox.hgrow="ALWAYS">
+                        <children>
+                            <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                <children>
+                                    <FontIcon iconLiteral="fas-hand-holding-usd" iconSize="12" iconColor="#10b981" />
+                                    <Label style="-fx-text-fill: #718096; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-transform: uppercase;" text="Montants Reçus" />
+                                </children>
+                            </HBox>
+                            <Label fx:id="statTotalReceived" style="-fx-text-fill: #2d3748; -fx-font-weight: bold; -fx-font-size: 22px;" text="0.00 DT" />
+                        </children>
+                    </VBox>
+
+                    <!-- Card 3: Contrats en Séquestre -->
+                    <VBox spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 2); -fx-border-color: #f59e0b; -fx-border-width: 0 0 0 5; -fx-border-radius: 8 0 0 8;" HBox.hgrow="ALWAYS">
+                        <children>
+                            <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                <children>
+                                    <FontIcon iconLiteral="fas-file-contract" iconSize="12" iconColor="#f59e0b" />
+                                    <Label style="-fx-text-fill: #718096; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-transform: uppercase;" text="Contrats en Séquestre" />
+                                </children>
+                            </HBox>
+                            <Label fx:id="statBlockedCount" style="-fx-text-fill: #2d3748; -fx-font-weight: bold; -fx-font-size: 22px;" text="0" />
+                        </children>
+                    </VBox>
+
+                    <!-- Card 4: Missions Terminées -->
+                    <VBox spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 2); -fx-border-color: #10b981; -fx-border-width: 0 0 0 5; -fx-border-radius: 8 0 0 8;" HBox.hgrow="ALWAYS">
+                        <children>
+                            <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                <children>
+                                    <FontIcon iconLiteral="fas-check-double" iconSize="12" iconColor="#10b981" />
+                                    <Label style="-fx-text-fill: #718096; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-transform: uppercase;" text="Missions Terminées" />
+                                </children>
+                            </HBox>
+                            <Label fx:id="statReceivedCount" style="-fx-text-fill: #2d3748; -fx-font-weight: bold; -fx-font-size: 22px;" text="0" />
+                        </children>
+                    </VBox>
+                </children>
+            </HBox>
+
+            <!-- Section 1: Montants en Séquestre -->
+            <VBox spacing="15.0">
+                <children>
+                    <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-padding: 5 0;">
+                        <children>
+                            <FontIcon iconLiteral="fas-lock" iconSize="16" iconColor="#d97706" />
+                            <Label style="-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #d97706;" text="Montants en Séquestre (Bloqués)" />
+                            <Label style="-fx-text-fill: #92400e; -fx-font-size: 12px;" text="(Le client a payé, fonds détenus par UniEarn)" />
+                        </children>
+                    </HBox>
+
+                    <VBox style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 2); -fx-border-color: #fbbf24; -fx-border-width: 1 0 0 0; -fx-border-radius: 10;">
+                        <children>
+                            <TableView fx:id="blockedTable" minHeight="200.0" styleClass="custom-table">
+                                <columns>
+                                    <TableColumn fx:id="blockedColId" prefWidth="50.0" text="#" />
+                                    <TableColumn fx:id="blockedColTitle" prefWidth="250.0" text="CONTRAT" />
+                                    <TableColumn fx:id="blockedColClient" prefWidth="180.0" text="CLIENT" />
+                                    <TableColumn fx:id="blockedColAmount" prefWidth="150.0" text="MONTANT ATTENDU" />
+                                    <TableColumn fx:id="blockedColStatus" prefWidth="120.0" text="STATUT" />
+                                    <TableColumn fx:id="blockedColActions" prefWidth="100.0" text="ACTIONS" />
+                                </columns>
+                                <placeholder>
+                                    <VBox alignment="CENTER" spacing="10.0" style="-fx-padding: 40;">
+                                        <children>
+                                            <FontIcon iconLiteral="fas-hourglass-half" iconSize="32" iconColor="#cbd5e0" />
+                                            <Label style="-fx-text-fill: #a0aec0;" text="Aucun montant n'est actuellement en séquestre." />
+                                        </children>
+                                    </VBox>
+                                </placeholder>
+                            </TableView>
+                        </children>
+                    </VBox>
+                </children>
+            </VBox>
+
+            <!-- Section 2: Montants Reçus -->
+            <VBox spacing="15.0">
+                <children>
+                    <HBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-padding: 5 0;">
+                        <children>
+                            <FontIcon iconLiteral="fas-check-circle" iconSize="16" iconColor="#059669" />
+                            <Label style="-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #059669;" text="Montants Reçus (Libérés)" />
+                            <Label style="-fx-text-fill: #065f46; -fx-font-size: 12px;" text="(Transférés vers votre compte bancaire)" />
+                        </children>
+                    </HBox>
+
+                    <VBox style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 2); -fx-border-color: #10b981; -fx-border-width: 1 0 0 0; -fx-border-radius: 10;">
+                        <children>
+                            <TableView fx:id="receivedTable" minHeight="200.0" styleClass="custom-table">
+                                <columns>
+                                    <TableColumn fx:id="receivedColId" prefWidth="50.0" text="#" />
+                                    <TableColumn fx:id="receivedColTitle" prefWidth="250.0" text="CONTRAT" />
+                                    <TableColumn fx:id="receivedColClient" prefWidth="180.0" text="CLIENT" />
+                                    <TableColumn fx:id="receivedColAmount" prefWidth="150.0" text="MONTANT REÇU" />
+                                    <TableColumn fx:id="receivedColStatus" prefWidth="120.0" text="STATUT" />
+                                    <TableColumn fx:id="receivedColActions" prefWidth="100.0" text="ACTIONS" />
+                                </columns>
+                                <placeholder>
+                                    <VBox alignment="CENTER" spacing="10.0" style="-fx-padding: 40;">
+                                        <children>
+                                            <FontIcon iconLiteral="fas-history" iconSize="32" iconColor="#cbd5e0" />
+                                            <Label style="-fx-text-fill: #a0aec0;" text="Vous n'avez pas encore reçu de paiements." />
+                                        </children>
+                                    </VBox>
+                                </placeholder>
+                            </TableView>
+                        </children>
+                    </VBox>
+                </children>
+            </VBox>
+
+            <!-- Refresh Button -->
+            <HBox alignment="CENTER_RIGHT">
+                <children>
+                    <Button onAction="#handleRefresh" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 25; -fx-background-radius: 8; -fx-cursor: hand;" text="🔄 Rafraîchir les données" />
+                </children>
+            </HBox>
+        </VBox>
+    </content>
+</ScrollPane>

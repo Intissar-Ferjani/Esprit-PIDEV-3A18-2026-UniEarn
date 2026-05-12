@@ -1,0 +1,370 @@
+package uniearn.controller.contracts.client;
+
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+import uniearn.model.entities.contracts.Contrat;
+import uniearn.model.entities.contracts.ContractTemplate;
+import uniearn.model.entities.contracts.ContractType;
+import uniearn.model.entities.projet.Project;
+import uniearn.model.entities.users.freelancer.Freelancer;
+import uniearn.services.contracts.ContractTemplateService;
+import uniearn.services.contracts.ContractTypeService;
+import uniearn.services.contracts.ContratService;
+import uniearn.services.DataLoaderService;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+
+/**
+ * Contrôleur pour le dialog de création/modification de contrat client
+ */
+public class ClientContractDialogController {
+
+    @FXML private Label lblTitle;
+    @FXML private Label lblSubtitle;
+    @FXML private ComboBox<ContractTemplate> cbTemplate;
+    @FXML private ComboBox<String> cbMetier;
+    @FXML private ComboBox<ContractType> cbContractType;
+    @FXML private ComboBox<Integer> cbFreelancer;
+    @FXML private ComboBox<Project> cbProject;
+    @FXML private TextField tfAmount;
+    @FXML private DatePicker dpStartDate;
+    @FXML private DatePicker dpEndDate;
+    @FXML private TextField tfTitle;
+    @FXML private TextArea taTemplatePreview;
+    @FXML private Button btnCancel;
+    @FXML private Button btnCreate;
+
+    private Stage dialogStage;
+    private int clientID;
+    private ContractTemplateService templateService;
+    private ContractTypeService contractTypeService;
+    private ContratService contratService;
+    private DataLoaderService dataLoaderService;
+    private Consumer<Contrat> onContractCreated;
+
+    private final Map<Integer, Integer> freelancerUserToFreelancerId = new HashMap<>();
+    private ContractTemplate selectedTemplate;
+
+    @FXML
+    public void initialize() {
+        templateService = new ContractTemplateService();
+        contratService = new ContratService();
+        dataLoaderService = new DataLoaderService();
+        setupListeners();
+        loadFreelancers();
+        // Hide métier and contract type fields (not in shared Symfony DB)
+        if (cbMetier != null) cbMetier.setVisible(false);
+        if (cbMetier != null) cbMetier.setManaged(false);
+        if (cbContractType != null) cbContractType.setVisible(false);
+        if (cbContractType != null) cbContractType.setManaged(false);
+        // Also hide project selector (not in shared DB)
+        if (cbProject != null) cbProject.setVisible(false);
+        if (cbProject != null) cbProject.setManaged(false);
+    }
+
+    private void setupListeners() {
+        btnCancel.setOnAction(e -> dialogStage.close());
+
+        btnCreate.setOnAction(e -> {
+            if (validateForm()) {
+                createContract();
+            }
+        });
+
+        // Afficher l'aperçu du template sélectionné
+        if (cbTemplate != null) {
+            cbTemplate.valueProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal != null) {
+                    updateTemplatePreview(newVal);
+                }
+            });
+        }
+    }
+
+    private void loadTemplates() {
+        var templates = templateService.getAllTemplates();
+        cbTemplate.setItems(FXCollections.observableArrayList(templates));
+
+        // Afficher le nom du template
+        cbTemplate.setCellFactory(param -> new ListCell<ContractTemplate>() {
+            @Override
+            protected void updateItem(ContractTemplate item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getTemplateName());
+            }
+        });
+
+        cbTemplate.setButtonCell(new ListCell<ContractTemplate>() {
+            @Override
+            protected void updateItem(ContractTemplate item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getTemplateName());
+            }
+        });
+
+        if (!templates.isEmpty()) {
+            cbTemplate.getSelectionModel().selectFirst();
+        }
+    }
+
+    private void loadMetiers() {
+        try {
+            Set<String> metiers = dataLoaderService.getAllMetiers();
+            cbMetier.setItems(FXCollections.observableArrayList(metiers));
+            if (!metiers.isEmpty()) {
+                cbMetier.getSelectionModel().selectFirst();
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur chargement métiers: " + e.getMessage());
+            cbMetier.setItems(FXCollections.observableArrayList());
+        }
+    }
+
+    private void loadContractTypesByMetier(String metier) {
+        try {
+            List<ContractType> types = dataLoaderService.getContractTypesByMetier(metier);
+            cbContractType.setItems(FXCollections.observableArrayList(types));
+
+            // Afficher le nom du type de contrat
+            cbContractType.setCellFactory(param -> new ListCell<ContractType>() {
+                @Override
+                protected void updateItem(ContractType item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item.getTypeName());
+                }
+            });
+
+            cbContractType.setButtonCell(new ListCell<ContractType>() {
+                @Override
+                protected void updateItem(ContractType item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : item.getTypeName());
+                }
+            });
+
+            if (!types.isEmpty()) {
+                cbContractType.getSelectionModel().selectFirst();
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur chargement types de contrats: " + e.getMessage());
+            cbContractType.setItems(FXCollections.observableArrayList());
+        }
+    }
+
+    private void loadFreelancers() {
+        try {
+            DataLoaderService loader = new DataLoaderService();
+            var freelancers = loader.getAllFreelancers();
+
+            cbFreelancer.setCellFactory(param -> new ListCell<Integer>() {
+                private final DataLoaderService loaderService = new DataLoaderService();
+                @Override
+                protected void updateItem(Integer item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty || item == null ? null : loaderService.getFreelancerName(item) + " (ID: " + item + ")");
+                }
+            });
+            cbFreelancer.setButtonCell(cbFreelancer.getCellFactory().call(null));
+
+            freelancerUserToFreelancerId.clear();
+            var freelancerIds = new ArrayList<Integer>();
+            for (Freelancer f : freelancers) {
+                freelancerUserToFreelancerId.put(f.getIdUser(), f.getIdFreelancer());
+                freelancerIds.add(f.getIdUser());
+            }
+            cbFreelancer.setItems(FXCollections.observableArrayList(freelancerIds));
+        } catch (Exception e) {
+            System.err.println("Erreur chargement freelancers: " + e.getMessage());
+            cbFreelancer.setItems(FXCollections.observableArrayList());
+        }
+    }
+
+    private void loadProjects() {
+        try {
+            System.out.println("DEBUG: loadProjects() - clientID = " + clientID);
+            var projects = dataLoaderService.getProjectsByClient(clientID);
+            System.out.println("DEBUG: Récupéré " + projects.size() + " projets");
+            for (Project p : projects) {
+                System.out.println("  - " + p.getIdproject() + ": " + p.getTitle());
+            }
+
+            if (projects.isEmpty()) {
+                System.out.println("WARN: Aucun projet trouvé pour clientID=" + clientID);
+                cbProject.setItems(FXCollections.observableArrayList());
+                cbProject.setPromptText("Aucun projet disponible");
+                return;
+            }
+
+            cbProject.setItems(FXCollections.observableArrayList(projects));
+
+            // Configurer l'affichage des projets dans la dropdown
+            cbProject.setCellFactory(param -> new ListCell<Project>() {
+                @Override
+                protected void updateItem(Project item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getTitle() != null ? item.getTitle() : "Projet sans titre");
+                    }
+                }
+            });
+
+            // Configurer le bouton (sélection visible)
+            cbProject.setButtonCell(new ListCell<Project>() {
+                @Override
+                protected void updateItem(Project item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText("Sélectionnez un projet...");
+                    } else {
+                        setText(item.getTitle() != null ? item.getTitle() : "Projet sans titre");
+                    }
+                }
+            });
+
+            System.out.println("DEBUG: ComboBox projets remplie avec " + projects.size() + " éléments");
+
+        } catch (Exception e) {
+            System.err.println("Erreur chargement projets: " + e.getMessage());
+            e.printStackTrace();
+            cbProject.setItems(FXCollections.observableArrayList());
+            cbProject.setPromptText("Erreur lors du chargement");
+        }
+    }
+
+    private void updateTemplatePreview(ContractTemplate template) {
+        String preview = template.getTemplateContent()
+            .replace("[ClientName]", "Votre Nom")
+            .replace("[FreelancerName]", "Nom du Freelancer")
+            .replace("[StartDate]", dpStartDate.getValue() != null ? dpStartDate.getValue().toString() : "01/01/2024")
+            .replace("[EndDate]", dpEndDate.getValue() != null ? dpEndDate.getValue().toString() : "31/01/2024")
+            .replace("[Amount]", tfAmount.getText().isEmpty() ? "0.00" : tfAmount.getText());
+
+        taTemplatePreview.setText(preview);
+    }
+
+    private boolean validateForm() {
+        if (selectedTemplate == null) {
+            showAlert("Erreur", "Sélectionnez un template", Alert.AlertType.ERROR);
+            return false;
+        }
+
+        if (cbFreelancer.getValue() == null || cbFreelancer.getValue() == 0) {
+            showAlert("Erreur", "Sélectionnez un freelancer", Alert.AlertType.ERROR);
+            return false;
+        }
+
+        if (tfAmount.getText().isEmpty()) {
+            showAlert("Erreur", "Entrez un montant", Alert.AlertType.ERROR);
+            return false;
+        }
+
+        if (dpStartDate.getValue() == null || dpEndDate.getValue() == null) {
+            showAlert("Erreur", "Sélectionnez les dates", Alert.AlertType.ERROR);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void createContract() {
+        try {
+            System.out.println("DEBUG: Tentative de création du contrat");
+
+            Contrat contrat = new Contrat();
+            String typeName = selectedTemplate != null ? selectedTemplate.getTemplateName() : "Standard";
+            contrat.setType(typeName);
+            contrat.setTemplateID(selectedTemplate != null ? selectedTemplate.getIdTemplate() : 0);
+            contrat.setClientID(clientID);
+
+            // Set title and content for the DB
+            String title = tfTitle.getText() != null && !tfTitle.getText().isEmpty()
+                    ? tfTitle.getText() : typeName;
+            contrat.setTitle(title);
+
+            String content = taTemplatePreview.getText() != null && !taTemplatePreview.getText().isEmpty()
+                    ? taTemplatePreview.getText() : "Contrat " + typeName;
+            contrat.setContent(content);
+
+            // Utiliser directement l'idUser du freelancer (la FK référence user.idUser, pas freelancer.idFreelancer)
+            if (cbFreelancer.getValue() != null && cbFreelancer.getValue() > 0) {
+                Integer selectedUserId = cbFreelancer.getValue();
+                Integer freelancerDbId = freelancerUserToFreelancerId.get(selectedUserId);
+                if (freelancerDbId == null) {
+                    throw new IllegalStateException("Freelancer introuvable pour l'utilisateur " + selectedUserId);
+                }
+                contrat.setFreelancerID(freelancerDbId);
+                System.out.println("DEBUG: Freelancer idFreelancer sélectionné: " + freelancerDbId);
+            } else {
+                System.out.println("WARN: Aucun freelancer sélectionné");
+                contrat.setFreelancerID(0);
+            }
+
+            contrat.setAmount(Double.parseDouble(tfAmount.getText()));
+            contrat.setStartDate(Timestamp.valueOf(dpStartDate.getValue().atStartOfDay()));
+            contrat.setEndDate(Timestamp.valueOf(dpEndDate.getValue().atStartOfDay()));
+            contrat.setStatus(0); // Brouillon / pending
+
+            System.out.println("DEBUG: Contrat à créer: " + contrat);
+
+            if (contratService.createContrat(contrat)) {
+                showAlert("Succès", "Contrat créé avec succès", Alert.AlertType.INFORMATION);
+                if (onContractCreated != null) {
+                    onContractCreated.accept(contrat);
+                }
+                // Close the dialog
+                if (dialogStage != null) {
+                    dialogStage.close();
+                }
+            } else {
+                showAlert("Erreur", "Erreur lors de la création du contrat", Alert.AlertType.ERROR);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Erreur: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    public void setClientID(int clientID) {
+        this.clientID = clientID;
+        System.out.println("DEBUG: setClientID() appelé avec clientID = " + clientID);
+        // Charger les projets maintenant que clientID est défini
+        loadProjects();
+    }
+
+    public void setSelectedTemplate(ContractTemplate template) {
+        this.selectedTemplate = template;
+        System.out.println("DEBUG: setSelectedTemplate() appelé avec: " + (template != null ? template.getTemplateName() : "NULL"));
+        if (template != null) {
+            lblTitle.setText("New Contract");
+            lblSubtitle.setText("Creating from template: " + template.getTemplateName());
+            taTemplatePreview.setText(template.getTemplateContent());
+            tfTitle.setText(template.getTemplateName());
+        }
+    }
+
+    public void setDialogStage(Stage stage) {
+        this.dialogStage = stage;
+    }
+
+    public void setOnContractCreated(Consumer<Contrat> callback) {
+        this.onContractCreated = callback;
+    }
+
+    private void showAlert(String title, String content, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+}

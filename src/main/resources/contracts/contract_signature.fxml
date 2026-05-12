@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="850.0" prefWidth="950.0" style="-fx-background-color: #f0f2f5;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="uniearn.controller.contracts.contrat.ContractSignatureController">
+   <children>
+      <VBox spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <!-- Header -->
+            <HBox alignment="CENTER_LEFT" prefHeight="70.0" style="-fx-background-color: white; -fx-padding: 0 30; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 2);">
+               <children>
+                  <Label fx:id="lblTitle" text="Contract Details" textFill="#1a237e">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+               <content>
+                  <VBox spacing="20.0" style="-fx-padding: 0 30 30 30;">
+                     <children>
+                        <!-- Contract Card -->
+                        <VBox spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 15, 0, 0, 5);">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                 <children>
+                                    <Label text="📄" style="-fx-font-size: 20;" />
+                                    <Label fx:id="lblContractInfo" text="Business Contract" style="-fx-font-size: 18; -fx-font-weight: bold;" />
+                                    <HBox HBox.hgrow="ALWAYS" />
+                                    <Label fx:id="lblStatus" text="⌛ En attente de signatures" style="-fx-background-color: #fff8e1; -fx-text-fill: #ffa000; -fx-padding: 5 15; -fx-background-radius: 20; -fx-font-weight: bold; -fx-font-size: 12;" />
+                                 </children>
+                              </HBox>
+
+                              <HBox spacing="40.0" style="-fx-border-color: #f1f3f4; -fx-border-width: 1 0 0 0; -fx-padding: 20 0 0 0;">
+                                 <children>
+                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Freelancer" style="-fx-text-fill: #5f6368; -fx-font-size: 12;" />
+                                          <Label fx:id="lblType" text="symfony" style="-fx-font-weight: bold; -fx-font-size: 15; -fx-text-fill: #3c4043;" />
+                                       </children>
+                                    </VBox>
+                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Amount" style="-fx-text-fill: #5f6368; -fx-font-size: 12;" />
+                                          <Label fx:id="lblAmount" text="0.00" style="-fx-font-weight: bold; -fx-font-size: 15; -fx-text-fill: #3c4043;" />
+                                       </children>
+                                    </VBox>
+                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Start Date" style="-fx-text-fill: #5f6368; -fx-font-size: 12;" />
+                                          <Label fx:id="lblStartDate" text="May 12, 2026" style="-fx-font-weight: bold; -fx-font-size: 15; -fx-text-fill: #3c4043;" />
+                                       </children>
+                                    </VBox>
+                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="End Date" style="-fx-text-fill: #5f6368; -fx-font-size: 12;" />
+                                          <Label fx:id="lblEndDate" text="May 20, 2026" style="-fx-font-weight: bold; -fx-font-size: 15; -fx-text-fill: #3c4043;" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+
+                              <!-- Contract Content -->
+                              <VBox spacing="10.0">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label text="Contract Content" style="-fx-font-weight: bold; -fx-text-fill: #3c4043;" />
+                                          <HBox HBox.hgrow="ALWAYS" />
+                                          <Button fx:id="btnAISummary" mnemonicParsing="false" style="-fx-background-color: #1a73e8; -fx-text-fill: white; -fx-background-radius: 20; -fx-padding: 5 15; -fx-cursor: hand;" text="✨ Résumer avec l'IA" />
+                                       </children>
+                                    </HBox>
+                                    <TextArea fx:id="taContractContent" editable="false" prefHeight="150.0" style="-fx-background-color: #f8f9fa; -fx-control-inner-background: #f8f9fa; -fx-background-radius: 10; -fx-border-color: #dadce0; -fx-border-radius: 10;" wrapText="true" />
+                                 </children>
+                              </VBox>
+
+                              <!-- Signatures -->
+                              <HBox spacing="20.0">
+                                 <children>
+                                    <VBox alignment="CENTER" spacing="10.0" style="-fx-background-color: #f8f9fa; -fx-padding: 20; -fx-background-radius: 10; -fx-border-color: #dadce0; -fx-border-radius: 10;" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Client Signature" style="-fx-text-fill: #5f6368;" />
+                                          <ImageView fx:id="imgClientSignature" fitHeight="60.0" fitWidth="200.0" preserveRatio="true" />
+                                          <Label fx:id="lblClientSignatureDate" text="Not signed yet" style="-fx-font-size: 16; -fx-text-fill: #9aa0a6;" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER" spacing="10.0" style="-fx-background-color: #f8f9fa; -fx-padding: 20; -fx-background-radius: 10; -fx-border-color: #dadce0; -fx-border-radius: 10;" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Freelancer Signature" style="-fx-text-fill: #5f6368;" />
+                                          <ImageView fx:id="imgFreelancerSignature" fitHeight="60.0" fitWidth="200.0" preserveRatio="true" />
+                                          <Label fx:id="lblFreelancerSignatureDate" text="Not signed yet" style="-fx-font-size: 16; -fx-text-fill: #9aa0a6;" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+
+                              <!-- Draw Signature Area -->
+                              <VBox spacing="10.0" style="-fx-border-color: #dadce0; -fx-border-radius: 10; -fx-padding: 20;">
+                                 <children>
+                                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                       <children>
+                                          <Label text="✍️ Draw Your Signature" style="-fx-font-weight: bold; -fx-text-fill: #3c4043;" />
+                                       </children>
+                                    </HBox>
+                                    <AnchorPane prefHeight="200.0" style="-fx-background-color: white; -fx-border-color: #dadce0; -fx-border-radius: 5;">
+                                       <children>
+                                          <Canvas fx:id="canvasSignature" height="200.0" width="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                                       <children>
+                                          <Button fx:id="btnClearSignature" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: white; -fx-border-color: #dadce0; -fx-border-radius: 5; -fx-cursor: hand;" text="🗑️ Clear" />
+                                          <Button fx:id="btnSignContract" mnemonicParsing="false" prefHeight="40.0" style="-fx-background-color: #00c853; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-cursor: hand;" text="✍️ Sign Contract" HBox.hgrow="ALWAYS" maxWidth="Infinity" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+
+                              <!-- ✅ Export PDF Button (Premium Purple) -->
+                              <Button fx:id="btnExportPDFActual" maxWidth="Infinity" mnemonicParsing="false" prefHeight="50.0" style="-fx-background-color: #7c4dff; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16; -fx-background-radius: 10; -fx-cursor: hand; -fx-effect: dropshadow(three-pass-box, rgba(124,77,255,0.3), 10, 0, 0, 5);" text="📄 Export as PDF">
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+                              </Button>
+                              
+                              <Label fx:id="lblCreatedAt" text="Created: May 11, 2026 17:53" style="-fx-text-fill: #9aa0a6; -fx-font-size: 11;" />
+                           </children>
+                        </VBox>
+                        
+                        <!-- Hidden / Legacy Controls -->
+                        <HBox visible="false" managed="false">
+                           <children>
+                              <Canvas fx:id="canvasClientSignature" />
+                              <Canvas fx:id="canvasFreelancerSignature" />
+                              <Button fx:id="btnClearClientSignature" />
+                              <Button fx:id="btnClearFreelancerSignature" />
+                              <Button fx:id="btnSignClient" />
+                              <Button fx:id="btnSignFreelancer" />
+                              <Button fx:id="btnClose" />
+                              <Button fx:id="btnExportPDF" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

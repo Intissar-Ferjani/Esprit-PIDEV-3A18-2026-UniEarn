@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="700.0" prefWidth="1100.0"
+            style="-fx-background-color: #f5f7fa;"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="uniearn.controller.profile.client.ClientEvaluationController">
+
+    <!-- ═══════════════════════════════════════════════════════ TOP BAR -->
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="70.0" spacing="20.0"
+              style="-fx-background-color: white; -fx-border-color: #e1e8ed; -fx-border-width: 0 0 1 0;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
+            <padding><Insets left="30.0" right="30.0"/></padding>
+            <children>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="⭐ Mes Évaluations"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+            </children>
+        </HBox>
+    </top>
+
+    <!-- ═══════════════════════════════════════════════════ MAIN CONTENT -->
+    <center>
+        <StackPane>
+            <children>
+
+                <!-- ══════════════════════════════════════════
+                     VIEW: EVALUATION LIST (FlowPane cards)
+                ══════════════════════════════════════════ -->
+                <VBox fx:id="viewListRoot" style="-fx-background-color: #f5f7fa;">
+                    <padding><Insets bottom="30.0" left="35.0" right="35.0" top="30.0"/></padding>
+                    <children>
+
+                        <!-- Page Header -->
+                        <HBox alignment="CENTER_LEFT" spacing="16.0">
+                            <VBox spacing="4.0">
+                                <Label text="⭐ Avis Donnés aux Freelancers"
+                                       style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #14171a;"/>
+                                <Label text="Les évaluations que vous avez laissées aux freelancers"
+                                       style="-fx-text-fill: #657786; -fx-font-size: 14px;"/>
+                            </VBox>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <TextField fx:id="txtSearchTerm" promptText="🔍 Rechercher un freelancer..." prefWidth="220.0"
+                                       style="-fx-background-color: white; -fx-border-color: #e1e8ed; -fx-border-radius: 8;
+                                              -fx-background-radius: 8; -fx-padding: 10 14; -fx-font-size: 13px;"/>
+                            <ComboBox fx:id="cmbRatingFilter" promptText="Filtrer par note" prefWidth="150.0"
+                                      style="-fx-background-color: white; -fx-border-color: #e1e8ed;
+                                             -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                            <Button text="+ Nouvel avis" onAction="#handleShowForm"
+                                    style="-fx-background-color: #4f46e5; -fx-text-fill: white; -fx-font-weight: bold;
+                                           -fx-background-radius: 8; -fx-padding: 10 18; -fx-cursor: hand; -fx-font-size: 13px;
+                                           -fx-effect: dropshadow(gaussian, rgba(79,70,229,0.4), 8, 0, 0, 3);"/>
+                        </HBox>
+
+                        <Separator><VBox.margin><Insets top="18.0" bottom="18.0"/></VBox.margin></Separator>
+
+                        <!-- Stats Hotboxes -->
+                        <HBox spacing="14.0">
+                            <VBox.margin><Insets bottom="20.0"/></VBox.margin>
+                            <children>
+                                <HBox spacing="12.0" alignment="CENTER_LEFT"
+                                      style="-fx-background-color: #ede9fe; -fx-background-radius: 12; -fx-padding: 14 22;">
+                                    <Label text="📝" style="-fx-font-size: 20px;"/>
+                                    <VBox spacing="1.0">
+                                        <Label fx:id="lblTotalReviews" text="0"
+                                               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #4f46e5;"/>
+                                        <Label text="Avis publiés" style="-fx-font-size: 11px; -fx-text-fill: #6d28d9;"/>
+                                    </VBox>
+                                </HBox>
+                                <HBox spacing="12.0" alignment="CENTER_LEFT"
+                                      style="-fx-background-color: #fef9c3; -fx-background-radius: 12; -fx-padding: 14 22;">
+                                    <Label text="⭐" style="-fx-font-size: 20px;"/>
+                                    <VBox spacing="1.0">
+                                        <Label fx:id="lblAvgRating" text="0.0"
+                                               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #b45309;"/>
+                                        <Label text="Note moyenne / 5" style="-fx-font-size: 11px; -fx-text-fill: #92400e;"/>
+                                    </VBox>
+                                </HBox>
+                                <HBox spacing="12.0" alignment="CENTER_LEFT"
+                                      style="-fx-background-color: #dcfce7; -fx-background-radius: 12; -fx-padding: 14 22;">
+                                    <Label text="🏆" style="-fx-font-size: 20px;"/>
+                                    <VBox spacing="1.0">
+                                        <Label fx:id="lblFiveStarCount" text="0"
+                                               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #15803d;"/>
+                                        <Label text="Avis 5 étoiles" style="-fx-font-size: 11px; -fx-text-fill: #166534;"/>
+                                    </VBox>
+                                </HBox>
+                                <HBox spacing="12.0" alignment="CENTER_LEFT"
+                                      style="-fx-background-color: #fee2e2; -fx-background-radius: 12; -fx-padding: 14 22;">
+                                    <Label text="🔗" style="-fx-font-size: 20px;"/>
+                                    <VBox spacing="1.0">
+                                        <Label fx:id="lblLinkedToProject" text="0"
+                                               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #b91c1c;"/>
+                                        <Label text="Liés à un projet" style="-fx-font-size: 11px; -fx-text-fill: #991b1b;"/>
+                                    </VBox>
+                                </HBox>
+                            </children>
+                        </HBox>
+
+                        <!-- Evaluation Cards (injected dynamically) -->
+                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                                    style="-fx-background: #f5f7fa; -fx-background-color: #f5f7fa; -fx-border-color: transparent;">
+                            <content>
+                                <FlowPane fx:id="sidebarListContainer" hgap="20.0" vgap="20.0"
+                                          style="-fx-background-color: #f5f7fa; -fx-padding: 5;"/>
+                            </content>
+                        </ScrollPane>
+
+                    </children>
+                </VBox>
+
+                <!-- ══════════════════════════════════════════
+                     VIEW: EVALUATION DETAIL
+                ══════════════════════════════════════════ -->
+                <VBox fx:id="viewDetails" visible="false" style="-fx-background-color: #f5f7fa;">
+                    <padding><Insets bottom="30.0" left="35.0" right="35.0" top="30.0"/></padding>
+                    <children>
+
+                        <!-- Header -->
+                        <HBox alignment="CENTER_LEFT" spacing="14">
+                            <Button text="← Retour" onAction="#handleCancelForm"
+                                    style="-fx-background-color: #f0f4f8; -fx-text-fill: #4a5568; -fx-font-weight: bold;
+                                           -fx-background-radius: 8; -fx-padding: 8 16; -fx-cursor: hand; -fx-font-size: 13px;"/>
+                            <Label fx:id="lblDetailRating" text="★★★★★"
+                                   style="-fx-font-size: 28px; -fx-text-fill: #f59e0b; -fx-font-weight: bold;"/>
+                            <Label fx:id="lblDetailDate" text=""
+                                   style="-fx-text-fill: #94a3b8; -fx-font-size: 13px;"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                        </HBox>
+
+                        <Separator><VBox.margin><Insets top="18.0" bottom="18.0"/></VBox.margin></Separator>
+
+                        <!-- Info cards row -->
+                        <HBox spacing="14.0">
+                            <VBox.margin><Insets bottom="16.0"/></VBox.margin>
+                            <children>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS"
+                                      style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12;
+                                             -fx-border-color: #e2e8f0; -fx-border-radius: 12;
+                                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 6, 0, 0, 2);">
+                                    <Label text="FREELANCER ÉVALUÉ"
+                                           style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #94a3b8;"/>
+                                    <HBox alignment="CENTER_LEFT" spacing="12.0">
+                                        <Circle radius="20" fill="#ede9fe" stroke="#c4b5fd"/>
+                                        <Label fx:id="lblDetailEvaluatedId" text="Freelancer ID: —"
+                                               style="-fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-font-size: 15px;"/>
+                                    </HBox>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS"
+                                      style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12;
+                                             -fx-border-color: #e2e8f0; -fx-border-radius: 12;
+                                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 6, 0, 0, 2);">
+                                    <Label text="PROJET LIÉ"
+                                           style="-fx-font-size: 10px; -fx-font-weight: bold; -fx-text-fill: #94a3b8;"/>
+                                    <Label fx:id="lblDetailProjectId" text="—"
+                                           style="-fx-font-weight: bold; -fx-text-fill: #1e293b; -fx-font-size: 15px;"/>
+                                </VBox>
+                            </children>
+                        </HBox>
+
+                        <!-- Comment card -->
+                        <VBox spacing="12.0" VBox.vgrow="ALWAYS"
+                              style="-fx-background-color: white; -fx-padding: 24; -fx-background-radius: 14;
+                                     -fx-border-color: #e1e8ed; -fx-border-radius: 14;
+                                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);">
+                            <Label text="Votre Feedback"
+                                   style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+                            <Separator/>
+                            <TextFlow style="-fx-padding: 4;">
+                                <Text fx:id="txtDetailComment" text=""
+                                      style="-fx-fill: #334155; -fx-font-size: 14px;"/>
+                            </TextFlow>
+                        </VBox>
+
+                        <!-- Actions -->
+                        <HBox spacing="12.0" alignment="CENTER_LEFT">
+                            <VBox.margin><Insets top="20.0"/></VBox.margin>
+                            <Button text="✏ Modifier l'avis" onAction="#handleShowForm"
+                                    style="-fx-background-color: #4f46e5; -fx-text-fill: white; -fx-font-weight: bold;
+                                           -fx-background-radius: 8; -fx-padding: 10 20; -fx-cursor: hand; -fx-font-size: 12px;"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="🗑 Supprimer" onAction="#handleDelete"
+                                    style="-fx-background-color: #fef2f2; -fx-text-fill: #ef4444; -fx-border-color: #fecaca;
+                                           -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10 20;
+                                           -fx-cursor: hand; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                        </HBox>
+
+                    </children>
+                </VBox>
+
+                <!-- ══════════════════════════════════════════
+                     VIEW: FORM
+                ══════════════════════════════════════════ -->
+                <VBox fx:id="viewForm" visible="false" style="-fx-background-color: #f5f7fa;">
+                    <padding><Insets bottom="30.0" left="35.0" right="35.0" top="30.0"/></padding>
+                    <children>
+                        <VBox style="-fx-background-color: white; -fx-background-radius: 14; -fx-border-color: #e1e8ed;
+                                     -fx-border-radius: 14; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 2);">
+                            <HBox alignment="CENTER_LEFT" spacing="16"
+                                  style="-fx-padding: 22 28; -fx-background-color: #fafbff;
+                                         -fx-background-radius: 14 14 0 0; -fx-border-color: #f0f0f0; -fx-border-width: 0 0 1 0;">
+                                <Button text="← Retour" onAction="#handleCancelForm"
+                                        style="-fx-background-color: #f0f4f8; -fx-text-fill: #4a5568; -fx-font-weight: bold;
+                                               -fx-background-radius: 8; -fx-padding: 7 14; -fx-cursor: hand; -fx-font-size: 12px;"/>
+                                <Label text="✍ Évaluer un Freelancer"
+                                       style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1e293b;"/>
+                            </HBox>
+                            <VBox spacing="22.0" style="-fx-padding: 30;">
+                                <GridPane hgap="18.0" vgap="0">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="50.0"/>
+                                        <ColumnConstraints percentWidth="50.0"/>
+                                    </columnConstraints>
+                                    <VBox spacing="7.0" GridPane.columnIndex="0">
+                                        <Label text="ID du Freelancer (à évaluer)"
+                                               style="-fx-text-fill: #64748b; -fx-font-weight: bold; -fx-font-size: 12px;"/>
+                                        <TextField fx:id="txtFormEvaluatedId" promptText="ex: 45"
+                                                   style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 10;
+                                                          -fx-border-color: #e2e8f0; -fx-background-color: #f8fafc; -fx-font-size: 13px;"/>
+                                    </VBox>
+                                    <VBox spacing="7.0" GridPane.columnIndex="1">
+                                        <Label text="ID du Projet"
+                                               style="-fx-text-fill: #64748b; -fx-font-weight: bold; -fx-font-size: 12px;"/>
+                                        <TextField fx:id="txtFormProjectId" promptText="ex: 88"
+                                                   style="-fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 10;
+                                                          -fx-border-color: #e2e8f0; -fx-background-color: #f8fafc; -fx-font-size: 13px;"/>
+                                    </VBox>
+                                </GridPane>
+
+                                <VBox spacing="10.0">
+                                    <Label text="Note (étoiles)"
+                                           style="-fx-text-fill: #64748b; -fx-font-weight: bold; -fx-font-size: 12px;"/>
+                                    <HBox spacing="18.0" alignment="CENTER_LEFT"
+                                          style="-fx-padding: 16 20; -fx-background-color: #fefce8;
+                                                 -fx-background-radius: 10; -fx-border-color: #fef08a; -fx-border-radius: 10;">
+                                        <Label text="⭐" style="-fx-font-size: 20px;"/>
+                                        <Slider fx:id="sliderRating" min="1" max="5" value="5"
+                                                majorTickUnit="1" minorTickCount="0" snapToTicks="true"
+                                                showTickMarks="true" prefWidth="300.0"/>
+                                        <Label fx:id="lblFormRatingValue" text="5 ★"
+                                               style="-fx-font-weight: bold; -fx-text-fill: #b45309; -fx-font-size: 16px; -fx-min-width: 40;"/>
+                                    </HBox>
+                                </VBox>
+
+                                <VBox spacing="7.0">
+                                    <Label text="Votre commentaire (min 15 caractères)"
+                                           style="-fx-text-fill: #64748b; -fx-font-weight: bold; -fx-font-size: 12px;"/>
+                                    <TextArea fx:id="txtFormComment"
+                                              promptText="Partagez votre expérience avec ce freelancer..."
+                                              prefRowCount="5" wrapText="true"
+                                              style="-fx-background-radius: 8; -fx-border-radius: 8;
+                                                     -fx-border-color: #e2e8f0; -fx-background-color: #f8fafc; -fx-font-size: 13px;"/>
+                                </VBox>
+
+                                <VBox spacing="7.0">
+                                    <Label text="Type d'évaluation"
+                                           style="-fx-text-fill: #64748b; -fx-font-weight: bold; -fx-font-size: 12px;"/>
+                                    <ComboBox fx:id="cmbFormType" maxWidth="Infinity"
+                                              style="-fx-background-radius: 8; -fx-border-color: #e2e8f0;
+                                                     -fx-border-radius: 8; -fx-background-color: #f8fafc;"/>
+                                </VBox>
+                            </VBox>
+                            <HBox spacing="12.0" alignment="CENTER_RIGHT"
+                                  style="-fx-padding: 18 28; -fx-background-color: #fafbff;
+                                         -fx-background-radius: 0 0 14 14; -fx-border-color: #f0f0f0; -fx-border-width: 1 0 0 0;">
+                                <Button text="Annuler" onAction="#handleCancelForm"
+                                        style="-fx-background-color: white; -fx-text-fill: #64748b; -fx-border-color: #cbd5e1;
+                                               -fx-border-radius: 8; -fx-background-radius: 8; -fx-cursor: hand; -fx-padding: 10 22; -fx-font-size: 13px;"/>
+                                <Button text="✔ Publier l'avis" onAction="#handleSubmitForm"
+                                        style="-fx-background-color: #4f46e5; -fx-text-fill: white; -fx-font-weight: bold;
+                                               -fx-background-radius: 9; -fx-padding: 10 28; -fx-cursor: hand; -fx-font-size: 13px;
+                                               -fx-effect: dropshadow(gaussian, rgba(79,70,229,0.4), 10, 0, 0, 4);"/>
+                            </HBox>
+                        </VBox>
+                    </children>
+                </VBox>
+
+                <!-- TOAST MESSAGE -->
+                <VBox fx:id="messageContainer" visible="false" managed="false"
+                      alignment="BOTTOM_CENTER" pickOnBounds="false" style="-fx-padding: 20;">
+                    <StackPane.alignment>BOTTOM_CENTER</StackPane.alignment>
+                    <Label fx:id="lblMessage" text=""
+                           style="-fx-background-color: #1e293b; -fx-text-fill: white; -fx-padding: 12 24;
+                                  -fx-background-radius: 20; -fx-font-weight: bold;
+                                  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 3);"/>
+                </VBox>
+
+            </children>
+        </StackPane>
+    </center>
+</BorderPane>

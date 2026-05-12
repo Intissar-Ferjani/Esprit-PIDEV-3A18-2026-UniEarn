@@ -1,0 +1,416 @@
+/* Root Styling */
+.root {
+    -fx-background-color: #ffffff;
+    -fx-font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* Left Panel - Branding */
+.left-panel {
+    -fx-background-color: #2563EB;
+}
+
+.brand-title {
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 2);
+}
+
+.brand-subtitle {
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
+}
+
+/* Right Panel - Form */
+.form-panel {
+    -fx-background-color: #ffffff;
+}
+
+.form-title {
+    -fx-text-fill: #2d3748;
+}
+
+.form-subtitle {
+    -fx-text-fill: #718096;
+}
+
+/* Field Labels */
+.field-label {
+    -fx-text-fill: #4a5568;
+}
+
+/* Text Fields */
+.custom-field {
+    -fx-background-color: #f7fafc;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1.5px;
+    -fx-padding: 12px 16px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #2d3748;
+    -fx-pref-height: 45px;
+}
+
+.custom-field:focused {
+    -fx-border-color: #2563EB;
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.15), 8, 0, 0, 2);
+}
+
+.custom-field:hover {
+    -fx-border-color: #cbd5e0;
+}
+
+/* ComboBox */
+.custom-combo {
+    -fx-background-color: #f7fafc;
+    -fx-background-radius: 8px;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1.5px;
+    -fx-font-size: 14px;
+    -fx-pref-height: 45px;
+}
+
+.custom-combo:focused {
+    -fx-border-color: #2563EB;
+    -fx-background-color: #ffffff;
+}
+
+.custom-combo:hover {
+    -fx-border-color: #cbd5e0;
+}
+
+.custom-combo .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2d3748;
+    -fx-padding: 8px 16px;
+}
+
+.custom-combo .list-cell:filled:hover {
+    -fx-background-color: #edf2f7;
+}
+
+.custom-combo .list-cell:filled:selected {
+    -fx-background-color: #2563EB;
+    -fx-text-fill: white;
+}
+
+/* Sign Up Button */
+.signup-button {
+    -fx-background-color: linear-gradient(to right, #2563EB 0%, #20C997 100%);
+    -fx-text-fill: white;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.3), 10, 0, 0, 4);
+}
+
+.signup-button:hover {
+    -fx-background-color: linear-gradient(to right, #1d4ed8 0%, #1ab386 100%);
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.5), 15, 0, 0, 6);
+    -fx-scale-y: 1.02;
+}
+
+.signup-button:pressed {
+    -fx-background-color: linear-gradient(to right, #1e40af 0%, #169f7a 100%);
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.2), 5, 0, 0, 2);
+}
+
+/* Login Link */
+.login-label {
+    -fx-text-fill: #718096;
+}
+
+.login-link {
+    -fx-text-fill: #2563EB;
+    -fx-border-color: transparent;
+}
+
+.login-link:hover {
+    -fx-text-fill: #1d4ed8;
+    -fx-underline: true;
+}
+
+.login-link:visited {
+    -fx-text-fill: #2563EB;
+}
+
+/* Error Labels */
+.error-label {
+    -fx-text-fill: #e53e3e;
+    -fx-font-size: 12px;
+    -fx-padding: 2px 0 0 4px;
+}
+
+/* Helper Text */
+.helper-text {
+    -fx-text-fill: #718096;
+    -fx-padding: 2px 0 0 4px;
+}
+
+/* Currency Symbol */
+.currency-symbol {
+    -fx-text-fill: #4a5568;
+}
+
+/* Progress Steps */
+.progress-step-completed {
+    -fx-background-color: #20C997;
+    -fx-text-fill: white;
+    -fx-background-radius: 50%;
+    -fx-min-width: 35px;
+    -fx-min-height: 35px;
+    -fx-alignment: center;
+}
+
+.progress-step-active {
+    -fx-background-color: #2563EB;
+    -fx-text-fill: white;
+    -fx-background-radius: 50%;
+    -fx-min-width: 35px;
+    -fx-min-height: 35px;
+    -fx-alignment: center;
+}
+
+.progress-label-completed {
+    -fx-text-fill: #20C997;
+}
+
+.progress-label-active {
+    -fx-text-fill: #2563EB;
+}
+
+.progress-line-completed {
+    -fx-text-fill: #20C997;
+}
+
+.progress-line-completed {
+    -fx-text-fill: #20C997;
+}
+
+.progress-line {
+    -fx-text-fill: #cbd5e0;
+}
+
+.progress-step-inactive {
+    -fx-background-color: #e2e8f0;
+    -fx-text-fill: #a0aec0;
+    -fx-background-radius: 50%;
+    -fx-min-width: 35px;
+    -fx-min-height: 35px;
+    -fx-alignment: center;
+}
+
+.progress-label-inactive {
+    -fx-text-fill: #a0aec0;
+}
+
+/* Skip Button */
+.skip-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #cbd5e0;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-text-fill: #718096;
+    -fx-cursor: hand;
+}
+
+.skip-button:hover {
+    -fx-background-color: #f7fafc;
+    -fx-border-color: #a0aec0;
+    -fx-text-fill: #4a5568;
+}
+
+.skip-button:pressed {
+    -fx-background-color: #edf2f7;
+}
+
+/* Student Card Verification */
+.verification-box {
+    -fx-background-color: #f0f9ff;
+    -fx-border-color: #bfdbfe;
+    -fx-border-width: 2px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-padding: 15px;
+}
+
+.info-box {
+    -fx-background-color: #fef3c7;
+    -fx-border-color: #fcd34d;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 12px;
+}
+
+.info-icon {
+    -fx-text-fill: #f59e0b;
+}
+
+.info-title {
+    -fx-text-fill: #92400e;
+}
+
+.info-text {
+    -fx-text-fill: #78350f;
+}
+
+.requirement-text {
+    -fx-text-fill: #1e40af;
+    -fx-padding: 2px 0 2px 15px;
+}
+
+.verification-icon {
+    -fx-text-fill: #2563EB;
+}
+
+.upload-button {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #2563EB;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-text-fill: #2563EB;
+    -fx-cursor: hand;
+}
+
+.upload-button:hover {
+    -fx-background-color: #eff6ff;
+    -fx-border-color: #1d4ed8;
+}
+
+.upload-button:pressed {
+    -fx-background-color: #dbeafe;
+}
+
+.file-label {
+    -fx-text-fill: #64748b;
+    -fx-font-style: italic;
+}
+
+.file-label-selected {
+    -fx-text-fill: #2563EB;
+    -fx-font-weight: bold;
+}
+
+.verification-status {
+    -fx-padding: 8px 12px;
+    -fx-background-radius: 6px;
+    -fx-background-color: #f1f5f9;
+}
+
+.verification-status-processing {
+    -fx-text-fill: #2563EB;
+    -fx-background-color: #eff6ff;
+}
+
+.verification-status-error {
+    -fx-text-fill: #e53e3e;
+    -fx-background-color: #fef2f2;
+}
+
+.verification-status-success {
+    -fx-text-fill: #20C997;
+    -fx-background-color: #f0fdf4;
+}
+
+/* ScrollPane */
+.form-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.form-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.form-scroll .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.form-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #cbd5e0;
+    -fx-background-radius: 5px;
+}
+
+.form-scroll .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+
+/* Terms Label */
+.terms-label {
+    -fx-text-fill: #4a5568;
+}
+
+/* Back Button */
+.back-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #2563EB;
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-text-fill: #2563EB;
+    -fx-cursor: hand;
+}
+
+.back-button:hover {
+    -fx-background-color: #edf2f7;
+    -fx-border-color: #1d4ed8;
+    -fx-text-fill: #1d4ed8;
+}
+
+.back-button:pressed {
+    -fx-background-color: #e2e8f0;
+}
+
+/* ScrollBar Styling */
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #cbd5e0;
+    -fx-background-radius: 5px;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #a0aec0;
+}
+
+.scroll-bar .track {
+    -fx-background-color: transparent;
+}
+
+.chips-container {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-width: 1.5px;
+    -fx-padding: 8px;
+    -fx-min-height: 45px;
+}
+
+.skills-dropdown {
+    -fx-background-color: white;
+    -fx-border-color: #1976d2;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-border-width: 1.5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 3);
+}
+
+.skills-dropdown .list-cell:hover {
+    -fx-background-color: #e3f2fd;
+    -fx-text-fill: #1976d2;
+}
+
+.ai-spinner {
+    -fx-rotate: 0;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { -fx-rotate: 0; }
+    to   { -fx-rotate: 360; }
+}
